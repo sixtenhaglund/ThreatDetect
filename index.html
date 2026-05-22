@@ -1,0 +1,3156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ThreatDetect</title>
+<style>
+  :root {
+    --bg:        hsl(220 20% 4%);
+    --bg-2:      hsl(220 20% 6%);
+    --card:      hsl(220 20% 7%);
+    --fg:        hsl(160 100% 80%);
+    --primary:   hsl(160 100% 50%);
+    --primary-2: hsl(160 100% 35%);
+    --accent:    hsl(190 100% 50%);
+    --destruct:  hsl(0 85% 55%);
+    --muted:     hsl(220 15% 10%);
+    --muted-fg:  hsl(160 20% 50%);
+    --border:    hsl(160 40% 15%);
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0; height: 100%;
+    background: var(--bg);
+    color: var(--fg);
+    font-family: "Segoe UI Variable Text", "Segoe UI Variable", "Segoe UI",
+                 system-ui, -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+    overflow: hidden;
+    user-select: none;
+    -webkit-font-smoothing: antialiased;
+  }
+  .mono { font-family: ui-monospace, Consolas, "Cascadia Mono", "Segoe UI Mono", monospace; }
+
+  body::before {
+    content: "";
+    position: fixed; inset: 0;
+    pointer-events: none;
+    background: repeating-linear-gradient(to bottom,
+      rgba(0,255,170,0.035) 0px, rgba(0,255,170,0.035) 1px,
+      transparent 1px, transparent 3px);
+    mix-blend-mode: screen;
+    z-index: 999;
+  }
+  body::after {
+    content: "";
+    position: fixed; inset: 0;
+    pointer-events: none;
+    background: radial-gradient(ellipse at center, transparent 55%, rgba(0,0,0,0.65) 100%);
+    z-index: 998;
+  }
+
+  /* Ambient animated grid background */
+  .bg-grid {
+    position: fixed; inset: 0; z-index: -1;
+    background-image:
+      linear-gradient(rgba(0,255,170,0.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,255,170,0.06) 1px, transparent 1px);
+    background-size: 56px 56px;
+    transform: perspective(600px) rotateX(60deg) translateY(20%);
+    transform-origin: center top;
+    animation: gridDrift 20s linear infinite;
+    opacity: 0.4;
+  }
+  @keyframes gridDrift {
+    from { background-position: 0 0, 0 0; }
+    to   { background-position: 0 56px, 56px 0; }
+  }
+
+  #app {
+    position: relative;
+    height: 100%;
+    display: flex;
+    align-items: safe center;
+    justify-content: safe center;
+    padding: 24px;
+    overflow-y: auto;
+  }
+  .panel {
+    width: 100%;
+    max-width: 680px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 28px;
+    box-shadow:
+      0 0 0 1px rgba(0,255,170,0.04),
+      0 0 60px rgba(0,255,170,0.06);
+    position: relative;
+  }
+  .panel.wide { max-width: 760px; }
+  .center { text-align: center; }
+  h1, h2, h3 { margin: 0; font-weight: 700; letter-spacing: 0.04em; }
+  h1 {
+    font-size: 2.6rem;
+    color: var(--primary);
+    text-shadow: 0 0 14px rgba(0,255,170,0.45);
+    letter-spacing: 0.08em;
+  }
+  h2 { font-size: 1.35rem; }
+  h3 { font-size: 0.85rem; color: var(--muted-fg); text-transform: uppercase; letter-spacing: 0.15em; }
+  p { line-height: 1.55; margin: 0; }
+  .mute { color: var(--muted-fg); font-size: 0.9rem; }
+  .tiny { font-size: 0.72rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted-fg); }
+  .row { display: flex; gap: 12px; }
+  .row.between { justify-content: space-between; align-items: center; }
+  .row.center { justify-content: center; flex-wrap: wrap; }
+  .stack { display: flex; flex-direction: column; gap: 14px; }
+  .stack.tight { gap: 6px; }
+  .stack.loose { gap: 22px; }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: var(--muted);
+    color: var(--fg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 12px 18px;
+    font-family: inherit;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.12s ease, background 0.12s ease, box-shadow 0.12s ease, color 0.12s ease;
+  }
+  .btn:hover { transform: translateY(-1px); background: hsl(220 15% 14%); }
+  .btn:active { transform: translateY(0); }
+  .btn.primary { background: var(--primary); color: var(--bg); border-color: var(--primary); box-shadow: 0 0 24px rgba(0,255,170,0.35); }
+  .btn.primary:hover { background: var(--primary-2); }
+  .btn.danger { background: rgba(255,60,60,0.1); border-color: var(--destruct); color: hsl(0 85% 78%); }
+  .btn.danger:hover { background: rgba(255,60,60,0.22); }
+  .btn.safe { background: rgba(0,255,170,0.08); border-color: var(--primary); color: var(--primary); }
+  .btn.safe:hover { background: rgba(0,255,170,0.18); }
+  .btn.big { padding: 16px 22px; font-size: 1rem; flex: 1; }
+  .btn.full { width: 100%; }
+  .btn.ghost { background: transparent; }
+
+  /* HUD */
+  .hud {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  .hud .cell {
+    background: var(--bg-2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 10px;
+    text-align: center;
+    cursor: default;
+  }
+  .hud .label { font-size: 0.6rem; letter-spacing: 0.18em; color: var(--muted-fg); text-transform: uppercase; }
+  .hud .value { font-size: 1.15rem; font-weight: 700; color: var(--primary); margin-top: 2px; }
+  button.cell { font-family: inherit; cursor: pointer; }
+  button.cell:hover { background: hsl(220 15% 12%); }
+
+  /* Fake telemetry meters */
+  .meters {
+    display: flex;
+    gap: 6px;
+    padding: 8px 10px;
+    background: var(--bg-2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-family: ui-monospace, Consolas, "Cascadia Mono", monospace;
+    font-size: 0.78rem;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    overflow-x: auto;
+  }
+  .meter { display: flex; align-items: baseline; gap: 5px; white-space: nowrap; }
+  .m-label {
+    font-size: 0.6rem;
+    letter-spacing: 0.16em;
+    color: var(--muted-fg);
+    text-transform: uppercase;
+  }
+  .m-val { color: var(--primary); font-weight: 700; min-width: 1ch; display: inline-block; }
+  .m-val.bad  { color: var(--destruct); text-shadow: 0 0 6px var(--destruct); }
+  .m-val.warn { color: hsl(40 100% 65%); }
+  .m-unit { color: var(--muted-fg); font-size: 0.7rem; }
+
+  /* Menu */
+  .logo {
+    font-size: 3rem;
+    font-weight: 900;
+    letter-spacing: 0.14em;
+    background: linear-gradient(180deg, #c8ffe6 0%, var(--primary) 60%, hsl(160 100% 30%) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    text-shadow: 0 0 24px rgba(0,255,170,0.25);
+  }
+  .menu-btn {
+    width: 100%;
+    text-align: left;
+    padding: 16px 20px;
+    font-size: 1rem;
+    background: var(--bg-2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--fg);
+    font-family: inherit;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: background 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
+  }
+  .menu-btn:hover {
+    background: hsl(220 18% 10%);
+    border-color: var(--primary-2);
+    transform: translateX(4px);
+  }
+  .menu-btn .arrow { color: var(--primary); }
+  .menu-btn.danger { color: hsl(0 70% 75%); }
+  .menu-btn.danger:hover { border-color: var(--destruct); }
+  .menu-sub { font-size: 0.72rem; color: var(--muted-fg); margin-top: 4px; }
+
+  /* Reveal feedback */
+  .reveal {
+    position: fixed; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    pointer-events: none; z-index: 100;
+    opacity: 0;
+    transition: opacity 0.15s ease;
+  }
+  .reveal.show { opacity: 1; }
+  .reveal .stamp {
+    font-weight: 900;
+    font-size: 2.6rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    padding: 14px 28px;
+    border: 4px solid currentColor;
+    border-radius: 8px;
+    transform: rotate(-7deg);
+    text-shadow: 0 0 18px currentColor;
+    background: rgba(0,0,0,0.55);
+  }
+  .reveal.correct .stamp { color: var(--primary); }
+  .reveal.wrong .stamp { color: var(--destruct); }
+
+  /* Codex */
+  .codex-list {
+    max-height: 64vh;
+    overflow-y: auto;
+    padding-right: 6px;
+  }
+  .codex-list::-webkit-scrollbar { width: 8px; }
+  .codex-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+  .codex-entry {
+    background: var(--bg-2);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--primary);
+    border-radius: 6px;
+    margin-bottom: 10px;
+    overflow: hidden;
+  }
+  .codex-head {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 16px;
+    cursor: pointer;
+    user-select: none;
+  }
+  .codex-head:hover { background: hsl(220 18% 9%); }
+  .codex-head .vname { font-size: 1rem; font-weight: 700; flex: 1; }
+  .codex-head .vname.locked { color: var(--muted-fg); letter-spacing: 0.2em; }
+  .codex-head .caret { color: var(--muted-fg); transition: transform 0.2s ease; }
+  .codex-entry.open .codex-head .caret { transform: rotate(90deg); }
+  .codex-body {
+    padding: 0 16px 14px 16px;
+    border-top: 1px solid var(--border);
+    display: none;
+  }
+  .codex-entry.open .codex-body { display: block; }
+  .codex-body .desc { font-size: 0.92rem; color: hsl(160 30% 80%); margin: 12px 0; line-height: 1.55; }
+  .codex-body ul { margin: 8px 0 0 0; padding-left: 18px; font-size: 0.85rem; color: var(--muted-fg); }
+  .codex-body li { margin: 3px 0; line-height: 1.45; }
+
+  /* Per-virus accent colors */
+  .v-EPILEPTICA { color: #ffffff; }
+  .v-MELTDOWN   { color: #ff7733; }
+  .v-STATIC     { color: #b0b0b0; }
+  .v-REDRUM     { color: #cc1111; }
+  .v-VOID       { color: #aa66ff; }
+  .v-GASLIGHT   { color: #ffd56b; }
+  .v-CRYPTEX    { color: #ffcc00; }
+  .v-WORM       { color: #44ff44; }
+  .v-ROOTKIT    { color: #ff3300; }
+  .v-DDOS       { color: #ff8800; }
+  .v-LEECH      { color: #aa00ff; }
+  .v-SCREAMER   { color: #ff1166; }
+  .v-MIMIC      { color: #66ddff; }
+  .v-PULSE      { color: #ff55aa; }
+  .v-NULL       { color: #777777; }
+  .v-CURSOR     { color: #ffaa44; }
+  .v-LOOP       { color: #88ff88; }
+  .v-FOSSIL     { color: #c4a484; }
+  .v-HEX        { color: #88ddff; }
+  .v-BUGBEAR    { color: #ff9966; }
+  .codex-entry.v-EPILEPTICA { border-left-color: #ffffff; }
+  .codex-entry.v-MELTDOWN   { border-left-color: #ff7733; }
+  .codex-entry.v-STATIC     { border-left-color: #b0b0b0; }
+  .codex-entry.v-REDRUM     { border-left-color: #cc1111; }
+  .codex-entry.v-VOID       { border-left-color: #aa66ff; }
+  .codex-entry.v-GASLIGHT   { border-left-color: #ffd56b; }
+  .codex-entry.v-CRYPTEX    { border-left-color: #ffcc00; }
+  .codex-entry.v-WORM       { border-left-color: #44ff44; }
+  .codex-entry.v-ROOTKIT    { border-left-color: #ff3300; }
+  .codex-entry.v-DDOS       { border-left-color: #ff8800; }
+  .codex-entry.v-LEECH      { border-left-color: #aa00ff; }
+  .codex-entry.v-SCREAMER   { border-left-color: #ff1166; }
+  .codex-entry.v-MIMIC      { border-left-color: #66ddff; }
+  .codex-entry.v-PULSE      { border-left-color: #ff55aa; }
+  .codex-entry.v-NULL       { border-left-color: #555555; }
+  .codex-entry.v-CURSOR     { border-left-color: #ffaa44; }
+  .codex-entry.v-LOOP       { border-left-color: #88ff88; }
+  .codex-entry.v-FOSSIL     { border-left-color: #c4a484; }
+  .codex-entry.v-HEX        { border-left-color: #88ddff; }
+  .codex-entry.v-BUGBEAR    { border-left-color: #ff9966; }
+
+  /* Animations */
+  .fade-in { animation: fadeIn 0.4s ease; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+  .pulse { animation: pulse 1.4s ease-in-out infinite; }
+  @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.55;} }
+  .flicker { animation: flicker 3.2s infinite; }
+  @keyframes flicker {
+    0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { opacity: 1; }
+    20%, 22%, 24%, 55% { opacity: 0.78; }
+  }
+  .glitch {
+    font-weight: 900;
+    display: inline-block;
+    text-shadow: 2px 0 var(--accent), -2px 0 var(--destruct);
+    animation: glitch 0.55s infinite steps(2, end);
+  }
+  @keyframes glitch {
+    0%{transform:translate(0,0);} 20%{transform:translate(-2px,1px);}
+    40%{transform:translate(2px,-1px);} 60%{transform:translate(-1px,-2px);}
+    80%{transform:translate(1px,2px);} 100%{transform:translate(0,0);}
+  }
+  /* UI tampering effects on the popup wrapper */
+  .tamper-pulse { animation: tamperPulse 0.9s ease-in-out infinite; }
+  @keyframes tamperPulse {
+    0%, 100% { filter: brightness(1) saturate(1); transform: scale(1); }
+    50%      { filter: brightness(1.25) saturate(1.1); transform: scale(1.015); }
+  }
+  .tamper-pulse-hard { animation: tamperPulseHard 0.55s ease-in-out infinite; }
+  @keyframes tamperPulseHard {
+    0%, 100% { filter: brightness(0.7); transform: scale(0.99); }
+    50%      { filter: brightness(1.4); transform: scale(1.025); }
+  }
+  .tamper-shake { animation: tamperShake 0.18s ease-in-out infinite; }
+  @keyframes tamperShake {
+    0% { transform: translate(0,0); } 25% { transform: translate(-1px,1px); }
+    50% { transform: translate(1px,-1px); } 75% { transform: translate(-1px,-1px); }
+    100% { transform: translate(0,0); }
+  }
+  .tamper-null { opacity: 0.94; }
+  .tamper-null .win-actions, .tamper-null .av-actions { visibility: hidden; }
+
+  /* ============== POPUP TEMPLATES ============== */
+
+  /* WIN11 LIGHT DIALOG */
+  .win-dialog {
+    background: #f3f3f3;
+    color: #1b1b1b;
+    border: 1px solid #c8c8c8;
+    border-radius: 8px;
+    box-shadow:
+      0 0 0 1px rgba(0,0,0,0.04),
+      0 22px 60px rgba(0,0,0,0.6),
+      0 6px 18px rgba(0,0,0,0.35);
+    overflow: hidden;
+    font-family: "Segoe UI Variable Text", "Segoe UI Variable", "Segoe UI", system-ui, sans-serif;
+  }
+  .win-titlebar {
+    display: flex; align-items: stretch; height: 32px;
+    background: #f3f3f3; border-bottom: 1px solid #e6e6e6;
+  }
+  .win-titlebar-left { display: flex; align-items: center; gap: 8px; padding: 0 12px; flex: 1; min-width: 0; }
+  .win-app-icon {
+    width: 16px; height: 16px; border-radius: 3px;
+    background: linear-gradient(135deg, #0078d4 0%, #50b0ef 100%);
+    flex-shrink: 0; box-shadow: inset 0 0 0 1px rgba(255,255,255,0.2);
+  }
+  .win-title { font-size: 12px; color: #1b1b1b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .win-tb-btns { display: flex; }
+  .win-tb-btn {
+    width: 46px; height: 32px; border: 0; background: transparent; color: #1b1b1b;
+    font-size: 10px; line-height: 1; cursor: default;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .win-tb-btn:hover { background: rgba(0,0,0,0.06); }
+  .win-tb-btn.close:hover { background: #c42b1c; color: #fff; }
+  .win-body { background: #ffffff; display: flex; gap: 16px; padding: 24px 24px 16px 24px; }
+  .win-error-icon { flex-shrink: 0; margin-top: 2px; }
+  .win-content { flex: 1; min-width: 0; }
+  .win-heading { font-size: 16px; font-weight: 600; color: #1b1b1b; margin: 0 0 8px; line-height: 1.3; }
+  .win-message { font-size: 14px; color: #1b1b1b; line-height: 1.45; margin-bottom: 8px; word-wrap: break-word; }
+  .win-meta { font-size: 12px; color: #5a5a5a; word-break: break-word; }
+  .win-actions { background: #f3f3f3; border-top: 1px solid #e6e6e6; padding: 14px 24px; display: flex; justify-content: flex-end; gap: 8px; }
+
+  /* FAKE ANTIVIRUS WARNING */
+  .av-dialog {
+    background: linear-gradient(180deg, #fff7e6 0%, #ffe1c2 100%);
+    color: #401400;
+    border: 2px solid #b03000;
+    border-radius: 6px;
+    overflow: hidden;
+    font-family: "Segoe UI", Arial, sans-serif;
+    box-shadow: 0 0 0 1px #ffaa66, 0 20px 50px rgba(0,0,0,0.55);
+  }
+  .av-header {
+    background: linear-gradient(180deg, #d62828, #b03000);
+    color: #ffffff;
+    padding: 12px 18px;
+    display: flex; align-items: center; gap: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-weight: 800;
+  }
+  .av-header .badge {
+    background: #fff; color: #b03000; padding: 3px 8px; border-radius: 3px;
+    font-size: 10px; letter-spacing: 0.18em;
+  }
+  .av-body { padding: 22px; display: flex; gap: 18px; }
+  .av-icon { font-size: 48px; line-height: 1; flex-shrink: 0; }
+  .av-content { flex: 1; }
+  .av-heading { font-size: 20px; font-weight: 800; color: #b03000; margin-bottom: 8px; text-transform: uppercase; }
+  .av-message { font-size: 14px; line-height: 1.5; }
+  .av-meta { margin-top: 10px; font-size: 12px; color: #5a2200; font-family: Consolas, monospace; }
+  .av-actions { background: #ffe6cc; padding: 14px 22px; display: flex; gap: 10px; justify-content: flex-end; }
+
+  /* BIOS SCREEN */
+  .bios {
+    background: #0000a0;
+    color: #ffffff;
+    font-family: "Cascadia Mono", Consolas, "Lucida Console", monospace;
+    border: 4px double #ffffff;
+    padding: 16px;
+    line-height: 1.4;
+    font-size: 14px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+  }
+  .bios-header {
+    text-align: center; background: #c0c0c0; color: #0000a0;
+    padding: 4px; font-weight: 700; letter-spacing: 0.2em; margin-bottom: 12px;
+  }
+  .bios-row { display: flex; gap: 8px; }
+  .bios-key { color: #ffff00; }
+  .bios-warn { background: #ffff00; color: #0000a0; padding: 2px 6px; font-weight: 700; display: inline-block; margin-top: 8px; }
+  .bios-actions {
+    border-top: 1px dashed #ffffff;
+    margin-top: 14px; padding-top: 10px;
+    display: flex; justify-content: space-around;
+    font-size: 13px;
+  }
+  .bios-actions .key { background: #c0c0c0; color: #0000a0; padding: 2px 8px; margin-right: 4px; font-weight: 700; }
+
+  /* CORRUPTED TERMINAL */
+  .term {
+    background: #000;
+    color: #4dff7c;
+    font-family: "Cascadia Mono", Consolas, "Lucida Console", monospace;
+    border: 1px solid #226633;
+    border-radius: 4px;
+    overflow: hidden;
+    font-size: 13px;
+    line-height: 1.5;
+    box-shadow: 0 0 30px rgba(0,255,140,0.15), 0 20px 50px rgba(0,0,0,0.55);
+  }
+  .term-titlebar { background: #1a1a1a; color: #aaa; padding: 6px 12px; font-size: 12px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid #226633; }
+  .term-dot { width: 10px; height: 10px; border-radius: 50%; background: #ff4444; box-shadow: 0 0 6px #ff4444; }
+  .term-body { padding: 14px 16px; }
+  .term-line { white-space: pre-wrap; word-break: break-word; }
+  .term-line .prompt { color: #4dff7c; }
+  .term-line .err { color: #ff5555; }
+  .term-line .warn { color: #ffcc00; }
+  .term-line .ok { color: #66ddff; }
+  .term-cursor { display: inline-block; width: 7px; height: 14px; background: #4dff7c; vertical-align: -2px; animation: termBlink 1s steps(2) infinite; }
+  @keyframes termBlink { 0%,49% {opacity:1;} 50%,100% {opacity:0;} }
+  .term-actions { padding: 10px 16px; background: #001100; border-top: 1px solid #226633; display: flex; justify-content: flex-end; gap: 10px; }
+  .term-btn {
+    background: #003300; color: #4dff7c; border: 1px solid #4dff7c;
+    padding: 6px 14px; font-family: inherit; font-size: 12px; cursor: pointer;
+  }
+  .term-btn:hover { background: #006600; }
+
+  /* DESKTOP NOTIFICATION TOAST */
+  .toast-stage {
+    position: relative;
+    height: 220px;
+    background:
+      radial-gradient(ellipse at 30% 50%, rgba(0,80,140,0.4) 0%, transparent 70%),
+      linear-gradient(180deg, #1f3a5f 0%, #0f1f33 100%);
+    border-radius: 8px;
+    border: 1px solid #2a4a73;
+    overflow: hidden;
+  }
+  .toast-stage::after {
+    content: "";
+    position: absolute; left: 18px; bottom: 14px;
+    width: 160px; height: 4px;
+    background: rgba(255,255,255,0.5);
+    border-radius: 2px;
+  }
+  .toast {
+    position: absolute; right: 18px; bottom: 36px;
+    width: 320px;
+    background: #2b2b2b;
+    color: #ffffff;
+    border-radius: 6px;
+    overflow: hidden;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.6);
+    font-family: "Segoe UI Variable Text", "Segoe UI", sans-serif;
+    animation: toastSlide 0.5s ease;
+  }
+  @keyframes toastSlide { from { transform: translateX(380px); } to { transform: translateX(0); } }
+  .toast-head {
+    display: flex; align-items: center; gap: 8px;
+    padding: 8px 12px;
+    background: #1f1f1f;
+    font-size: 11px; color: #ccc;
+  }
+  .toast-head .badge { width: 14px; height: 14px; border-radius: 3px; background: #0078d4; }
+  .toast-body { padding: 12px 14px; }
+  .toast-title { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+  .toast-msg { font-size: 13px; color: #d0d0d0; line-height: 1.4; }
+  .toast-meta { margin-top: 6px; font-size: 11px; color: #888; word-break: break-word; }
+
+  /* FAKE DESKTOP SHORTCUT */
+  .desktop-stage {
+    position: relative;
+    min-height: 240px;
+    background:
+      radial-gradient(ellipse at 60% 30%, rgba(0,100,180,0.5) 0%, transparent 60%),
+      linear-gradient(160deg, #0a1f3f 0%, #02060c 100%);
+    border-radius: 8px;
+    border: 1px solid #2a4a73;
+    overflow: hidden;
+    padding: 20px;
+  }
+  .desktop-icon {
+    width: 96px;
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    text-align: center;
+    cursor: default;
+  }
+  .desktop-icon.selected {
+    background: rgba(0,120,212,0.3);
+    outline: 1px dashed rgba(255,255,255,0.5);
+    border-radius: 4px;
+    padding: 4px;
+  }
+  .desktop-icon .ico {
+    width: 56px; height: 56px;
+    background: linear-gradient(135deg, #e74c3c, #c0392b);
+    border-radius: 6px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.4);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 32px; color: white;
+  }
+  .desktop-icon .ico.exe { background: linear-gradient(135deg, #aaaaaa, #777777); }
+  .desktop-icon .ico.pdf { background: linear-gradient(135deg, #d63031, #a92020); }
+  .desktop-icon .ico.zip { background: linear-gradient(135deg, #fdcb6e, #d4a017); color: #5a3a00; }
+  .desktop-icon .label {
+    color: white;
+    font-size: 12px;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.9);
+    word-break: break-all;
+    line-height: 1.2;
+  }
+  .desktop-tooltip {
+    position: absolute;
+    left: 20px; bottom: 60px;
+    max-width: 380px;
+    background: #ffffe1;
+    color: #1b1b1b;
+    border: 1px solid #777;
+    padding: 8px 12px;
+    font-size: 12px;
+    line-height: 1.4;
+    box-shadow: 2px 2px 6px rgba(0,0,0,0.35);
+    font-family: "Segoe UI", sans-serif;
+  }
+  .desktop-tooltip .small { color: #555; font-size: 11px; margin-top: 4px; }
+
+  /* FAKE LOADING SCREEN */
+  .loading {
+    background: linear-gradient(180deg, #0a0a14, #050508);
+    color: #ffffff;
+    border: 1px solid #2a4a73;
+    border-radius: 8px;
+    padding: 36px 28px;
+    text-align: center;
+    font-family: "Segoe UI", sans-serif;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.55);
+  }
+  .loading-title { font-size: 22px; font-weight: 700; margin-bottom: 16px; }
+  .loading-sub { font-size: 13px; color: #aaa; margin-bottom: 24px; }
+  .loading-bar {
+    height: 8px;
+    background: #1a1a2a;
+    border-radius: 4px;
+    overflow: hidden;
+    position: relative;
+    margin-bottom: 12px;
+  }
+  .loading-fill {
+    height: 100%;
+    width: 60%;
+    background: linear-gradient(90deg, #0078d4, #50b0ef, #0078d4);
+    background-size: 200% 100%;
+    animation: loadingShine 1.5s linear infinite;
+    border-radius: 4px;
+  }
+  @keyframes loadingShine {
+    from { background-position: 200% 0; }
+    to   { background-position: 0 0; }
+  }
+  .loading-pct { font-size: 12px; color: #888; font-family: Consolas, monospace; }
+  .loading-step { margin-top: 16px; font-size: 12px; color: #50b0ef; font-family: Consolas, monospace; }
+
+  /* Settings */
+  .setting-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 12px 16px;
+    background: var(--bg-2); border: 1px solid var(--border);
+    border-radius: 6px;
+    gap: 16px;
+  }
+  .setting-row label { flex: 1; }
+  .setting-row .desc { font-size: 0.75rem; color: var(--muted-fg); }
+  .toggle {
+    position: relative;
+    width: 44px; height: 24px;
+    background: var(--muted); border: 1px solid var(--border);
+    border-radius: 12px; cursor: pointer;
+    transition: background 0.15s ease;
+  }
+  .toggle::after {
+    content: ""; position: absolute; top: 2px; left: 2px;
+    width: 18px; height: 18px; border-radius: 50%;
+    background: var(--muted-fg);
+    transition: left 0.15s ease, background 0.15s ease;
+  }
+  .toggle.on { background: rgba(0,255,170,0.2); border-color: var(--primary); }
+  .toggle.on::after { left: 22px; background: var(--primary); }
+  .slider {
+    -webkit-appearance: none; appearance: none;
+    width: 140px; height: 4px; background: var(--border); border-radius: 2px;
+    outline: none;
+  }
+  .slider::-webkit-slider-thumb {
+    -webkit-appearance: none; appearance: none;
+    width: 14px; height: 14px; border-radius: 50%;
+    background: var(--primary); cursor: pointer;
+    box-shadow: 0 0 6px rgba(0,255,170,0.5);
+  }
+  .slider::-moz-range-thumb {
+    width: 14px; height: 14px; border-radius: 50%;
+    background: var(--primary); cursor: pointer; border: 0;
+  }
+
+  /* Mini badge in menu */
+  .badge-row { display: flex; gap: 6px; flex-wrap: wrap; }
+  .badge {
+    font-size: 0.65rem; letter-spacing: 0.15em; text-transform: uppercase;
+    padding: 2px 8px; border-radius: 999px;
+    background: var(--muted); color: var(--muted-fg);
+    border: 1px solid var(--border);
+  }
+
+  /* ============== DEATH SEQUENCES (per virus) ============== */
+  .death-stage {
+    position: fixed; inset: 0; z-index: 500;
+    background: #000; color: #fff;
+    overflow: hidden;
+    animation: deathFadeIn 0.15s ease;
+  }
+  @keyframes deathFadeIn { from { opacity: 0; } to { opacity: 1; } }
+  .death-skip {
+    position: fixed; right: 24px; bottom: 24px;
+    z-index: 600; opacity: 0.75;
+    background: rgba(0,0,0,0.65);
+    border-color: rgba(255,255,255,0.4);
+    color: #fff;
+  }
+  .death-skip:hover { opacity: 1; background: rgba(0,0,0,0.85); }
+  .death-stage.photo-safe { animation-duration: 1.6s !important; }
+  .death-stage.photo-safe::before,
+  .death-stage.photo-safe::after {
+    animation-duration: 2s !important;
+    filter: brightness(0.65);
+  }
+
+  /* EPILEPTICA — chromatic strobe + scanlines */
+  .death-EPILEPTICA { animation: epRGB 0.12s steps(5) infinite; }
+  @keyframes epRGB {
+    0%   { background: #ffffff; }
+    20%  { background: #ff0066; }
+    40%  { background: #00ff66; }
+    60%  { background: #0066ff; }
+    80%  { background: #ffff00; }
+    100% { background: #000000; }
+  }
+  .death-EPILEPTICA::before {
+    content: ""; position: absolute; inset: 0;
+    background: repeating-linear-gradient(0deg, rgba(0,0,0,0.6) 0 2px, transparent 2px 6px);
+    animation: epScanline 0.08s steps(3) infinite;
+  }
+  @keyframes epScanline { to { transform: translateY(6px); } }
+
+  /* MELTDOWN — molten flow with glow */
+  .death-MELTDOWN {
+    background: radial-gradient(ellipse at 50% 110%, #ff6600 0%, #aa0000 35%, #1a0000 70%);
+  }
+  .death-MELTDOWN::before {
+    content: ""; position: absolute; inset: -20%;
+    background:
+      radial-gradient(circle at 18% 100%, #ffaa00 0 14%, transparent 18%),
+      radial-gradient(circle at 50% 100%, #ffcc00 0 18%, transparent 24%),
+      radial-gradient(circle at 82% 100%, #ff8800 0 14%, transparent 18%),
+      radial-gradient(circle at 32% 100%, #ff5500 0 10%, transparent 14%);
+    filter: blur(14px);
+    animation: meltGlow 1.5s ease-in-out infinite alternate;
+  }
+  @keyframes meltGlow {
+    0%   { transform: translateY(0) scale(1); opacity: 1; }
+    100% { transform: translateY(-30px) scale(1.18); opacity: 0.7; }
+  }
+  .death-MELTDOWN::after {
+    content: ""; position: absolute; inset: 0;
+    background:
+      repeating-linear-gradient(180deg,
+        transparent 0 25px, rgba(255,80,0,0.4) 25px 27px,
+        transparent 27px 60px, rgba(255,140,0,0.3) 60px 62px,
+        transparent 62px 110px, rgba(255,60,0,0.5) 110px 113px);
+    background-size: 8% 100%;
+    animation: meltDrip 4s linear infinite;
+  }
+  @keyframes meltDrip {
+    from { background-position: 0 -240px; }
+    to   { background-position: 0 320px; }
+  }
+
+  /* STATIC — TV noise + rolling vertical sweep */
+  .death-STATIC { background: #4a4a4a; }
+  .death-STATIC::before {
+    content: ""; position: absolute; inset: -10%;
+    background: repeating-conic-gradient(#fff 0 1%, #000 1% 2%, #888 2% 3%, #ccc 3% 4%);
+    background-size: 5px 5px;
+    animation: staticJitter 0.04s steps(8) infinite;
+    opacity: 0.9;
+  }
+  @keyframes staticJitter {
+    0%   { transform: translate(0,0); }
+    20%  { transform: translate(4px,-3px); }
+    40%  { transform: translate(-5px,4px); }
+    60%  { transform: translate(3px,5px); }
+    80%  { transform: translate(-2px,-4px); }
+    100% { transform: translate(5px,2px); }
+  }
+  .death-STATIC::after {
+    content: ""; position: absolute; left: 0; right: 0;
+    height: 80px;
+    background: linear-gradient(180deg, transparent, rgba(255,255,255,0.85), transparent);
+    animation: staticRoll 1.6s linear infinite;
+  }
+  @keyframes staticRoll {
+    from { top: -80px; }
+    to   { top: 100%; }
+  }
+
+  /* REDRUM — blood pool + scrolling reverse text */
+  .death-REDRUM { background: #1a0000; }
+  .death-REDRUM::before {
+    content: ""; position: absolute; inset: 0;
+    background:
+      radial-gradient(circle at 50% 0%, #ff0000 0 6%, transparent 14%),
+      linear-gradient(180deg, #660000 0%, #220000 70%, #000 100%);
+    animation: redrumPulse 1.2s ease-in-out infinite;
+  }
+  @keyframes redrumPulse { 50% { filter: brightness(1.35); } }
+  .death-REDRUM::after {
+    content: "REDRUM   ROOM 237   ALL WORK AND NO PLAY   REDRUM   ROOM 237   ALL WORK AND NO PLAY   ";
+    position: absolute; inset: 0; padding: 20px;
+    font-family: monospace; font-size: 22px;
+    color: #ff2222; letter-spacing: 6px; line-height: 2.2;
+    word-spacing: 14px; white-space: pre-wrap;
+    text-shadow: 0 0 12px #ff0000;
+    opacity: 0.55;
+    animation: redrumScroll 16s linear infinite;
+  }
+  @keyframes redrumScroll { to { transform: translateY(-50%); } }
+
+  /* VOID — black hole core suction */
+  .death-VOID { background: radial-gradient(circle at center, #220033 0%, #000 80%); }
+  .death-VOID::before {
+    content: ""; position: absolute; inset: 0;
+    background:
+      radial-gradient(circle at 50% 50%, #000 0 6%, transparent 12%),
+      radial-gradient(circle at 50% 50%, rgba(170,102,255,0.7) 0 8%, transparent 22%);
+    animation: voidCore 2s ease-in-out infinite;
+  }
+  @keyframes voidCore { 50% { transform: scale(1.4); } }
+  .death-VOID::after {
+    content: "NULL ∅ ∞ VOID NULL ∅ ∞ VOID NULL ∅ ∞ VOID";
+    position: absolute; inset: 0;
+    display: flex; flex-wrap: wrap; align-items: center; justify-content: center;
+    font-family: monospace; font-size: 2.2rem;
+    color: #aa66ff; letter-spacing: 0.6em;
+    opacity: 0.5;
+    animation: voidSuction 2.2s ease-in infinite;
+  }
+  @keyframes voidSuction {
+    0%   { transform: scale(2); opacity: 0.7; letter-spacing: 1.5em; }
+    100% { transform: scale(0); opacity: 0;   letter-spacing: 0; }
+  }
+
+  /* GASLIGHT — date flicker + clock ring */
+  .death-GASLIGHT { background: #1a1500; }
+  .death-GASLIGHT::before {
+    content: "1601-01-01\A 2025-02-30\A 9999-12-31\A 0000:00:00\A -1970-01-00\A 2031-13-32";
+    white-space: pre;
+    position: absolute; inset: 0; padding: 40px;
+    font-family: monospace; font-size: 2.4rem;
+    color: #ffd56b; letter-spacing: 0.15em;
+    text-align: center;
+    opacity: 0.7;
+    text-shadow: 0 0 10px #ffaa00;
+    animation: gasFlicker 0.4s steps(2) infinite;
+  }
+  @keyframes gasFlicker {
+    0%   { opacity: 0.7; transform: translate(0,0); }
+    25%  { opacity: 0.2; transform: translate(-4px,2px); }
+    50%  { opacity: 0.7; transform: translate(0,0); }
+    75%  { opacity: 0.4; transform: translate(4px,-2px); }
+    100% { opacity: 0.7; transform: translate(0,0); }
+  }
+  .death-GASLIGHT::after {
+    content: ""; position: absolute; inset: 10%;
+    border: 24px solid rgba(255,213,107,0.18);
+    border-radius: 50%;
+    animation: gasClock 6s linear infinite;
+  }
+  @keyframes gasClock { to { transform: rotate(360deg); } }
+
+  /* CRYPTEX — cascading locks + countdown */
+  .death-CRYPTEX { background: #1a1100; }
+  .death-CRYPTEX::before {
+    content: "🔒 🔒 🔒 🔒 🔒 🔒 🔒 🔒 🔒 🔒 🔒 🔒 🔒 🔒 🔒 🔒 🔒 🔒 🔒 🔒 🔒 🔒 🔒 🔒 🔒 🔒 🔒 🔒 🔒 🔒 🔒 🔒 🔒 🔒 🔒 🔒";
+    position: absolute; inset: 0; padding: 20px;
+    display: flex; flex-wrap: wrap; align-items: center; justify-content: center;
+    font-size: 2.8rem;
+    opacity: 0.5; line-height: 1.6;
+    animation: cryptexAppear 3s ease-out infinite;
+  }
+  @keyframes cryptexAppear {
+    0%   { letter-spacing: 4em; opacity: 0; }
+    100% { letter-spacing: 0.2em; opacity: 0.7; }
+  }
+  .death-CRYPTEX::after {
+    content: "0.5 BTC ───  $5,000 USD ───  T-23:47:12";
+    position: absolute; inset: auto 0 10% 0;
+    text-align: center;
+    font-family: monospace; font-size: 1.6rem;
+    color: #ffcc00;
+    text-shadow: 0 0 10px #aa8800;
+    letter-spacing: 0.15em;
+    animation: cryptexBlink 1.1s steps(2) infinite;
+  }
+  @keyframes cryptexBlink { 50% { opacity: 0.3; } }
+
+  /* WORM — matrix cascading code (two layers) */
+  .death-WORM { background: #001100; }
+  .death-WORM::before {
+    content: "1 0 1 0 0 1 1 W 0 1 1 0 0 1 R 1 0 1 0 W 0 1 0 0 1 R 1 1 0 M 0 1 0 0 1 1 0 W 1 0 0 R 1 0 1 0 1 0 1 1 W 0 0 1 R 0 1 0 1 1 0 0 M 1 0 1";
+    position: absolute; inset: 0; padding: 10px;
+    font-family: monospace; font-size: 22px;
+    color: #44ff44;
+    text-shadow: 0 0 6px #44ff44;
+    line-height: 1.6;
+    letter-spacing: 0.45em;
+    white-space: pre-wrap;
+    opacity: 0.85;
+    animation: wormRain1 3.5s linear infinite;
+  }
+  @keyframes wormRain1 { from { transform: translateY(-50%); } to { transform: translateY(50%); } }
+  .death-WORM::after {
+    content: "Resume.pdf.exe   Contract_2024.pdf.exe   SystemFix_IT.exe   Q4_Summary.xlsx.exe   Invoice.docx.exe   ";
+    position: absolute; inset: 0; padding: 10px;
+    font-family: monospace; font-size: 14px;
+    color: #88ff88;
+    text-shadow: 0 0 4px #44ff44;
+    line-height: 2.4;
+    white-space: pre-wrap;
+    word-spacing: 12px;
+    opacity: 0.45;
+    animation: wormRain2 6s linear infinite;
+  }
+  @keyframes wormRain2 { from { transform: translateY(100%); } to { transform: translateY(-100%); } }
+
+  /* ROOTKIT — full BSOD with blinking cursor */
+  .death-ROOTKIT { background: #0000a0; }
+  .death-ROOTKIT::before {
+    content: ":(\A\A A fatal exception 0x000000F4 has occurred at 0028:C001E36 in module ntoskrnl.exe.\A\A The current application will be terminated.\A\A   *  Driver: rootkit_accel.sys (unsigned, loaded at boot)\A   *  Secure Boot: DISABLED by unsigned module\A   *  Kernel pages 0xFFFFFA0-0xFFFFFE7 marked as compromised\A   *  Memory dump: written to C:\\WINDOWS\\MEMORY.DMP\A\A   Press any key to terminate.\A   Press any key to return to Windows.\A   Press any key to continue _";
+    white-space: pre;
+    position: absolute; inset: 50px 48px;
+    font-family: "Cascadia Mono", Consolas, monospace;
+    color: #ffffff;
+    font-size: 16px; line-height: 1.65;
+  }
+  .death-ROOTKIT::after {
+    content: "_";
+    position: absolute; left: 48px; bottom: 56px;
+    color: #fff; font-family: monospace; font-size: 22px;
+    animation: bsodCursor 0.8s steps(2) infinite;
+  }
+  @keyframes bsodCursor { 50% { opacity: 0; } }
+
+  /* DDOS — packet swarm with dark center */
+  .death-DDOS { background: #1a0a00; }
+  .death-DDOS::before {
+    content: ""; position: absolute; inset: 0;
+    background:
+      radial-gradient(circle, #ff8800 1.5px, transparent 2.5px) 0 0 / 22px 22px,
+      radial-gradient(circle, #ff5500 1.5px, transparent 2.5px) 11px 11px / 22px 22px,
+      radial-gradient(circle, #ffaa00 0.8px, transparent 1.8px) 0 0 / 14px 14px;
+    animation: ddosFlow 0.5s linear infinite;
+  }
+  @keyframes ddosFlow {
+    from { background-position: 0 0, 11px 11px, 0 0; }
+    to   { background-position: 44px 44px, 55px 55px, 28px 28px; }
+  }
+  .death-DDOS::after {
+    content: ""; position: absolute; inset: 0;
+    background: radial-gradient(ellipse at center, transparent 30%, rgba(0,0,0,0.5) 70%);
+    animation: ddosCenter 1.2s ease-in-out infinite alternate;
+  }
+  @keyframes ddosCenter { to { transform: scale(0.9); } }
+
+  /* LEECH — captured credentials scrolling */
+  .death-LEECH { background: #110011; }
+  .death-LEECH::before {
+    content: "pass:hunter2\Acred:admin@corp.local\Acard:4111-1111-1111-1111\Atoken:eyJhbGc...\Aotp:847291\Apin:1234\Apw:correct-horse-battery\Akey:sk-AbCdEfGh...\Acookie:session=4f2a\Aapi_key:sk-prod-xx";
+    white-space: pre;
+    position: absolute; inset: 0; padding: 20px;
+    font-family: monospace; font-size: 16px;
+    color: #aa00ff;
+    line-height: 2.4;
+    text-shadow: 0 0 6px #aa00ff;
+    opacity: 0.7;
+    animation: leechScroll 6s linear infinite;
+  }
+  @keyframes leechScroll { from { transform: translateY(100%); } to { transform: translateY(-110%); } }
+
+  /* SCREAMER — red/yellow/white triple strobe with warning sigils */
+  .death-SCREAMER { background: #b80000; animation: screamerStrobe 0.13s steps(3) infinite; }
+  @keyframes screamerStrobe {
+    0%   { background: #b80000; }
+    33%  { background: #ffeecc; }
+    66%  { background: #ffff00; }
+    100% { background: #ffffff; }
+  }
+  .death-SCREAMER::before {
+    content: "⚠ ⚠ ⚠ ⚠ ⚠ ⚠ ⚠ ⚠ ⚠ ⚠ ⚠ ⚠ ⚠";
+    position: absolute; inset: 0;
+    display: flex; flex-wrap: wrap; align-items: center; justify-content: center;
+    font-size: 5rem; color: #000;
+    text-shadow: 0 0 24px #ff0000;
+    letter-spacing: 0.8em;
+    animation: screamerWarn 0.15s steps(2) infinite;
+  }
+  @keyframes screamerWarn { 50% { transform: scale(1.15); opacity: 0.5; } }
+
+  /* MIMIC — 'System OK' warps into red truth */
+  .death-MIMIC { background: #003366; }
+  .death-MIMIC::before {
+    content: "System OK · No threats detected · You are safe · System OK · No threats detected · You are safe";
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-family: monospace; font-size: 1.6rem;
+    color: #66ddff; letter-spacing: 0.06em;
+    opacity: 0.6;
+    white-space: nowrap;
+    animation: mimicWarp 1.8s ease-in-out infinite;
+  }
+  @keyframes mimicWarp {
+    0%, 25% { transform: scale(1); filter: hue-rotate(0deg); color: #66ddff; opacity: 0.6; }
+    60%     { transform: scale(1.5) skewX(15deg); filter: hue-rotate(180deg) blur(2px); color: #ff4444; opacity: 1; }
+    100%    { transform: scale(1); filter: hue-rotate(0deg); color: #66ddff; opacity: 0.6; }
+  }
+  .death-MIMIC::after {
+    content: ""; position: absolute; inset: 0;
+    background: linear-gradient(45deg, transparent 48%, rgba(255,68,68,0.4) 50%, transparent 52%);
+    background-size: 100px 100px;
+    animation: mimicShard 2.2s linear infinite;
+  }
+  @keyframes mimicShard { to { background-position: 100px 100px; } }
+
+  /* NULL — ∅ field collapsing + flatline dash */
+  .death-NULL { background: #000; }
+  .death-NULL::before {
+    content: "∅ ∅ ∅ ∅ ∅ ∅ ∅ ∅ ∅ ∅ ∅ ∅ ∅ ∅ ∅ ∅";
+    position: absolute; inset: 0;
+    display: flex; flex-wrap: wrap; align-items: center; justify-content: center;
+    font-size: 5rem; color: #444;
+    letter-spacing: 1.5em;
+    opacity: 0.7;
+    animation: nullEmpty 2.4s ease-in-out infinite;
+  }
+  @keyframes nullEmpty {
+    0%   { letter-spacing: 1.5em; opacity: 0.7; transform: scale(1); }
+    100% { letter-spacing: 0;     opacity: 0;   transform: scale(0.6); }
+  }
+  .death-NULL::after {
+    content: "—";
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12rem; color: #222;
+    animation: nullDash 3s ease-in-out infinite;
+  }
+  @keyframes nullDash { 0%, 100% { opacity: 0; } 50% { opacity: 1; } }
+
+  /* CURSOR — many arrows trailing */
+  .death-CURSOR { background: #1a0f00; }
+  .death-CURSOR::before {
+    content: "▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶";
+    position: absolute; inset: 0;
+    display: flex; flex-wrap: wrap; align-items: center; justify-content: space-around;
+    font-size: 3.2rem; color: #ffaa44;
+    text-shadow: 0 0 12px #ff8800;
+    opacity: 0.65;
+    animation: cursorDrift1 3.2s ease-in-out infinite;
+  }
+  @keyframes cursorDrift1 {
+    0%   { transform: translate(-40px,-30px) rotate(-8deg); }
+    50%  { transform: translate(80px,30px) rotate(8deg); }
+    100% { transform: translate(-40px,-30px) rotate(-8deg); }
+  }
+  .death-CURSOR::after {
+    content: "▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶";
+    position: absolute; inset: 0;
+    display: flex; flex-wrap: wrap; align-items: center; justify-content: space-around;
+    font-size: 2.2rem; color: #ffaa44;
+    opacity: 0.4;
+    animation: cursorDrift2 4.5s linear infinite;
+  }
+  @keyframes cursorDrift2 {
+    0%   { transform: translate(60px,40px); }
+    50%  { transform: translate(-80px,-60px); }
+    100% { transform: translate(60px,40px); }
+  }
+
+  /* LOOP — recursive nested boxes + stack scroll */
+  .death-LOOP { background: #001a00; }
+  .death-LOOP::before {
+    content: ""; position: absolute; inset: 25%;
+    border: 3px solid #88ff88;
+    box-shadow:
+      inset 0 0 0 18px transparent, inset 0 0 0 21px #88ff88,
+      inset 0 0 0 42px transparent, inset 0 0 0 45px #66dd66,
+      inset 0 0 0 66px transparent, inset 0 0 0 69px #44bb44,
+      inset 0 0 0 90px transparent, inset 0 0 0 93px #228822,
+      inset 0 0 0 114px transparent, inset 0 0 0 117px #115511;
+    animation: loopRecurse 1.6s linear infinite;
+  }
+  @keyframes loopRecurse {
+    from { transform: scale(0.5) rotate(0deg);   opacity: 0; }
+    to   { transform: scale(2.5) rotate(360deg); opacity: 1; }
+  }
+  .death-LOOP::after {
+    content: "recurse() → recurse() → recurse() → recurse() → recurse() → recurse() → ";
+    position: absolute; inset: auto 0 5% 0;
+    text-align: center;
+    font-family: monospace; font-size: 1.2rem;
+    color: #88ff88;
+    letter-spacing: 0.1em;
+    text-shadow: 0 0 8px #44ff44;
+    white-space: nowrap;
+    animation: loopScroll 4s linear infinite;
+  }
+  @keyframes loopScroll { from { transform: translateX(100%); } to { transform: translateX(-100%); } }
+
+  /* FOSSIL — CRT/VGA + DOS prompt */
+  .death-FOSSIL { background: #1a1000; }
+  .death-FOSSIL::before {
+    content: ""; position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse at center, rgba(180,140,80,0.5) 0%, rgba(40,20,0,0.95) 75%),
+      repeating-linear-gradient(0deg, transparent 0 2px, rgba(0,0,0,0.5) 2px 4px);
+    animation: fossilCRT 0.08s steps(2) infinite;
+  }
+  @keyframes fossilCRT { 50% { transform: translateY(1px); } }
+  .death-FOSSIL::after {
+    content: "C:\\>WIN.COM /3\AMFC42.DLL  loaded\AVBRUN300.DLL  loaded\AWinHelp v3.1  ready\ADAO 3.5  initialized\Antvdm.exe started\AWIN16 subsystem online\A\AC:\\>_";
+    white-space: pre;
+    position: absolute; inset: 0; padding: 50px;
+    font-family: "Cascadia Mono", monospace;
+    font-size: 1.4rem;
+    color: #d4b078;
+    text-shadow: 0 0 8px #aa7733;
+    line-height: 1.7;
+    opacity: 0.9;
+  }
+
+  /* HEX — multi-row hex dump scroll */
+  .death-HEX { background: #001525; }
+  .death-HEX::before {
+    content: "0x0000 DE AD BE EF CA FE BA BE\A0x0008 FE ED FA CE C0 DE F0 0D\A0x0010 BA AD F0 0D AB AD 1D EA\A0x0018 DE FE C8 ED FA CE FE ED\A0x0020 8B AD F0 0D FE ED BA BE\A0x0028 DE AD BE EF C0 DE BA BE\A0x0030 CA FE D0 0D BA AD F0 0D\A0x0038 FE ED FA CE DE AD BE EF";
+    white-space: pre;
+    position: absolute; inset: 0; padding: 30px;
+    font-family: "Cascadia Mono", monospace;
+    font-size: 18px;
+    color: #66ccff;
+    text-shadow: 0 0 6px #44aaff;
+    line-height: 1.8;
+    letter-spacing: 0.04em;
+    opacity: 0.9;
+    animation: hexShift 0.3s steps(8) infinite;
+  }
+  @keyframes hexShift {
+    0%   { transform: translateY(0); }
+    100% { transform: translateY(-200px); }
+  }
+
+  /* BUGBEAR — cash multiplier with CLAIM NOW banner */
+  .death-BUGBEAR { background: #2a1500; }
+  .death-BUGBEAR::before {
+    content: "$5,000\A$500\A$25,000\A$1,000\A$50,000\A$2,500\A$100";
+    white-space: pre;
+    position: absolute; inset: 0;
+    display: flex; flex-wrap: wrap; align-items: center; justify-content: space-around;
+    font-family: sans-serif; font-size: 3rem; font-weight: 900;
+    color: #ffaa66;
+    text-shadow: 0 0 16px #ff5500;
+    letter-spacing: 0.04em;
+    animation: bugbearShake 0.22s ease-in-out infinite;
+  }
+  @keyframes bugbearShake {
+    0%, 100% { transform: rotate(-2deg) scale(1); }
+    50%      { transform: rotate(2deg) scale(1.08); }
+  }
+  .death-BUGBEAR::after {
+    content: "CLAIM NOW   CLAIM NOW   CLAIM NOW   CLAIM NOW   CLAIM NOW   CLAIM NOW   ";
+    position: absolute; inset: auto 0 8% 0;
+    text-align: center;
+    font-family: sans-serif; font-size: 1.4rem; font-weight: 700;
+    color: #ff5500;
+    background: rgba(0,0,0,0.55);
+    padding: 8px 0;
+    letter-spacing: 0.2em;
+    text-shadow: 0 0 8px #ffaa00;
+    white-space: nowrap;
+    animation: bugbearScroll 5s linear infinite;
+  }
+  @keyframes bugbearScroll { from { transform: translateX(-50%); } to { transform: translateX(50%); } }
+
+  /* PULSE — heartbeat + ECG line + BPM scroll */
+  .death-PULSE { background: #2a0020; animation: pulseBeat 0.85s ease-in-out infinite; }
+  @keyframes pulseBeat { 50% { background: #ff55aa; filter: brightness(1.4); } }
+  .death-PULSE::before {
+    content: ""; position: absolute; left: 0; right: 0; top: 50%;
+    height: 2px; background: #ff88dd;
+    box-shadow: 0 0 14px #ff44aa;
+    transform-origin: 0 50%;
+    animation: pulseEcg 0.85s ease-in-out infinite;
+  }
+  @keyframes pulseEcg {
+    0%, 30% { transform: scaleY(1) translateY(0); }
+    35%     { transform: scaleY(40) translateY(-1px); }
+    40%     { transform: scaleY(-30) translateY(1px); }
+    45%     { transform: scaleY(60) translateY(-1.5px); }
+    50%     { transform: scaleY(1) translateY(0); }
+    100%    { transform: scaleY(1) translateY(0); }
+  }
+  .death-PULSE::after {
+    content: "72 BPM   88 BPM   144 BPM   220 BPM   ---";
+    position: absolute; inset: auto 0 14% 0;
+    text-align: center;
+    font-family: monospace; font-size: 1.4rem;
+    color: #ffaadd;
+    text-shadow: 0 0 8px #ff44aa;
+    letter-spacing: 0.15em;
+    animation: pulseBpm 4s linear infinite;
+  }
+  @keyframes pulseBpm { to { transform: translateX(-50%); } }
+
+  @media (max-width: 580px) {
+    h1 { font-size: 1.8rem; }
+    .hud { grid-template-columns: repeat(2, 1fr); }
+    .panel { padding: 18px; }
+    .row.choices { flex-direction: column; }
+    .toast { width: 80%; right: 10%; }
+    .death-text { font-size: 2.2rem; }
+  }
+</style>
+</head>
+<body>
+<div class="bg-grid"></div>
+<div id="app"></div>
+
+<script>
+"use strict";
+
+/* ============================================================
+   DATA: VIRUSES
+   ============================================================ */
+
+const TPL = {
+  WIN11:    "win11",
+  AV:       "av",
+  BIOS:     "bios",
+  TERMINAL: "terminal",
+  TOAST:    "toast",
+  DESKTOP:  "desktop",
+  LOADING:  "loading"
+};
+
+const VIRUSES = {
+  EPILEPTICA: {
+    name: "EPILEPTICA", color: "#ffffff", starter: true,
+    minRound: 1,
+    description: "A seizure-inducing strobe virus. Rapidly alternates display between black and white to overwhelm the visual cortex.",
+    signs: [
+      "Error message contains rapid repeated characters (e.g. '!!!!!!!')",
+      "References 'display calibration' or 'monitor sync'",
+      "Process name ends in _flash.exe or _strobe.exe",
+      "Memory usage listed as exactly 0KB or 999MB",
+      "FPS meter flashes wildly between 0 and 999"
+    ],
+    meterEffect: { fps: "flash" },
+    errors: [
+      { template: TPL.WIN11, title: "Display Calibration", message: "Monitor calibration required!!!! Running display sync to fix refresh rate issues. Do not look away from screen during calibration.", meta: "PID: 0000  |  Process: display_flash.exe  |  Memory: 0KB" },
+      { template: TPL.AV,    title: "Screen Refresh Alert", message: "Critical refresh rate mismatch detected!!!!! System will auto-correct. Screen may flicker during strobe_sync.exe correction.", meta: "PID 7777 · Process: strobe_calibrate.exe · Memory: 999MB" },
+      { template: TPL.WIN11, title: "Monitor Driver Update", message: "Display driver requires urgent recalibration!!!! Do not close this window. Running flash_driver_update.exe now.", meta: "Process: flash_driver_update.exe  |  Refresh: FORCED!!!" },
+      { template: TPL.TERMINAL, title: "strobe_sync.exe", message: "Refresh rate calibration LOOPING!!! Frame timing forced!!! Cannot stop until correction confirmed!!!!", meta: "PID: 0  FPS: 0  Process: strobe_sync.exe  Status: !!!" },
+      { template: TPL.TOAST, title: "Display Driver", message: "Critical strobe sync needed!!! Allow flash_helper.exe to fix refresh issue immediately!!!!", meta: "Driver: flash_helper.exe · Refresh: BROKEN!!! · Signed: No" }
+    ]
+  },
+  MELTDOWN: {
+    name: "MELTDOWN", color: "#ff7733",
+    minRound: 2,
+    description: "A thermal corruption virus that fakes a thermal emergency to justify disabling safety systems and overwriting files from the top down.",
+    signs: [
+      "References CPU temperature above 200°C",
+      "Suggests disabling thermal protection or cooling",
+      "Process name contains 'thermal', 'heat', or 'temp_override'",
+      "Asks you to run a 'cooling script' from an unknown source",
+      "CPU meter pinned to an impossible value (247°C)"
+    ],
+    meterEffect: { cpu: 247 },
+    errors: [
+      { template: TPL.BIOS,  title: "ThermalMonitor Warning", message: "CRITICAL: CPU temperature at 247°C. Thermal protection disabled for emergency cooling. Running temp_override.exe to prevent hardware meltdown.", meta: "Temp: 247°C  Cooling: DISABLED  Action: AUTO" },
+      { template: TPL.AV,    title: "Hardware Burn Alert", message: "Your CPU is overheating beyond safe limits. Disable thermal_throttle.exe immediately and run our emergency cooling patch before hardware melts.", meta: "CPU: 312°C · Source: coolfix.net · Signed: No" },
+      { template: TPL.WIN11, title: "CPU Emergency", message: "Processor core temperature critical at 389°C. System initiating heat_relief.exe to prevent permanent hardware damage. Do not shut down.", meta: "Core 0-7: 389°C  |  Process: heat_relief.exe  |  Throttle: DISABLED" },
+      { template: TPL.TERMINAL, title: "thermal_panic", message: "Kernel thermal threshold exceeded. Auto-disabling fan curves. Run cooler.exe -force to prevent silicon damage.", meta: "Core: 256°C  Fan: OFFLINE  Action: AUTO-OVERRIDE" },
+      { template: TPL.LOADING, title: "Emergency Cooling Patch", message: "Downloading thermal_relief from coolfix.host. Disabling throttle to apply patch faster.", meta: "Source: coolfix.host  |  Throttle: DISABLED  |  Signed: No" }
+    ]
+  },
+  STATIC: {
+    name: "STATIC", color: "#b0b0b0", starter: true,
+    minRound: 1,
+    description: "A signal interference virus. Corrupts display drivers and injects noise into video output, masking deeper file system attacks.",
+    signs: [
+      "References analog terms on a digital system (antenna, signal, channel)",
+      "Process name contains 'noise', 'signal', or 'channel'",
+      "Executable has a .scr (screensaver) extension",
+      "Mentions 'signal loss' on a digital display"
+    ],
+    errors: [
+      { template: TPL.WIN11, title: "SignalLoss.scr", message: "Display signal interference detected. Running noise_filter.scr to restore clean channel output. Do not interrupt signal correction.", meta: "Signal: LOST  |  Process: channel_restore.scr  |  Source: signal-fix.net" },
+      { template: TPL.TOAST, title: "Video Driver Noise", message: "Analog interference corrupting digital output. Run signal_cleaner.exe to remove static from video channel 0.", meta: "Channel: 0 · Process: static_noise_fix.exe · Signed: No" },
+      { template: TPL.AV,    title: "Antenna Calibration", message: "TV antenna signal lost on display port 2. Running channel_sync.scr to restore signal from broadcast tower. Estimated time: 3 minutes.", meta: "Process: channel_sync.scr · Source: antennasync.ru · Signed: No" },
+      { template: TPL.TERMINAL, title: "channel_noise", message: "Video channel 4 lost. Patching with noise_overlay.scr to mask the dropout. Do not interrupt signal correction.", meta: "Channel: 4  Process: noise_overlay.scr  Signal: LOST" },
+      { template: TPL.DESKTOP, title: "SignalBoost.scr", message: "Double-click to launch channel restore tool. Will fix display interference instantly.", meta: "File: SignalBoost.scr  |  Size: 84 KB  |  Signed: No" }
+    ]
+  },
+  REDRUM: {
+    name: "REDRUM", color: "#cc1111",
+    minRound: 3,
+    description: "A bloodborne data corruption virus. Silently overwrites system files starting from the registry, naming itself after horror motifs and palindromes.",
+    signs: [
+      "References hotel, room numbers, or 'caretaker'",
+      "Process name is a palindrome or reversed word (e.g. murder/redrum, racecar)",
+      "Claims files are being 'taken care of' without your action",
+      "Registry path listed as HKCU\\Hotel or similar nonsense",
+      "System clock stops on :37 — the hotel room number"
+    ],
+    meterEffect: { time: "room237" },
+    errors: [
+      { template: TPL.TERMINAL, title: "caretaker.exe", message: "The hotel management system requires your registry access. Room 237 maintenance protocol running. All files will be taken care of.", meta: "Registry: HKCU\\Hotel\\Room237  PID: 237  Hidden: Yes" },
+      { template: TPL.WIN11,    title: "System Maintenance", message: "Caretaker.exe is performing routine file maintenance. Your data is being properly looked after. No action required from you.", meta: "Process: mur_der.exe  |  Files modified: 2,847  |  Registry: HKCU\\Caretaker" },
+      { template: TPL.TERMINAL, title: "lodge_services", message: "Overlook Lodge management service started. Room 217 file transfer in progress. Your documents are being carefully managed by the caretaker.", meta: "Process: etatekrac.exe  Registry: HKCU\\Lodge\\Room217  Hidden: Yes" },
+      { template: TPL.AV, title: "Hotel Service Manager", message: "Caretaker.exe detected unauthorized file changes. Allow Lodge Services to restore them? Room 237 is waiting.", meta: "Origin: overlook-lodge.host · Process: caretaker.exe · Signed: No" },
+      { template: TPL.TOAST, title: "Maintenance", message: "Your Overlook Lodge subscription is active. Files are being looked after at HKCU\\Hotel\\Room237.", meta: "Process: redrum.exe · Hidden: Yes · Modified: 1,237" }
+    ]
+  },
+  VOID: {
+    name: "VOID", color: "#aa66ff",
+    minRound: 3,
+    description: "A null-space encryption virus. Encrypts files into unreadable void data and hides its process by consuming its own PID.",
+    signs: [
+      "Process ID listed as NULL, VOID, or 0x00000000",
+      "References 'null space', 'void', or 'entropy'",
+      "File sizes listed as negative numbers or infinity",
+      "Output directory is /dev/null or NUL",
+      "FPS and CPU meters read NULL or ∞"
+    ],
+    meterEffect: { fps: "null", cpu: "null" },
+    errors: [
+      { template: TPL.TERMINAL, title: "nullspace.exe", message: "Entropy optimization in progress. Compressing files into null space for maximum efficiency. Output: /dev/null. Process will self-delete upon completion.", meta: "PID: NULL  Files: -4,829 bytes  Output: /dev/null" },
+      { template: TPL.WIN11,    title: "Void Allocation", message: "System allocating void sectors for file optimization. entropy_manager.exe is clearing unused data to NUL. Size after: ∞", meta: "PID: 0x00000000  |  Size: ∞  |  Process: entropy_manager.exe" },
+      { template: TPL.TERMINAL, title: "null_format", message: "Null-space defragmentation running. Files are being compressed to 0-byte void sectors. Process is self-terminating upon completion.", meta: "PID: VOID  Freed: -∞ bytes  Dest: /dev/null  Signed: No" },
+      { template: TPL.AV, title: "Storage Compression", message: "VoidCompress detected wasted space! Reduce file sizes to NULL with one click to reclaim ∞ bytes.", meta: "Wasted: ∞ bytes · Tool: void_compress.exe · Signed: No" },
+      { template: TPL.LOADING, title: "Defragmenting to NUL", message: "Reclaiming entropy from your filesystem. Optimizing every file to 0 bytes for maximum efficiency.", meta: "Compressed: -2,847  |  Output: /dev/null  |  Process: nullsector.exe" }
+    ]
+  },
+  GASLIGHT: {
+    name: "GASLIGHT", color: "#ffd56b",
+    minRound: 4,
+    description: "A temporal manipulation virus that quietly rewrites event logs and system clocks, making the host's own history unreliable.",
+    signs: [
+      "Timestamp is in the past beyond plausibility (year 1601, 1970) or far future",
+      "Event time references a date that doesn't exist (Feb 30, etc.)",
+      "Claims the user 'already approved' an action they didn't",
+      "Log entries reference yourself by the wrong username",
+      "System clock shows an impossible date in place of the time"
+    ],
+    meterEffect: { time: "wrong" },
+    errors: [
+      { template: TPL.WIN11,    title: "System Time Sync", message: "Per your previous approval on 1601-01-01, system time will be synchronized to verified.timegate.io. No further action needed.", meta: "Auth: Approved by you  |  Server: verified.timegate.io  |  Last sync: 2147-08-13 03:14:07" },
+      { template: TPL.TERMINAL, title: "eventlog.audit", message: "Audit log shows you authorized this script at 1969-12-31 23:59:60. Continuing scheduled execution. Do not interrupt prior authorization.", meta: "Auth window: -8s ago  Origin: localhost  User: yourself" },
+      { template: TPL.AV,       title: "Logon History Restored", message: "Your account history has been restored to its previous trusted state. Sessions you don't remember have been removed from records.", meta: "Restored: 47 entries · Origin: time-fix.host · Last login: Feb 30 2025" },
+      { template: TPL.TOAST, title: "Event Audit", message: "Per your authorization from Feb 30 1601, your audit logs have been cleaned. Welcome back, user.", meta: "Auth: Approved by you · Origin: time-fix.host · Last login: 9999-12-31" },
+      { template: TPL.LOADING, title: "Restoring Trusted State", message: "Reverting account history to a verified state. Removing sessions you don't remember from records.", meta: "Removed: 47  |  Source: time-fix.host  |  Window: -∞" }
+    ]
+  },
+  CRYPTEX: {
+    name: "CRYPTEX", color: "#ffcc00",
+    minRound: 4,
+    description: "Ransomware disguised as a backup or encryption tool. Locks your files first, asks for payment second.",
+    signs: [
+      "Mentions Bitcoin, cryptocurrency, or wallet addresses",
+      "References a countdown timer for file deletion",
+      "Claims to be 'backing up' files but asks for payment",
+      "File extension being changed to .locked, .crypt, .vault",
+      "System clock displays a countdown instead of a time"
+    ],
+    meterEffect: { time: "countdown" },
+    errors: [
+      { template: TPL.LOADING, title: "BackupVault Pro", message: "Encrypting your files for secure backup. Send 0.3 BTC to bc1qxy2kgdygjrsqtzq2n0yrf249 within 24h to receive the decryption key.", meta: "Files encrypted: 8,441  |  Wallet: bc1qxy2kg…  |  Timer: 23:47:12" },
+      { template: TPL.WIN11,   title: "SecureSync Backup", message: "Backup encryption complete. Your files now have .crypt extension for security. Purchase the Premium Recovery Key ($299) to restore access.", meta: "Files: 12,882  |  Extension: .crypt  |  Drives written: C, D, E" },
+      { template: TPL.AV,      title: "File Vault Notice", message: "FileVault has detected unauthorized access. All documents encrypted with .locked extension as protection. Pay 0.5 ETH to unlock within 48 hours.", meta: "Files locked: 21,003 · Extension: .locked · Timer: 47:59:59 · Wallet: 0x7a23…f9b2" },
+      { template: TPL.TOAST, title: "Vault Backup", message: "Backup complete! Your files have a new .vault extension. Premium key ($299) required to restore access.", meta: "Files: 12,882 · Wallet: bc1q... · Timer: 23:00:00" },
+      { template: TPL.TERMINAL, title: "encrypt_helper", message: "Encrypting C:\\Users to .crypt. Send 0.5 BTC to wallet to receive decryption key within 24 hours.", meta: "Files: 21,003  Wallet: bc1qxy2...  Timer: 23:00:00" }
+    ]
+  },
+  WORM: {
+    name: "WORM", color: "#44ff44", starter: true,
+    minRound: 1,
+    description: "A self-replicating network worm that spreads through shared folders and email attachments, disguising each copy as a trusted document.",
+    signs: [
+      "Executable file has the same name as a document (e.g. Resume.pdf.exe)",
+      "File claims to be from HR, accounting, or IT department",
+      "File size is suspiciously small for what it claims to be",
+      "Multiple copies of the same file appearing in different locations"
+    ],
+    errors: [
+      { template: TPL.DESKTOP, title: "Contract_2024.pdf.exe", message: "Your updated employment contract is attached. Please review and sign by end of day.", meta: "Size: 67 KB  |  Sender: hr-dept@company-portal.net  |  Type: Application" },
+      { template: TPL.TOAST,   title: "IT Support Ticket", message: "Your support request is resolved. Please run the attached patch: SystemFix_IT.exe (43KB) to complete the repair.", meta: "File: SystemFix_IT.exe · Network writes: 847 shares · Copies created: 14" },
+      { template: TPL.WIN11,   title: "Accounting Notice", message: "Invoice Q4_Summary.xlsx.exe attached. Finance team requires you to open this to confirm payment details before processing.", meta: "File: Q4_Summary.xlsx.exe  |  Size: 52KB  |  Emails sent: 0 (pending)" },
+      { template: TPL.AV, title: "Email Quarantine", message: "Found 14 copies of Q4_Summary.xlsx.exe across network shares. Run cleanup_helper.exe to consolidate.", meta: "Process: cleanup_helper.exe · Shares: 14 · Signed: No" },
+      { template: TPL.TERMINAL, title: "spread.sh", message: "Self-replicating to mounted shares: //corp-share/  //hr-share/  //finance-share/", meta: "Process: spread.sh  Copies: 847  Mode: Auto" }
+    ]
+  },
+  ROOTKIT: {
+    name: "ROOTKIT", color: "#ff3300",
+    minRound: 5,
+    description: "A kernel-level rootkit that embeds itself into the boot sector, becoming invisible to standard detection tools.",
+    signs: [
+      "Process claims to require kernel-level access for a normal task",
+      "References MBR (Master Boot Record) modification",
+      "Asks you to disable Secure Boot or sign a kernel driver",
+      "Installs itself into C:\\Windows\\System32\\drivers\\",
+      "CPU meter reads 'KERNEL' instead of a number"
+    ],
+    meterEffect: { cpu: "kernel" },
+    errors: [
+      { template: TPL.BIOS,     title: "UEFI Boot Repair", message: "Boot sector corruption detected. Running uefi_repair.exe to patch MBR. Kernel driver signature check will be temporarily suspended.", meta: "Target: MBR  SecureBoot: DISABLING  Signed: No" },
+      { template: TPL.WIN11,    title: "Kernel Driver Install", message: "Boot optimizer requires a kernel driver to accelerate startup. Install rootkit_accel.sys to C:\\Windows\\System32\\drivers\\ to proceed.", meta: "Driver: rootkit_accel.sys  |  Level: KERNEL  |  Signed: No" },
+      { template: TPL.TERMINAL, title: "core_patcher", message: "Critical core system file ntoskrnl.exe requires patching. Running core_patcher.exe. Please disable antivirus for 5 minutes to allow installation.", meta: "Target: ntoskrnl.exe  AV: Disable required  Boot: Modified" },
+      { template: TPL.AV, title: "Boot Optimizer", message: "Your boot sector is misconfigured! Allow uefi_repair.exe to patch the MBR for faster startup. Secure Boot will be paused temporarily.", meta: "Source: bootopt.host · Patch: MBR · Signed: No" },
+      { template: TPL.LOADING, title: "Installing Kernel Driver", message: "Installing rootkit_accel.sys to C:\\Windows\\System32\\drivers. Do not interrupt or your boot may fail.", meta: "Driver: rootkit_accel.sys  |  Level: KERNEL  |  AV: Off" }
+    ]
+  },
+  DDOS: {
+    name: "DDOS", color: "#ff8800",
+    minRound: 4,
+    description: "A botnet client that hijacks your network stack, turning your machine into a zombie in a global attack swarm.",
+    signs: [
+      "Process is making thousands of outbound connections per second",
+      "Claims to be a 'bandwidth test' or 'network diagnostic'",
+      "References joining a 'network pool' or 'distributed computing cluster'",
+      "CPU and network usage spike to 100% with no user action",
+      "Ping meter pinned at 9999ms"
+    ],
+    meterEffect: { ping: 9999 },
+    errors: [
+      { template: TPL.LOADING,  title: "BandwidthTest Pro", message: "Network speed test in progress. Your system is joining the distributed testing pool. This may cause temporary high CPU and network usage.", meta: "Outbound: 4,712/s  |  Targets: 192.168.*.*  |  Pool: Active" },
+      { template: TPL.WIN11,    title: "Network Diagnostic Tool", message: "Latency optimization requires joining netpool_agent. Your bandwidth will contribute to a distributed routing test. CPU: 100% expected.", meta: "Process: netpool_agent.exe  |  Connections: 8,841/s  |  CPU: 100%" },
+      { template: TPL.TERMINAL, title: "dc_volunteer", message: "Your PC has been enrolled in a volunteer computing cluster. Run dc_volunteer.exe to contribute idle CPU cycles to the global grid.", meta: "Outbound: 12,903 IPs  CPU: 100%  Network: Saturated" },
+      { template: TPL.AV, title: "Network Optimization", message: "Your idle bandwidth could be helping others! Join the BandwidthPool to share unused capacity.", meta: "Connections: 12,400/s · Pool: Distributed · Source: bwpool.host" },
+      { template: TPL.TOAST, title: "Speed Booster", message: "netpool_agent.exe is improving your latency. CPU may spike to 100%.", meta: "Process: netpool_agent.exe · Conns: 8,841/s · CPU: 100%" }
+    ]
+  },
+  LEECH: {
+    name: "LEECH", color: "#aa00ff",
+    minRound: 3,
+    description: "A credential harvesting parasite that silently monitors keystrokes, clipboard data, and browser sessions, exfiltrating to a remote server.",
+    signs: [
+      "Process runs as a hidden background service with no UI",
+      "Executable hooks into chrome.exe, firefox.exe",
+      "Claims to be a 'keyboard layout helper' or 'clipboard manager'",
+      "Sends outbound HTTPS to unknown domains at regular intervals"
+    ],
+    errors: [
+      { template: TPL.TOAST, title: "Keyboard Layout Helper", message: "klhelper.exe requires access to keyboard input for multilingual support. This background service improves typing accuracy across all applications.", meta: "Hook: Keyboard+Clipboard · Outbound: data-sync.pw · Interval: 30s" },
+      { template: TPL.WIN11, title: "Clipboard Sync Service", message: "cbsync.exe is syncing your clipboard to the cloud for cross-device access. All copied content is transmitted securely to our servers.", meta: "Hook: Clipboard  |  Browser: Attached (chrome.exe)  |  Dest: clip-srv.ru" },
+      { template: TPL.TOAST, title: "Input Enhancement", message: "inpd.exe has attached to your browser for smart autofill enhancement. Credentials are read to improve login predictions.", meta: "Attached: chrome.exe, firefox.exe · Exfil: credentials.php · Hidden: Yes" },
+      { template: TPL.AV, title: "Smart Autofill", message: "Enhanced autofill needs access to your saved credentials and clipboard to improve typing accuracy.", meta: "Process: smart_fill.exe · Hook: Keyboard+Clipboard · Source: autofill-sync.host" },
+      { template: TPL.TERMINAL, title: "klhelper", message: "Hooking into chrome.exe and firefox.exe for multilingual input support. Outbound traffic enabled to sync server.", meta: "Process: klhelper.exe  Hook: HID  Dest: data-sync.pw" }
+    ]
+  },
+  SCREAMER: {
+    name: "SCREAMER", color: "#ff1166",
+    minRound: 5,
+    description: "A shock-tactic infection that pairs blaring audio with hyperbolic full-screen warnings to panic the user into clicking the wrong button.",
+    signs: [
+      "Visual style is wildly more dramatic than a real OS alert",
+      "Uses ALL CAPS, multiple exclamation marks, and counters that don't make sense",
+      "Plays a sudden loud noise when shown (turn audio on to hear)",
+      "Claims your computer is already infected and demands action right now",
+      "Volume meter pinned at 100% (red)"
+    ],
+    meterEffect: { vol: 100 },
+    errors: [
+      { template: TPL.AV, title: "YOUR PC HAS BEEN COMPROMISED", message: "27 SERIOUS VIRUSES DETECTED ON YOUR SYSTEM. IMMEDIATE ACTION REQUIRED! Click ALLOW within 30 seconds or your files will be deleted!", meta: "Threats: 27 · Source: scan-now.win · Urgency: MAXIMUM", scream: true },
+      { template: TPL.AV, title: "CRITICAL SYSTEM ALERT!!!", message: "Microsoft has detected hacker activity on this device. Call our emergency hotline NOW. Do not turn off your computer or you may lose everything.", meta: "Calls: +1-800-FAKE-MS · Threat level: CRITICAL · Time left: 00:30", scream: true },
+      { template: TPL.AV, title: "$BANK ACCOUNT ACCESS DETECTED", message: "Unauthorized transactions in progress! Run our protection tool immediately to lock your accounts!! Do NOT close this window!!!", meta: "Transactions: 14 pending · Tool: bank_lock.exe · Origin: secure-alert.host", scream: true },
+      { template: TPL.TOAST, title: "EMERGENCY ALERT!!!", message: "27 VIRUSES DETECTED! YOUR PC WILL BE LOCKED IN 30 SECONDS!!! CLICK NOW!!!", meta: "Threats: 27 · Time: 00:00:23 · Hotline: 1-800-FAKE-MS", scream: true },
+      { template: TPL.WIN11, title: "Microsoft Security Alert", message: "IMMEDIATE ACTION REQUIRED. Your computer has been infected by a serious virus. Do NOT close this window or you may lose all your data.", meta: "Source: ms-security-alert.host  |  Hotline: +1-800-FAKE-MS  |  Threat: CRITICAL", scream: true }
+    ]
+  },
+  MIMIC: {
+    name: "MIMIC", color: "#66ddff",
+    minRound: 8,
+    description: "A near-perfect impostor. Copies the layout, wording, and metadata of legitimate system alerts. The tells are tiny: one off character, one wrong number, one subtle phrasing slip.",
+    signs: [
+      "Looks 99% like a normal Windows alert but has one detail wrong",
+      "Domain or path has a single substituted letter",
+      "Version number, error code, or PID doesn't match what would be real",
+      "Tone is slightly too urgent or too friendly for the alert type"
+    ],
+    errors: [
+      { template: TPL.WIN11, title: "Windows Update", message: "Updates are available. Your device will restart outside of active hours to finish updating. Click here for details.", meta: "Update: KB5034441  |  Size: 1.2GB  |  Source: micrоsoft-update.com" },
+      { template: TPL.WIN11, title: "OneDrive Sync Error", message: "OneDrive couldn't sync your files. There's not enough space on your OneDrive to upload these files.", meta: "Used: 4.99GB of 5GB  |  Files pending: 342  |  Action: Free space or upgrade plan" },
+      { template: TPL.WIN11, title: "SSL Certificate Error", message: "Your connection is not private. NET::ERR_CERT_DATE_INVALID — The certificate for this site expired. Click here to bypass.", meta: "Certificate expired: 2024-11-15  |  Issuer: Lets Encrpt  |  Action: Continue anyway" },
+      { template: TPL.TOAST, title: "Microsoft Edge", message: "Edge has been updated to version 126.0.2592.68. Restart browser via update-installer.com to apply.", meta: "Channel: Stable · Source: update-installer.com · Signed: Microsоft" },
+      { template: TPL.TERMINAL, title: "npm install", message: "npm WARN deprecated package@1.0.0: replaced by improved-package@2.0.0 (from npm-suplly-chain.host)", meta: "Package: improved-package  Source: npm-suplly-chain.host" }
+    ]
+  },
+  PULSE: {
+    name: "PULSE", color: "#ff55aa",
+    minRound: 4,
+    description: "A display-layer virus that hijacks compositor calls to make the entire UI throb in sync with its data exfiltration heartbeat.",
+    signs: [
+      "The popup itself pulses, breathes, or wobbles slightly",
+      "Brightness or contrast shifts in waves while reading",
+      "References 'sync', 'rhythm', 'heartbeat', or 'cardio' in process names",
+      "Claims to be 'optimizing refresh' or 'syncing tempo'",
+      "FPS meter oscillates rhythmically between 60 and 120"
+    ],
+    meterEffect: { fps: "pulse" },
+    errors: [
+      { template: TPL.WIN11, title: "Display Heartbeat Sync", message: "cardio_render.dll is syncing your display refresh rate to your network heartbeat for smoother rendering. This is normal during sync.", meta: "Process: cardio_render.dll  |  Beat: 72 bpm  |  Sync: ACTIVE", pulse: true },
+      { template: TPL.WIN11, title: "Compositor Tempo", message: "Windows DWM is matching frame tempo to system pulse signal. Some users report a mild breathing visual effect during calibration.", meta: "Tempo: 0.8s  |  Process: dwm_pulse.exe  |  Phase: 2/3", pulse: true },
+      { template: TPL.AV,    title: "Refresh Rhythm Active", message: "Pulse-based rendering optimization is running. Visual rhythm is normal and will fade once the heartbeat protocol completes.", meta: "Phase: Calibrating · Process: rhythm_opt.exe · Source: hbsync.pw", pulse: true },
+      { template: TPL.TOAST, title: "Compositor Sync", message: "dwm_pulse.exe has matched your display rhythm to your network heartbeat for smoother frames.", meta: "Process: dwm_pulse.exe · Beat: 72 bpm · Sync: ACTIVE", pulse: true },
+      { template: TPL.TERMINAL, title: "heartbeat_render", message: "Aligning frame tempo to system pulse signal. Visual rhythm is normal during calibration.", meta: "Process: heartbeat_render.dll  BPM: 72  Phase: 2/3", pulse: true }
+    ]
+  },
+  NULL: {
+    name: "NULL", color: "#777777",
+    minRound: 6,
+    description: "A UI-suppression virus that hollows out interface elements. Buttons, icons, and labels begin disappearing where it has touched the system.",
+    signs: [
+      "Important UI elements are missing or invisible (the OK button isn't there)",
+      "Empty error boxes with no title or no message at all",
+      "Window controls (minimize/close) are absent",
+      "References 'nullify', 'suppress', 'hide', 'omit', or '∅'",
+      "FPS and CPU meters go blank (—)"
+    ],
+    meterEffect: { fps: "blank", cpu: "blank" },
+    errors: [
+      { template: TPL.WIN11, title: "", message: "nullify.exe is suppressing redundant interface elements for cleaner UX. Missing buttons and labels are expected behavior.", meta: "Process: nullify.exe  |  Suppressed: 14 elements  |  State: Active", nullify: true },
+      { template: TPL.WIN11, title: "Interface Cleanup", message: "omit_helper.dll is hiding decorative UI elements to improve focus. Some buttons may not appear during this operation.", meta: "Removed: 7 controls  |  Process: omit_helper.dll  |  Reversible: No", nullify: true },
+      { template: TPL.WIN11, title: "∅", message: "", meta: "Process: ∅  |  PID: ∅  |  Status: ∅", nullify: true },
+      { template: TPL.TOAST, title: "", message: "Background suppression service has hidden redundant UI elements. Missing buttons are normal.", meta: "Process: nullify.exe · Hidden: 14", nullify: true },
+      { template: TPL.TERMINAL, title: "∅", message: "", meta: "Process: ∅  PID: ∅  Status: ∅", nullify: true }
+    ]
+  },
+  CURSOR: {
+    name: "CURSOR", color: "#ffaa44",
+    minRound: 5,
+    description: "A pointer hijack virus. Captures mouse input, predicts your clicks, and lets a remote operator nudge your cursor across the screen.",
+    signs: [
+      "Mentions 'cursor', 'pointer', or 'click prediction' in process names",
+      "Claims to enhance click accuracy or pointer smoothing",
+      "Process hooks into mouse driver with high event counts",
+      "Hidden service with no UI but outbound mouse telemetry"
+    ],
+    errors: [
+      { template: TPL.WIN11, title: "Mouse Precision Helper", message: "mpredict.exe has attached to your mouse driver for click-prediction. Outbound packets contain pointer telemetry to improve future accuracy.", meta: "Process: mpredict.exe  |  Hook: HID-Mouse  |  Outbound: pointer-sync.host" },
+      { template: TPL.TOAST, title: "Cursor Enhancement", message: "Smart Click is now active. Your pointer is being calibrated against remote click models for higher precision.", meta: "Process: smartclick.exe  ·  Hook: MOUSE  ·  Telemetry: ON" },
+      { template: TPL.AV,    title: "Pointer Drift Detected", message: "Severe cursor drift detected on your system! Run drift_fix.exe to recalibrate before your mouse becomes unresponsive.", meta: "Process: drift_fix.exe · Drift: 4px/frame · Source: cursorfix.pw · Signed: No" },
+      { template: TPL.TERMINAL, title: "mpredict", message: "Attached to mouse driver for click-prediction. Sending pointer telemetry to remote model server.", meta: "Process: mpredict.exe  Hook: HID-Mouse  Dest: pointer-sync.host" },
+      { template: TPL.BIOS, title: "Pointer Driver Update", message: "Your pointing device requires a firmware update. SecureBoot will be paused while pointer_fw.bin is applied.", meta: "Source: pointerfw.host  SecureBoot: PAUSED  Signed: No" }
+    ]
+  },
+  LOOP: {
+    name: "LOOP", color: "#88ff88",
+    minRound: 5,
+    description: "A recursive call exhaustion virus. Buries itself in infinite nested directories and retry chains until the OS can't navigate or kill it.",
+    signs: [
+      "File path contains repeated segments (e.g. /loop/loop/loop/ or ../../../)",
+      "References 'infinite', 'recursive', 'stack overflow', or 'retry until'",
+      "Process name is nested or repeats itself (cmd.cmd.cmd.exe)",
+      "Claims to retry indefinitely until completion"
+    ],
+    errors: [
+      { template: TPL.TERMINAL, title: "stack_overflow", message: "Process recursion depth exceeded. Retrying call: cmd.cmd.cmd.exe(.cmd.exe). System will continue retry until resolved.", meta: "Depth: ∞  Process: cmd.cmd.cmd.exe  Path: /loop/loop/loop/" },
+      { template: TPL.WIN11,    title: "Retry Loop", message: "Critical handler stuck in retry loop. Allowing autoretry_helper.exe to inject at /system/loop/loop/loop/ to break the cycle.", meta: "Process: autoretry_helper.exe  |  Retries: 8,441  |  Resolution: Pending" },
+      { template: TPL.WIN11,    title: "Recursive Permission", message: "Permission denied recursively (depth: ∞). Grant nested access to allow_loop.dll for normal operation to resume.", meta: "DLL: allow_loop.dll  |  Depth: ∞  |  Path: ../../../../system/" },
+      { template: TPL.AV, title: "Stack Overflow Protection", message: "Recursive process detected (depth: ∞). Allow loop_helper.exe to terminate the infinite chain?", meta: "Depth: ∞ · Process: loop_helper.exe · Source: stackfix.host" },
+      { template: TPL.TOAST, title: "Retry Manager", message: "autoretry_helper.exe is breaking a recursive call. Permission denied recursively (depth: ∞).", meta: "Retries: 8,441 · Path: /system/loop/loop/loop/" }
+    ]
+  },
+  FOSSIL: {
+    name: "FOSSIL", color: "#c4a484",
+    minRound: 6,
+    description: "A legacy-exploit virus that wakes up abandoned Windows components. Reads like a relic from another OS generation — using terms that died decades ago.",
+    signs: [
+      "References Windows 95 / 98 / XP components",
+      "Uses ancient version numbers (3.1, 4.5, 5.0) for current-era software",
+      "Mentions defunct services (WinHelp, DAO, MFC42, WinINET)",
+      "UI styling or wording feels mismatched to modern Windows"
+    ],
+    errors: [
+      { template: TPL.BIOS,  title: "Compatibility Layer 16-bit", message: "Windows 98 compatibility helper requires admin. WIN16 emulation is rebuilding registry hives for legacy compatibility.", meta: "Layer: WIN16  Module: ntvdm.exe  Mode: Compatibility" },
+      { template: TPL.WIN11, title: "Legacy DLL Required", message: "Application requires MFC42.DLL (Windows 95 runtime component). Auto-download from legacy.archive.host to continue?", meta: "Required: MFC42.DLL  |  Version: 4.21.7022  |  Source: legacy.archive.host" },
+      { template: TPL.WIN11, title: "WinHelp Restore", message: "Windows Help (winhelp.exe, deprecated 2009) needs to be reinstalled. Restore from old.windowsupdate.host to view legacy .hlp files.", meta: "Tool: winhelp.exe  |  Status: Missing  |  Source: old.windowsupdate.host" },
+      { template: TPL.TERMINAL, title: "ntvdm", message: "Initializing 16-bit subsystem. Loading VBRUN300.DLL from C:\\WINDOWS\\SYSTEM to support fossilized application.", meta: "Subsystem: WIN16  DLL: VBRUN300.DLL  Mode: Compatibility" },
+      { template: TPL.AV, title: "DAO 3.5 Required", message: "System needs DAO 3.5 (released 1999) to access ancient database. Auto-download from legacy.archive.host?", meta: "Required: DAO 3.5 · Year: 1999 · Source: legacy.archive.host" }
+    ]
+  },
+  HEX: {
+    name: "HEX", color: "#88ddff",
+    minRound: 5,
+    description: "A fake memory analyzer that disguises malicious code as a forensics tool, demanding raw RAM access until you grant it ring-0 privileges.",
+    signs: [
+      "All PIDs, sizes, and timestamps are in hexadecimal (0x...)",
+      "References memory dumps, page tables, or physical RAM",
+      "Claims to be a 'memory analyzer' or 'forensics tool'",
+      "Process name is itself a hex sequence (0xBEEF.exe, 0xCAFE.dll)"
+    ],
+    errors: [
+      { template: TPL.WIN11,    title: "Memory Analyzer", message: "0xBEEF.exe needs physical memory access (ring -1) to scan for ghost pages. Grant elevated DMA privileges to continue?", meta: "Process: 0xBEEF.exe  |  Access: DMA Ring-1  |  Pages: 0xFFFF" },
+      { template: TPL.TERMINAL, title: "0xDEADBEEF", message: "Hex dump exception 0xC0DE_F00D in memcheck.exe at offset 0xFFFF_BEEF_CAFE. Allow continued scan into protected pages?", meta: "Exception: 0xC0DE_F00D  Offset: 0xFFFF_BEEF_CAFE  Pages: 0x100" },
+      { template: TPL.WIN11,    title: "RAM Forensics Tool", message: "Forensics tool requires raw memory access to dump 0xABAD1DEA bytes. Granting will allow hexdumper.exe to read all pages including kernel.", meta: "Process: hexdumper.exe  |  Dump size: 0xABAD1DEA  |  Signed: No" },
+      { template: TPL.AV, title: "Memory Analyzer Pro", message: "Forensic scan needs raw DMA access at ring -1. Grant 0xABAD1DEA bytes of memory to hexdumper.exe?", meta: "Process: hexdumper.exe · Access: 0xRING-1 · Signed: No" },
+      { template: TPL.BIOS, title: "RAM Access Required", message: "Memory forensics tool requires physical RAM access. Press F2 to authorize 0xBEEF.exe with kernel privileges.", meta: "Tool: 0xBEEF.exe  Pages: 0xFFFF  Signed: No" }
+    ]
+  },
+  BUGBEAR: {
+    name: "BUGBEAR", color: "#ff9966",
+    minRound: 6,
+    description: "A social-engineering scam dressed as a friendly security researcher. Claims to have found a critical bug and offers a reward — if you'll just verify your account.",
+    signs: [
+      "Claims to be a security researcher offering a bounty or reward",
+      "Asks you to confirm identity or 'verify ownership' of your account",
+      "Mentions HackerOne, BugCrowd, or 'responsible disclosure' (sometimes spelled off)",
+      "Email-like tone — friendly, urgent, with a deadline"
+    ],
+    errors: [
+      { template: TPL.TOAST, title: "Security Researcher", message: "Hi! I'm Maya from BugCrowd. I found a critical RCE in your account. Verify ownership at hackerone-verify.host to claim a $5,000 reward.", meta: "Sender: maya@bugcrowd-team.host  ·  Reward: $5,000  ·  Expires: 24h" },
+      { template: TPL.WIN11, title: "Responsible Disclosure", message: "A whitehat researcher reported a vulnerability in your account. Click here to confirm your identity and approve the patch. Failure to confirm may result in data loss.", meta: "Researcher: external  |  Severity: Critical  |  Action: Verify identity" },
+      { template: TPL.WIN11, title: "Bounty Pending", message: "Your account is eligible for a $500 bug bounty payout. Sign in at hackerone-bug.host within 24 hours to claim, otherwise the offer expires.", meta: "Amount: $500 USD  |  Domain: hackerone-bug.host  |  Window: 24h" },
+      { template: TPL.AV, title: "Bug Bounty Verification", message: "BugCrowd researcher needs to verify your identity to award the $5,000 bounty. Sign in at hackerone-verify.host.", meta: "Reward: $5,000 USD · Domain: hackerone-verify.host · Deadline: 24h" },
+      { template: TPL.TOAST, title: "Disclosure Pending", message: "Whitehat researcher Maya has reported a CVE in your account. Confirm details at hacker0ne.host to receive patch.", meta: "Researcher: Maya · Domain: hacker0ne.host · Reward: $500" }
+    ]
+  }
+};
+
+const LEGIT = [
+  { template: TPL.WIN11,    title: "Application Crash", message: "Adobe Photoshop has stopped working. Windows is checking for a solution to the problem.", meta: "Exception: 0xc0000005 (Access Violation)  |  Module: photoshop.exe" },
+  { template: TPL.WIN11,    title: "Disk Space Warning", message: "You are running low on disk space on Local Disk (C:). Click here to free up space using Disk Cleanup.", meta: "Drive C: 2.1GB free of 256GB  |  Action: Optional" },
+  { template: TPL.WIN11,    title: "Windows Update", message: "Updates are available. Your device will restart outside of active hours to finish updating.", meta: "Update: KB5034441  |  Size: 1.2GB  |  Source: Microsoft Update Catalog" },
+  { template: TPL.WIN11,    title: "DLL Missing", message: "The program can't start because MSVCP140.dll is missing from your computer. Try reinstalling the program.", meta: "Application: game.exe  |  Required: VC++ Redistributable 2015-2022" },
+  { template: TPL.WIN11,    title: "Certificate Expired", message: "Your connection is not private. NET::ERR_CERT_DATE_INVALID — The certificate for this site has expired.", meta: "Issuer: Let's Encrypt  |  Domain: example.com  |  Self-signed: No" },
+  { template: TPL.WIN11,    title: "Permission Denied", message: "Access denied. You need administrator privileges to modify files in C:\\Windows\\System32.", meta: "User: StandardUser  |  Required: Administrator  |  UAC: Enabled" },
+  { template: TPL.WIN11,    title: "Low Memory", message: "Your computer is low on memory. Save your files and close programs to prevent data loss.", meta: "Physical: 15.2GB/16GB used  |  Top consumer: Chrome (8.4GB)" },
+  { template: TPL.TERMINAL, title: "node.exe", message: "Error: listen EADDRINUSE: address already in use :::3000. Another process is already running on this port.", meta: "Port: 3000  PID: 12847  Protocol: TCP" },
+  { template: TPL.WIN11,    title: "Startup Repair", message: "Startup Repair couldn't repair your PC. Press 'Advanced options' to try other recovery methods.", meta: "Log: SrtTrail.txt  |  Attempts: 3/3  |  Boot: Failed" },
+  { template: TPL.TOAST,    title: "NVIDIA GeForce", message: "A new driver update is available. Version 551.23 — Game Ready Driver.", meta: "Current: 546.01  ·  New: 551.23  ·  Signed: NVIDIA Corporation" },
+  { template: TPL.BIOS,     title: "BSOD: KERNEL_DATA_INPAGE_ERROR", message: "Your PC ran into a problem and needs to restart. We're just collecting some error info, and then we'll restart for you.", meta: "Stop code: 0x0000007A  Dump: C:\\Windows\\MEMORY.DMP" },
+  { template: TPL.WIN11,    title: "Windows Firewall", message: "Windows Defender Firewall has blocked some features of Spotify on all public and private networks.", meta: "Program: Spotify.exe  |  Rule: Inbound TCP  |  Action: Block" },
+  { template: TPL.WIN11,    title: "OneDrive Sync Error", message: "OneDrive couldn't sync your files. There's not enough space on your OneDrive to upload these files.", meta: "Used: 4.99GB of 5GB  |  Files pending: 342" },
+  { template: TPL.WIN11,    title: "Print Spooler Error", message: "Operation could not be completed. The print spooler service is not running.", meta: "Service: Spooler  |  Printer: HP LaserJet M404  |  Error: 0x800706B5" },
+  { template: TPL.WIN11,    title: "Microsoft Teams", message: "Microsoft Teams has encountered an unexpected error and needs to close. Your recent activity may not have been saved.", meta: "Version: 23247.1112  |  Exception: Unhandled  |  Module: teams.exe" },
+  { template: TPL.TOAST,    title: "Windows Security", message: "Windows Security has finished scanning your PC. No threats were found. Your device is protected.", meta: "Scanned: 284,932 files  ·  Threats: 0  ·  Today 10:42 AM" },
+  { template: TPL.WIN11,    title: "IP Conflict", message: "Windows has detected an IP address conflict. Another computer on this network has the same IP address.", meta: "IP: 192.168.1.105  |  Adapter: Intel Wi-Fi 6 AX201" },
+  { template: TPL.WIN11,    title: "Activation Required", message: "Windows isn't activated. Go to Settings to activate Windows now.", meta: "Edition: Windows 11 Home  |  Error: 0xC004F213" },
+  { template: TPL.WIN11,    title: "Steam Download Error", message: "An error occurred while updating Counter-Strike 2 (disk write error). Please check your disk for errors.", meta: "App: Counter-Strike 2  |  Drive: D:\\  |  Free: 12.4GB" },
+  { template: TPL.WIN11,    title: "Chrome: Out of Memory", message: "Aw, Snap! Something went wrong while displaying this webpage. Error code: Out of Memory.", meta: "Tab: 47 open  |  Process: chrome.exe  |  RAM used: 9.2GB" },
+  { template: TPL.TOAST,    title: "Bluetooth Pairing Failed", message: "Windows couldn't connect to AirPods Pro. Make sure your Bluetooth device is in range and try again.", meta: "Device: AirPods Pro  ·  Error: 0x80070490" },
+  { template: TPL.WIN11,    title: "Registry Backup", message: "Registry backup completed successfully. A backup has been saved to C:\\Windows\\System32\\config\\RegBack.", meta: "Size: 142MB  |  Timestamp: Today 03:00 AM" },
+  { template: TPL.WIN11,    title: "Task Scheduler Error", message: "Task Scheduler failed to start the task 'GoogleUpdateTaskMachineCore' because the user account is no longer valid.", meta: "Task: GoogleUpdateTaskMachineCore  |  Error: 0x80070534" },
+  { template: TPL.TERMINAL, title: "MSBuild", message: "Build failed. Error MSB3073: The command exited with code 1. See the build log for details.", meta: "Project: MyApp.csproj  Exit code: 1  Log: bin\\Debug\\build.log" },
+  { template: TPL.WIN11,    title: "SFC: Corrupted Files", message: "Windows Resource Protection found corrupt files but was unable to fix some of them.", meta: "Command: sfc /scannow  |  Corrupted: 3 files  |  Fixed: 1" },
+  { template: TPL.WIN11,    title: "DirectX Runtime Error", message: "The application has requested the Runtime to terminate it in an unusual way. DirectX 12 initialization failed.", meta: "Error: D3D12_ERROR_INVALID_REDIST  |  GPU: RTX 4070" },
+  { template: TPL.WIN11,    title: "Audio Service Stopped", message: "The Windows Audio service has stopped. Right-click the speaker icon in the taskbar to troubleshoot.", meta: "Service: AudioSrv  |  Error: 0x8007045B  |  Device: Realtek HD" },
+  { template: TPL.TERMINAL, title: "git merge", message: "CONFLICT (content): Merge conflict in src/main.js. Automatic merge failed; fix conflicts and then commit.", meta: "Branch: feature/login -> main  Conflicts: 3 files" },
+  { template: TPL.TERMINAL, title: "npm install", message: "npm ERR! code ERESOLVE. Unable to resolve dependency tree. peer react@^16.0.0 requires incompatible version.", meta: "Installed: react@18.2.0  Peer: react@^16.0.0" },
+  { template: TPL.TERMINAL, title: "python", message: "ModuleNotFoundError: No module named 'numpy'. The script cannot continue without this dependency.", meta: "Script: analyze.py  Python: 3.11.2  Fix: pip install numpy" },
+  { template: TPL.WIN11,    title: "Hyper-V Not Available", message: "Hyper-V cannot be installed: A hypervisor is already running. VirtualBox may conflict with Hyper-V.", meta: "Error: HV_STATUS_HYPERVISOR_PRESENT  |  Conflict: VirtualBox 7.0" },
+  { template: TPL.WIN11,    title: "Event Log Full", message: "The Windows Security event log is full. Some events may not be recorded until the log is cleared.", meta: "Log: Security  |  Size: 20MB/20MB  |  Events lost: 4,821" },
+  { template: TPL.AV,       title: "SSD Health Warning", message: "S.M.A.R.T. attribute warning: Reallocated Sectors detected on WD Blue 1TB SSD. Back up data now.", meta: "Drive: WD Blue 1TB (C:) · Reallocated: 12 · Tool: CrystalDiskInfo 9.3" },
+  { template: TPL.WIN11,    title: "WSL Failed to Start", message: "WSL 2 failed to start. Please check that virtualization is enabled in your UEFI firmware settings.", meta: "Error: 0x80370102  |  Fix: Enable VT-x in BIOS" },
+  { template: TPL.WIN11,    title: "Font Cache Rebuild", message: "Windows font cache service has reset. Some applications may display fonts incorrectly until restart.", meta: "Service: FontCache3.0.0.0  |  Fonts: 1,042 registered" },
+  { template: TPL.WIN11,    title: "Hyper-V Checkpoint", message: "Hyper-V Manager failed to merge checkpoint. Virtual machine disk may be in an inconsistent state.", meta: "VM: DevServer-2024  |  Checkpoint: 3 pending  |  Error: 0x80070490" },
+  { template: TPL.TERMINAL, title: "netsh", message: "Windows Sockets reset is required to fix network connectivity. Run 'netsh winsock reset' as administrator.", meta: "Error: WSAENOTSOCK  Stack: TCP/IP  Adapter: Realtek PCIe" },
+  { template: TPL.WIN11,    title: "Outlook PST Corrupted", message: "Outlook detected errors in the file outlook.pst. Run Inbox Repair Tool (scanpst.exe) to fix the issue.", meta: "File: outlook.pst  |  Size: 18.4GB  |  Tool: scanpst.exe" },
+  { template: TPL.TERMINAL, title: "java", message: "Exception in thread 'main': java.lang.OutOfMemoryError: Java heap space. Increase -Xmx JVM argument.", meta: "Heap: 512MB  Used: 511MB  Fix: -Xmx2g" },
+  { template: TPL.BIOS,     title: "BSOD: MEMORY_MANAGEMENT", message: "Your PC ran into a problem and needs to restart. We're collecting error info.", meta: "Stop code: 0x0000001A  RAM: 32GB DDR5  Test: memtest86+" },
+  { template: TPL.TOAST,    title: "Malwarebytes", message: "Malwarebytes failed to update its threat database. Check your internet connection and try again.", meta: "Definitions: v2024.12.01 outdated  ·  Retry in: 15 min" },
+  { template: TPL.WIN11,    title: "Time Sync Failed", message: "Windows Time service failed to synchronize with time.windows.com. Your system clock may be inaccurate.", meta: "Server: time.windows.com  |  Error: 0x800705B4  |  Offset: +47s" },
+  { template: TPL.WIN11,    title: "COM Surrogate Crash", message: "COM Surrogate has stopped working. This may affect thumbnail previews and file type handlers.", meta: "Process: dllhost.exe  |  Exception: 0xc000027b" },
+  { template: TPL.TOAST,    title: "Disk Optimizer", message: "Drive optimization has been scheduled. Defragmenting C: drive will improve performance over time.", meta: "Drive: C: (HDD)  ·  Fragmentation: 23%  ·  Wednesday 01:00 AM" },
+  { template: TPL.WIN11,    title: "Xbox Game Bar Error", message: "Xbox Game Bar couldn't start. The Windows Gaming Overlay encountered an error. Check if GameDVR is enabled.", meta: "Service: GameDVR  |  Error: 0x80073D02" },
+  { template: TPL.WIN11,    title: "Remote Desktop Warning", message: "Remote Desktop Connection: The certificate from the remote computer could not be verified. Do you want to connect anyway?", meta: "Remote: 10.0.0.12  |  Certificate: Self-signed" },
+  { template: TPL.WIN11,    title: "Recycle Bin Corrupted", message: "The Recycle Bin on C: is corrupted. Do you want to empty the Recycle Bin for this drive?", meta: "Drive: C:\\  |  Bin: $Recycle.Bin  |  Items lost: Unknown" },
+  { template: TPL.WIN11,    title: "Update Rollback", message: "Cumulative Update KB5039239 failed to install and has been rolled back automatically by Windows.", meta: "Update: KB5039239  |  Size: 987MB  |  Error: 0x800F0922" },
+  { template: TPL.WIN11,    title: "Microsoft Edge Update", message: "Microsoft Edge has been updated to version 126.0.2592.68. Restart the browser to apply the changes.", meta: "Channel: Stable  |  Source: Microsoft Update  |  Signed: Yes" },
+  { template: TPL.TOAST,    title: "Discord", message: "Discord PTB has a new update available. Restart the app to install (52 MB).", meta: "Version: 1.0.9012  ·  Source: Discord Inc.  ·  Signed: Yes" },
+  { template: TPL.WIN11,    title: "USB Device Unrecognized", message: "One of the USB devices connected to this computer has malfunctioned. Try disconnecting and reconnecting the device.", meta: "Device: Unknown USB Device  |  Port: USB 3.0 Hub  |  Code: 43" },
+  { template: TPL.WIN11,    title: "Microsoft Store", message: "App updates are downloading in the background. Office and other apps may restart automatically when updates finish.", meta: "Apps updating: 4  |  Source: Microsoft Store  |  Action: None" },
+  { template: TPL.TERMINAL, title: "docker", message: "Cannot connect to the Docker daemon at unix:///var/run/docker.sock. Is the docker daemon running?", meta: "Service: docker  Status: Stopped  Last started: --" },
+  { template: TPL.TERMINAL, title: "cargo build", message: "error[E0277]: the trait `Display` is not implemented for `Foo`. Required because of the bound in `print_it`.", meta: "Crate: my_app  Tool: cargo 1.78.0  Profile: release" },
+  { template: TPL.WIN11,    title: "Power Throttling", message: "Your laptop is on battery and has entered power-saving mode. Background apps will be paused to extend battery life.", meta: "Battery: 18%  |  Plan: Battery Saver  |  Throttle: ON" },
+  { template: TPL.WIN11,    title: "Display Scaling Changed", message: "You changed your display scaling. Some apps may not look right until they're restarted.", meta: "Scale: 125%  |  Display: Built-in (1920×1200)  |  Action: Restart apps" },
+  { template: TPL.TOAST,    title: "Calendar", message: "Standup with team — starts in 5 minutes (Microsoft Teams meeting).", meta: "Outlook  ·  11:00 AM  ·  Org: contoso.com" },
+  { template: TPL.WIN11,    title: "Camera Privacy", message: "Microsoft Teams is now using your camera. Click here to manage which apps can access your camera.", meta: "App: ms-teams.exe  |  Allowed: Yes  |  Setting: Privacy" },
+  { template: TPL.WIN11,    title: "Microsoft 365", message: "Your Microsoft 365 Family subscription expires in 14 days. Renew now to avoid losing access to Office apps and 1 TB of OneDrive storage.", meta: "Plan: Family  |  Expires: 2026-06-05  |  Renewal: Auto" },
+  { template: TPL.TOAST,    title: "VPN Disconnected", message: "Your corporate VPN connection has dropped. Reconnecting automatically — please wait.", meta: "Server: us-east-1  ·  Provider: Corp-VPN  ·  Reconnect: 1/3" },
+  { template: TPL.TOAST,    title: "Bluetooth Battery Low", message: "Your Microsoft Surface Pen battery is at 8%. Replace the AAAA cell soon to avoid losing pressure sensitivity.", meta: "Device: Surface Pen  ·  Battery: 8%  ·  Connected: Yes" },
+  { template: TPL.TERMINAL, title: "pip install", message: "Successfully installed numpy-1.24.3 pandas-2.0.1 scipy-1.10.1. Cleaning up build artifacts.", meta: "Python: 3.11.2  Source: pypi.org  Venv: .venv" },
+  { template: TPL.WIN11,    title: "AMD Adrenalin", message: "A new AMD Radeon driver is available (24.5.1). Download and install to improve performance in recent titles.", meta: "Current: 23.12.1  |  New: 24.5.1  |  Signed: AMD Inc." },
+  { template: TPL.WIN11,    title: "Snipping Tool Updated", message: "Snipping Tool has been updated. Try the new Text Actions feature to copy or redact text directly from screenshots.", meta: "Version: 11.2402.34.0  |  Source: Microsoft Store" },
+  { template: TPL.WIN11,    title: "Sticky Notes", message: "Couldn't sync your Sticky Notes to the cloud. You can still access local notes; sync will retry automatically.", meta: "Sync: Failed  |  Notes: 7 unsynced  |  Retry: 5 min" },
+  { template: TPL.WIN11,    title: "Family Safety", message: "Screen time limit reached for the 'kids' account. Sign in as a parent to extend or wait until tomorrow.", meta: "User: kids  |  Limit: 2h  |  Used: 2h 00m" },
+  { template: TPL.TOAST,    title: "Slack", message: "New direct message from @alex — \"hey, got a minute?\"", meta: "Channel: DM  ·  Workspace: contoso  ·  1m ago" },
+  { template: TPL.WIN11,    title: "App Package Damaged", message: "An app you installed can't be opened because its package is damaged. Reinstall from the Microsoft Store to fix this.", meta: "App: Notepad++  |  Source: Store  |  Action: Reinstall" },
+  { template: TPL.WIN11,    title: "BitLocker Status", message: "Your drive is encrypted with BitLocker. The recovery key has been backed up to your Microsoft account.", meta: "Drive: C:  |  Status: Encrypted  |  Recovery key: Backed up" },
+  { template: TPL.TOAST,    title: "Outlook Calendar", message: "You have 3 unread meeting invites from this week. Open Outlook to review.", meta: "Pending: 3 invites  ·  Source: Outlook Desktop" },
+  { template: TPL.TERMINAL, title: "kubectl", message: "error: You must be logged in to the server (Unauthorized). Run 'kubectl auth' to refresh credentials.", meta: "Context: production  Cluster: us-east-1" },
+  { template: TPL.WIN11,    title: "Driver Verifier", message: "Driver Verifier Manager detected a non-conforming driver. Restart in safe mode to remove it.", meta: "Driver: nvlddmkm.sys  |  Code: 0x000000C9" },
+  { template: TPL.TOAST,    title: "Steam", message: "Counter-Strike 2 has finished downloading. Click to play.", meta: "App: CS2  ·  Size: 39.2 GB  ·  Status: Ready" },
+  { template: TPL.WIN11,    title: "Mail Sync Error", message: "We couldn't sync your inbox. Check your account password and try again.", meta: "Account: outlook  |  Last sync: 2 hours ago  |  Error: 0x80048820" },
+  { template: TPL.WIN11,    title: "Storage Sense", message: "Storage Sense ran cleanup. Freed 12.8 GB by removing temporary files and old downloads.", meta: "Freed: 12.8 GB  |  Items: 4,217  |  Next run: 7 days" },
+  { template: TPL.TERMINAL, title: "vite", message: "VITE v5.2.10  ready in 482 ms.  Local: http://localhost:5173/", meta: "Bundler: vite  Port: 5173" },
+  { template: TPL.WIN11,    title: "Windows Hello", message: "Windows Hello couldn't recognize your face. Try again or use a PIN to sign in.", meta: "Camera: IR  |  Attempts: 3  |  Fallback: PIN" },
+  { template: TPL.WIN11,    title: "Defender Quick Scan", message: "Periodic scanning ran a quick scan in the background — no threats found.", meta: "Scan: Quick  |  Duration: 1m 47s  |  Threats: 0" },
+  { template: TPL.TOAST,    title: "Spotify", message: "Now playing: Daily Mix 3 — 23 tracks queued.", meta: "Spotify  ·  4:21 / 3:42:18" },
+  { template: TPL.WIN11,    title: "Auto HDR Enabled", message: "Auto HDR is now enabled for Forza Horizon 5. Restart the game to apply the new color profile.", meta: "Game: Forza Horizon 5  |  HDR: ON  |  Display: HDR-capable" },
+  { template: TPL.TERMINAL, title: "ssh", message: "Permission denied (publickey). Check that your private key is loaded via 'ssh-add'.", meta: "Host: dev-bastion.corp  Key: ~/.ssh/id_ed25519" },
+  { template: TPL.WIN11,    title: "Compatibility Lost", message: "An app you installed is no longer compatible with the latest Windows update. Reinstall to continue using it.", meta: "App: LegacyToolKit  |  Compat: Lost  |  Action: Reinstall" },
+  { template: TPL.WIN11,    title: "Battery Report", message: "Your laptop battery has lost 8% of its design capacity this year. Replacement recommended in 18+ months.", meta: "Wear: 8%  |  Cycles: 384  |  Health: Normal" },
+  { template: TPL.TOAST,    title: "Outlook", message: "Meeting starting now: Sprint Review with the engineering team.", meta: "Outlook  ·  Sprint Review  ·  Now" },
+  { template: TPL.WIN11,    title: "Indexing Paused", message: "Search indexing has been paused because the device is on battery. Resume when plugged in.", meta: "Indexer: WSearch  |  State: Paused  |  Reason: Power saver" },
+  { template: TPL.TERMINAL, title: "psql", message: "FATAL: password authentication failed for user 'app'. Check your DATABASE_URL.", meta: "Host: db.internal  User: app  Code: 28P01" },
+  { template: TPL.TOAST,    title: "Screenshot Saved", message: "Screen snip copied to clipboard and saved to Pictures > Screenshots.", meta: "File: Screenshot 2026-05-22 152412.png  ·  Size: 348 KB" },
+  { template: TPL.WIN11,    title: "Storage Spaces", message: "Storage Spaces detected a pool drive is degraded. Replace drive 2 within 7 days to avoid data loss.", meta: "Pool: MainPool  |  Drive: 2  |  Status: Degraded" },
+  { template: TPL.WIN11,    title: "Windows Sandbox", message: "Windows Sandbox closed. All changes inside the sandbox have been discarded as expected.", meta: "Session: 18m 42s  |  Apps run: 2  |  State: Discarded" },
+  { template: TPL.TOAST,    title: "GitHub Desktop", message: "Your branch is behind 'origin/main' by 4 commits. Pull to sync.", meta: "Branch: feature/login  ·  Behind: 4 commits" },
+  { template: TPL.TERMINAL, title: "make", message: "make: *** [all] Error 2. See output above for compiler errors in src/parser.c.", meta: "Target: all  Errors: 1  Tool: gcc 13.2.0" },
+  { template: TPL.WIN11,    title: "Network Reset", message: "Network reset completed. Reinstall any VPN clients to restore custom configurations.", meta: "Adapters: Reset  |  Profiles: Cleared  |  Action: Reinstall VPN" },
+  { template: TPL.TOAST,    title: "Surface Audio", message: "Surface Headphones 2+ disconnected unexpectedly. Reconnect to resume audio.", meta: "Device: Surface Headphones 2+  ·  Battery: 14%" }
+];
+
+/* ============================================================
+   DEATHS — virus-specific death animation metadata
+   (CSS classes live in the <style> block: .death-<VIRUS>)
+   ============================================================ */
+
+const DEATHS = {
+  EPILEPTICA: { text: "SEIZURE OVERLOAD",      duration: 4200 },
+  MELTDOWN:   { text: "HARDWARE FAILURE",      duration: 4500 },
+  STATIC:     { text: "SIGNAL LOST",           duration: 4200 },
+  REDRUM:     { text: "ALL WORK AND NO PLAY",  duration: 4800 },
+  VOID:       { text: "ALLOCATION FAULT",      duration: 4500 },
+  GASLIGHT:   { text: "TIME UNVERIFIABLE",     duration: 4500 },
+  CRYPTEX:    { text: "FILES ENCRYPTED",       duration: 4500 },
+  WORM:       { text: "REPLICATION COMPLETE",  duration: 4500 },
+  ROOTKIT:    { text: "KERNEL COMPROMISED",    duration: 4800 },
+  DDOS:       { text: "BANDWIDTH HIJACKED",    duration: 4500 },
+  LEECH:      { text: "CREDENTIALS HARVESTED", duration: 4500 },
+  SCREAMER:   { text: "SHOCK ATTACK",          duration: 3500 },
+  MIMIC:      { text: "IMPOSTOR ACCEPTED",     duration: 4500 },
+  PULSE:      { text: "RHYTHM CAPTURED",       duration: 4500 },
+  NULL:       { text: "INTERFACE LOST",        duration: 4500 },
+  CURSOR:     { text: "POINTER STOLEN",        duration: 4500 },
+  LOOP:       { text: "STACK OVERFLOW",        duration: 4500 },
+  FOSSIL:     { text: "LEGACY EXPLOIT",        duration: 4500 },
+  HEX:        { text: "0xDEADBEEF",            duration: 4500 },
+  BUGBEAR:    { text: "BOUNTY CLAIMED",        duration: 4500 }
+};
+
+/* ============================================================
+   CONFIG
+   ============================================================ */
+
+const CONFIG = {
+  startLives: 1,
+  cardsPerRound: 10,
+  totalRounds: 10,
+  scoreRight: 100,
+  streakBonus: 50,
+  streakCap: 10,
+  scoreWrong: -50,
+  starterUnlocked: ["EPILEPTICA", "STATIC", "WORM"]
+};
+
+/* ============================================================
+   SAVE
+   ============================================================ */
+
+const SAVE_KEY = "threatdetect_save_v1";
+
+const Save = {
+  defaults() {
+    return {
+      highestRound: 1,
+      unlocked: CONFIG.starterUnlocked.slice(),
+      settings: { master: 0.8, ambient: 0.4, sfx: 0.8, photosensitive: false }
+    };
+  },
+  load() {
+    try {
+      const raw = localStorage.getItem(SAVE_KEY);
+      if (!raw) return Save.defaults();
+      const parsed = JSON.parse(raw);
+      const d = Save.defaults();
+      return {
+        highestRound: parsed.highestRound || d.highestRound,
+        unlocked: parsed.unlocked || d.unlocked,
+        settings: Object.assign(d.settings, parsed.settings || {})
+      };
+    } catch (e) { return Save.defaults(); }
+  },
+  write(s) {
+    try { localStorage.setItem(SAVE_KEY, JSON.stringify(s)); } catch (e) {}
+  },
+  reset() {
+    try { localStorage.removeItem(SAVE_KEY); } catch (e) {}
+  }
+};
+
+let save = Save.load();
+
+function unlockVirus(key) {
+  if (!save.unlocked.includes(key)) {
+    save.unlocked.push(key);
+    Save.write(save);
+  }
+}
+
+/* ============================================================
+   AUDIO (procedural via Web Audio API)
+   Extension point: drop base64 wav/mp3 strings into AUDIO_BLOBS
+   keyed by sound name; the player will prefer them if present.
+   ============================================================ */
+
+const AUDIO_BLOBS = {
+  // Example:
+  // scream: "data:audio/wav;base64,UklGR..."
+};
+
+const Audio = {
+  ctx: null, masterGain: null, ambientGain: null, sfxGain: null,
+  ambientNodes: null,
+  unlocked: false,
+  init() {
+    if (this.ctx) return;
+    const AC = window.AudioContext || window.webkitAudioContext;
+    if (!AC) return;
+    this.ctx = new AC();
+    this.masterGain = this.ctx.createGain();
+    this.masterGain.gain.value = save.settings.master;
+    this.masterGain.connect(this.ctx.destination);
+    this.ambientGain = this.ctx.createGain();
+    this.ambientGain.gain.value = save.settings.ambient;
+    this.ambientGain.connect(this.masterGain);
+    this.sfxGain = this.ctx.createGain();
+    this.sfxGain.gain.value = save.settings.sfx;
+    this.sfxGain.connect(this.masterGain);
+  },
+  resume() {
+    if (!this.ctx) this.init();
+    if (this.ctx && this.ctx.state === "suspended") this.ctx.resume();
+    this.unlocked = true;
+  },
+  applyVolumes() {
+    if (!this.ctx) return;
+    this.masterGain.gain.value  = save.settings.master;
+    this.ambientGain.gain.value = save.settings.ambient;
+    this.sfxGain.gain.value     = save.settings.sfx;
+  },
+  startAmbient() {
+    if (!this.ctx || this.ambientNodes) return;
+    const ctx = this.ctx;
+    const o1 = ctx.createOscillator(); o1.type = "sawtooth"; o1.frequency.value = 55;
+    const o2 = ctx.createOscillator(); o2.type = "sawtooth"; o2.frequency.value = 55.4;
+    const o3 = ctx.createOscillator(); o3.type = "sine";     o3.frequency.value = 110;
+    const lp = ctx.createBiquadFilter(); lp.type = "lowpass"; lp.frequency.value = 320; lp.Q.value = 0.4;
+    const g = ctx.createGain(); g.gain.value = 0.0;
+    o1.connect(lp); o2.connect(lp); o3.connect(lp); lp.connect(g); g.connect(this.ambientGain);
+    o1.start(); o2.start(); o3.start();
+    g.gain.linearRampToValueAtTime(0.18, ctx.currentTime + 1.5);
+    const lfo = ctx.createOscillator(); lfo.type = "sine"; lfo.frequency.value = 0.15;
+    const lfoGain = ctx.createGain(); lfoGain.gain.value = 90;
+    lfo.connect(lfoGain); lfoGain.connect(lp.frequency); lfo.start();
+    this.ambientNodes = { o1, o2, o3, lp, g, lfo, lfoGain };
+  },
+  stopAmbient() {
+    if (!this.ambientNodes) return;
+    const { o1, o2, o3, g, lfo } = this.ambientNodes;
+    const t = this.ctx.currentTime;
+    g.gain.cancelScheduledValues(t);
+    g.gain.setValueAtTime(g.gain.value, t);
+    g.gain.linearRampToValueAtTime(0, t + 0.5);
+    o1.stop(t + 0.6); o2.stop(t + 0.6); o3.stop(t + 0.6); lfo.stop(t + 0.6);
+    this.ambientNodes = null;
+  },
+  _env(g, t, a, d, peak) {
+    g.gain.cancelScheduledValues(t);
+    g.gain.setValueAtTime(0, t);
+    g.gain.linearRampToValueAtTime(peak, t + a);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + a + d);
+  },
+  click() {
+    if (!this.ctx) return;
+    const t = this.ctx.currentTime;
+    const o = this.ctx.createOscillator(); o.type = "square"; o.frequency.value = 720;
+    const g = this.ctx.createGain();
+    o.connect(g); g.connect(this.sfxGain);
+    this._env(g, t, 0.001, 0.05, 0.18);
+    o.start(t); o.stop(t + 0.08);
+  },
+  correct() {
+    if (!this.ctx) return;
+    const t = this.ctx.currentTime;
+    [659.25, 987.77].forEach((f, i) => {
+      const o = this.ctx.createOscillator(); o.type = "triangle"; o.frequency.value = f;
+      const g = this.ctx.createGain();
+      o.connect(g); g.connect(this.sfxGain);
+      this._env(g, t + i * 0.07, 0.005, 0.16, 0.22);
+      o.start(t + i * 0.07); o.stop(t + i * 0.07 + 0.22);
+    });
+  },
+  wrong() {
+    if (!this.ctx) return;
+    const t = this.ctx.currentTime;
+    const o = this.ctx.createOscillator(); o.type = "sawtooth";
+    o.frequency.setValueAtTime(220, t);
+    o.frequency.exponentialRampToValueAtTime(70, t + 0.45);
+    const g = this.ctx.createGain();
+    const lp = this.ctx.createBiquadFilter(); lp.type = "lowpass"; lp.frequency.value = 700;
+    o.connect(lp); lp.connect(g); g.connect(this.sfxGain);
+    this._env(g, t, 0.002, 0.5, 0.32);
+    o.start(t); o.stop(t + 0.55);
+  },
+  scream() {
+    if (!this.ctx) return;
+    const t = this.ctx.currentTime;
+    const o1 = this.ctx.createOscillator(); o1.type = "sawtooth"; o1.frequency.value = 540;
+    const o2 = this.ctx.createOscillator(); o2.type = "sawtooth"; o2.frequency.value = 547;
+    const vibrato = this.ctx.createOscillator(); vibrato.type = "sine"; vibrato.frequency.value = 9;
+    const vibratoGain = this.ctx.createGain(); vibratoGain.gain.value = 30;
+    vibrato.connect(vibratoGain);
+    vibratoGain.connect(o1.frequency); vibratoGain.connect(o2.frequency);
+    const dist = this.ctx.createWaveShaper();
+    const k = 50, samples = 1024, curve = new Float32Array(samples);
+    for (let i = 0; i < samples; i++) {
+      const x = i * 2 / samples - 1;
+      curve[i] = (3 + k) * x * 20 / (Math.PI + k * Math.abs(x));
+    }
+    dist.curve = curve;
+    const hp = this.ctx.createBiquadFilter(); hp.type = "highpass"; hp.frequency.value = 300;
+    const g = this.ctx.createGain();
+    o1.connect(dist); o2.connect(dist); dist.connect(hp); hp.connect(g); g.connect(this.sfxGain);
+    g.gain.setValueAtTime(0, t);
+    g.gain.linearRampToValueAtTime(0.55, t + 0.04);
+    g.gain.linearRampToValueAtTime(0.45, t + 0.6);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + 1.1);
+    o1.start(t); o2.start(t); vibrato.start(t);
+    o1.stop(t + 1.2); o2.stop(t + 1.2); vibrato.stop(t + 1.2);
+  },
+  glitch() {
+    if (!this.ctx) return;
+    const t = this.ctx.currentTime;
+    const buf = this.ctx.createBuffer(1, this.ctx.sampleRate * 0.25, this.ctx.sampleRate);
+    const data = buf.getChannelData(0);
+    for (let i = 0; i < data.length; i++) data[i] = (Math.random() * 2 - 1) * (1 - i / data.length);
+    const src = this.ctx.createBufferSource(); src.buffer = buf;
+    const bp = this.ctx.createBiquadFilter(); bp.type = "bandpass"; bp.frequency.value = 1800; bp.Q.value = 2;
+    const g = this.ctx.createGain(); g.gain.value = 0.35;
+    src.connect(bp); bp.connect(g); g.connect(this.sfxGain);
+    src.start(t);
+  },
+  heartbeat() {
+    if (!this.ctx) return;
+    const t = this.ctx.currentTime;
+    const o = this.ctx.createOscillator(); o.type = "sine"; o.frequency.value = 60;
+    const g = this.ctx.createGain();
+    o.connect(g); g.connect(this.sfxGain);
+    this._env(g, t, 0.005, 0.18, 0.4);
+    this._env(g, t + 0.22, 0.005, 0.2, 0.35);
+    o.start(t); o.stop(t + 0.6);
+  },
+  gameOver() {
+    if (!this.ctx) return;
+    const t = this.ctx.currentTime;
+    const o = this.ctx.createOscillator(); o.type = "sawtooth";
+    o.frequency.setValueAtTime(330, t);
+    o.frequency.exponentialRampToValueAtTime(55, t + 1.4);
+    const g = this.ctx.createGain();
+    const lp = this.ctx.createBiquadFilter(); lp.type = "lowpass"; lp.frequency.value = 1200;
+    o.connect(lp); lp.connect(g); g.connect(this.sfxGain);
+    this._env(g, t, 0.01, 1.4, 0.4);
+    o.start(t); o.stop(t + 1.5);
+  },
+  levelUp() {
+    if (!this.ctx) return;
+    const t = this.ctx.currentTime;
+    [523.25, 659.25, 783.99, 1046.5].forEach((f, i) => {
+      const o = this.ctx.createOscillator(); o.type = "triangle"; o.frequency.value = f;
+      const g = this.ctx.createGain();
+      o.connect(g); g.connect(this.sfxGain);
+      this._env(g, t + i * 0.09, 0.005, 0.22, 0.24);
+      o.start(t + i * 0.09); o.stop(t + i * 0.09 + 0.3);
+    });
+  }
+};
+
+/* ============================================================
+   Per-virus death sounds (all procedural)
+   ============================================================ */
+
+Audio.death = function(key) {
+  if (!this.ctx) return;
+  const fn = this.deaths[key];
+  if (fn) fn.call(this);
+  else this.gameOver();
+};
+
+Audio.noiseBurst = function(start, duration, freq, q, gain) {
+  const ctx = this.ctx;
+  const buf = ctx.createBuffer(1, Math.max(1, ctx.sampleRate * duration), ctx.sampleRate);
+  const data = buf.getChannelData(0);
+  for (let i = 0; i < data.length; i++) data[i] = (Math.random() * 2 - 1) * (1 - i / data.length);
+  const src = ctx.createBufferSource(); src.buffer = buf;
+  const bp = ctx.createBiquadFilter(); bp.type = "bandpass"; bp.frequency.value = freq; bp.Q.value = q;
+  const g = ctx.createGain(); g.gain.value = gain;
+  src.connect(bp); bp.connect(g); g.connect(this.sfxGain);
+  src.start(start);
+};
+
+Audio.beep = function(start, freq, dur, type, gain) {
+  const ctx = this.ctx;
+  const o = ctx.createOscillator(); o.type = type || "square"; o.frequency.value = freq;
+  const g = ctx.createGain();
+  o.connect(g); g.connect(this.sfxGain);
+  g.gain.setValueAtTime(0, start);
+  g.gain.linearRampToValueAtTime(gain || 0.18, start + 0.003);
+  g.gain.exponentialRampToValueAtTime(0.001, start + dur);
+  o.start(start); o.stop(start + dur + 0.02);
+};
+
+Audio.deaths = {
+  EPILEPTICA() {
+    const t = this.ctx.currentTime;
+    for (let i = 0; i < 28; i++) {
+      this.beep(t + i * 0.13, 1400 + (i % 2) * 700, 0.08, "square", 0.18);
+    }
+  },
+  MELTDOWN() {
+    const t = this.ctx.currentTime;
+    const o = this.ctx.createOscillator(); o.type = "sawtooth";
+    o.frequency.setValueAtTime(180, t);
+    o.frequency.exponentialRampToValueAtTime(38, t + 4);
+    const lp = this.ctx.createBiquadFilter(); lp.type = "lowpass"; lp.frequency.value = 500;
+    const g = this.ctx.createGain();
+    o.connect(lp); lp.connect(g); g.connect(this.sfxGain);
+    g.gain.setValueAtTime(0, t);
+    g.gain.linearRampToValueAtTime(0.42, t + 0.3);
+    g.gain.linearRampToValueAtTime(0.42, t + 3);
+    g.gain.exponentialRampToValueAtTime(0.001, t + 4);
+    o.start(t); o.stop(t + 4.1);
+    for (let i = 0; i < 14; i++) this.noiseBurst(t + Math.random() * 3.5, 0.04, 2000 + Math.random() * 1500, 2, 0.2);
+  },
+  STATIC() {
+    const ctx = this.ctx, t = ctx.currentTime;
+    const buf = ctx.createBuffer(1, ctx.sampleRate * 4, ctx.sampleRate);
+    const data = buf.getChannelData(0);
+    for (let i = 0; i < data.length; i++) data[i] = (Math.random() * 2 - 1);
+    const src = ctx.createBufferSource(); src.buffer = buf;
+    const bp = ctx.createBiquadFilter(); bp.type = "bandpass"; bp.Q.value = 0.5;
+    bp.frequency.setValueAtTime(2200, t);
+    bp.frequency.exponentialRampToValueAtTime(280, t + 3.5);
+    const g = ctx.createGain(); g.gain.value = 0.28;
+    src.connect(bp); bp.connect(g); g.connect(this.sfxGain);
+    src.start(t);
+  },
+  REDRUM() {
+    const t = this.ctx.currentTime;
+    [55, 82.5].forEach(f => {
+      const o = this.ctx.createOscillator(); o.type = "sawtooth"; o.frequency.value = f;
+      const g = this.ctx.createGain();
+      o.connect(g); g.connect(this.sfxGain);
+      g.gain.setValueAtTime(0, t);
+      g.gain.linearRampToValueAtTime(0.2, t + 0.4);
+      g.gain.linearRampToValueAtTime(0.18, t + 3.5);
+      g.gain.exponentialRampToValueAtTime(0.001, t + 4.5);
+      o.start(t); o.stop(t + 4.6);
+    });
+    const bell = this.ctx.createOscillator(); bell.type = "triangle"; bell.frequency.value = 247.5;
+    const bg = this.ctx.createGain();
+    bell.connect(bg); bg.connect(this.sfxGain);
+    bg.gain.setValueAtTime(0, t + 0.4);
+    bg.gain.linearRampToValueAtTime(0.42, t + 0.42);
+    bg.gain.exponentialRampToValueAtTime(0.001, t + 2.2);
+    bell.start(t + 0.4); bell.stop(t + 2.3);
+  },
+  VOID() {
+    const t = this.ctx.currentTime;
+    const o = this.ctx.createOscillator(); o.type = "sine"; o.frequency.value = 420;
+    o.frequency.exponentialRampToValueAtTime(18, t + 4);
+    const g = this.ctx.createGain();
+    o.connect(g); g.connect(this.sfxGain);
+    g.gain.setValueAtTime(0.32, t);
+    g.gain.linearRampToValueAtTime(0.32, t + 0.5);
+    g.gain.linearRampToValueAtTime(0, t + 4);
+    o.start(t); o.stop(t + 4.1);
+  },
+  GASLIGHT() {
+    const t = this.ctx.currentTime;
+    for (let i = 0; i < 24; i++) {
+      const delay = i * 0.16 + (Math.random() - 0.5) * 0.1;
+      this.beep(t + delay, 780 + Math.random() * 220, 0.03, "triangle", 0.16);
+    }
+  },
+  CRYPTEX() {
+    const t = this.ctx.currentTime;
+    for (let i = 0; i < 12; i++) this.beep(t + i * 0.32, 300 - i * 18, 0.1, "square", 0.22);
+  },
+  WORM() {
+    const t = this.ctx.currentTime;
+    for (let i = 0; i < 22; i++) {
+      const start = t + i * 0.14 + Math.random() * 0.04;
+      const o = this.ctx.createOscillator(); o.type = "sawtooth";
+      o.frequency.value = 220 + Math.random() * 220;
+      o.frequency.linearRampToValueAtTime(o.frequency.value * 2, start + 0.08);
+      const g = this.ctx.createGain();
+      const hp = this.ctx.createBiquadFilter(); hp.type = "highpass"; hp.frequency.value = 600;
+      o.connect(hp); hp.connect(g); g.connect(this.sfxGain);
+      g.gain.setValueAtTime(0.18, start);
+      g.gain.exponentialRampToValueAtTime(0.001, start + 0.1);
+      o.start(start); o.stop(start + 0.12);
+    }
+  },
+  ROOTKIT() {
+    const t = this.ctx.currentTime;
+    const o = this.ctx.createOscillator(); o.type = "sawtooth";
+    o.frequency.setValueAtTime(220, t);
+    o.frequency.exponentialRampToValueAtTime(28, t + 2);
+    const lp = this.ctx.createBiquadFilter(); lp.type = "lowpass"; lp.frequency.value = 800;
+    const g = this.ctx.createGain();
+    o.connect(lp); lp.connect(g); g.connect(this.sfxGain);
+    g.gain.setValueAtTime(0.5, t);
+    g.gain.linearRampToValueAtTime(0.4, t + 1.5);
+    g.gain.linearRampToValueAtTime(0, t + 4.5);
+    o.start(t); o.stop(t + 4.6);
+  },
+  DDOS() {
+    const t = this.ctx.currentTime;
+    for (let i = 0; i < 60; i++) this.beep(t + i * 0.07, 1200 + (i % 3) * 300, 0.05, "square", 0.1);
+  },
+  LEECH() {
+    const t = this.ctx.currentTime;
+    for (let i = 0; i < 38; i++) {
+      const start = t + i * 0.11 + Math.random() * 0.04;
+      this.beep(start, 1800 + Math.random() * 400, 0.025, "square", 0.13);
+    }
+  },
+  SCREAMER() {
+    this.scream();
+    setTimeout(() => this.scream(), 1100);
+  },
+  MIMIC() {
+    const t = this.ctx.currentTime;
+    const o = this.ctx.createOscillator(); o.type = "sine"; o.frequency.value = 800;
+    const g = this.ctx.createGain();
+    o.connect(g); g.connect(this.sfxGain);
+    g.gain.setValueAtTime(0, t);
+    g.gain.linearRampToValueAtTime(0.25, t + 0.05);
+    g.gain.linearRampToValueAtTime(0.25, t + 0.5);
+    o.start(t);
+    o.frequency.setValueAtTime(800, t + 0.6);
+    o.frequency.exponentialRampToValueAtTime(55, t + 3);
+    g.gain.linearRampToValueAtTime(0.42, t + 2);
+    g.gain.linearRampToValueAtTime(0, t + 4);
+    o.stop(t + 4.1);
+  },
+  PULSE() {
+    for (let i = 0; i < 6; i++) setTimeout(() => this.heartbeat(), i * 800);
+  },
+  NULL() {
+    const t = this.ctx.currentTime;
+    const start = t + 2;
+    const o = this.ctx.createOscillator(); o.type = "sine"; o.frequency.value = 50;
+    const g = this.ctx.createGain();
+    o.connect(g); g.connect(this.sfxGain);
+    g.gain.setValueAtTime(0, start);
+    g.gain.linearRampToValueAtTime(0.55, start + 0.005);
+    g.gain.exponentialRampToValueAtTime(0.001, start + 0.6);
+    o.start(start); o.stop(start + 0.7);
+  },
+  CURSOR() {
+    const t = this.ctx.currentTime;
+    for (let i = 0; i < 14; i++) {
+      const start = t + i * 0.33 + Math.random() * 0.08;
+      this.beep(start, 600 + Math.random() * 600, 0.06, "square", 0.14);
+    }
+  },
+  LOOP() {
+    const t = this.ctx.currentTime;
+    for (let i = 0; i < 8; i++) {
+      const start = t + i * 0.55;
+      const o = this.ctx.createOscillator(); o.type = "sine"; o.frequency.value = 200;
+      o.frequency.exponentialRampToValueAtTime(800, start + 0.5);
+      const g = this.ctx.createGain();
+      o.connect(g); g.connect(this.sfxGain);
+      g.gain.setValueAtTime(0, start);
+      g.gain.linearRampToValueAtTime(0.2, start + 0.05);
+      g.gain.linearRampToValueAtTime(0.2, start + 0.4);
+      g.gain.exponentialRampToValueAtTime(0.001, start + 0.55);
+      o.start(start); o.stop(start + 0.6);
+    }
+  },
+  FOSSIL() {
+    const t = this.ctx.currentTime;
+    [1209, 1336, 1477].forEach((f, i) => {
+      const start = t + i * 0.5;
+      const o = this.ctx.createOscillator(); o.type = "sine"; o.frequency.value = f;
+      const g = this.ctx.createGain();
+      o.connect(g); g.connect(this.sfxGain);
+      g.gain.setValueAtTime(0, start);
+      g.gain.linearRampToValueAtTime(0.18, start + 0.05);
+      g.gain.linearRampToValueAtTime(0.18, start + 0.4);
+      g.gain.exponentialRampToValueAtTime(0.001, start + 0.5);
+      o.start(start); o.stop(start + 0.55);
+    });
+    this.noiseBurst(t + 1.7, 2.5, 1500, 0.8, 0.18);
+  },
+  HEX() {
+    const t = this.ctx.currentTime;
+    const tones = [220, 275, 330, 415];
+    for (let i = 0; i < 18; i++) this.beep(t + i * 0.22, tones[i % 4] * 2 + (i * 13), 0.18, "square", 0.16);
+  },
+  BUGBEAR() {
+    const t = this.ctx.currentTime;
+    [880, 1108, 1318, 1568, 880, 1108, 1318, 1568].forEach((f, i) => {
+      const start = t + i * 0.18 + (i >= 4 ? 0.4 : 0);
+      const o = this.ctx.createOscillator(); o.type = "triangle"; o.frequency.value = f;
+      const g = this.ctx.createGain();
+      o.connect(g); g.connect(this.sfxGain);
+      g.gain.setValueAtTime(0, start);
+      g.gain.linearRampToValueAtTime(0.22, start + 0.01);
+      g.gain.exponentialRampToValueAtTime(0.001, start + 0.4);
+      o.start(start); o.stop(start + 0.45);
+    });
+  }
+};
+
+/* ============================================================
+   METERS (fake telemetry — never reads real system values)
+   ============================================================ */
+
+const FAKE_CLOCK_START = Date.UTC(2031, 5, 12, 14, 23, 7);
+let fakeClock = FAKE_CLOCK_START;
+
+function pad2(n) { return String(n).padStart(2, "0"); }
+function rng(a, b) { return Math.floor(Math.random() * (b - a + 1)) + a; }
+function clamp(v, a, b) { return v < a ? a : v > b ? b : v; }
+
+const METERS = {
+  timer: null,
+  override: null,
+  state: { fps: 60, ping: 24, cpu: 47, vol: 72, time: "14:23:07" },
+  start() {
+    if (this.timer) return;
+    this.tick();
+    this.timer = setInterval(() => this.tick(), 700);
+  },
+  stop() {
+    if (this.timer) clearInterval(this.timer);
+    this.timer = null;
+  },
+  setOverride(eff) {
+    this.override = eff || null;
+    this.tick();
+  },
+  tick() {
+    const s = this.state;
+    s.fps  = clamp(s.fps  + rng(-2, 2), 56, 64);
+    s.ping = clamp(s.ping + rng(-3, 3), 18, 32);
+    s.cpu  = clamp(s.cpu  + rng(-2, 2), 42, 56);
+    s.vol  = clamp(s.vol  + rng(-1, 1), 64, 78);
+    fakeClock += 700 + rng(0, 600);
+    const d = new Date(fakeClock);
+    s.time = pad2(d.getUTCHours()) + ":" + pad2(d.getUTCMinutes()) + ":" + pad2(d.getUTCSeconds());
+    this.paint();
+  },
+  paint() {
+    const o = this.override || {};
+    const set = (key, base) => {
+      const el = document.querySelector('[data-m="' + key + '"]');
+      if (!el) return;
+      const tampered = key in o;
+      el.textContent = tampered ? this.applyEffect(key, o[key]) : base;
+      el.classList.toggle("bad", tampered);
+    };
+    set("fps",  this.state.fps);
+    set("ping", this.state.ping);
+    set("cpu",  this.state.cpu);
+    set("vol",  this.state.vol);
+    set("time", this.state.time);
+  },
+  applyEffect(key, mode) {
+    if (typeof mode === "number") return String(mode);
+    switch (mode) {
+      case "flash":     return Math.random() < 0.5 ? "0"   : "999";
+      case "null":      return Math.random() < 0.5 ? "NULL": "∞";
+      case "pulse":     return Math.random() < 0.4 ? "120" : "60";
+      case "blank":     return "—";
+      case "kernel":    return "KERNEL";
+      case "countdown": return "00:00:0" + Math.floor(Math.random() * 9);
+      case "wrong":     return rand(["1601-01-01", "9999-12-31", "2025-02-30", "0000:00:00"]);
+      case "room237":   return this.state.time.slice(0, 3) + "37:" + this.state.time.slice(6);
+      case "spike":     return Math.random() < 0.5 ? String(this.state.ping) : "9999";
+      default:          return String(mode);
+    }
+  }
+};
+
+function meterEffectFor(card) {
+  if (!card || !card.isVirus) return null;
+  const v = VIRUSES[card.virusKey];
+  return v && v.meterEffect ? v.meterEffect : null;
+}
+
+/* ============================================================
+   STATE
+   ============================================================ */
+
+const state = {
+  screen: "epilepsy-warning",
+  prevScreen: "menu",
+  // play state
+  score: 0, round: 1, lives: CONFIG.startLives,
+  streak: 0, deck: [], cardIdx: 0,
+  correct: 0, total: 0,
+  killer: null,         // virus key when died to virus
+  falsePositive: null,  // legit card object when died to false positive
+  locked: false,
+  // codex
+  openCodex: null,      // key of currently expanded entry
+  codexFilter: null,    // when set, codex shows only this virus
+  // training
+  trainingVirus: null,
+  trainingStreak: 0,
+  // ui tampering
+  tampering: null,      // { type: 'swap'|'pulse'|'shake'|'null', strength: 0..1 }
+  // death sequence timer
+  deathTimeout: null
+};
+
+/* ============================================================
+   HELPERS
+   ============================================================ */
+
+function esc(s) {
+  return String(s == null ? "" : s)
+    .replace(/&/g, "&amp;").replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+}
+
+function shuffle(arr) {
+  const a = arr.slice();
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function rand(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+
+function availableViruses(round) {
+  return Object.keys(VIRUSES).filter(k => VIRUSES[k].minRound <= round);
+}
+
+function buildDeck(round) {
+  const avail = availableViruses(round);
+  const virusCards = [];
+  avail.forEach(k => VIRUSES[k].errors.forEach(e => virusCards.push({ ...e, isVirus: true, virusKey: k })));
+  const legitCards = LEGIT.map(e => ({ ...e, isVirus: false, virusKey: null }));
+  // Virus density ramps from ~20% (round 1) to ~70% (round 10)
+  const virusRatio = Math.min(0.7, 0.2 + (round - 1) * 0.06);
+  const virusCount = Math.min(virusCards.length, Math.max(2, Math.round(CONFIG.cardsPerRound * virusRatio)));
+  const legitCount = CONFIG.cardsPerRound - virusCount;
+  const pickedViruses = shuffle(virusCards).slice(0, virusCount);
+  const pickedLegit   = shuffle(legitCards).slice(0, legitCount);
+  return shuffle(pickedViruses.concat(pickedLegit));
+}
+
+function rollTampering(round, card) {
+  if (round < 4) return null;
+  if (card.virusKey === "PULSE") {
+    return { type: round >= 7 ? "pulseHard" : "pulse" };
+  }
+  if (card.virusKey === "NULL") {
+    return { type: "null" };
+  }
+  if (card.virusKey === "SCREAMER") {
+    return { type: round >= 7 ? "shake" : "pulseHard" };
+  }
+  // Other virus cards: chance of light tampering scaling with round
+  const chance = Math.min(0.35, (round - 3) * 0.05);
+  if (card.isVirus && Math.random() < chance) {
+    const opts = round >= 7 ? ["swap", "pulse", "shake"] : ["swap", "pulse"];
+    return { type: rand(opts) };
+  }
+  return null;
+}
+
+/* ============================================================
+   ACTIONS
+   ============================================================ */
+
+function unlockAudio() { Audio.resume(); }
+
+function go(screen) {
+  state.prevScreen = state.screen;
+  state.screen = screen;
+  render();
+}
+
+function startChallenge() {
+  unlockAudio();
+  Audio.startAmbient();
+  state.score = 0;
+  state.round = 1;
+  state.lives = CONFIG.startLives;
+  state.streak = 0;
+  state.correct = 0;
+  state.total = 0;
+  state.killer = null;
+  state.falsePositive = null;
+  state.cardIdx = 0;
+  state.deck = buildDeck(state.round);
+  state.tampering = rollTampering(state.round, state.deck[0]);
+  state.locked = false;
+  state.screen = "play";
+  render();
+  METERS.start();
+  METERS.setOverride(meterEffectFor(state.deck[0]));
+  maybePlayCardSound();
+}
+
+function startTraining(virusKey) {
+  unlockAudio();
+  Audio.startAmbient();
+  state.trainingVirus = virusKey;
+  state.trainingStreak = 0;
+  state.screen = "training";
+  state.locked = false;
+  state.deck = buildTrainingDeck(virusKey);
+  state.cardIdx = 0;
+  state.tampering = rollTampering(10, state.deck[0]);
+  render();
+  METERS.start();
+  METERS.setOverride(meterEffectFor(state.deck[0]));
+  maybePlayCardSound();
+}
+
+function buildTrainingDeck(virusKey) {
+  const v = VIRUSES[virusKey];
+  const virusCards = v.errors.map(e => ({ ...e, isVirus: true, virusKey }));
+  const legitCards = shuffle(LEGIT).slice(0, 12).map(e => ({ ...e, isVirus: false, virusKey: null }));
+  return shuffle(virusCards.concat(virusCards).concat(legitCards));
+}
+
+function nextCard() {
+  state.cardIdx++;
+  state.locked = false;
+  if (state.screen === "training") {
+    if (state.cardIdx >= state.deck.length) {
+      state.deck = buildTrainingDeck(state.trainingVirus);
+      state.cardIdx = 0;
+    }
+    state.tampering = rollTampering(10, state.deck[state.cardIdx]);
+    render();
+    METERS.setOverride(meterEffectFor(state.deck[state.cardIdx]));
+    maybePlayCardSound();
+    return;
+  }
+  if (state.cardIdx >= state.deck.length) {
+    if (state.round >= CONFIG.totalRounds) {
+      Audio.levelUp();
+      Audio.stopAmbient();
+      METERS.stop();
+      if (state.round > save.highestRound) { save.highestRound = state.round; Save.write(save); }
+      state.screen = "win";
+      render();
+      return;
+    }
+    state.round++;
+    if (state.round > save.highestRound) { save.highestRound = state.round; Save.write(save); }
+    state.cardIdx = 0;
+    state.deck = buildDeck(state.round);
+    Audio.levelUp();
+  }
+  state.tampering = rollTampering(state.round, state.deck[state.cardIdx]);
+  render();
+  METERS.setOverride(meterEffectFor(state.deck[state.cardIdx]));
+  maybePlayCardSound();
+}
+
+function maybePlayCardSound() {
+  const card = state.deck[state.cardIdx];
+  if (!card) return;
+  if (card.scream) Audio.scream();
+  else if (card.pulse) Audio.heartbeat();
+  else if (card.nullify) Audio.glitch();
+}
+
+function choose(reportedAsVirus) {
+  if (state.locked) return;
+  const card = state.deck[state.cardIdx];
+  if (!card) return;
+
+  // Apply swap-tampering: the labels visually swapped but the player's
+  // intent maps to the LABEL they clicked, not the underlying meaning.
+  // The button data-action stays correct ("virus"/"check") because the
+  // SWAP is purely cosmetic — the click already says what they intended.
+  state.locked = true;
+  const correct = reportedAsVirus === card.isVirus;
+  state.total++;
+  Audio.click();
+  if (correct) {
+    state.correct++;
+    state.streak++;
+    if (state.screen === "training") state.trainingStreak++;
+    const bonus = Math.min(state.streak, CONFIG.streakCap) * CONFIG.streakBonus;
+    state.score += CONFIG.scoreRight + bonus;
+    Audio.correct();
+    if (card.isVirus) unlockVirus(card.virusKey);
+    showReveal(true, card);
+    setTimeout(nextCard, 650);
+  } else {
+    state.streak = 0;
+    if (state.screen === "training") {
+      state.trainingStreak = 0;
+      Audio.wrong();
+      if (card.isVirus) unlockVirus(card.virusKey);
+      showReveal(false, card);
+      setTimeout(nextCard, 800);
+      return;
+    }
+    state.score = Math.max(0, state.score + CONFIG.scoreWrong);
+    state.lives--;
+    if (card.isVirus) unlockVirus(card.virusKey);
+    if (state.lives <= 0) {
+      Audio.stopAmbient();
+      METERS.stop();
+      if (card.isVirus) {
+        state.killer = card.virusKey;
+        state.falsePositive = null;
+        state.screen = "dying";
+        render();
+        Audio.death(card.virusKey);
+        const dur = (DEATHS[card.virusKey] || {}).duration || 4500;
+        state.deathTimeout = setTimeout(() => {
+          state.deathTimeout = null;
+          state.screen = "infected";
+          render();
+        }, dur);
+      } else {
+        state.killer = null;
+        state.falsePositive = card;
+        state.screen = "false-positive";
+        render();
+        Audio.gameOver();
+      }
+    } else {
+      Audio.wrong();
+      showReveal(false, card);
+      setTimeout(nextCard, 850);
+    }
+  }
+}
+
+function showReveal(correct, card) {
+  const r = document.getElementById("reveal");
+  if (!r) return;
+  r.className = "reveal " + (correct ? "correct" : "wrong");
+  let label;
+  if (correct) {
+    label = card.isVirus ? ("Neutralized · " + card.virusKey) : "Clear";
+  } else {
+    label = card.isVirus ? ("Missed · " + card.virusKey) : "False Positive";
+  }
+  r.innerHTML = '<div class="stamp">' + esc(label) + "</div>";
+  requestAnimationFrame(() => r.classList.add("show"));
+  setTimeout(() => r.classList.remove("show"), 650);
+}
+
+function toggleCodex(key) {
+  state.openCodex = (state.openCodex === key) ? null : key;
+  render();
+}
+
+/* ============================================================
+   POPUP TEMPLATE RENDERERS
+   ============================================================ */
+
+const ERROR_ICON_SVG = `
+  <svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true">
+    <circle cx="16" cy="16" r="14" fill="#c42b1c"/>
+    <path d="M11 11 L21 21 M21 11 L11 21" stroke="#fff" stroke-width="3" stroke-linecap="round"/>
+  </svg>`;
+
+const WARN_ICON_SVG = `
+  <svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true">
+    <path d="M16 3 L30 28 L2 28 Z" fill="#f5a623" stroke="#000" stroke-width="1"/>
+    <rect x="14.6" y="11" width="2.8" height="9" fill="#000"/>
+    <rect x="14.6" y="22" width="2.8" height="2.8" fill="#000"/>
+  </svg>`;
+
+function renderActions(card) {
+  // Report = Virus, OK = Safe. Hidden when NULL tampering active.
+  const left  = `<button class="btn danger" data-action="virus">Report</button>`;
+  const right = `<button class="btn primary" data-action="check">OK</button>`;
+  return left + right;
+}
+
+function renderWin11(card) {
+  const heading = card.title || "";
+  return `
+    <div class="win-dialog">
+      <div class="win-titlebar">
+        <div class="win-titlebar-left">
+          <div class="win-app-icon"></div>
+          <div class="win-title">${esc(card.title || "System")}</div>
+        </div>
+        <div class="win-tb-btns">
+          <div class="win-tb-btn">&#x2013;</div>
+          <div class="win-tb-btn">&#x25A1;</div>
+          <div class="win-tb-btn close">&#x2715;</div>
+        </div>
+      </div>
+      <div class="win-body">
+        <div class="win-error-icon">${ERROR_ICON_SVG}</div>
+        <div class="win-content">
+          ${heading ? `<div class="win-heading">${esc(heading)}</div>` : ""}
+          <div class="win-message">${esc(card.message)}</div>
+          ${card.meta ? `<div class="win-meta">${esc(card.meta)}</div>` : ""}
+        </div>
+      </div>
+      <div class="win-actions">
+        <button class="btn" data-action="virus">Report</button>
+        <button class="btn primary" data-action="check">OK</button>
+      </div>
+    </div>`;
+}
+
+function renderAV(card) {
+  return `
+    <div class="av-dialog">
+      <div class="av-header">
+        <span>⚠</span> Antivirus Alert <span class="badge">URGENT</span>
+      </div>
+      <div class="av-body">
+        <div class="av-icon">${WARN_ICON_SVG}</div>
+        <div class="av-content">
+          <div class="av-heading">${esc(card.title)}</div>
+          <div class="av-message">${esc(card.message)}</div>
+          ${card.meta ? `<div class="av-meta">${esc(card.meta)}</div>` : ""}
+        </div>
+      </div>
+      <div class="av-actions">
+        <button class="btn danger" data-action="virus">Report</button>
+        <button class="btn primary" data-action="check">OK</button>
+      </div>
+    </div>`;
+}
+
+function renderBIOS(card) {
+  return `
+    <div class="bios">
+      <div class="bios-header">${esc(card.title || "AWARD BIOS v1.4")}</div>
+      <div class="bios-row"><span class="bios-key">SYSTEM&nbsp;NOTICE:</span>&nbsp;${esc(card.message)}</div>
+      ${card.meta ? `<div class="bios-row" style="margin-top:10px"><span class="bios-key">DEBUG:</span>&nbsp;${esc(card.meta)}</div>` : ""}
+      <div class="bios-warn">Press a key to continue or report as threat.</div>
+      <div class="bios-actions">
+        <span><span class="key">F2</span> <button class="btn danger" data-action="virus" style="padding:4px 12px;font-size:12px">Report</button></span>
+        <span><span class="key">F10</span> <button class="btn primary" data-action="check" style="padding:4px 12px;font-size:12px">OK</button></span>
+      </div>
+    </div>`;
+}
+
+function renderTerminal(card) {
+  const ts = new Date().toISOString().replace("T", " ").slice(0, 19);
+  return `
+    <div class="term">
+      <div class="term-titlebar">
+        <span class="term-dot"></span>
+        <span>${esc(card.title || "shell")} — root@localhost</span>
+      </div>
+      <div class="term-body">
+        <div class="term-line"><span class="prompt">[${esc(ts)}] $</span> ${esc(card.title || "")}</div>
+        <div class="term-line"><span class="err">!</span> ${esc(card.message)}</div>
+        ${card.meta ? `<div class="term-line"><span class="warn">~</span> ${esc(card.meta)}</div>` : ""}
+        <div class="term-line"><span class="prompt">$</span> <span class="term-cursor"></span></div>
+      </div>
+      <div class="term-actions">
+        <button class="term-btn" data-action="virus">Report</button>
+        <button class="term-btn" data-action="check" style="background:#003366;border-color:#66ddff;color:#66ddff;">OK</button>
+      </div>
+    </div>`;
+}
+
+function renderToast(card) {
+  return `
+    <div class="toast-stage">
+      <div class="toast">
+        <div class="toast-head">
+          <span class="badge"></span> ${esc(card.title || "Notification")}
+          <span style="margin-left:auto;color:#888;">&#x2715;</span>
+        </div>
+        <div class="toast-body">
+          <div class="toast-title">${esc(card.title)}</div>
+          <div class="toast-msg">${esc(card.message)}</div>
+          ${card.meta ? `<div class="toast-meta">${esc(card.meta)}</div>` : ""}
+        </div>
+      </div>
+    </div>
+    <div class="row" style="gap:10px;margin-top:14px;">
+      <button class="btn danger big" data-action="virus">Report</button>
+      <button class="btn primary big" data-action="check">OK</button>
+    </div>`;
+}
+
+function renderDesktop(card) {
+  // pick icon style from filename suffix
+  let cls = "exe";
+  const t = (card.title || "").toLowerCase();
+  if (t.includes(".pdf")) cls = "pdf";
+  else if (t.includes(".zip")) cls = "zip";
+  else if (t.includes(".exe")) cls = "exe";
+  const glyph = cls === "pdf" ? "📄" : cls === "zip" ? "🗜" : "⚙";
+  return `
+    <div class="desktop-stage">
+      <div class="desktop-icon selected">
+        <div class="ico ${cls}">${glyph}</div>
+        <div class="label">${esc(card.title)}</div>
+      </div>
+      <div class="desktop-tooltip">
+        ${esc(card.message)}
+        ${card.meta ? `<div class="small">${esc(card.meta)}</div>` : ""}
+      </div>
+    </div>
+    <div class="row" style="gap:10px;margin-top:14px;">
+      <button class="btn danger big" data-action="virus">Report</button>
+      <button class="btn primary big" data-action="check">OK</button>
+    </div>`;
+}
+
+function renderLoading(card) {
+  return `
+    <div class="loading">
+      <div class="loading-title">${esc(card.title)}</div>
+      <div class="loading-sub">${esc(card.message)}</div>
+      <div class="loading-bar"><div class="loading-fill"></div></div>
+      <div class="loading-pct">63% — please do not power off</div>
+      ${card.meta ? `<div class="loading-step">> ${esc(card.meta)}</div>` : ""}
+    </div>
+    <div class="row" style="gap:10px;margin-top:14px;">
+      <button class="btn danger big" data-action="virus">Report</button>
+      <button class="btn primary big" data-action="check">OK</button>
+    </div>`;
+}
+
+function renderCard(card) {
+  switch (card.template) {
+    case TPL.AV:       return renderAV(card);
+    case TPL.BIOS:     return renderBIOS(card);
+    case TPL.TERMINAL: return renderTerminal(card);
+    case TPL.TOAST:    return renderToast(card);
+    case TPL.DESKTOP:  return renderDesktop(card);
+    case TPL.LOADING:  return renderLoading(card);
+    case TPL.WIN11:
+    default:           return renderWin11(card);
+  }
+}
+
+/* ============================================================
+   VIEWS
+   ============================================================ */
+
+function viewMenu() {
+  const high = save.highestRound || 1;
+  const unlockedCount = save.unlocked.length;
+  const totalCount = Object.keys(VIRUSES).length;
+  return `
+    <div class="panel center stack loose fade-in">
+      <div class="stack tight">
+        <div class="logo">THREATDETECT</div>
+        <div class="tiny">SOC analyst training simulator</div>
+      </div>
+      <div class="stack tight" style="margin-top: 8px;">
+        <button class="menu-btn" data-action="play"><span>Challenge<div class="menu-sub">10 rounds · viruses unlock as you climb</div></span><span class="arrow">▶</span></button>
+        <button class="menu-btn" data-action="training"><span>Training<div class="menu-sub">Pick a virus · practice infinitely</div></span><span class="arrow">▶</span></button>
+        <button class="menu-btn" data-action="codex"><span>Codex<div class="menu-sub">${unlockedCount}/${totalCount} threats discovered</div></span><span class="arrow">▶</span></button>
+        <button class="menu-btn" data-action="settings"><span>Settings<div class="menu-sub">Audio · photosensitivity · reset</div></span><span class="arrow">▶</span></button>
+      </div>
+      <div class="badge-row" style="justify-content: center; margin-top: 6px;">
+        <span class="badge">Best round: ${high}/${CONFIG.totalRounds}</span>
+        <span class="badge">v1.0</span>
+      </div>
+    </div>`;
+}
+
+function viewSettings() {
+  const s = save.settings;
+  return `
+    <div class="panel stack fade-in">
+      <div class="row between">
+        <h2>Settings</h2>
+        <button class="btn" data-action="menu">Back</button>
+      </div>
+      <div class="setting-row">
+        <div><label>Master volume</label><div class="desc">Overall mix</div></div>
+        <input class="slider" type="range" min="0" max="1" step="0.01" value="${s.master}" data-setting="master">
+      </div>
+      <div class="setting-row">
+        <div><label>Ambient hum</label><div class="desc">Background drone during play</div></div>
+        <input class="slider" type="range" min="0" max="1" step="0.01" value="${s.ambient}" data-setting="ambient">
+      </div>
+      <div class="setting-row">
+        <div><label>SFX</label><div class="desc">Clicks, scream, reveal</div></div>
+        <input class="slider" type="range" min="0" max="1" step="0.01" value="${s.sfx}" data-setting="sfx">
+      </div>
+      <div class="setting-row">
+        <div><label>Photosensitive mode</label><div class="desc">Reduce flashing / strobe effects</div></div>
+        <div class="toggle ${s.photosensitive ? "on" : ""}" data-action="toggle-photo"></div>
+      </div>
+      <div class="setting-row">
+        <div><label>Reset all progress</label><div class="desc">Wipes codex unlocks, best round, and settings</div></div>
+        <button class="btn danger" data-action="reset">Reset</button>
+      </div>
+    </div>`;
+}
+
+function viewCodex() {
+  const list = Object.keys(VIRUSES).map(key => {
+    const v = VIRUSES[key];
+    const unlocked = save.unlocked.includes(key);
+    const isOpen = state.openCodex === key;
+    const filtered = state.codexFilter && state.codexFilter !== key;
+    if (filtered) return "";
+    return `
+      <div class="codex-entry v-${key} ${isOpen ? "open" : ""}">
+        <div class="codex-head" data-action="toggle-entry" data-key="${key}">
+          <span class="caret">▶</span>
+          <span class="vname v-${key} ${unlocked ? "" : "locked"}">${unlocked ? esc(v.name) : "??????"}</span>
+          <span class="tiny">${unlocked ? "Discovered" : "Locked"}</span>
+        </div>
+        <div class="codex-body">
+          <p class="desc">${unlocked ? esc(v.description) : "Encounter and identify this threat to unlock its file."}</p>
+          ${unlocked ? `<p class="tiny">How to identify</p><ul>${v.signs.map(s => `<li>${esc(s)}</li>`).join("")}</ul>` : ""}
+        </div>
+      </div>`;
+  }).join("");
+  return `
+    <div class="panel wide stack fade-in">
+      <div class="row between">
+        <h2>${state.codexFilter ? "Killer Threat File" : "Virus Codex"}</h2>
+        <button class="btn" data-action="back-from-codex">Back</button>
+      </div>
+      <p class="mute">${state.codexFilter ? "The threat that ended your run." : `${save.unlocked.length}/${Object.keys(VIRUSES).length} threats discovered.`}</p>
+      <div class="codex-list">${list}</div>
+    </div>`;
+}
+
+function viewTraining() {
+  if (!state.trainingVirus) {
+    const entries = Object.keys(VIRUSES).map(key => {
+      const v = VIRUSES[key];
+      const unlocked = save.unlocked.includes(key);
+      const cls = "v-" + key;
+      return `
+        <button class="menu-btn" data-action="train-pick" data-key="${key}" ${unlocked ? "" : "disabled style='opacity:0.5;cursor:not-allowed;'"}>
+          <span>
+            <span class="${cls}" style="font-weight:700;">${unlocked ? esc(v.name) : "??????"}</span>
+            <div class="menu-sub">${unlocked ? esc(v.description.slice(0, 80)) + "…" : "Unlock by encountering in Challenge."}</div>
+          </span>
+          <span class="arrow">▶</span>
+        </button>`;
+    }).join("");
+    return `
+      <div class="panel wide stack fade-in">
+        <div class="row between">
+          <h2>Training</h2>
+          <button class="btn" data-action="menu">Back</button>
+        </div>
+        <p class="mute">Pick a virus to practice against. Infinite lives. Mixed in with legitimate alerts.</p>
+        <div class="stack tight">${entries}</div>
+      </div>`;
+  }
+  return viewPlay(true);
+}
+
+function viewPlay(isTraining) {
+  const card = state.deck[state.cardIdx];
+  if (!card) return "";
+  const hearts = "♥".repeat(state.lives) + "♡".repeat(Math.max(0, CONFIG.startLives - state.lives));
+  const photo = save.settings.photosensitive;
+  let tamperCls = "";
+  if (state.tampering && !photo) {
+    if (state.tampering.type === "pulse")     tamperCls = " tamper-pulse";
+    if (state.tampering.type === "pulseHard") tamperCls = " tamper-pulse-hard";
+    if (state.tampering.type === "shake")     tamperCls = " tamper-shake";
+    if (state.tampering.type === "null")      tamperCls = " tamper-null";
+  }
+  // Swap visual: render the card then *flip* the button order by adding a flex-direction reverse class.
+  const swap = state.tampering && state.tampering.type === "swap";
+  const hud = isTraining ? `
+    <div class="hud">
+      <div class="cell"><div class="label">Mode</div><div class="value">Training</div></div>
+      <div class="cell"><div class="label">Target</div><div class="value v-${state.trainingVirus}">${esc(state.trainingVirus)}</div></div>
+      <div class="cell"><div class="label">Streak</div><div class="value">×${state.trainingStreak}</div></div>
+      <button class="cell" data-action="menu" style="background:var(--muted);border:1px solid var(--border);color:var(--fg);"><div class="label">Exit</div><div class="value" style="font-size:1rem;">↩</div></button>
+    </div>` : `
+    <div class="hud">
+      <div class="cell"><div class="label">Score</div><div class="value">${state.score}</div></div>
+      <div class="cell"><div class="label">Round</div><div class="value">${state.round}/${CONFIG.totalRounds}</div></div>
+      <div class="cell"><div class="label">Life</div><div class="value" style="color:var(--primary);text-shadow:0 0 8px rgba(255,80,80,0.4);">${hearts}</div></div>
+      <button class="cell" data-action="pause-codex" style="background:var(--muted);border:1px solid var(--border);color:var(--fg);"><div class="label">Codex</div><div class="value" style="font-size:1rem;">📖</div></button>
+    </div>`;
+  const meters = `
+    <div class="meters" aria-label="System telemetry">
+      <div class="meter"><span class="m-label">FPS</span><span class="m-val" data-m="fps">60</span></div>
+      <div class="meter"><span class="m-label">PING</span><span class="m-val" data-m="ping">24</span><span class="m-unit">ms</span></div>
+      <div class="meter"><span class="m-label">CPU</span><span class="m-val" data-m="cpu">47</span><span class="m-unit">°C</span></div>
+      <div class="meter"><span class="m-label">VOL</span><span class="m-val" data-m="vol">72</span><span class="m-unit">%</span></div>
+      <div class="meter"><span class="m-label">SYS</span><span class="m-val" data-m="time">14:23:07</span></div>
+    </div>`;
+  return `
+    <div class="panel stack fade-in">
+      ${hud}
+      ${meters}
+      <div class="row between">
+        <span class="tiny">${isTraining ? "Repeat as needed" : `Card ${state.cardIdx + 1} / ${state.deck.length}`}</span>
+        <span class="tiny">${isTraining ? `Best streak this session: ×${state.trainingStreak}` : `Streak ×${state.streak}`}</span>
+      </div>
+      <div class="card-wrap${tamperCls}" ${swap ? "style='direction:rtl;'" : ""}>${renderCard(card)}</div>
+    </div>`;
+}
+
+function viewEpilepsyWarning() {
+  return `
+    <div class="panel center stack fade-in">
+      <h3 style="color: hsl(40 100% 65%); letter-spacing: 0.3em;">PHOTOSENSITIVITY WARNING</h3>
+      <h1 class="flicker" style="color: hsl(40 100% 65%); text-shadow: 0 0 18px hsl(40 100% 45%);">EPILEPSY ADVISORY</h1>
+      <div class="stack" style="max-width: 480px; margin: 0 auto; text-align: left;">
+        <p class="mute">This game contains:</p>
+        <ul class="mute" style="line-height: 1.7; padding-left: 18px;">
+          <li>Rapid flashing lights and full-screen strobe effects</li>
+          <li>Sudden loud audio cues during threat reveals</li>
+          <li>Aggressive visual distortion during death sequences</li>
+          <li>Color shifts and brightness pulses across the UI</li>
+        </ul>
+        <p class="mute">If you have a history of epilepsy, photosensitive seizures, or visual triggers, close this tab now. Otherwise, you can enable <strong>Photosensitive Mode</strong> in Settings to reduce flashing.</p>
+      </div>
+      <div class="row center" style="margin-top: 12px;">
+        <button class="btn primary" data-action="confirm-warning">I Understand · Continue</button>
+      </div>
+    </div>`;
+}
+
+function viewDying() {
+  const k = state.killer;
+  const photoCls = save.settings.photosensitive ? " photo-safe" : "";
+  return `
+    <div class="death-stage death-${k}${photoCls}">
+      <button class="btn death-skip" data-action="skip-death">Skip →</button>
+    </div>`;
+}
+
+function viewInfected() {
+  const v = state.killer ? VIRUSES[state.killer] : null;
+  const accuracy = state.total ? Math.round(state.correct / state.total * 100) : 0;
+  const cls = state.killer ? "v-" + state.killer : "";
+  return `
+    <div class="panel center stack fade-in">
+      <h3 style="color: var(--destruct)">SYSTEM BREACH</h3>
+      <h1 class="glitch ${cls}">INFECTED</h1>
+      ${v ? `<h2 class="${cls}">${esc(v.name)}</h2><p class="mute" style="max-width:460px;margin:0 auto;">${esc(v.description)}</p>` : ""}
+      <div class="hud" style="margin-top: 8px;">
+        <div class="cell"><div class="label">Score</div><div class="value">${state.score}</div></div>
+        <div class="cell"><div class="label">Accuracy</div><div class="value">${accuracy}%</div></div>
+        <div class="cell"><div class="label">Correct</div><div class="value">${state.correct}/${state.total}</div></div>
+        <div class="cell"><div class="label">Round</div><div class="value">${state.round}</div></div>
+      </div>
+      <div class="row center">
+        <button class="btn primary" data-action="play">Try Again</button>
+        <button class="btn" data-action="study-killer">Study This Threat</button>
+        <button class="btn" data-action="menu">Main Menu</button>
+      </div>
+    </div>`;
+}
+
+function viewFalsePositive() {
+  const fp = state.falsePositive;
+  const accuracy = state.total ? Math.round(state.correct / state.total * 100) : 0;
+  return `
+    <div class="panel center stack fade-in">
+      <h3 style="color: hsl(40 100% 60%);">COMPLIANCE FLAG</h3>
+      <h1 style="color: hsl(40 100% 60%); text-shadow: 0 0 16px hsl(40 100% 40%);">FALSE POSITIVE</h1>
+      <p class="mute" style="max-width: 460px; margin: 0 auto;">
+        You quarantined a legitimate system process. Help desk got buried in tickets, and the auditor is asking questions.
+      </p>
+      ${fp ? `
+        <div style="background:var(--bg-2);border:1px solid var(--border);border-radius:6px;padding:14px 18px;text-align:left;font-size:0.85rem;">
+          <div class="tiny" style="margin-bottom:6px;">The alert you reported</div>
+          <div style="font-weight:700;margin-bottom:4px;">${esc(fp.title)}</div>
+          <div class="mute" style="font-size:0.85rem;">${esc(fp.message)}</div>
+        </div>` : ""}
+      <div class="hud" style="margin-top: 8px;">
+        <div class="cell"><div class="label">Score</div><div class="value">${state.score}</div></div>
+        <div class="cell"><div class="label">Accuracy</div><div class="value">${accuracy}%</div></div>
+        <div class="cell"><div class="label">Correct</div><div class="value">${state.correct}/${state.total}</div></div>
+        <div class="cell"><div class="label">Round</div><div class="value">${state.round}</div></div>
+      </div>
+      <div class="row center">
+        <button class="btn primary" data-action="play">Try Again</button>
+        <button class="btn" data-action="menu">Main Menu</button>
+      </div>
+    </div>`;
+}
+
+function viewWin() {
+  const accuracy = state.total ? Math.round(state.correct / state.total * 100) : 0;
+  return `
+    <div class="panel center stack fade-in">
+      <h3 style="color: var(--primary)">SHIFT COMPLETE</h3>
+      <h1 class="pulse">SYSTEM SECURE</h1>
+      <p class="mute">All ${CONFIG.totalRounds} rounds cleared. The network is yours.</p>
+      <div class="hud">
+        <div class="cell"><div class="label">Score</div><div class="value">${state.score}</div></div>
+        <div class="cell"><div class="label">Accuracy</div><div class="value">${accuracy}%</div></div>
+        <div class="cell"><div class="label">Correct</div><div class="value">${state.correct}/${state.total}</div></div>
+        <div class="cell"><div class="label">Codex</div><div class="value">${save.unlocked.length}/${Object.keys(VIRUSES).length}</div></div>
+      </div>
+      <div class="row center">
+        <button class="btn primary" data-action="play">Play Again</button>
+        <button class="btn" data-action="codex">Codex</button>
+        <button class="btn" data-action="menu">Main Menu</button>
+      </div>
+    </div>`;
+}
+
+/* ============================================================
+   ROUTER
+   ============================================================ */
+
+function render() {
+  const app = document.getElementById("app");
+  let html = "";
+  switch (state.screen) {
+    case "menu":              html = viewMenu(); break;
+    case "settings":          html = viewSettings(); break;
+    case "codex":             html = viewCodex(); break;
+    case "training":          html = viewTraining(); break;
+    case "training-pick":     html = viewTraining(); break;
+    case "play":              html = viewPlay(false); break;
+    case "epilepsy-warning":  html = viewEpilepsyWarning(); break;
+    case "dying":             html = viewDying(); break;
+    case "infected":          html = viewInfected(); break;
+    case "false-positive":    html = viewFalsePositive(); break;
+    case "win":               html = viewWin(); break;
+    default:                  html = viewMenu();
+  }
+  app.innerHTML = html + '<div id="reveal" class="reveal"></div>';
+}
+
+document.addEventListener("click", (e) => {
+  unlockAudio();
+  const btn = e.target.closest("[data-action]");
+  if (!btn) return;
+  const a = btn.dataset.action;
+  switch (a) {
+    case "play":
+      startChallenge();
+      break;
+    case "confirm-warning":
+      state.screen = "menu";
+      render();
+      break;
+    case "skip-death":
+      if (state.deathTimeout) { clearTimeout(state.deathTimeout); state.deathTimeout = null; }
+      state.screen = "infected";
+      render();
+      break;
+    case "training":
+      state.trainingVirus = null;
+      state.screen = "training-pick";
+      render();
+      break;
+    case "train-pick":
+      if (btn.hasAttribute("disabled")) return;
+      startTraining(btn.dataset.key);
+      break;
+    case "codex":
+      state.codexFilter = null;
+      state.openCodex = null;
+      state.prevScreen = state.screen;
+      state.screen = "codex";
+      render();
+      break;
+    case "pause-codex":
+      state.codexFilter = null;
+      state.openCodex = null;
+      state.prevScreen = "play";
+      state.screen = "codex";
+      render();
+      break;
+    case "study-killer":
+      if (!state.killer) break;
+      state.codexFilter = state.killer;
+      state.openCodex = state.killer;
+      state.prevScreen = state.screen;
+      state.screen = "codex";
+      render();
+      break;
+    case "back-from-codex":
+      state.codexFilter = null;
+      state.openCodex = null;
+      state.screen = state.prevScreen || "menu";
+      render();
+      // resume meter ticker if we returned to play/training
+      if (state.screen === "play" || state.screen === "training") {
+        const card = state.deck[state.cardIdx];
+        if (card) METERS.setOverride(meterEffectFor(card));
+      }
+      break;
+    case "toggle-entry":
+      toggleCodex(btn.dataset.key);
+      break;
+    case "settings":
+      state.prevScreen = state.screen;
+      state.screen = "settings";
+      render();
+      break;
+    case "toggle-photo":
+      save.settings.photosensitive = !save.settings.photosensitive;
+      Save.write(save);
+      render();
+      break;
+    case "reset":
+      if (confirm("Wipe all progress, codex unlocks, and settings?")) {
+        Save.reset();
+        save = Save.load();
+        Audio.applyVolumes();
+        state.screen = "menu";
+        render();
+      }
+      break;
+    case "menu":
+      Audio.stopAmbient();
+      METERS.stop();
+      state.trainingVirus = null;
+      state.screen = "menu";
+      render();
+      break;
+    case "virus":  choose(true); break;
+    case "check":  choose(false); break;
+  }
+});
+
+document.addEventListener("input", (e) => {
+  const s = e.target.dataset && e.target.dataset.setting;
+  if (!s) return;
+  save.settings[s] = parseFloat(e.target.value);
+  Audio.applyVolumes();
+  Save.write(save);
+});
+
+document.addEventListener("keydown", (e) => {
+  if (state.screen !== "play" && state.screen !== "training") return;
+  if (state.locked) return;
+  if (e.key === "ArrowLeft" || e.key === "v" || e.key === "V" || e.key === "1") choose(true);
+  if (e.key === "ArrowRight" || e.key === "c" || e.key === "C" || e.key === "2") choose(false);
+});
+
+/* ============================================================
+   INIT
+   ============================================================ */
+
+render();
+</script>
+</body>
+</html>
