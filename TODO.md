@@ -12,6 +12,15 @@ See `IDEAS.md` for the larger brainstorm — items often graduate from IDEAS int
 
 ## Active
 
+- [ ] **Split the single HTML file into multiple files.** Right now `index.html` is ~270 KB and grows every session. Splitting it makes editing easier — smaller files load faster in the editor, the git diff of "I changed the WORM data" doesn't have to live next to a CSS change, and we can find code by *where it logically lives* instead of scrolling.
+
+  **Three paths:**
+  1. **Keep single file, add clearer section dividers / table of contents at the top.** Smallest change. Buys you faster navigation in the editor (Ctrl+F a big section banner). No cost — still double-click to play.
+  2. **Multi-file from a local folder.** `index.html` + `style.css` + `game.js` + `data.js` (or JSON). Best editing experience. **Downside:** browsers block ES module imports over `file://` due to CORS — you'd need to run a tiny local web server (`python -m http.server`) to test. Loses the "open from disk and play" magic.
+  3. **Split for dev, bundle for release.** Write multiple files; have a tiny script concatenate them into a single `index.html` when you want to share. Best of both worlds, but adds one build step. Probably the right answer when the project crosses ~400 KB.
+
+  **Recommendation:** start with option 1 (just add clear section banners — 15-minute job, big readability win). Move to option 3 if the project keeps growing and edits feel painful.
+
 - [ ] **Randomize alerts to fight memorization.** Same virus error rendered twice should *not* look identical. On each render, randomize within a controlled pool:
   - File counts, byte sizes, PIDs, port numbers, version numbers, timestamps
   - Domain TLDs (`.host` / `.live` / `.ru` / `.pw` / `.win`)

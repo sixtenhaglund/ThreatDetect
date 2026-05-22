@@ -80,6 +80,7 @@ The foundation is solid. Everything below builds on it without rewriting.
 - 🟢 **Rename `startChallenge` to `startGame`** — name is misleading now that Challenge is a separate mode.
 - 🟡 **Centralize screen transitions** — most `state.screen = "x"; render();` could go through a `go(name)` helper that also clears transient state slots (`previewTimeout`, `trainingReveal`, etc.). One place to update if cleanup ever needs to happen everywhere.
 - 🟡 **Stop using `prevScreen` for back navigation** — replace with an explicit stack `state.navStack: []` so the codex/preview/settings back-buttons can never clobber each other again (the bug we already fixed once).
+- 🟡 **Split the single HTML file into multiple files** — see `TODO.md` for the three paths (keep single + add dividers / multi-file folder / split-for-dev-bundle-for-release).
 
 ### Asset loading
 - 🟢 **Preload Segoe UI Variable** explicitly — currently falls back to system-ui on browsers without it. A `@font-face` declaration with a CDN fallback would be ~10 lines.
