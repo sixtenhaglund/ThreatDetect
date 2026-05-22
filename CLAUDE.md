@@ -49,4 +49,16 @@ Wiped by Settings → **Reset**. Note: localStorage is scoped to the file's path
 
 ## Working on this project
 
-See the global CLAUDE.md (`~/.claude/CLAUDE.md`) for collaboration style and git workflow.
+See the global CLAUDE.md (`~/.claude/CLAUDE.md`) for collaboration style.
+
+## Commit / push policy for this repo
+
+This is a live repo at https://github.com/sixtenhaglund/ThreatDetect.
+
+- **After every bigger change, commit AND push** — no waiting for permission. This is durable standing authorization.
+- A "bigger change" = new feature, significant refactor, finished iteration of a task. Single-line tweaks can batch with the next real change.
+- **Deadman's switch:** if a session has been going for a while with no commit/push, just do one. Don't let the diff pile up.
+- Branch: `main`. No PRs unless asked.
+- Commit messages: imperative summary on line 1, optional bulleted body for bigger changes. No co-author footer.
+- Push immediately after every commit — never leave a commit only locally.
+- Never force-push, never skip hooks unless Sixten explicitly asks.
