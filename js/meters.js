@@ -31,9 +31,10 @@ const METERS = {
   },
   setOverride(eff, isVirus) {
     this.override = eff || null;
-    // When a legit card sets the meter context (e.g. thermal throttle → high CPU),
-    // we don't want the value flagged red — it's an expected reading, not tampering.
-    this.overrideIsVirus = isVirus !== false;
+    // Legit cards don't get the red 'bad' flag.
+    // A virus card can also opt-in to the quiet treatment by adding quiet:true to
+    // its meterEffect — A5515T4N7 uses this so its too-perfect values stay subtle.
+    this.overrideIsVirus = isVirus !== false && !(eff && eff.quiet);
     this.tick();
   },
   tick() {

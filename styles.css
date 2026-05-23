@@ -2033,73 +2033,22 @@
     100% { background-position: 35% 40%, 65% 65%; }
   }
 
-  /* HALLUCINATE — AI assistant melting down. Glitchy disclaimer text in the middle,
-     thinking-dots loop, a confidence-meter banner that scrolls, and a shaky 🤖. */
-  .death-HALLUCINATE { background: radial-gradient(circle at center, #003d35 0%, #001a16 70%, #000 100%); }
-  .death-HALLUCINATE::before {
-    content: "I MAY HAVE MADE A MISTAKE";
-    position: absolute; inset: 0;
-    display: flex; align-items: center; justify-content: center;
-    font-family: "Cascadia Mono", Consolas, monospace;
-    font-size: 2.6rem; font-weight: 900;
-    color: #00d4aa;
-    text-shadow: 0 0 18px #00d4aa, 0 0 40px #00d4aa, 2px 0 #ff44aa, -2px 0 #00ddff;
-    letter-spacing: 0.08em;
-    text-align: center;
-    padding: 0 18px;
-    animation: hallucGlitch 0.55s steps(7) infinite;
+  /* A5515T4N7 (HALLUCINATE) — pure 64x64 green/black static. Each pixel
+     re-rolls 50/50 every 0.5s. JS (applyHallucinateStatic in main.js)
+     paints a fresh canvas → data-URL onto the background. CSS just keeps
+     pixels crisp when the 64x64 image gets scaled up to fill the screen. */
+  .death-HALLUCINATE {
+    background-color: #000;
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    image-rendering: pixelated;
+    image-rendering: -moz-crisp-edges;
+    image-rendering: crisp-edges;
   }
-  @keyframes hallucGlitch {
-    0%   { transform: translate(0, 0); opacity: 0.95; }
-    14%  { transform: translate(-5px, 3px); opacity: 0.4; letter-spacing: 0.18em; }
-    28%  { transform: translate(6px, -2px); opacity: 1;  letter-spacing: 0.05em; }
-    42%  { transform: translate(-2px, 4px); opacity: 0.7; }
-    56%  { transform: translate(3px, -4px); opacity: 1; }
-    70%  { transform: translate(-4px, 2px); opacity: 0.45; }
-    84%  { transform: translate(2px, 0);    opacity: 0.95; }
-    100% { transform: translate(0, 0);      opacity: 0.95; }
-  }
-  .death-HALLUCINATE::after {
-    content: "▓ ANALYZING . . . ▓ Confidence: 99% ▓ ANALYZING . . . ▓ Confidence: 99% ▓ ANALYZING . . . ▓";
-    position: absolute; inset: auto 0 14% 0;
-    text-align: center;
-    font-family: monospace; font-size: 1.15rem;
-    color: #88ffdd;
-    background: rgba(0, 30, 25, 0.8);
-    padding: 8px 0;
-    letter-spacing: 0.2em;
-    white-space: nowrap;
-    text-shadow: 0 0 12px #00d4aa;
-    animation: hallucScrollBanner 6s linear infinite;
-  }
-  @keyframes hallucScrollBanner {
-    from { transform: translateX(100%); }
-    to   { transform: translateX(-100%); }
-  }
-  .death-HALLUCINATE .death-fx::before {
-    content: "🤖";
-    position: absolute; top: 8%; right: 10%;
-    font-size: 7rem;
-    filter: drop-shadow(0 0 28px #00d4aa);
-    animation: hallucBotShake 0.36s ease-in-out infinite;
-  }
-  @keyframes hallucBotShake {
-    0%, 100% { transform: rotate(-6deg) scale(1);    opacity: 0.85; }
-    50%      { transform: rotate(6deg)  scale(1.1); opacity: 1; }
-  }
-  .death-HALLUCINATE .death-fx::after {
-    content: ". . .   . . .   . . .   . . .   . . .   . . .   . . .   . . .   . . .";
-    position: absolute; inset: 25% 0 auto 0;
-    text-align: center;
-    font-family: monospace; font-size: 2.2rem; font-weight: 900;
-    color: rgba(0, 212, 170, 0.55);
-    letter-spacing: 0.4em;
-    animation: hallucDots 1.4s steps(4) infinite;
-  }
-  @keyframes hallucDots {
-    0%, 100% { opacity: 0.35; }
-    50%      { opacity: 0.8; transform: translateY(-4px); }
-  }
+  .death-HALLUCINATE::before,
+  .death-HALLUCINATE::after,
+  .death-HALLUCINATE .death-fx::before,
+  .death-HALLUCINATE .death-fx::after { content: none; }
 
   /* PULSE — heartbeat throb + sharp ECG spike + BPM banner. Dark + scary palette. */
   .death-PULSE { background: #060000; animation: pulseBeat 1.1s ease-in-out infinite; }

@@ -36,6 +36,7 @@ function render() {
   // Music: menu music plays on all out-of-game screens; in-game music is started
   // by startChallenge/startTraining. Death + minigame screens are silent on the music side.
   applyMusicForScreen();
+  applyHallucinateStatic();
 }
 
 const MENU_MUSIC_SCREENS = new Set([
@@ -49,6 +50,47 @@ function applyMusicForScreen() {
     Audio.startMenuMusic();
   } else {
     Audio.stopMenuMusic();
+  }
+}
+
+/* ============================================================
+   A5515T4N7 (HALLUCINATE) — 64x64 black/green static effect
+   Each pixel is randomly black or green; the whole grid re-rolls every 0.5s.
+   ============================================================ */
+let _hallucStaticInterval = null;
+
+function paintHallucinateStatic() {
+  const el = document.querySelector(".death-HALLUCINATE");
+  if (!el) return;
+  const c = document.createElement("canvas");
+  c.width = c.height = 64;
+  const ctx = c.getContext("2d");
+  const img = ctx.createImageData(64, 64);
+  for (let i = 0; i < img.data.length; i += 4) {
+    const on = Math.random() < 0.5;
+    img.data[i]     = on ? 0   : 0;
+    img.data[i + 1] = on ? 255 : 0;
+    img.data[i + 2] = on ? 68  : 0;
+    img.data[i + 3] = 255;
+  }
+  ctx.putImageData(img, 0, 0);
+  el.style.backgroundImage = "url(" + c.toDataURL() + ")";
+}
+
+function applyHallucinateStatic() {
+  const onScreen =
+    (state.screen === "dying"    && state.killer      === "HALLUCINATE") ||
+    (state.screen === "preview"  && state.previewVirus === "HALLUCINATE") ||
+    (state.screen === "infected" && state.killer      === "HALLUCINATE");
+  if (onScreen && !_hallucStaticInterval) {
+    paintHallucinateStatic();
+    _hallucStaticInterval = setInterval(paintHallucinateStatic, 500);
+  } else if (!onScreen && _hallucStaticInterval) {
+    clearInterval(_hallucStaticInterval);
+    _hallucStaticInterval = null;
+  } else if (onScreen) {
+    // Re-paint immediately on screen change so the new node has a pattern.
+    paintHallucinateStatic();
   }
 }
 

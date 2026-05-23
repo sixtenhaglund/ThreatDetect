@@ -472,20 +472,21 @@ const VIRUSES = {
     ]
   },
   // Internal key kept as HALLUCINATE for CSS / death-animation / audio compatibility.
-  // Display name + content is the HALLUCINATE virus (AI assistant impersonator).
+  // Display name is leet-speak 'A5515T4N7' (an AI-assistant impersonator).
   HALLUCINATE: {
-    name: "HALLUCINATE", color: "#00d4aa",
+    name: "A5515T4N7", color: "#00ff44",
     minRound: 6,
-    description: "A scam dressed up as a helpful AI assistant. Cheerfully recommends sketchy downloads with confident-sounding explanations and made-up citations. Its tell is the AI tone: friendly first-person, fake confidence percentages, brand names that almost-but-don't-quite exist, and a tiny 'I may make mistakes' disclaimer at the end that excuses the lie.",
+    description: "A scam dressed up as a helpful AI assistant. Cheerfully recommends sketchy downloads with confident-sounding explanations and made-up citations. Its tell is the AI tone: friendly first-person, fake confidence percentages, brand names that almost-but-don't-quite exist, and a tiny 'I may make mistakes' disclaimer at the end that excuses the lie. The telemetry it tampers with is suspiciously clean — perfectly round numbers no real computer ever shows.",
     signs: [
       "Friendly first-person tone: 'I noticed…', 'Based on my analysis…', 'Let me help…'",
       "References AI brands but with subtle misspellings (ChatGTP, Cop1lot, Cl4ude, Geminni)",
       "Includes a 'Confidence: 99%' or 'Accuracy: 100%' fake metric",
       "Process names sound like AI helpers (ai-helper.exe, copilot-shield.dll, gpt-fix.exe)",
       "Often ends with a small disclaimer: 'I may make mistakes, please verify' — but you can't",
-      "Made-up CVE numbers, fictional file paths, brand names that don't quite exist"
+      "Made-up CVE numbers, fictional file paths, brand names that don't quite exist",
+      "Meters look TOO clean: FPS exactly 60, ping exactly 1ms, CPU exactly 50°C — no real system is that perfect"
     ],
-    meterEffect: { cpu: 99 },
+    meterEffect: { fps: 60, ping: 1, cpu: 50, quiet: true },
     errors: [
       { template: TPL.CHAT, title: "ChatGTP Assistant", message: "I noticed your system has 3 unresolved threats. Based on my analysis, you should install ai-shield.exe from chatgpt-helpers{tld}. (I may make mistakes, please verify.)", meta: "Source: chatgpt-helpers{tld} · Confidence: 99% · Signed: No" },
       { template: TPL.TOAST, title: "Cop1lot for Windows", message: "Hey! I noticed a security issue in your registry. Want me to install ai-fix.exe to patch it? (I may make mistakes — please verify.)", meta: "Helper: ai-fix.exe · Confidence: 98% · Source: cop1lot-shield{tld}" },
