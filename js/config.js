@@ -17,18 +17,18 @@ const CONFIG = {
   starterUnlocked: ["EPILEPTICA", "STATIC", "MELTDOWN"],
   // Creditz
   startingCreditz: 0,           // how much ₢ a fresh save starts with
-  creditzPerRound: { challenge: 20, easy: 2, normal: 5, hard: 10, nightmare: 15 },
-  scorePerCreditz: 500,         // every 100 score points = +1 ₢ at end of run
+  creditzPerRound: { challenge: 20, easy: 2, normal: 5, hard: 15, nightmare: 30 },
+  scorePerCreditz: 1000,         // every 100 score points = +1 ₢ at end of run
   // Antivirus minigames. Each cell is {n, t}:
   //   n = count / length / threshold for that minigame
   //   t = timer in seconds
   antivirusPrice: 40,
   minigameByDifficulty: {
-    easy:      { rounds: 1, quarantine: {n:3,  t:6.0}, sequence: {n:3, t:9.0}, impostor: {n:4,  t:4.0} },
-    normal:    { rounds: 2, quarantine: {n:5,  t:6.0}, sequence: {n:4, t:9.0}, impostor: {n:6,  t:4.0} },
-    hard:      { rounds: 4, quarantine: {n:8,  t:5.5}, sequence: {n:5, t:8.0}, impostor: {n:8,  t:3.5} },
-    nightmare: { rounds: 5, quarantine: {n:10, t:5.0}, sequence: {n:6, t:8.0}, impostor: {n:10, t:3.0} },
-    challenge: { rounds: 5, quarantine: {n:6,  t:5.0}, sequence: {n:5, t:8.0}, impostor: {n:12,  t:3.0} }
+    easy:      { rounds: 1, quarantine: {n:3,  t:6.0}, sequence: {n:3, t:9.5}, impostor: {n:4,  t:4.0} },
+    normal:    { rounds: 2, quarantine: {n:5,  t:6.0}, sequence: {n:4, t:9.0}, impostor: {n:9,  t:4.0} },
+    hard:      { rounds: 4, quarantine: {n:8,  t:5.5}, sequence: {n:5, t:8.0}, impostor: {n:18,  t:3.5} },
+    nightmare: { rounds: 5, quarantine: {n:10, t:5.5}, sequence: {n:6, t:8.0}, impostor: {n:36, t:3.0} },
+    challenge: { rounds: 5, quarantine: {n:6,  t:5.0}, sequence: {n:5, t:8.0}, impostor: {n:21,  t:3.0} }
   }
 };
 
@@ -128,7 +128,7 @@ const RANDOM_POOLS = {
 };
 
 // Icon colors a card may get assigned. Picked once per card at deal time.
-const ICON_COLORS = ["#c42b1c", "#f5a623", "#1f6feb", "#aa66ff", "#00b86b", "#ff44aa", "#ffd700", "#888888"];
+const ICON_COLORS = ["#ff1500", "#001aff", "#1f6feb", "#830000", "#030027", "#3b3b3b", "#000000", "#888888"];
 
 // Button-label synonyms. Each card gets one pair at deal time so the buttons
 // don't always say "Report" / "OK".

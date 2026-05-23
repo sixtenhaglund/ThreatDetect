@@ -2872,18 +2872,22 @@
       0 0 36px currentColor;
   }
 
-  /* Impostor: grid of identical icons + one different */
+  /* Impostor: grid of identical icons + one different.
+     Flexbox so the last row centers when it has fewer items than the others. */
   .impostor-grid {
-    display: grid;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
     gap: 14px;
-    max-width: 480px;
+    max-width: 520px;
     margin: 20px auto 0;
   }
   .impostor-cell {
     background: rgba(0,0,0,0.4);
     border: 2px solid rgba(255,255,255,0.12);
     border-radius: 10px;
-    aspect-ratio: 1 / 1;
+    width: 120px;
+    height: 120px;
     font-size: 3rem;
     display: flex;
     align-items: center;

@@ -397,14 +397,12 @@ function viewMG_Sequence(mg) {
 }
 
 function viewMG_Impostor(mg) {
-  // Try to lay out in a roughly-square grid
-  const cols = Math.ceil(Math.sqrt(mg.icons.length));
   return `
     <div class="hud" style="grid-template-columns: 1fr 1fr; max-width: 360px; margin: 0 auto 8px;">
       <div class="cell"><div class="label">Icons</div><div class="value">${mg.icons.length}</div></div>
       <div class="cell"><div class="label">Time</div><div class="value" id="mg-timer">${mg.timeLeft.toFixed(1)}</div></div>
     </div>
-    <div class="impostor-grid" style="grid-template-columns: repeat(${cols}, 1fr);">
+    <div class="impostor-grid">
       ${mg.icons.map((ic, i) => `
         <button class="impostor-cell" data-action="impostor-hit" data-impostor-idx="${i}" style="color:${ic.color};">
           ${ic.glyph}
