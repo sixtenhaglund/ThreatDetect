@@ -4437,7 +4437,9 @@ function triggerEndOfRun(card) {
 const MG_TARGETS = 5;
 const MG_DURATION = 6.5; // seconds
 
-function startQuarantineMinigame(savedCard) {
+/* Shared setup. opts: { savedCard, training } */
+function startMinigame(opts) {
+  opts = opts || {};
   unlockAudio();
   const targets = [];
   for (let i = 0; i < MG_TARGETS; i++) {
@@ -4453,7 +4455,9 @@ function startQuarantineMinigame(savedCard) {
     hits: 0,
     needed: MG_TARGETS,
     timeLeft: MG_DURATION,
-    savedCard,
+    startTime: Date.now(),
+    savedCard: opts.savedCard || null,
+    training: !!opts.training,
     interval: null
   };
   state.screen = "minigame";
@@ -4466,6 +4470,18 @@ function startQuarantineMinigame(savedCard) {
     if (el) el.textContent = Math.max(0, state.minigame.timeLeft).toFixed(1);
     if (state.minigame.timeLeft <= 0) failQuarantine();
   }, 100);
+}
+
+/* In-run path: save us from a misclassified virus. */
+function startQuarantineMinigame(savedCard) {
+  startMinigame({ savedCard });
+}
+
+/* Practice mode: loop the minigame, tally wins/losses, no game-over. */
+const TRAINING_STATS_DEFAULT = { wins: 0, losses: 0, bestTimeMs: null };
+function startMinigameTraining() {
+  state.minigameStats = state.minigameStats || Object.assign({}, TRAINING_STATS_DEFAULT);
+  startMinigame({ training: true });
 }
 
 function hitMinigameTarget(idx) {
@@ -4488,9 +4504,19 @@ function winQuarantine() {
   if (!mg) return;
   mg.active = false;
   if (mg.interval) clearInterval(mg.interval);
+  const elapsedMs = Date.now() - mg.startTime;
+  Audio.correct();
+  if (mg.training) {
+    // Tally + immediately start a fresh round.
+    const stats = state.minigameStats;
+    stats.wins++;
+    if (stats.bestTimeMs === null || elapsedMs < stats.bestTimeMs) stats.bestTimeMs = elapsedMs;
+    state.minigame = null;
+    startMinigame({ training: true });
+    return;
+  }
   const card = mg.savedCard;
   state.minigame = null;
-  Audio.correct();
   // Continue the run — go to next card. No score / streak change; antivirus already deducted.
   state.screen = "play";
   render();
@@ -4503,6 +4529,12 @@ function failQuarantine() {
   if (!mg) return;
   mg.active = false;
   if (mg.interval) clearInterval(mg.interval);
+  if (mg.training) {
+    state.minigameStats.losses++;
+    state.minigame = null;
+    startMinigame({ training: true });
+    return;
+  }
   const card = mg.savedCard;
   state.minigame = null;
   state.lives = 0;             // back to dead
@@ -4832,6 +4864,7 @@ function viewMenu() {
           <button class="menu-btn" data-action="show-difficulty"><span>Play<div class="menu-sub">Pick difficulty · or jump into Training</div></span><span class="arrow">▶</span></button>
           <button class="menu-btn" data-action="play-challenge"><span>Challenge<div class="menu-sub">All 20 viruses from round 1 · denser threats · earlier UI tampering</div></span><span class="arrow">▶</span></button>
           <button class="menu-btn" data-action="codex"><span>Codex<div class="menu-sub">${unlockedCount}/${totalCount} threats discovered</div></span><span class="arrow">▶</span></button>
+          <button class="menu-btn" data-action="minigame-practice"><span>Minigame Practice<div class="menu-sub">Train the quarantine minigame · no antivirus needed</div></span><span class="arrow">▶</span></button>
           <button class="menu-btn" data-action="shop"><span>Shop<div class="menu-sub">${(save.creditz || 0).toLocaleString()} ₢ available · coming soon</div></span><span class="arrow">▶</span></button>
           <button class="menu-btn" data-action="settings"><span>Settings<div class="menu-sub">Audio · photosensitivity · reset</div></span><span class="arrow">▶</span></button>
         </div>
@@ -5186,16 +5219,32 @@ const SHOP_ITEMS = [
 function viewMinigame() {
   const mg = state.minigame;
   if (!mg) return "";
+  const isTraining = !!mg.training;
+  const stats = state.minigameStats || TRAINING_STATS_DEFAULT;
+  const trainingStrip = isTraining ? `
+    <div class="hud" style="grid-template-columns: repeat(3, 1fr); max-width: 460px; margin: 8px auto 0;">
+      <div class="cell"><div class="label">Wins</div><div class="value" style="color: var(--primary);">${stats.wins}</div></div>
+      <div class="cell"><div class="label">Losses</div><div class="value" style="color: var(--destruct);">${stats.losses}</div></div>
+      <div class="cell"><div class="label">Best</div><div class="value">${stats.bestTimeMs !== null ? (stats.bestTimeMs / 1000).toFixed(2) + "s" : "—"}</div></div>
+    </div>` : "";
+  const heading = isTraining ? "PRACTICE: QUARANTINE" : "QUARANTINE THE THREATS";
+  const sub = isTraining ? "Click all ${n} skulls before the timer ends. Practice loops automatically — wins and losses are tallied."
+                         : "Click all ${n} skulls before the timer runs out. Miss the deadline and the virus kills you.";
+  const exitBtn = isTraining
+    ? `<div class="row center" style="margin-top:8px;"><button class="btn" data-action="exit-minigame-training">Exit Practice</button></div>`
+    : "";
   return `
     <div class="minigame-stage">
       <div class="minigame-header">
-        <h3 style="margin:0; color: var(--primary); letter-spacing: 0.3em;">🛡 ANTIVIRUS DEPLOYED</h3>
-        <h1 style="margin: 6px 0;">QUARANTINE THE THREATS</h1>
-        <p class="mute">Click all ${mg.needed} skulls before the timer runs out. Miss the deadline and the virus kills you.</p>
+        <h3 style="margin:0; color: var(--primary); letter-spacing: 0.3em;">${isTraining ? "🎯 PRACTICE MODE" : "🛡 ANTIVIRUS DEPLOYED"}</h3>
+        <h1 style="margin: 6px 0;">${heading}</h1>
+        <p class="mute">${esc(sub.replace("${n}", String(mg.needed)))}</p>
         <div class="hud" style="grid-template-columns: 1fr 1fr; max-width: 360px; margin: 6px auto 0;">
           <div class="cell"><div class="label">Left</div><div class="value" id="mg-remaining">${mg.needed - mg.hits}</div></div>
           <div class="cell"><div class="label">Time</div><div class="value" id="mg-timer">${mg.timeLeft.toFixed(1)}</div></div>
         </div>
+        ${trainingStrip}
+        ${exitBtn}
       </div>
       <div class="minigame-field">
         ${mg.targets.map((t, i) => `
@@ -5482,6 +5531,18 @@ document.addEventListener("click", (e) => {
     case "mg-hit": {
       const idx = parseInt(btn.dataset.target, 10);
       hitMinigameTarget(idx);
+      break;
+    }
+    case "minigame-practice":
+      state.minigameStats = Object.assign({}, TRAINING_STATS_DEFAULT);
+      startMinigameTraining();
+      break;
+    case "exit-minigame-training": {
+      const mg = state.minigame;
+      if (mg && mg.interval) clearInterval(mg.interval);
+      state.minigame = null;
+      state.screen = "menu";
+      render();
       break;
     }
     case "skip-death":
