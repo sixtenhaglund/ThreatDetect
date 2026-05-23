@@ -98,9 +98,11 @@ const TEXTUAL_TELLS = {
     { p: /0x[A-F0-9]{4,}/i,                                                         t: "Multiple hex-encoded values (0xDEADBEEF, 0xCAFEBABE, etc.)" },
     { p: /ring\s*-?\s*1|DMA|physical memory|memory.{0,10}forensics|hexdumper|memcheck/i, t: "Requests ring-1 / DMA / physical RAM access" }
   ],
-  BUGBEAR: [
-    { p: /\$[\d,]{3,}|reward|bounty payout|claim within|\d+.hour deadline/i,        t: "Promises a cash reward / bounty in exchange for action" },
-    { p: /BugCrowd|HackerOne|hacker0ne|hackerone-verify|hackerone-bug|bugcrowd-team|CVE.\d{4}/i, t: "Claims to be a security-researcher disclosure" },
-    { p: /verify.{0,8}identity|confirm.{0,8}ownership|sign in at|enter.{0,8}credentials|confirm your details/i, t: "Asks you to verify identity / confirm ownership / sign in" }
+  HALLUCINATE: [
+    { p: /ChatGTP|Cop1lot|Cl4ude|Geminni|cop1lot|cl4ude|geminni|chatgtp/,           t: "AI brand name is subtly misspelled (real AI assistants don't typo their own name)" },
+    { p: /I (noticed|found|recommend|prepared)|Based on my analysis|Let me help/i,  t: "Friendly first-person AI tone ('I noticed…', 'Based on my analysis…')" },
+    { p: /Confidence: ?\d+%|Accuracy: ?\d+%/i,                                       t: "Fake confidence / accuracy percentage attached to the recommendation" },
+    { p: /I may make mistakes|please verify/i,                                       t: "Includes the AI-disclaimer fig-leaf ('I may make mistakes, please verify')" },
+    { p: /ai-helper|ai-shield|ai-fix|gpt-fix|copilot-shield|claude-patch|smart-defender|workspace-protect/i, t: "Process or tool name sounds like an AI-themed helper" }
   ]
 };

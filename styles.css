@@ -341,7 +341,7 @@
   .v-LOOP       { color: #88ff88; }
   .v-FOSSIL     { color: #c4a484; }
   .v-HEX        { color: #88ddff; }
-  .v-BUGBEAR    { color: #ff9966; }
+  .v-HALLUCINATE    { color: #00d4aa; }
   .codex-entry.v-EPILEPTICA { border-left-color: #ffffff; }
   .codex-entry.v-MELTDOWN   { border-left-color: #ff7733; }
   .codex-entry.v-STATIC     { border-left-color: #b0b0b0; }
@@ -361,7 +361,7 @@
   .codex-entry.v-LOOP       { border-left-color: #88ff88; }
   .codex-entry.v-FOSSIL     { border-left-color: #c4a484; }
   .codex-entry.v-HEX        { border-left-color: #88ddff; }
-  .codex-entry.v-BUGBEAR    { border-left-color: #ff9966; }
+  .codex-entry.v-HALLUCINATE    { border-left-color: #00d4aa; }
 
   /* Animations */
   .fade-in { animation: fadeIn 0.4s ease; }
@@ -1932,106 +1932,174 @@
     opacity: 0.95;
   }
 
-  /* HEX — lots of red dots flickering and bouncing around. */
-  .death-HEX { background: #050000; }
+  /* HEX — blue dots jumping to random positions. Each layer uses `steps()`
+     timing and a different prime-number duration so they desync and never
+     repeat the same overall pattern at the same time. */
+  .death-HEX { background: #000515; }
   .death-HEX::before {
     content: ""; position: absolute; inset: 0;
     background:
-      radial-gradient(circle, #ff0000 0 5px, transparent 7px) 8% 12% / 90px 90px,
-      radial-gradient(circle, #ff2222 0 4px, transparent 6px) 34% 28% / 110px 110px,
-      radial-gradient(circle, #ff0000 0 6px, transparent 8px) 62% 18% / 80px 80px,
-      radial-gradient(circle, #ff4444 0 4px, transparent 6px) 78% 42% / 100px 100px,
-      radial-gradient(circle, #ff0000 0 5px, transparent 7px) 12% 64% / 85px 85px,
-      radial-gradient(circle, #ff2222 0 6px, transparent 8px) 50% 82% / 95px 95px,
-      radial-gradient(circle, #ff0000 0 4px, transparent 6px) 88% 88% / 75px 75px;
+      radial-gradient(circle, #44aaff 0 5px, transparent 7px) 8% 12% / 90px 90px,
+      radial-gradient(circle, #66ccff 0 4px, transparent 6px) 34% 28% / 110px 110px,
+      radial-gradient(circle, #44aaff 0 6px, transparent 8px) 62% 18% / 80px 80px,
+      radial-gradient(circle, #88ddff 0 4px, transparent 6px) 78% 42% / 100px 100px,
+      radial-gradient(circle, #44aaff 0 5px, transparent 7px) 12% 64% / 85px 85px,
+      radial-gradient(circle, #66ccff 0 6px, transparent 8px) 50% 82% / 95px 95px,
+      radial-gradient(circle, #44aaff 0 4px, transparent 6px) 88% 88% / 75px 75px;
     background-repeat: repeat;
-    animation: hexDotsFlicker 0.18s steps(2) infinite, hexDotsBounce 2.6s ease-in-out infinite;
+    animation: hexDotsFlicker 0.17s steps(2) infinite, hexDotsJumpA 2.3s steps(7) infinite;
   }
   @keyframes hexDotsFlicker {
     0%, 100% { opacity: 1; }
     50%      { opacity: 0.35; }
   }
-  @keyframes hexDotsBounce {
-    0%   { background-position: 8% 12%, 34% 28%, 62% 18%, 78% 42%, 12% 64%, 50% 82%, 88% 88%; }
-    25%  { background-position: 24% 32%, 14% 58%, 82% 38%, 58% 12%, 32% 84%, 70% 62%, 8% 18%; }
-    50%  { background-position: 88% 18%, 62% 8%,  18% 72%, 38% 88%, 92% 42%, 18% 32%, 48% 58%; }
-    75%  { background-position: 42% 78%, 88% 62%, 38% 28%, 12% 42%, 68% 18%, 84% 88%, 28% 8%; }
-    100% { background-position: 8% 12%, 34% 28%, 62% 18%, 78% 42%, 12% 64%, 50% 82%, 88% 88%; }
+  /* 7-step jump = jagged, hard to track. Each step picks a wildly different layout. */
+  @keyframes hexDotsJumpA {
+    0%      { background-position: 8% 12%, 34% 28%, 62% 18%, 78% 42%, 12% 64%, 50% 82%, 88% 88%; }
+    14.28%  { background-position: 71% 4%, 19% 88%, 4% 36%, 92% 51%, 48% 18%, 27% 62%, 63% 73%; }
+    28.57%  { background-position: 5% 71%, 88% 23%, 41% 6%, 17% 49%, 96% 81%, 60% 33%, 35% 92%; }
+    42.86%  { background-position: 93% 38%, 52% 91%, 24% 12%, 7% 67%, 79% 56%, 38% 8%, 11% 47%; }
+    57.14%  { background-position: 22% 4%, 6% 53%, 81% 86%, 47% 73%, 64% 21%, 92% 47%, 18% 36%; }
+    71.43%  { background-position: 67% 89%, 44% 14%, 12% 78%, 89% 6%, 31% 42%, 56% 64%, 76% 17%; }
+    85.71%  { background-position: 38% 56%, 76% 38%, 4% 13%, 51% 91%, 84% 23%, 16% 71%, 96% 67%; }
+    100%    { background-position: 8% 12%, 34% 28%, 62% 18%, 78% 42%, 12% 64%, 50% 82%, 88% 88%; }
   }
   .death-HEX::after {
     content: ""; position: absolute; inset: 0;
     background:
-      radial-gradient(circle, #ff0000 0 7px, transparent 10px) 20% 50% / 140px 140px,
-      radial-gradient(circle, #ff3333 0 5px, transparent 8px) 70% 70% / 120px 120px,
-      radial-gradient(circle, #ff0000 0 6px, transparent 9px) 45% 25% / 130px 130px,
-      radial-gradient(circle, #ff5555 0 4px, transparent 7px) 90% 30% / 100px 100px;
+      radial-gradient(circle, #66ccff 0 7px, transparent 10px) 20% 50% / 140px 140px,
+      radial-gradient(circle, #88ddff 0 5px, transparent 8px) 70% 70% / 120px 120px,
+      radial-gradient(circle, #44aaff 0 6px, transparent 9px) 45% 25% / 130px 130px,
+      radial-gradient(circle, #aaeeff 0 4px, transparent 7px) 90% 30% / 100px 100px;
     background-repeat: repeat;
     mix-blend-mode: screen;
-    animation: hexDotsFlicker2 0.22s steps(3) infinite, hexDotsBounce2 3.4s ease-in-out infinite;
+    animation: hexDotsFlicker2 0.31s steps(3) infinite, hexDotsJumpB 3.1s steps(6) infinite;
   }
   @keyframes hexDotsFlicker2 {
     0%, 100% { opacity: 0.9; }
     33%      { opacity: 0.4; }
     66%      { opacity: 1; }
   }
-  @keyframes hexDotsBounce2 {
-    0%   { background-position: 20% 50%, 70% 70%, 45% 25%, 90% 30%; }
-    33%  { background-position: 80% 30%, 20% 40%, 70% 80%, 10% 70%; }
-    66%  { background-position: 50% 80%, 90% 20%, 15% 60%, 60% 45%; }
-    100% { background-position: 20% 50%, 70% 70%, 45% 25%, 90% 30%; }
+  @keyframes hexDotsJumpB {
+    0%     { background-position: 20% 50%, 70% 70%, 45% 25%, 90% 30%; }
+    16.6%  { background-position: 91% 8%, 16% 82%, 53% 91%, 4% 23%; }
+    33.3%  { background-position: 38% 17%, 76% 33%, 12% 64%, 67% 78%; }
+    50%    { background-position: 7% 91%, 53% 6%, 84% 47%, 31% 38%; }
+    66.6%  { background-position: 62% 49%, 8% 27%, 38% 78%, 88% 91%; }
+    83.3%  { background-position: 27% 71%, 91% 56%, 71% 13%, 14% 47%; }
+    100%   { background-position: 20% 50%, 70% 70%, 45% 25%, 90% 30%; }
   }
   .death-HEX .death-fx::before {
     content: ""; position: absolute; inset: 0;
     background:
-      radial-gradient(circle, #ff0000 0 3px, transparent 5px) 5% 30% / 60px 60px,
-      radial-gradient(circle, #ff2222 0 3px, transparent 5px) 33% 70% / 70px 70px,
-      radial-gradient(circle, #ff0000 0 4px, transparent 6px) 66% 55% / 65px 65px,
-      radial-gradient(circle, #ff3333 0 3px, transparent 5px) 90% 20% / 55px 55px,
-      radial-gradient(circle, #ff0000 0 3px, transparent 5px) 75% 85% / 60px 60px;
+      radial-gradient(circle, #44aaff 0 3px, transparent 5px) 5% 30% / 60px 60px,
+      radial-gradient(circle, #66ccff 0 3px, transparent 5px) 33% 70% / 70px 70px,
+      radial-gradient(circle, #44aaff 0 4px, transparent 6px) 66% 55% / 65px 65px,
+      radial-gradient(circle, #88ddff 0 3px, transparent 5px) 90% 20% / 55px 55px,
+      radial-gradient(circle, #44aaff 0 3px, transparent 5px) 75% 85% / 60px 60px;
     background-repeat: repeat;
-    animation: hexDotsFlicker3 0.13s steps(2) infinite, hexDotsBounce3 1.8s ease-in-out infinite;
+    animation: hexDotsFlicker3 0.13s steps(2) infinite, hexDotsJumpC 1.9s steps(8) infinite;
   }
   @keyframes hexDotsFlicker3 {
     0%, 100% { opacity: 0.8; }
     50%      { opacity: 0.2; }
   }
-  @keyframes hexDotsBounce3 {
-    0%   { background-position: 5% 30%, 33% 70%, 66% 55%, 90% 20%, 75% 85%; }
-    50%  { background-position: 60% 75%, 80% 25%, 18% 80%, 45% 50%, 22% 12%; }
-    100% { background-position: 5% 30%, 33% 70%, 66% 55%, 90% 20%, 75% 85%; }
+  @keyframes hexDotsJumpC {
+    0%    { background-position: 5% 30%, 33% 70%, 66% 55%, 90% 20%, 75% 85%; }
+    12.5% { background-position: 84% 11%, 8% 47%, 39% 82%, 71% 6%, 14% 71%; }
+    25%   { background-position: 41% 88%, 67% 29%, 18% 13%, 92% 64%, 53% 38%; }
+    37.5% { background-position: 17% 53%, 91% 78%, 47% 6%, 4% 91%, 81% 47%; }
+    50%   { background-position: 76% 41%, 22% 8%, 88% 67%, 38% 86%, 64% 19%; }
+    62.5% { background-position: 6% 79%, 53% 23%, 36% 41%, 81% 88%, 18% 12%; }
+    75%   { background-position: 88% 56%, 31% 91%, 64% 27%, 14% 38%, 93% 71%; }
+    87.5% { background-position: 47% 18%, 8% 62%, 27% 84%, 61% 47%, 84% 13%; }
+    100%  { background-position: 5% 30%, 33% 70%, 66% 55%, 90% 20%, 75% 85%; }
   }
   .death-HEX .death-fx::after {
     content: ""; position: absolute; inset: 0;
     background:
-      radial-gradient(circle, #ff0000 0 9px, transparent 12px) 35% 40% / 200px 200px,
-      radial-gradient(circle, #ff4444 0 7px, transparent 10px) 65% 65% / 180px 180px;
+      radial-gradient(circle, #44aaff 0 9px, transparent 12px) 35% 40% / 200px 200px,
+      radial-gradient(circle, #88ddff 0 7px, transparent 10px) 65% 65% / 180px 180px;
     background-repeat: repeat;
     mix-blend-mode: screen;
-    animation: hexDotsFlicker 0.3s steps(2) infinite, hexDotsBounceBig 4.2s ease-in-out infinite;
+    animation: hexDotsFlicker 0.29s steps(2) infinite, hexDotsJumpD 4.1s steps(5) infinite;
   }
-  @keyframes hexDotsBounceBig {
-    0%, 100% { background-position: 35% 40%, 65% 65%; }
-    50%      { background-position: 70% 30%, 25% 75%; }
+  @keyframes hexDotsJumpD {
+    0%   { background-position: 35% 40%, 65% 65%; }
+    20%  { background-position: 81% 12%, 23% 73%; }
+    40%  { background-position: 14% 88%, 56% 18%; }
+    60%  { background-position: 71% 47%, 18% 23%; }
+    80%  { background-position: 28% 62%, 88% 91%; }
+    100% { background-position: 35% 40%, 65% 65%; }
   }
 
-  /* "." — a single huge centered period that pulses very gently. Pure minimalism. */
-  .death-BUGBEAR { background: #0a0a0a; }
-  .death-BUGBEAR::before {
-    content: ".";
+  /* HALLUCINATE — AI assistant melting down. Glitchy disclaimer text in the middle,
+     thinking-dots loop, a confidence-meter banner that scrolls, and a shaky 🤖. */
+  .death-HALLUCINATE { background: radial-gradient(circle at center, #003d35 0%, #001a16 70%, #000 100%); }
+  .death-HALLUCINATE::before {
+    content: "I MAY HAVE MADE A MISTAKE";
     position: absolute; inset: 0;
     display: flex; align-items: center; justify-content: center;
-    font-family: serif;
-    font-size: 28rem;
-    line-height: 0.6;
-    color: #cccccc;
-    text-shadow: 0 0 60px rgba(255, 255, 255, 0.25);
-    animation: dotBreathe 3s ease-in-out infinite;
+    font-family: "Cascadia Mono", Consolas, monospace;
+    font-size: 2.6rem; font-weight: 900;
+    color: #00d4aa;
+    text-shadow: 0 0 18px #00d4aa, 0 0 40px #00d4aa, 2px 0 #ff44aa, -2px 0 #00ddff;
+    letter-spacing: 0.08em;
+    text-align: center;
+    padding: 0 18px;
+    animation: hallucGlitch 0.55s steps(7) infinite;
   }
-  @keyframes dotBreathe {
-    0%, 100% { opacity: 0.85; transform: scale(1); }
-    50%      { opacity: 1;    transform: scale(1.08); }
+  @keyframes hallucGlitch {
+    0%   { transform: translate(0, 0); opacity: 0.95; }
+    14%  { transform: translate(-5px, 3px); opacity: 0.4; letter-spacing: 0.18em; }
+    28%  { transform: translate(6px, -2px); opacity: 1;  letter-spacing: 0.05em; }
+    42%  { transform: translate(-2px, 4px); opacity: 0.7; }
+    56%  { transform: translate(3px, -4px); opacity: 1; }
+    70%  { transform: translate(-4px, 2px); opacity: 0.45; }
+    84%  { transform: translate(2px, 0);    opacity: 0.95; }
+    100% { transform: translate(0, 0);      opacity: 0.95; }
   }
-  .death-BUGBEAR::after { content: none; }
+  .death-HALLUCINATE::after {
+    content: "▓ ANALYZING . . . ▓ Confidence: 99% ▓ ANALYZING . . . ▓ Confidence: 99% ▓ ANALYZING . . . ▓";
+    position: absolute; inset: auto 0 14% 0;
+    text-align: center;
+    font-family: monospace; font-size: 1.15rem;
+    color: #88ffdd;
+    background: rgba(0, 30, 25, 0.8);
+    padding: 8px 0;
+    letter-spacing: 0.2em;
+    white-space: nowrap;
+    text-shadow: 0 0 12px #00d4aa;
+    animation: hallucScrollBanner 6s linear infinite;
+  }
+  @keyframes hallucScrollBanner {
+    from { transform: translateX(100%); }
+    to   { transform: translateX(-100%); }
+  }
+  .death-HALLUCINATE .death-fx::before {
+    content: "🤖";
+    position: absolute; top: 8%; right: 10%;
+    font-size: 7rem;
+    filter: drop-shadow(0 0 28px #00d4aa);
+    animation: hallucBotShake 0.36s ease-in-out infinite;
+  }
+  @keyframes hallucBotShake {
+    0%, 100% { transform: rotate(-6deg) scale(1);    opacity: 0.85; }
+    50%      { transform: rotate(6deg)  scale(1.1); opacity: 1; }
+  }
+  .death-HALLUCINATE .death-fx::after {
+    content: ". . .   . . .   . . .   . . .   . . .   . . .   . . .   . . .   . . .";
+    position: absolute; inset: 25% 0 auto 0;
+    text-align: center;
+    font-family: monospace; font-size: 2.2rem; font-weight: 900;
+    color: rgba(0, 212, 170, 0.55);
+    letter-spacing: 0.4em;
+    animation: hallucDots 1.4s steps(4) infinite;
+  }
+  @keyframes hallucDots {
+    0%, 100% { opacity: 0.35; }
+    50%      { opacity: 0.8; transform: translateY(-4px); }
+  }
 
   /* PULSE — heartbeat throb + sharp ECG spike + BPM banner. Dark + scary palette. */
   .death-PULSE { background: #060000; animation: pulseBeat 1.1s ease-in-out infinite; }
@@ -2384,7 +2452,7 @@
 
   /* HEX — no extra fx (handled in the main HEX block above: red dots only). */
 
-  /* BUGBEAR — no extra fx (numbers/money handled in the main BUGBEAR block above). */
+  /* HALLUCINATE — no extra fx (numbers/money handled in the main HALLUCINATE block above). */
 
   @media (max-width: 580px) {
     h1 { font-size: 1.8rem; }

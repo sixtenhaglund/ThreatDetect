@@ -53,11 +53,22 @@ const Save = {
         merged.sort((a, b) => (b.score || 0) - (a.score || 0));
         Leaderboard.write(merged.slice(0, 10));
       }
+      // One-shot migration: the "BUGBEAR" / "." virus was renamed to HALLUCINATE.
+      // Rename any references in unlocked / deathsBy so codex + first-death badges
+      // still work. Also auto-unlocks HALLUCINATE on first load after this update.
+      const renameKey = function (arr) {
+        if (!Array.isArray(arr)) return arr;
+        const out = arr.map(function (k) { return k === "BUGBEAR" ? "HALLUCINATE" : k; });
+        // De-dupe in case both old + new keys were already present.
+        return out.filter(function (v, i) { return out.indexOf(v) === i; });
+      };
+      const migratedUnlocked = renameKey(parsed.unlocked || d.unlocked);
+      if (migratedUnlocked.indexOf("HALLUCINATE") < 0) migratedUnlocked.push("HALLUCINATE");
       return {
         highestRound: parsed.highestRound || d.highestRound,
         highestScore: parsed.highestScore || d.highestScore,
-        unlocked: parsed.unlocked || d.unlocked,
-        deathsBy: Array.isArray(parsed.deathsBy) ? parsed.deathsBy : d.deathsBy,
+        unlocked: migratedUnlocked,
+        deathsBy: renameKey(Array.isArray(parsed.deathsBy) ? parsed.deathsBy : d.deathsBy),
         nightmareUnlocked: !!parsed.nightmareUnlocked,
         creditz: typeof parsed.creditz === "number" ? parsed.creditz : d.creditz,
         antivirus: typeof parsed.antivirus === "number" ? parsed.antivirus : d.antivirus,

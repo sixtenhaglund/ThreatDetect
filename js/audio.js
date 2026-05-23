@@ -183,37 +183,16 @@ const Audio = {
     const padLfo = ctx.createOscillator(); padLfo.type = "sine"; padLfo.frequency.value = 0.12;
     const padLfoGain = ctx.createGain(); padLfoGain.gain.value = 0.06;
     padLfo.connect(padLfoGain); padLfoGain.connect(padG.gain); padLfo.start();
-    // Tinkle: a high sine bell every ~5 seconds, random pick from the chord notes one octave up
-    const tinkleG = ctx.createGain(); tinkleG.gain.value = 0.4;
-    tinkleG.connect(out);
-    const self = this;
-    const tinkleInterval = setInterval(function () {
-      if (!self.menuNodes) return;
-      if (Math.random() < 0.6) return; // 40% chance to skip = uneven pulses
-      const high = [523.25, 659.25, 783.99, 1174.66]; // C5 E5 G5 D6
-      const f = high[Math.floor(Math.random() * high.length)];
-      const start = ctx.currentTime;
-      const o = ctx.createOscillator(); o.type = "sine"; o.frequency.value = f;
-      const g = ctx.createGain();
-      o.connect(g); g.connect(tinkleG);
-      g.gain.setValueAtTime(0, start);
-      g.gain.linearRampToValueAtTime(0.06, start + 0.02);
-      g.gain.exponentialRampToValueAtTime(0.0005, start + 1.2);
-      o.start(start); o.stop(start + 1.3);
-    }, 2500);
-    this.menuNodes = { padG, padOscs, padLfo, tinkleG, tinkleInterval };
+    this.menuNodes = { padG, padOscs, padLfo };
   },
 
   stopMenuMusic() {
     if (!this.menuNodes) return;
     const t = this.ctx.currentTime;
     const m = this.menuNodes;
-    clearInterval(m.tinkleInterval);
-    [m.padG, m.tinkleG].forEach(function (g) {
-      g.gain.cancelScheduledValues(t);
-      g.gain.setValueAtTime(g.gain.value, t);
-      g.gain.linearRampToValueAtTime(0, t + 0.6);
-    });
+    m.padG.gain.cancelScheduledValues(t);
+    m.padG.gain.setValueAtTime(m.padG.gain.value, t);
+    m.padG.gain.linearRampToValueAtTime(0, t + 0.6);
     m.padOscs.forEach(function (o) { o.stop(t + 0.7); });
     m.padLfo.stop(t + 0.7);
     this.menuNodes = null;
@@ -642,15 +621,23 @@ Audio.deaths = {
     const count = Math.floor(4.4 / interval);
     for (let i = 0; i < count; i++) this.beep(t + i * interval, 880, 0.10, "square", 0.18);
   },
-  BUGBEAR() {
-    // "." virus — a single soft tick. Almost silent.
-    const t = this.ctx.currentTime;
-    const o = this.ctx.createOscillator(); o.type = "sine"; o.frequency.value = 900;
+  HALLUCINATE() {
+    // AI failure: a hopeful little 4-note chime ("ChatGPT thinks…") that breaks
+    // halfway into a dissonant detuned drone (the answer was wrong).
+    const t0 = this.ctx.currentTime;
+    const chime = [659.25, 783.99, 987.77, 1318.51]; // E5 G5 B5 E6 — upward, optimistic
+    chime.forEach((f, i) => this.beep(t0 + i * 0.18, f, 0.18, "sine", 0.22));
+    // Then a long detuned dissonant pad ("uh oh, that was wrong")
+    const o1 = this.ctx.createOscillator(); o1.type = "sine"; o1.frequency.value = 220;
+    const o2 = this.ctx.createOscillator(); o2.type = "sine"; o2.frequency.value = 233; // minor 2nd = clash
     const g = this.ctx.createGain();
-    o.connect(g); g.connect(this.sfxGain);
-    g.gain.setValueAtTime(0, t);
-    g.gain.linearRampToValueAtTime(0.18, t + 0.005);
-    g.gain.exponentialRampToValueAtTime(0.001, t + 0.05);
-    o.start(t); o.stop(t + 0.08);
+    o1.connect(g); o2.connect(g); g.connect(this.sfxGain);
+    const padStart = t0 + 0.8;
+    g.gain.setValueAtTime(0, padStart);
+    g.gain.linearRampToValueAtTime(0.25, padStart + 0.6);
+    g.gain.setValueAtTime(0.25, padStart + 3);
+    g.gain.linearRampToValueAtTime(0, padStart + 3.5);
+    o1.start(padStart); o1.stop(padStart + 3.6);
+    o2.start(padStart); o2.stop(padStart + 3.6);
   }
 };
