@@ -18,18 +18,17 @@ const CONFIG = {
   // Creditz
   creditzPerRound: { challenge: 20, easy: 2, normal: 5, hard: 10, nightmare: 15 },
   scorePerCreditz: 500,         // every 100 score points = +1 ₢ at end of run
-  // Antivirus minigame
+  // Antivirus minigames. Each cell is {n, t}:
+  //   n = count / length / threshold for that minigame
+  //   t = timer in seconds
   antivirusPrice: 40,
   minigameByDifficulty: {
-    easy:      { targets: 2,  duration: 6.0 },
-    normal:    { targets: 4,  duration: 6.0 },
-    hard:      { targets: 8,  duration: 6.0 },
-    nightmare: { targets: 10, duration: 6.0 },
-    challenge: { targets: 5,  duration: 5.0 }
-  },
-  // Fallback used by Practice mode (or if difficulty is missing somehow)
-  minigameTargets: 5,
-  minigameDuration: 6.0
+    easy:      { quarantine: {n:3,  t:6.0}, sequence: {n:3, t:9.0}, impostor: {n:4,  t:4.0} },
+    normal:    { quarantine: {n:5,  t:6.0}, sequence: {n:4, t:9.0}, impostor: {n:6,  t:4.0} },
+    hard:      { quarantine: {n:8,  t:5.5}, sequence: {n:5, t:8.0}, impostor: {n:8,  t:3.5} },
+    nightmare: { quarantine: {n:10, t:5.0}, sequence: {n:6, t:8.0}, impostor: {n:10, t:3.0} },
+    challenge: { quarantine: {n:6,  t:5.0}, sequence: {n:5, t:8.0}, impostor: {n:7,  t:3.5} }
+  }
 };
 
 /* ============================================================

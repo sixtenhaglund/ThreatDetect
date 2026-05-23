@@ -52,7 +52,9 @@ const state = {
   // death sequence timer
   deathTimeout: null,
   // antivirus minigame
-  minigame: null
+  minigame: null,
+  minigameTrainingDifficulty: null,  // chosen in step 1 of practice
+  minigameTrainingType: null         // chosen in step 2 of practice
 };
 
 /* ============================================================
@@ -324,7 +326,7 @@ function choose(reportedAsVirus) {
         save.antivirus--;
         Save.write(save);
         state.lives = 1;             // give the life back so the run continues on win
-        startQuarantineMinigame(card);
+        startRandomAntivirusMinigame(card);
         return;
       }
       triggerEndOfRun(card);
@@ -370,125 +372,8 @@ function triggerEndOfRun(card) {
   }
 }
 
-/* ============================================================
-   ANTIVIRUS QUARANTINE MINIGAME
-   Spawn N virus targets on screen, click them all before the timer runs out.
-   ============================================================ */
-
-
-
-/* Shared setup. opts: { savedCard, training } */
-function startMinigame(opts) {
-  opts = opts || {};
-  unlockAudio();
-  // Pick target count + timer based on the current difficulty.
-  // Practice always uses the default (normal-ish); challenge mode has its own row.
-  const diff = opts.training
-    ? null
-    : (state.gameMode === "challenge" ? "challenge" : (state.difficulty || "normal"));
-  const cfg = (diff && CONFIG.minigameByDifficulty[diff]) || {
-    targets: CONFIG.minigameTargets,
-    duration: CONFIG.minigameDuration
-  };
-  const targets = [];
-  for (let i = 0; i < cfg.targets; i++) {
-    targets.push({
-      x: 10 + Math.random() * 80,    // % of viewport
-      y: 18 + Math.random() * 68,
-      hit: false
-    });
-  }
-  state.minigame = {
-    active: true,
-    targets,
-    hits: 0,
-    needed: cfg.targets,
-    timeLeft: cfg.duration,
-    startTime: Date.now(),
-    savedCard: opts.savedCard || null,
-    training: !!opts.training,
-    interval: null
-  };
-  state.screen = "minigame";
-  render();
-  Audio.click();
-  state.minigame.interval = setInterval(() => {
-    if (!state.minigame || !state.minigame.active) return;
-    state.minigame.timeLeft -= 0.1;
-    const el = document.getElementById("mg-timer");
-    if (el) el.textContent = Math.max(0, state.minigame.timeLeft).toFixed(1);
-    if (state.minigame.timeLeft <= 0) failQuarantine();
-  }, 100);
-}
-
-/* In-run path: save us from a misclassified virus. */
-function startQuarantineMinigame(savedCard) {
-  startMinigame({ savedCard });
-}
-
-/* Practice mode: loop the minigame, tally wins/losses, no game-over. */
-const TRAINING_STATS_DEFAULT = { wins: 0, losses: 0, bestTimeMs: null };
-function startMinigameTraining() {
-  state.minigameStats = state.minigameStats || Object.assign({}, TRAINING_STATS_DEFAULT);
-  startMinigame({ training: true });
-}
-
-function hitMinigameTarget(idx) {
-  const mg = state.minigame;
-  if (!mg || !mg.active) return;
-  const t = mg.targets[idx];
-  if (!t || t.hit) return;
-  t.hit = true;
-  mg.hits++;
-  Audio.correct();
-  const node = document.querySelector('[data-mg-target="' + idx + '"]');
-  if (node) node.classList.add("hit");
-  const left = document.getElementById("mg-remaining");
-  if (left) left.textContent = (mg.needed - mg.hits);
-  if (mg.hits >= mg.needed) winQuarantine();
-}
-
-function winQuarantine() {
-  const mg = state.minigame;
-  if (!mg) return;
-  mg.active = false;
-  if (mg.interval) clearInterval(mg.interval);
-  const elapsedMs = Date.now() - mg.startTime;
-  Audio.correct();
-  if (mg.training) {
-    // Tally + immediately start a fresh round.
-    const stats = state.minigameStats;
-    stats.wins++;
-    if (stats.bestTimeMs === null || elapsedMs < stats.bestTimeMs) stats.bestTimeMs = elapsedMs;
-    state.minigame = null;
-    startMinigame({ training: true });
-    return;
-  }
-  const card = mg.savedCard;
-  state.minigame = null;
-  // Show a non-blocking quarantine toast and advance straight to the next card —
-  // no brief re-render of the misclicked card (which made it feel like a card got skipped).
-  state.screen = "play";
-  showCreditzToast("🛡 Quarantined", card.virusKey + " · antivirus consumed");
-  nextCard();
-}
-
-function failQuarantine() {
-  const mg = state.minigame;
-  if (!mg) return;
-  mg.active = false;
-  if (mg.interval) clearInterval(mg.interval);
-  if (mg.training) {
-    state.minigameStats.losses++;
-    state.minigame = null;
-    startMinigame({ training: true });
-    return;
-  }
-  const card = mg.savedCard;
-  state.minigame = null;
-  state.lives = 0;             // back to dead
-  triggerEndOfRun(card);
-}
+/* Minigame system lives in minigames.js — entry points are
+   startRandomAntivirusMinigame(card) and startTrainingMinigame(). */
 
 function showReveal(correct, card) {
   const r = document.getElementById("reveal");

@@ -20,6 +20,8 @@ function render() {
     case "epilepsy-warning":  html = viewEpilepsyWarning(); break;
     case "shop":              html = viewShop(); break;
     case "minigame":          html = viewMinigame(); break;
+    case "minigame-pick-difficulty": html = viewMinigamePickDifficulty(); break;
+    case "minigame-pick-type":       html = viewMinigamePickType(); break;
     case "dying":             html = viewDying(); break;
     case "preview":           html = viewPreview(); break;
     case "infected":          html = viewInfected(); break;
@@ -81,13 +83,35 @@ document.addEventListener("click", (e) => {
       break;
     }
     case "mg-hit": {
-      const idx = parseInt(btn.dataset.target, 10);
-      hitMinigameTarget(idx);
+      hitQuarantineTarget(parseInt(btn.dataset.target, 10));
+      break;
+    }
+    case "seq-hit": {
+      hitSequenceBtn(parseInt(btn.dataset.seqBtn, 10));
+      break;
+    }
+    case "impostor-hit": {
+      hitImpostorIcon(parseInt(btn.dataset.impostorIdx, 10));
       break;
     }
     case "minigame-practice":
+      // Step 1 of practice: ask which difficulty
+      state.minigameTrainingDifficulty = null;
+      state.minigameTrainingType = null;
+      state.screen = "minigame-pick-difficulty";
+      render();
+      break;
+    case "mg-pick-difficulty":
+      // Step 2: ask which minigame
+      state.minigameTrainingDifficulty = btn.dataset.diff;
+      state.screen = "minigame-pick-type";
+      render();
+      break;
+    case "mg-pick-type":
+      // Start practicing with chosen difficulty + type
+      state.minigameTrainingType = btn.dataset.type;
       state.minigameStats = Object.assign({}, TRAINING_STATS_DEFAULT);
-      startMinigameTraining();
+      startTrainingMinigame();
       break;
     case "exit-minigame-training": {
       const mg = state.minigame;

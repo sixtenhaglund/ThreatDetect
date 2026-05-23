@@ -383,45 +383,7 @@ function creditzEarnedBlock() {
 }
 
 
-function viewMinigame() {
-  const mg = state.minigame;
-  if (!mg) return "";
-  const isTraining = !!mg.training;
-  const stats = state.minigameStats || TRAINING_STATS_DEFAULT;
-  const trainingStrip = isTraining ? `
-    <div class="hud" style="grid-template-columns: repeat(3, 1fr); max-width: 460px; margin: 8px auto 0;">
-      <div class="cell"><div class="label">Wins</div><div class="value" style="color: var(--primary);">${stats.wins}</div></div>
-      <div class="cell"><div class="label">Losses</div><div class="value" style="color: var(--destruct);">${stats.losses}</div></div>
-      <div class="cell"><div class="label">Best</div><div class="value">${stats.bestTimeMs !== null ? (stats.bestTimeMs / 1000).toFixed(2) + "s" : "—"}</div></div>
-    </div>` : "";
-  const heading = isTraining ? "PRACTICE: QUARANTINE" : "QUARANTINE THE THREATS";
-  const sub = isTraining ? "Click all ${n} skulls before the timer ends. Practice loops automatically — wins and losses are tallied."
-                         : "Click all ${n} skulls before the timer runs out. Miss the deadline and the virus kills you.";
-  const exitBtn = isTraining
-    ? `<div class="row center" style="margin-top:8px;"><button class="btn" data-action="exit-minigame-training">Exit Practice</button></div>`
-    : "";
-  return `
-    <div class="minigame-stage">
-      <div class="minigame-header">
-        <h3 style="margin:0; color: var(--primary); letter-spacing: 0.3em;">${isTraining ? "🎯 PRACTICE MODE" : "🛡 ANTIVIRUS DEPLOYED"}</h3>
-        <h1 style="margin: 6px 0;">${heading}</h1>
-        <p class="mute">${esc(sub.replace("${n}", String(mg.needed)))}</p>
-        <div class="hud" style="grid-template-columns: 1fr 1fr; max-width: 360px; margin: 6px auto 0;">
-          <div class="cell"><div class="label">Left</div><div class="value" id="mg-remaining">${mg.needed - mg.hits}</div></div>
-          <div class="cell"><div class="label">Time</div><div class="value" id="mg-timer">${mg.timeLeft.toFixed(1)}</div></div>
-        </div>
-        ${trainingStrip}
-        ${exitBtn}
-      </div>
-      <div class="minigame-field">
-        ${mg.targets.map((t, i) => `
-          <button class="minigame-target ${t.hit ? "hit" : ""}"
-                  data-action="mg-hit" data-target="${i}" data-mg-target="${i}"
-                  style="left:${t.x}%; top:${t.y}%;">☠</button>
-        `).join("")}
-      </div>
-    </div>`;
-}
+/* viewMinigame and viewMinigamePick* live in minigames.js */
 
 function viewShop() {
   const wallet = save.creditz || 0;
