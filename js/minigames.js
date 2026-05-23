@@ -185,10 +185,10 @@ function hitQuarantineTarget(idx) {
    ============================================================ */
 
 const SEQUENCE_COLORS = [
-  { bg: "#860000", lit: "#ff9999", freq: 392 },  // red    — G
-  { bg: "#44dd44", lit: "#99ff99", freq: 494 },  // green  — B
-  { bg: "#4488ff", lit: "#88bbff", freq: 587 },  // blue   — D
-  { bg: "#ffcc44", lit: "#ffdd99", freq: 698 }   // yellow — F
+  { bg: "#000000", lit: "#3f3f3f", freq: 392 },  // red    — G
+  { bg: "#ffffff", lit: "#ffffff", freq: 494 },  // green  — B
+  { bg: "#008507", lit: "#09aa04", freq: 587 },  // blue   — D
+  { bg: "#797979", lit: "#8b774d", freq: 698 }   // yellow — F
 ];
 
 function setupSequence(cfg) {
