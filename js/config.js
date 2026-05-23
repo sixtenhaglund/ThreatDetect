@@ -123,9 +123,26 @@ const ICONS = {
 const RANDOM_POOLS = {
   department: ["Accounting", "Engineering", "HR", "Marketing", "Sales", "IT", "Legal", "Operations", "Finance", "Procurement", "DevOps"],
   tld:        [".host", ".tk", ".live", ".pw", ".ru", ".net", ".biz", ".xyz", ".support", ".help", ".online", ".click", ".info", ".app"],
-  app:        ["Microsoft Teams", "Slack", "Discord", "Outlook", "OneDrive", "Notion", "Zoom", "SharePoint", "Asana", "Linear", "Trello"],
-  brand:      ["Microsoft", "Google", "Apple", "Amazon", "Adobe", "Dropbox", "GitHub"],
+  app:        ["Microsoft Teams", "Slack", "Discord", "Outlook", "OneDrive", "Notion", "Zoom", "SharePoint", "Asana", "Linear", "Trello", "Photoshop", "Excel", "Word", "Spotify", "Steam", "Visual Studio Code", "Figma"],
+  brand:      ["Microsoft", "Google", "Apple", "Amazon", "Adobe", "Dropbox", "GitHub", "Cloudflare", "Mozilla", "Logitech", "NVIDIA", "Intel", "AMD"],
   city:       ["Stockholm", "Berlin", "Helsinki", "Oslo", "Copenhagen", "Tallinn", "Amsterdam", "Riga"],
+  // People & comms
+  name:       ["Sarah K.", "Alex Chen", "Maya Lindqvist", "Jordan Williams", "Sam Patel", "Casey Brown", "Riley Park", "Sven Bergstrom", "Mira Singh", "Tom Lee", "Eva Söderlund", "Hugo Andersson"],
+  username:   ["alex.k", "StandardUser", "admin", "jdoe", "sara_p", "m.dahl", "sixten", "sysadmin", "lhansson", "guest"],
+  // System / OS
+  kb:         ["KB5034441", "KB4474419", "KB5031356", "KB5028948", "KB5040442", "KB5039212", "KB5036893"],
+  version:    ["4.21.7022", "22.06.1", "110.0.1587.41", "14.40", "3.8.6", "2025.05.01", "1.92.3", "115.0", "12.0.5"],
+  filesize:   ["1.2 GB", "84 KB", "256 MB", "4.5 MB", "38 MB", "12 GB", "640 KB", "1.8 MB", "512 MB", "76 KB"],
+  filename:   ["Q4_Summary", "Annual_Report", "Resume_2026", "Project_Plan", "README", "Invoice_8821", "Meeting_Notes", "Backup_Final", "Budget_Q3", "design_v3"],
+  ext:        [".docx", ".pdf", ".xlsx", ".jpg", ".png", ".zip", ".pptx", ".csv", ".txt", ".mp4"],
+  process:    ["svchost.exe", "explorer.exe", "RuntimeBroker.exe", "dwm.exe", "services.exe", "spoolsv.exe", "lsass.exe", "csrss.exe", "winlogon.exe"],
+  driver:     ["Realtek HD Audio", "NVIDIA Display Driver", "Intel Graphics", "Logitech HID", "Bluetooth A2DP", "Synaptics Touchpad", "Realtek PCIe LAN", "ASMedia USB 3.2", "Intel Wi-Fi 6E"],
+  // Network
+  port:       ["443", "80", "8080", "22", "3389", "53", "25", "587", "8443"],
+  ipaddr:     ["192.168.0.42", "10.0.0.1", "172.16.0.5", "192.168.1.100", "10.10.0.27", "172.20.5.18"],
+  // Misc
+  percent:    ["14%", "23%", "47%", "68%", "82%", "96%", "31%", "59%"],
+  game:       ["Cyberpunk 2077", "Helldivers 2", "Stardew Valley", "Minecraft", "CS2", "Elden Ring", "Hades", "Baldur's Gate 3", "Fortnite", "Hollow Knight"],
   // BSOD-flavor pools — used inside Windows kernel-crash cards so each draw
   // shows different stop codes, modules, CPUs, etc. even when the title is fixed.
   stopcode: [
