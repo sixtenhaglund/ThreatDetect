@@ -37,6 +37,7 @@ function render() {
   // by startChallenge/startTraining. Death + minigame screens are silent on the music side.
   applyMusicForScreen();
   applyAssistantStatic();
+  applyOldexeStatic();
 }
 
 const MENU_MUSIC_SCREENS = new Set([
@@ -90,6 +91,52 @@ function applyAssistantStatic() {
     _assistantStaticInterval = null;
   } else if (onScreen) {
     paintAssistantStatic();
+  }
+}
+
+/* ============================================================
+   OLD.exe — black-and-white TV static.
+   Same trick as the ASSISTANT static, but each pixel is a random GRAY
+   value (0–255) instead of binary black/green, which gives the classic
+   "TV snow" look you see on a CRT receiving no signal. Painted into a
+   small canvas, scaled up via image-rendering: pixelated, and pushed
+   into the death screen as a CSS custom property so the existing
+   ::after pseudo-element can consume it without restructuring.
+   ============================================================ */
+let _oldexeStaticInterval = null;
+
+function paintOldexeStatic() {
+  const el = document.querySelector(".death-OLDEXE");
+  if (!el) return;
+  const c = document.createElement("canvas");
+  c.width = 256; c.height = 192;
+  const ctx = c.getContext("2d");
+  const img = ctx.createImageData(c.width, c.height);
+  const d = img.data;
+  for (let i = 0; i < d.length; i += 4) {
+    const v = Math.random() * 255 | 0;
+    d[i]     = v;
+    d[i + 1] = v;
+    d[i + 2] = v;
+    d[i + 3] = 255;
+  }
+  ctx.putImageData(img, 0, 0);
+  el.style.setProperty("--oldexe-static", "url(" + c.toDataURL() + ")");
+}
+
+function applyOldexeStatic() {
+  const onScreen =
+    (state.screen === "dying"    && state.killer       === "OLDEXE") ||
+    (state.screen === "preview"  && state.previewVirus === "OLDEXE") ||
+    (state.screen === "infected" && state.killer       === "OLDEXE");
+  if (onScreen && !_oldexeStaticInterval) {
+    paintOldexeStatic();
+    _oldexeStaticInterval = setInterval(paintOldexeStatic, 60);
+  } else if (!onScreen && _oldexeStaticInterval) {
+    clearInterval(_oldexeStaticInterval);
+    _oldexeStaticInterval = null;
+  } else if (onScreen) {
+    paintOldexeStatic();
   }
 }
 

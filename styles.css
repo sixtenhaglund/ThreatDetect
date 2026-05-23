@@ -1931,51 +1931,59 @@
     /* Black-and-white SVG of a CRT monitor + PC tower, centered.
        White strokes on transparent so the yellow wash shows through and
        the picture reads as pure black-and-white linework.
-       Glitches sporadically — see oldexeComputerGlitch below. */
+       Glitches intensely — see oldexeComputerGlitch below. */
     content: ""; position: absolute; inset: 0;
     background: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 220 250' fill='none' stroke='%23ffffff' stroke-width='2.5' stroke-linejoin='round' stroke-linecap='round'><path d='M 30 18 Q 30 10 38 10 L 182 10 Q 190 10 190 18 L 190 140 Q 190 148 182 148 L 38 148 Q 30 148 30 140 Z'/><rect x='42' y='22' width='136' height='100' rx='8' fill='%23000000'/><circle cx='160' cy='135' r='2' fill='%23ffffff'/><line x1='44' y1='135' x2='110' y2='135' stroke-width='1' opacity='0.5'/><path d='M 95 148 L 95 160 L 75 168 L 145 168 L 125 160 L 125 148 Z'/><rect x='45' y='175' width='130' height='65' rx='3'/><rect x='60' y='190' width='45' height='4'/><rect x='60' y='200' width='50' height='5' rx='1'/><circle cx='155' cy='195' r='3'/><circle cx='155' cy='205' r='1.5'/><line x1='60' y1='220' x2='115' y2='220'/><line x1='60' y1='226' x2='115' y2='226'/><line x1='60' y1='232' x2='115' y2='232'/></svg>") no-repeat center;
     background-size: min(26vmin, 220px) auto;
     pointer-events: none;
-    animation: oldexeComputerGlitch 4.4s linear infinite;
+    animation: oldexeComputerGlitch 3.2s steps(1, end) infinite;
   }
-  /* Computer mostly sits still; at four moments per loop it briefly hops
-     position or dims, then snaps back. The tight adjacent keyframes
-     (e.g. 15% → 16%) create the snap — values between 1% of timeline = ~44ms
-     at this duration, fast enough to read as a glitch rather than a drift. */
+  /* Intense, jerky glitch animation.
+     `steps(1, end)` removes ALL interpolation between keyframes — every
+     value change is a hard cut, no smooth slide. That kills the "drift"
+     feel the previous linear version had.
+     8 glitch events per loop: brief snap-jumps, longer "stuck" holds at
+     offset positions, dim flickers, and rotation/scale bursts. */
   @keyframes oldexeComputerGlitch {
-    0%,  14%  { transform: translate(0,    0);  opacity: 0.92; }
-    15%, 16%  { transform: translate(-5px, 0);  opacity: 0.92; }
-    17%, 35%  { transform: translate(0,    0);  opacity: 0.92; }
-    36%, 37%  { transform: translate(2px,  0);  opacity: 0.35; }
-    38%, 58%  { transform: translate(0,    0);  opacity: 0.92; }
-    59%, 61%  { transform: translate(-7px, 1px); opacity: 0.92; }
-    62%, 82%  { transform: translate(0,    0);  opacity: 0.92; }
-    83%, 84%  { transform: translate(2px,  2px); opacity: 0.55; }
-    85%, 100% { transform: translate(0,    0);  opacity: 0.92; }
+    0%,  8%   { transform: translate(0,    0);   opacity: 0.92; }
+    9%,  10%  { transform: translate(-18px, 0);  opacity: 0.92; }
+    11%, 18%  { transform: translate(0,    0);   opacity: 0.92; }
+    19%, 20%  { transform: translate(14px, -5px); opacity: 0.3; }
+    21%, 30%  { transform: translate(0,    0);   opacity: 0.92; }
+    /* Longer hold — signal "stuck" off-center for ~130ms */
+    31%, 35%  { transform: translate(-24px, 4px) rotate(-0.8deg); opacity: 0.92; }
+    36%, 44%  { transform: translate(0,    0);   opacity: 0.92; }
+    /* Rapid double-jump — left, then right within 64ms */
+    45%, 46%  { transform: translate(26px, 0);   opacity: 0.92; }
+    47%, 48%  { transform: translate(-12px, 0);  opacity: 0.92; }
+    49%, 57%  { transform: translate(0,    0);   opacity: 0.92; }
+    /* Big dim hold — picture nearly vanishes for ~130ms */
+    58%, 62%  { transform: translate(0, -10px) scale(1.06); opacity: 0.2; }
+    63%, 72%  { transform: translate(0,    0);   opacity: 0.92; }
+    73%, 74%  { transform: translate(-20px, 5px); opacity: 0.92; }
+    75%, 76%  { transform: translate(12px, -3px); opacity: 0.45; }
+    77%, 86%  { transform: translate(0,    0);   opacity: 0.92; }
+    /* Final triple jolt */
+    87%, 88%  { transform: translate(-16px, 7px) rotate(0.5deg); opacity: 0.65; }
+    89%, 90%  { transform: translate(22px, -3px);  opacity: 0.92; }
+    91%, 100% { transform: translate(0,    0);   opacity: 0.92; }
   }
   .death-OLDEXE::after {
-    /* Heavy static overlay — TV signal totally falling apart.
-       Higher feTurbulence frequency = finer/grittier noise, more octaves =
-       more detail layers stacked. Mix-blend-mode "screen" still keeps it
-       from darkening the picture, but at 0.55 opacity the bright specks
-       are dense enough to read as proper analog snow. */
+    /* Real TV-snow static. JS (paintOldexeStatic in main.js) paints a fresh
+       256x192 canvas of random per-pixel grayscale every 60ms and stores
+       the data URL in the `--oldexe-static` CSS variable. Pixelated
+       scaling keeps the grain chunky-crisp instead of blurring it gray.
+       mix-blend-mode: normal at 0.65 opacity lets the picture show
+       through as a half-degraded signal — both light AND dark static
+       pixels overwrite the layers below. */
     content: ""; position: absolute; inset: 0;
-    background: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='1.1' numOctaves='3' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
-    opacity: 0.55;
-    mix-blend-mode: screen;
+    background-image: var(--oldexe-static, none);
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    image-rendering: pixelated;
+    opacity: 0.65;
+    mix-blend-mode: normal;
     pointer-events: none;
-    animation: oldexeStatic 0.1s steps(8) infinite;
-  }
-  @keyframes oldexeStatic {
-    0%     { background-position: 0      0;    }
-    12.5%  { background-position: -60px  20px; }
-    25%    { background-position: 30px  -45px; }
-    37.5%  { background-position: -25px -75px; }
-    50%    { background-position: 80px   10px; }
-    62.5%  { background-position: -40px  55px; }
-    75%    { background-position: 95px  -30px; }
-    87.5%  { background-position: -90px -10px; }
-    100%   { background-position: 0      0;    }
   }
 
   /* HEX — blue hexagons jumping to random positions. Each layer uses `steps()`
