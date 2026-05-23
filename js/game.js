@@ -238,8 +238,7 @@ function activeTells(card) {
   return tells;
 }
 
-/* Pattern-based detection of textual tells inside the alert's title/message/meta.
-
+/* Pattern-based detection of textual tells inside the alert's title/message/meta. */
 function textualTellsFor(card) {
   if (!card || !card.isVirus) return [];
   const text = String(card.title || "") + " " + String(card.message || "") + " " + String(card.meta || "");

@@ -21,11 +21,11 @@ const CONFIG = {
   // Antivirus minigame
   antivirusPrice: 40,
   minigameByDifficulty: {
-    easy:      { targets: 3,  duration: 6.0 },
-    normal:    { targets: 5,  duration: 6.0 },
-    hard:      { targets: 8,  duration: 5.5 },
-    nightmare: { targets: 10, duration: 5.0 },
-    challenge: { targets: 6,  duration: 5.0 }
+    easy:      { targets: 2,  duration: 6.0 },
+    normal:    { targets: 4,  duration: 6.0 },
+    hard:      { targets: 8,  duration: 6.0 },
+    nightmare: { targets: 10, duration: 6.0 },
+    challenge: { targets: 5,  duration: 5.0 }
   },
   // Fallback used by Practice mode (or if difficulty is missing somehow)
   minigameTargets: 5,
