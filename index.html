@@ -1778,7 +1778,7 @@ const VIRUSES = {
   EPILEPTICA: {
     name: "EPILEPTICA", color: "#ffffff", starter: true,
     minRound: 1,
-    description: "A seizure-inducing strobe virus. Rapidly alternates display between black and white to overwhelm the visual cortex.",
+    description: "A seizure-inducing strobe virus that weaponizes your own display. Rapidly alternates the screen between black and white at frequencies known to trigger photosensitive epilepsy — the same range as the infamous 1997 Pokémon episode. Originally written as a 'screen calibrator' prank before being weaponized into a denial-of-service against the user themselves.",
     signs: [
       "Error message contains rapid repeated characters (e.g. '!!!!!!!')",
       "References 'display calibration' or 'monitor sync'",
@@ -1800,7 +1800,7 @@ const VIRUSES = {
   MELTDOWN: {
     name: "MELTDOWN", color: "#ff7733",
     minRound: 2,
-    description: "A thermal corruption virus that fakes a thermal emergency to justify disabling safety systems and overwriting files from the top down.",
+    description: "A thermal corruption virus that fabricates an overheating emergency. By spoofing CPU temperatures in the 200–400°C range — impossible numbers; real silicon melts at 150°C — it pressures you into disabling thermal_throttle.exe so it can run unrestricted. With safety systems off, it overwrites files from the top of the filesystem down.",
     signs: [
       "References CPU temperature above 200°C",
       "Suggests disabling thermal protection or cooling",
@@ -1821,13 +1821,14 @@ const VIRUSES = {
   STATIC: {
     name: "STATIC", color: "#b0b0b0", starter: true,
     minRound: 1,
-    description: "A signal interference virus. Corrupts display drivers and injects noise into video output, masking deeper file system attacks.",
+    description: "A signal interference virus that uses analog-era language to disguise modern attacks. It hijacks display drivers, injects static noise into video output, and renames itself to legacy .scr screensaver files to slip past modern detection (which often ignores that extension as harmless). The visible noise on the popup is cover for filesystem rewrites happening underneath.",
     signs: [
       "References analog terms on a digital system (antenna, signal, channel)",
       "Process name contains 'noise', 'signal', or 'channel'",
       "Executable has a .scr (screensaver) extension",
       "Mentions 'signal loss' on a digital display",
-      "Static noise overlay flickering across the popup"
+      "Static noise overlay flickering across the popup",
+      "Source domain ends in a non-Microsoft TLD (.ru, .net, .pw)"
     ],
     errors: [
       { template: TPL.WIN11, title: "SignalLoss.scr", message: "Display signal interference detected. Running noise_filter.scr to restore clean channel output. Do not interrupt signal correction.", meta: "Signal: LOST  |  Process: channel_restore.scr  |  Source: signal-fix.net" },
@@ -1840,7 +1841,7 @@ const VIRUSES = {
   REDRUM: {
     name: "REDRUM", color: "#cc1111",
     minRound: 3,
-    description: "A bloodborne data corruption virus. Silently overwrites system files starting from the registry, naming itself after horror motifs and palindromes.",
+    description: "A bloodborne data corruption virus with a Stanley Kubrick fixation. Silently overwrites system files starting from the registry, naming its processes after Overlook Hotel motifs (room 237, the caretaker) and palindromes (murder/redrum, racecar, etatekrac). Always claims your files are being 'taken care of' — which, technically, they are.",
     signs: [
       "References hotel, room numbers, or 'caretaker'",
       "Process name is a palindrome or reversed word (e.g. murder/redrum, racecar)",
@@ -1861,7 +1862,7 @@ const VIRUSES = {
   VOID: {
     name: "VOID", color: "#aa66ff",
     minRound: 3,
-    description: "A null-space encryption virus. Encrypts files into unreadable void data and hides its process by consuming its own PID.",
+    description: "A null-space encryption virus that turns your files into mathematical zero. Writes data to /dev/null, lists file sizes as negative or infinite, and hides its own process by consuming PID 0x00000000 — the slot the OS reserves for 'no process at all.' Recovery is impossible: the data hasn't been encrypted, it has been erased and the address book burned.",
     signs: [
       "Process ID listed as NULL, VOID, or 0x00000000",
       "References 'null space', 'void', or 'entropy'",
@@ -1882,7 +1883,7 @@ const VIRUSES = {
   GASLIGHT: {
     name: "GASLIGHT", color: "#ffd56b",
     minRound: 4,
-    description: "A temporal manipulation virus that quietly rewrites event logs and system clocks, making the host's own history unreliable.",
+    description: "A temporal manipulation virus that rewrites your own history. Quietly edits event logs, audit trails, and system clocks until you can no longer trust what your computer says you've done. Often claims you 'previously approved' actions you've never seen — and the records back it up, because it wrote them. The defining trick: weaponizing impossible dates (Feb 30, year 9999) as a tell hidden in plain sight.",
     signs: [
       "Timestamp is in the past beyond plausibility (year 1601, 1970) or far future",
       "Event time references a date that doesn't exist (Feb 30, etc.)",
@@ -1903,7 +1904,7 @@ const VIRUSES = {
   CRYPTEX: {
     name: "CRYPTEX", color: "#ffcc00",
     minRound: 4,
-    description: "Ransomware disguised as a backup or encryption tool. Locks your files first, asks for payment second.",
+    description: "Ransomware in a backup-tool disguise. Encrypts your files with a friendly UI, slaps a new extension on them (.locked, .crypt, .vault), and only then reveals the ransom note: pay Bitcoin or Ethereum within 24 hours or the decryption key is destroyed. The countdown is real — wallets are watched and timers honored. Paying funds the next variant.",
     signs: [
       "Mentions Bitcoin, cryptocurrency, or wallet addresses",
       "References a countdown timer for file deletion",
@@ -1924,7 +1925,7 @@ const VIRUSES = {
   WORM: {
     name: "WORM", color: "#44ff44", starter: true,
     minRound: 1,
-    description: "A self-replicating network worm that spreads through shared folders and email attachments, disguising each copy as a trusted document.",
+    description: "A self-replicating network worm that wears a paper trail like camouflage. Disguises each copy as an HR document, accounting spreadsheet, or IT patch (Resume.pdf.exe, Q4_Summary.xlsx.exe, SystemFix_IT.exe), then spreads laterally through mounted shares and mass email. The classic double-extension trick — looks like a document, runs like an executable, because Windows hides the real extension by default.",
     signs: [
       "Executable file has the same name as a document (e.g. Resume.pdf.exe)",
       "File claims to be from HR, accounting, or IT department",
@@ -1945,7 +1946,7 @@ const VIRUSES = {
   ROOTKIT: {
     name: "ROOTKIT", color: "#ff3300",
     minRound: 5,
-    description: "A kernel-level rootkit that embeds itself into the boot sector, becoming invisible to standard detection tools.",
+    description: "A kernel-level rootkit that infects the boot sector itself. Once installed in the MBR, it loads before Windows does — making it invisible to standard antivirus, which runs inside the OS it has already compromised. Always wants Secure Boot disabled and an unsigned kernel driver installed to C:\\Windows\\System32\\drivers. Detection usually requires booting from external media.",
     signs: [
       "Process claims to require kernel-level access for a normal task",
       "References MBR (Master Boot Record) modification",
@@ -1966,7 +1967,7 @@ const VIRUSES = {
   DDOS: {
     name: "DDOS", color: "#ff8800",
     minRound: 4,
-    description: "A botnet client that hijacks your network stack, turning your machine into a zombie in a global attack swarm.",
+    description: "A botnet client that conscripts your machine into a global attack swarm. Hijacks your network stack to fire thousands of outbound connections per second at remote targets, while disguising itself as a 'bandwidth test' or 'distributed computing volunteer.' Your ISP usually notices before you do — and depending on what the swarm is hitting, law enforcement may visit shortly after.",
     signs: [
       "Process is making thousands of outbound connections per second",
       "Claims to be a 'bandwidth test' or 'network diagnostic'",
@@ -1987,13 +1988,14 @@ const VIRUSES = {
   LEECH: {
     name: "LEECH", color: "#aa00ff",
     minRound: 3,
-    description: "A credential harvesting parasite that silently monitors keystrokes, clipboard data, and browser sessions, exfiltrating to a remote server.",
+    description: "A credential-harvesting parasite that lives quietly in the background. Hooks into browser processes and the keyboard driver to capture passwords, clipboard contents, and session cookies, exfiltrating them in 30-second batches to a remote server. There is no visible UI — by the time you notice it, your accounts have already been signed into from somewhere else.",
     signs: [
       "Process runs as a hidden background service with no UI",
       "Executable hooks into chrome.exe, firefox.exe",
       "Claims to be a 'keyboard layout helper' or 'clipboard manager'",
       "Sends outbound HTTPS to unknown domains at regular intervals",
-      "Subtle static noise overlay (transmission artifact)"
+      "Subtle static noise overlay (transmission artifact)",
+      "Promises 'autofill', 'sync', or 'multilingual input' as cover for reading saved passwords"
     ],
     errors: [
       { template: TPL.TOAST, title: "Keyboard Layout Helper", message: "klhelper.exe requires access to keyboard input for multilingual support. This background service improves typing accuracy across all applications.", meta: "Hook: Keyboard+Clipboard · Outbound: data-sync.pw · Interval: 30s" },
@@ -2006,7 +2008,7 @@ const VIRUSES = {
   SCREAMER: {
     name: "SCREAMER", color: "#ff1166",
     minRound: 5,
-    description: "A shock-tactic infection that pairs blaring audio with hyperbolic full-screen warnings to panic the user into clicking the wrong button.",
+    description: "A panic-engineering attack that weaponizes urgency itself. Pairs blaring audio with ALL-CAPS full-screen warnings designed to flood your fight-or-flight response so you click before you read. The '27 viruses detected' counts, the countdown timers, the fake Microsoft hotlines — all theater. The real virus IS the popup; the malicious payload runs the moment you click anywhere on it.",
     signs: [
       "Visual style is wildly more dramatic than a real OS alert",
       "Uses ALL CAPS, multiple exclamation marks, and counters that don't make sense",
@@ -2028,13 +2030,14 @@ const VIRUSES = {
   MIMIC: {
     name: "MIMIC", color: "#66ddff",
     minRound: 8,
-    description: "A near-perfect impostor. Copies the layout, wording, and metadata of legitimate system alerts. The tells are tiny: one off character, one wrong number, one subtle phrasing slip.",
+    description: "A near-perfect impostor of real Windows alerts. Copies legitimate layouts, wording, version numbers, and even error codes verbatim — the tells are vanishingly small: a substituted Cyrillic 'о' inside 'micrоsoft', a slightly wrong KB number, a font that almost matches. The hardest virus in the roster to spot without slowing down and reading every character.",
     signs: [
       "Looks 99% like a normal Windows alert but has one detail wrong",
       "Domain or path has a single substituted letter",
       "Version number, error code, or PID doesn't match what would be real",
       "Tone is slightly too urgent or too friendly for the alert type",
-      "Heading font may be slightly different from the body font"
+      "Heading font may be slightly different from the body font",
+      "Brand names contain confusable characters (Cyrillic 'о' inside 'micrоsoft', 'hacker0ne' with a zero)"
     ],
     errors: [
       { template: TPL.WIN11, title: "Windows Update", message: "Updates are available. Your device will restart outside of active hours to finish updating. Click here for details.", meta: "Update: KB5034441  |  Size: 1.2GB  |  Source: micrоsoft-update.com", fontMismatch: true },
@@ -2047,7 +2050,7 @@ const VIRUSES = {
   PULSE: {
     name: "PULSE", color: "#ff55aa",
     minRound: 4,
-    description: "A display-layer virus that hijacks compositor calls to make the entire UI throb in sync with its data exfiltration heartbeat.",
+    description: "A display-layer virus that hides in plain sight by making the screen hypnotic. Hooks into the Windows compositor (DWM) to make the whole UI pulse, breathe, or wobble in time with its data exfiltration heartbeat — the rhythm is the leak. The trance effect makes players miss other tells while the meters drift to a steady 72 bpm.",
     signs: [
       "The popup itself pulses, breathes, or wobbles slightly",
       "Brightness or contrast shifts in waves while reading",
@@ -2068,7 +2071,7 @@ const VIRUSES = {
   NULL: {
     name: "NULL", color: "#777777",
     minRound: 6,
-    description: "A UI-suppression virus that hollows out interface elements. Buttons, icons, and labels begin disappearing where it has touched the system.",
+    description: "A UI-suppression virus that erases interface elements as it spreads. Buttons stop rendering, labels go blank, the close-window control vanishes — until you can no longer click your way out of anything it has touched. Players have to fall back on keyboard input (V to report, C to check, or 1 / 2 / arrow keys) to survive its rounds. The icon for this virus in the codex is, fittingly, the empty-set symbol ∅.",
     signs: [
       "Important UI elements are missing or invisible (the OK button isn't there)",
       "Empty error boxes with no title or no message at all",
@@ -2089,13 +2092,14 @@ const VIRUSES = {
   CURSOR: {
     name: "CURSOR", color: "#ffaa44",
     minRound: 5,
-    description: "A pointer hijack virus. Captures mouse input, predicts your clicks, and lets a remote operator nudge your cursor across the screen.",
+    description: "A pointer-hijack virus that turns your mouse against you. Hooks the HID driver to log every movement and click, then trains a remote model that predicts where you'll click next — sometimes nudging the cursor a few pixels to land on the wrong button at the last moment. Your hand types, but you don't always choose.",
     signs: [
       "Mentions 'cursor', 'pointer', or 'click prediction' in process names",
       "Claims to enhance click accuracy or pointer smoothing",
       "Process hooks into mouse driver with high event counts",
       "Hidden service with no UI but outbound mouse telemetry",
-      "Popup wobbles or shifts; error icon shakes"
+      "Popup wobbles or shifts; error icon shakes",
+      "Outbound data labeled 'pointer telemetry' or 'click model training'"
     ],
     errors: [
       { template: TPL.WIN11, title: "Mouse Precision Helper", message: "mpredict.exe has attached to your mouse driver for click-prediction. Outbound packets contain pointer telemetry to improve future accuracy.", meta: "Process: mpredict.exe  |  Hook: HID-Mouse  |  Outbound: pointer-sync.host", wobble: true, iconShake: true },
@@ -2108,13 +2112,14 @@ const VIRUSES = {
   LOOP: {
     name: "LOOP", color: "#88ff88",
     minRound: 5,
-    description: "A recursive call exhaustion virus. Buries itself in infinite nested directories and retry chains until the OS can't navigate or kill it.",
+    description: "A recursive call exhaustion virus that buries itself in infinity. Creates nested directories (/loop/loop/loop/...) and retry chains so deep that file managers freeze and process killers stack-overflow trying to traverse them. The only way out is usually a full reboot, and even then it may have left a depth-∞ time bomb in the registry waiting for next startup.",
     signs: [
       "File path contains repeated segments (e.g. /loop/loop/loop/ or ../../../)",
       "References 'infinite', 'recursive', 'stack overflow', or 'retry until'",
       "Process name is nested or repeats itself (cmd.cmd.cmd.exe)",
       "Claims to retry indefinitely until completion",
-      "Popup wobbles like it's stuck in a loop"
+      "Popup wobbles like it's stuck in a loop",
+      "Depth counters show '∞' or absurd retry numbers (8,441+) in the meta line"
     ],
     errors: [
       { template: TPL.TERMINAL, title: "stack_overflow", message: "Process recursion depth exceeded. Retrying call: cmd.cmd.cmd.exe(.cmd.exe). System will continue retry until resolved.", meta: "Depth: ∞  Process: cmd.cmd.cmd.exe  Path: /loop/loop/loop/" },
@@ -2127,7 +2132,7 @@ const VIRUSES = {
   FOSSIL: {
     name: "FOSSIL", color: "#c4a484",
     minRound: 6,
-    description: "A legacy-exploit virus that wakes up abandoned Windows components. Reads like a relic from another OS generation — using terms that died decades ago.",
+    description: "A legacy-exploit virus that resurrects abandoned Windows components. Activates the 16-bit subsystem (ntvdm.exe), demands deprecated runtimes (MFC42.DLL, DAO 3.5, VBRUN300.DLL), and references winhelp.exe like it's 2002 — exploiting forgotten code paths that haven't been patched since Windows 95 because nobody remembered they were still shipping. Reads like a relic because it is one.",
     signs: [
       "References Windows 95 / 98 / XP components",
       "Uses ancient version numbers (3.1, 4.5, 5.0) for current-era software",
@@ -2147,13 +2152,14 @@ const VIRUSES = {
   HEX: {
     name: "HEX", color: "#88ddff",
     minRound: 5,
-    description: "A fake memory analyzer that disguises malicious code as a forensics tool, demanding raw RAM access until you grant it ring-0 privileges.",
+    description: "A fake memory analyzer that disguises malicious code as a forensics tool. Demands raw DMA access at ring -1 to scan 'ghost pages' — privileges that, once granted, hand it the keys to every process's RAM including the kernel itself. Every number is hex, every process is named 0xDEADBEEF.exe or 0xCAFE.dll. The vibe is technical-and-trustworthy, but the request is more privileged than anything legitimate software ever needs.",
     signs: [
       "All PIDs, sizes, and timestamps are in hexadecimal (0x...)",
       "References memory dumps, page tables, or physical RAM",
       "Claims to be a 'memory analyzer' or 'forensics tool'",
       "Process name is itself a hex sequence (0xBEEF.exe, 0xCAFE.dll)",
-      "Error icon shakes inside the popup"
+      "Error icon shakes inside the popup",
+      "Asks for 'ring -1' or 'ring 0' DMA access — privilege levels below the kernel itself"
     ],
     errors: [
       { template: TPL.WIN11,    title: "Memory Analyzer", message: "0xBEEF.exe needs physical memory access (ring -1) to scan for ghost pages. Grant elevated DMA privileges to continue?", meta: "Process: 0xBEEF.exe  |  Access: DMA Ring-1  |  Pages: 0xFFFF" },
@@ -2167,7 +2173,7 @@ const VIRUSES = {
   BUGBEAR: {
     name: "BUGBEAR", color: "#ff9966",
     minRound: 6,
-    description: "A social-engineering scam dressed as a friendly security researcher. Claims to have found a critical bug and offers a reward — if you'll just verify your account.",
+    description: "A social-engineering scam dressed as a friendly security researcher. Pretends to be a whitehat from BugCrowd or HackerOne who 'found a critical bug in your account' and offers a bounty reward — if you'll just verify your identity at a lookalike domain (hacker0ne.host instead of hackerone.com, with a zero swapped for the letter o). The kindness is the bait; the 24-hour deadline is the hook.",
     signs: [
       "Claims to be a security researcher offering a bounty or reward",
       "Asks you to confirm identity or 'verify ownership' of your account",
@@ -3100,8 +3106,9 @@ Audio.deaths = {
   },
   HEX() {
     const t = this.ctx.currentTime;
-    const tones = [220, 275, 330, 415];
-    for (let i = 0; i < 18; i++) this.beep(t + i * 0.22, tones[i % 4] * 2 + (i * 13), 0.18, "square", 0.16);
+    const interval = 0.28;
+    const count = Math.floor(4.4 / interval);
+    for (let i = 0; i < count; i++) this.beep(t + i * interval, 880, 0.10, "square", 0.18);
   },
   BUGBEAR() {
     const t = this.ctx.currentTime;
