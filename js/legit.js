@@ -221,7 +221,18 @@ const LEGIT = [
   { template: TPL.PRINT,    title: "Quarterly_Report.pdf", message: "Ready to print on HP LaserJet M404. 12 pages, color, double-sided.", meta: "Printer: HP LaserJet M404  |  Pages: 12  |  Mode: Duplex" },
   { template: TPL.PRINT,    title: "Boarding_Pass.pdf", message: "Print boarding pass — SAS flight SK1234 STO→CPH. Single page, color.", meta: "Printer: Default  |  Pages: 1" },
   { template: TPL.CAPTCHA,  title: "Cloudflare Verification", message: "Cloudflare is checking your browser before redirecting you to github.com. This should only take a few seconds.", meta: "Ray ID: 8a7c92f1  ·  Performance & security by Cloudflare" },
-  { template: TPL.UPDATE,   title: "ThreatDetect", message: "ThreatDetect has been updated locally. Reload the page to get the latest viruses and minigames.", meta: "Local build  ·  No network update required", icon: "blank" }
+  { template: TPL.UPDATE,   title: "ThreatDetect", message: "ThreatDetect has been updated locally. Reload the page to get the latest viruses and minigames.", meta: "Local build  ·  No network update required", icon: "blank" },
+  // ---- BSOD legit cards (real Windows kernel crashes do happen) ----
+  { template: TPL.BSOD,     title: "MEMORY_MANAGEMENT", message: "A problem has been detected and Windows has been shut down to prevent damage to your computer. Your PC will restart automatically.", meta: "STOP: 0x0000001A (0x00041790, 0x0000001B, 0x00000000, 0x00000000)" },
+  { template: TPL.BSOD,     title: "IRQL_NOT_LESS_OR_EQUAL", message: "A driver tried to access an invalid memory address. Windows has collected information and will restart.", meta: "STOP: 0x0000000A  |  Failed module: nvlddmkm.sys (NVIDIA Display Driver)" },
+  { template: TPL.BSOD,     title: "WHEA_UNCORRECTABLE_ERROR", message: "Your PC ran into a hardware problem and needs to restart. We're just collecting some error info, and then we'll restart for you.", meta: "STOP: 0x00000124  |  CPU: Intel Core i7-12700K  |  Likely cause: thermal" },
+  { template: TPL.BSOD,     title: "PAGE_FAULT_IN_NONPAGED_AREA", message: "Windows hit a page fault and is restarting. If this keeps happening, try running Windows Memory Diagnostic.", meta: "STOP: 0x00000050  |  Tool: mdsched.exe" },
+  { template: TPL.BSOD,     title: "KERNEL_SECURITY_CHECK_FAILURE", message: "Your PC ran into a problem and needs to restart. We're just collecting some error info, and then we'll restart for you.", meta: "STOP: 0x00000139  |  No download required — automatic recovery" },
+  // ---- WIN311 legit cards (legacy emulators + retro software) ----
+  { template: TPL.WIN311,   title: "DOSBox-X", message: "DOSBox-X started successfully. Mounting C: as ~/dos/games. Type EXIT to leave the emulator.", meta: "Emulator: DOSBox-X 2025.05.01  |  Mode: SVGA  |  Source: dosbox-x.com" },
+  { template: TPL.WIN311,   title: "Program Manager", message: "WinWorldPC retro VM started. Windows 3.11 running in QEMU for legitimate vintage software preservation.", meta: "VM: QEMU  |  Image: win311.vhd  |  Source: winworldpc.com" },
+  { template: TPL.WIN311,   title: "Notepad", message: "README.TXT loaded. This file describes the legacy data format used by the 1996-era export tool.", meta: "File: README.TXT  |  Encoding: ASCII  |  Size: 4 KB" },
+  { template: TPL.WIN311,   title: "Solitaire", message: "SOL.EXE running in vintage compatibility mode. Score: 4520. Resume game in progress?", meta: "Compatibility: Win 3.x  |  Wrapper: Wine 8.0" }
 ];
 
 /* ============================================================

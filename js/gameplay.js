@@ -131,9 +131,12 @@ function buildDeck(round) {
     ? CONFIG.cardsPerRound + Math.max(0, round - 1)
     : CONFIG.cardsPerRound;
 
-  // Build the full virus pool for THIS round (only viruses unlocked at this round).
-  // Each entry carries a stable dealKey ("VIRUSKEY:errorIdx") so we can track which
-  // specific error variants the player has already seen this run.
+  // Build legit + virus pools, each entry tagged with a stable dealKey so we
+  // can track which specific cards a player has already seen this run.
+  // Legit dealKey = "legit:<index in LEGIT>"; virus = "<VIRUSKEY>:<errorIdx>".
+  const legitPool = LEGIT.map((e, i) => ({
+    card: { ...e, isVirus: false, virusKey: null }, dealKey: "legit:" + i
+  }));
   const virusPool = [];
   avail.forEach(k => {
     VIRUSES[k].errors.forEach((e, idx) => {
@@ -143,37 +146,52 @@ function buildDeck(round) {
   const virusCount = Math.min(virusPool.length, Math.max(2, Math.round(cardsThisRound * virusRatio)));
   const legitCount = cardsThisRound - virusCount;
 
-  // ---- Sample WITHOUT replacement across the whole run. ----
-  // The shuffled legitQueue is created once per run in startChallenge; we slice
-  // from the head each round. If the queue runs out (Endless mode after many
-  // rounds, etc.) we reshuffle and continue. This guarantees a 10-round normal
-  // run sees 80 distinct legit cards instead of independent draws per round.
-  if (!state.legitQueue || state.legitIdx + legitCount > state.legitQueue.length) {
-    state.legitQueue = shuffle(LEGIT.slice());
-    state.legitIdx = 0;
-  }
-  const pickedLegit = state.legitQueue
-    .slice(state.legitIdx, state.legitIdx + legitCount)
-    .map(e => ({ ...e, isVirus: false, virusKey: null }));
-  state.legitIdx += legitCount;
+  if (!state.usedLegit)        state.usedLegit        = new Set();
+  if (!state.usedVirusErrors)  state.usedVirusErrors  = new Set();
 
-  // Virus selection: prefer error variants the player hasn't seen this run.
-  // Only fall back to repeats if the unused pool is too small (small run,
-  // round 1 with only 3 starter viruses, etc.).
-  if (!state.usedVirusErrors) state.usedVirusErrors = new Set();
-  const used = state.usedVirusErrors;
-  const fresh = virusPool.filter(p => !used.has(p.dealKey));
-  const stale = virusPool.filter(p =>  used.has(p.dealKey));
-  let pickedPool;
-  if (fresh.length >= virusCount) {
-    pickedPool = shuffle(fresh).slice(0, virusCount);
-  } else {
-    pickedPool = shuffle(fresh).concat(shuffle(stale)).slice(0, virusCount);
-  }
-  pickedPool.forEach(p => used.add(p.dealKey));
-  const pickedViruses = pickedPool.map(p => p.card);
+  return shuffle(
+    pickByUniformTemplate(virusPool, virusCount, state.usedVirusErrors)
+      .concat(pickByUniformTemplate(legitPool, legitCount, state.usedLegit))
+  ).map(randomizeCard);
+}
 
-  return shuffle(pickedViruses.concat(pickedLegit)).map(randomizeCard);
+/* Pick `n` cards from `pool` such that each TEMPLATE has roughly equal odds
+   of being picked, regardless of how many cards belong to that template.
+   - Group the pool by template (so BSOD's 6 cards and WIN11's 174 cards are
+     treated as equal "buckets").
+   - Shuffle the bucket list, then round-robin through it: each pass takes one
+     card from each template's bucket until we have `n` cards.
+   - Within a bucket, prefer cards not already seen this run (using `usedKeys`
+     to track dealt cards across rounds — no card repeats unless the bucket's
+     unused supply runs out).
+   This is what makes rare templates (BSOD/WIN311/CAPTCHA) appear as often as
+   common ones (WIN11/TOAST/TERMINAL), without removing the variety inside
+   each template. */
+function pickByUniformTemplate(pool, n, usedKeys) {
+  if (n <= 0 || pool.length === 0) return [];
+  const byTemplate = {};
+  pool.forEach(p => {
+    const t = p.card.template || "unknown";
+    if (!byTemplate[t]) byTemplate[t] = [];
+    byTemplate[t].push(p);
+  });
+  const picked = [];
+  let safety = n * 4;
+  while (picked.length < n && safety-- > 0) {
+    const templates = shuffle(Object.keys(byTemplate));
+    for (const t of templates) {
+      if (picked.length >= n) break;
+      const bucket = byTemplate[t];
+      const fresh = bucket.filter(p => !usedKeys.has(p.dealKey));
+      const stale = bucket.filter(p =>  usedKeys.has(p.dealKey));
+      const choice = fresh.length ? rand(fresh) : (stale.length ? rand(stale) : null);
+      if (choice) {
+        picked.push(choice.card);
+        usedKeys.add(choice.dealKey);
+      }
+    }
+  }
+  return picked;
 }
 
 function rollTampering(round, card) {
@@ -232,10 +250,10 @@ function startChallenge() {
   state.killer = null;
   state.falsePositive = null;
   state.cardIdx = 0;
-  // Fresh shuffled legit pool + empty used-virus set so the run samples
-  // without replacement across rounds — no card repeats unless we exhaust the pool.
-  state.legitQueue = shuffle(LEGIT.slice());
-  state.legitIdx = 0;
+  // Empty the per-run "already-dealt" sets so each fresh run starts with the
+  // full legit + virus pools available again. Templates are picked uniformly
+  // by buildDeck, and within each template the dealt cards stay tracked here.
+  state.usedLegit = new Set();
   state.usedVirusErrors = new Set();
   state.deck = buildDeck(state.round);
   state.tampering = rollTampering(state.round, state.deck[0]);
