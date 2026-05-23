@@ -120,8 +120,6 @@ const ICONS = {
 // {tld}) and they get substituted at deck-build time so the same card stays stable
 // across re-renders but differs between runs.
 const RANDOM_POOLS = {
-  name:       ["Sarah", "Maya", "Alex", "Jordan", "Sam", "Taylor", "Chris", "Casey", "Mike", "Anna", "Lukas", "Sofie", "Oliver", "Emma", "Hugo", "Lina", "Noah", "Ella", "Erik", "Maja"],
-  surname:    ["K.", "J.", "M.", "Olsson", "Berg", "Andersson", "Smith", "Jones", "Chen", "Khan", "Lindqvist", "Holm", "Eriksson"],
   department: ["Accounting", "Engineering", "HR", "Marketing", "Sales", "IT", "Legal", "Operations", "Finance", "Procurement", "DevOps"],
   tld:        [".host", ".tk", ".live", ".pw", ".ru", ".net", ".biz", ".xyz", ".support", ".help", ".online", ".click", ".info", ".app"],
   app:        ["Microsoft Teams", "Slack", "Discord", "Outlook", "OneDrive", "Notion", "Zoom", "SharePoint", "Asana", "Linear", "Trello"],
