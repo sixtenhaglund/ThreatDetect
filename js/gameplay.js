@@ -124,18 +124,55 @@ function buildDeck(round) {
       virusRatio = Math.min(0.7, 0.2 + (round - 1) * 0.06);  // 20% → 70%
       break;
   }
-  const virusCards = [];
-  avail.forEach(k => VIRUSES[k].errors.forEach(e => virusCards.push({ ...e, isVirus: true, virusKey: k })));
-  const legitCards = LEGIT.map(e => ({ ...e, isVirus: false, virusKey: null }));
+
   // Endless mode adds +1 card per round you've already cleared (round 1 = 10,
   // round 2 = 11, round 3 = 12, ...). Other modes stay at CONFIG.cardsPerRound.
   const cardsThisRound = (state.gameMode === "endless")
     ? CONFIG.cardsPerRound + Math.max(0, round - 1)
     : CONFIG.cardsPerRound;
-  const virusCount = Math.min(virusCards.length, Math.max(2, Math.round(cardsThisRound * virusRatio)));
+
+  // Build the full virus pool for THIS round (only viruses unlocked at this round).
+  // Each entry carries a stable dealKey ("VIRUSKEY:errorIdx") so we can track which
+  // specific error variants the player has already seen this run.
+  const virusPool = [];
+  avail.forEach(k => {
+    VIRUSES[k].errors.forEach((e, idx) => {
+      virusPool.push({ card: { ...e, isVirus: true, virusKey: k }, dealKey: k + ":" + idx });
+    });
+  });
+  const virusCount = Math.min(virusPool.length, Math.max(2, Math.round(cardsThisRound * virusRatio)));
   const legitCount = cardsThisRound - virusCount;
-  const pickedViruses = shuffle(virusCards).slice(0, virusCount);
-  const pickedLegit   = shuffle(legitCards).slice(0, legitCount);
+
+  // ---- Sample WITHOUT replacement across the whole run. ----
+  // The shuffled legitQueue is created once per run in startChallenge; we slice
+  // from the head each round. If the queue runs out (Endless mode after many
+  // rounds, etc.) we reshuffle and continue. This guarantees a 10-round normal
+  // run sees 80 distinct legit cards instead of independent draws per round.
+  if (!state.legitQueue || state.legitIdx + legitCount > state.legitQueue.length) {
+    state.legitQueue = shuffle(LEGIT.slice());
+    state.legitIdx = 0;
+  }
+  const pickedLegit = state.legitQueue
+    .slice(state.legitIdx, state.legitIdx + legitCount)
+    .map(e => ({ ...e, isVirus: false, virusKey: null }));
+  state.legitIdx += legitCount;
+
+  // Virus selection: prefer error variants the player hasn't seen this run.
+  // Only fall back to repeats if the unused pool is too small (small run,
+  // round 1 with only 3 starter viruses, etc.).
+  if (!state.usedVirusErrors) state.usedVirusErrors = new Set();
+  const used = state.usedVirusErrors;
+  const fresh = virusPool.filter(p => !used.has(p.dealKey));
+  const stale = virusPool.filter(p =>  used.has(p.dealKey));
+  let pickedPool;
+  if (fresh.length >= virusCount) {
+    pickedPool = shuffle(fresh).slice(0, virusCount);
+  } else {
+    pickedPool = shuffle(fresh).concat(shuffle(stale)).slice(0, virusCount);
+  }
+  pickedPool.forEach(p => used.add(p.dealKey));
+  const pickedViruses = pickedPool.map(p => p.card);
+
   return shuffle(pickedViruses.concat(pickedLegit)).map(randomizeCard);
 }
 
@@ -195,6 +232,11 @@ function startChallenge() {
   state.killer = null;
   state.falsePositive = null;
   state.cardIdx = 0;
+  // Fresh shuffled legit pool + empty used-virus set so the run samples
+  // without replacement across rounds — no card repeats unless we exhaust the pool.
+  state.legitQueue = shuffle(LEGIT.slice());
+  state.legitIdx = 0;
+  state.usedVirusErrors = new Set();
   state.deck = buildDeck(state.round);
   state.tampering = rollTampering(state.round, state.deck[0]);
   state.locked = false;
