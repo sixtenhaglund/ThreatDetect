@@ -1462,44 +1462,20 @@
     100% { transform: translateY(-45px) scale(1.25); opacity: 0.55; }
   }
 
-  /* STATIC — chunky 64x64 pure black-and-white pixel noise. No color, no text. */
+  /* STATIC — real analog TV snow. JS (paintStaticNoise in main.js) paints a
+     fresh 256x192 canvas of random per-pixel grayscale every 50ms and stores
+     the data URL in the --static-noise CSS variable. image-rendering:
+     pixelated scales the small canvas up to fill the screen with crisp
+     chunks instead of blurred mid-grays. No second layer needed — proper
+     noise is dense enough on its own. */
   .death-STATIC {
     background-color: #000;
-    background-image: repeating-conic-gradient(
-      from 0deg at 50% 50%,
-      #fff 0 25%, #000 25% 50%, #fff 50% 75%, #000 75% 100%
-    );
-    background-size: 64px 64px;
-    animation: staticPx 0.1s steps(6) infinite;
+    background-image: var(--static-noise, none);
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    image-rendering: pixelated;
   }
-  @keyframes staticPx {
-    0%   { background-position: 0 0; }
-    16%  { background-position: 32px 0; }
-    33%  { background-position: 0 32px; }
-    50%  { background-position: -32px 32px; }
-    66%  { background-position: 32px -32px; }
-    83%  { background-position: -32px 0; }
-    100% { background-position: 0 0; }
-  }
-  .death-STATIC::before {
-    /* Second 64x64 offset b/w layer, blended via difference for denser noise */
-    content: ""; position: absolute; inset: 0;
-    background-image: repeating-conic-gradient(
-      from 90deg at 50% 50%,
-      #000 0 25%, #fff 25% 50%, #000 50% 75%, #fff 75% 100%
-    );
-    background-size: 64px 64px;
-    mix-blend-mode: difference;
-    animation: staticPx2 0.08s steps(5) infinite;
-  }
-  @keyframes staticPx2 {
-    0%   { background-position: 0 0; }
-    20%  { background-position: 32px 32px; }
-    40%  { background-position: -32px 0; }
-    60%  { background-position: 0 -32px; }
-    80%  { background-position: 32px -32px; }
-    100% { background-position: 0 0; }
-  }
+  .death-STATIC::before { content: none; }
 
   /* REDRUM — blood drip + splatter + reverse text */
   .death-REDRUM { background: #1a0000; }
@@ -1968,23 +1944,9 @@
     89%, 90%  { transform: translate(22px, -3px);  opacity: 0.92; }
     91%, 100% { transform: translate(0,    0);   opacity: 0.92; }
   }
-  .death-OLDEXE::after {
-    /* Real TV-snow static. JS (paintOldexeStatic in main.js) paints a fresh
-       256x192 canvas of random per-pixel grayscale every 60ms and stores
-       the data URL in the `--oldexe-static` CSS variable. Pixelated
-       scaling keeps the grain chunky-crisp instead of blurring it gray.
-       mix-blend-mode: normal at 0.65 opacity lets the picture show
-       through as a half-degraded signal — both light AND dark static
-       pixels overwrite the layers below. */
-    content: ""; position: absolute; inset: 0;
-    background-image: var(--oldexe-static, none);
-    background-size: 100% 100%;
-    background-repeat: no-repeat;
-    image-rendering: pixelated;
-    opacity: 0.65;
-    mix-blend-mode: normal;
-    pointer-events: none;
-  }
+  /* OLD.exe ::after deliberately empty — the static effect lives on the
+     STATIC virus now. The OLD.exe screen is just black + yellow wash +
+     glitching computer. */
 
   /* HEX — blue hexagons jumping to random positions. Each layer uses `steps()`
      timing and a different prime-number duration so they desync and never

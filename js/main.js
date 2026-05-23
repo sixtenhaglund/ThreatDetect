@@ -37,7 +37,7 @@ function render() {
   // by startChallenge/startTraining. Death + minigame screens are silent on the music side.
   applyMusicForScreen();
   applyAssistantStatic();
-  applyOldexeStatic();
+  applyStaticNoise();
 }
 
 const MENU_MUSIC_SCREENS = new Set([
@@ -95,18 +95,17 @@ function applyAssistantStatic() {
 }
 
 /* ============================================================
-   OLD.exe — black-and-white TV static.
-   Same trick as the ASSISTANT static, but each pixel is a random GRAY
-   value (0–255) instead of binary black/green, which gives the classic
-   "TV snow" look you see on a CRT receiving no signal. Painted into a
-   small canvas, scaled up via image-rendering: pixelated, and pushed
-   into the death screen as a CSS custom property so the existing
-   ::after pseudo-element can consume it without restructuring.
+   STATIC — proper analog TV snow.
+   Each pixel of a 256x192 canvas gets a random GRAY value (0–255)
+   every 50ms (20fps). image-rendering: pixelated scales it up to the
+   full screen with crisp chunks instead of smooth blur. Pushed into
+   the death screen as a CSS custom property so the existing
+   background-image rule can consume it without restructuring.
    ============================================================ */
-let _oldexeStaticInterval = null;
+let _staticNoiseInterval = null;
 
-function paintOldexeStatic() {
-  const el = document.querySelector(".death-OLDEXE");
+function paintStaticNoise() {
+  const el = document.querySelector(".death-STATIC");
   if (!el) return;
   const c = document.createElement("canvas");
   c.width = 256; c.height = 192;
@@ -121,22 +120,22 @@ function paintOldexeStatic() {
     d[i + 3] = 255;
   }
   ctx.putImageData(img, 0, 0);
-  el.style.setProperty("--oldexe-static", "url(" + c.toDataURL() + ")");
+  el.style.setProperty("--static-noise", "url(" + c.toDataURL() + ")");
 }
 
-function applyOldexeStatic() {
+function applyStaticNoise() {
   const onScreen =
-    (state.screen === "dying"    && state.killer       === "OLDEXE") ||
-    (state.screen === "preview"  && state.previewVirus === "OLDEXE") ||
-    (state.screen === "infected" && state.killer       === "OLDEXE");
-  if (onScreen && !_oldexeStaticInterval) {
-    paintOldexeStatic();
-    _oldexeStaticInterval = setInterval(paintOldexeStatic, 60);
-  } else if (!onScreen && _oldexeStaticInterval) {
-    clearInterval(_oldexeStaticInterval);
-    _oldexeStaticInterval = null;
+    (state.screen === "dying"    && state.killer       === "STATIC") ||
+    (state.screen === "preview"  && state.previewVirus === "STATIC") ||
+    (state.screen === "infected" && state.killer       === "STATIC");
+  if (onScreen && !_staticNoiseInterval) {
+    paintStaticNoise();
+    _staticNoiseInterval = setInterval(paintStaticNoise, 50);
+  } else if (!onScreen && _staticNoiseInterval) {
+    clearInterval(_staticNoiseInterval);
+    _staticNoiseInterval = null;
   } else if (onScreen) {
-    paintOldexeStatic();
+    paintStaticNoise();
   }
 }
 
