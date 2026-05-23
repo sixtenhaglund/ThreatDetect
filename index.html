@@ -3109,7 +3109,14 @@ const CONFIG = {
   streakBonus: 50,
   streakCap: 10,
   scoreWrong: -50,
-  starterUnlocked: ["EPILEPTICA", "STATIC", "MELTDOWN"]
+  starterUnlocked: ["EPILEPTICA", "STATIC", "MELTDOWN"],
+  // Creditz
+  creditzPerRound: { challenge: 20, easy: 2, normal: 5, hard: 10, nightmare: 15 },
+  scorePerCreditz: 100,         // every 100 score points = +1 ₢ at end of run
+  // Antivirus minigame
+  antivirusPrice: 30,
+  minigameTargets: 5,
+  minigameDuration: 6.5         // seconds
 };
 
 /* ============================================================
@@ -3229,19 +3236,11 @@ function recordRun(outcome) {
    CREDITZ — the in-game currency
    ============================================================ */
 
-const CREDITZ_PER_ROUND = {
-  challenge: 20,
-  easy:       2,
-  normal:     5,
-  hard:      10,
-  nightmare: 15
-};
-
 /* Called when a round is completed. Pays the round bonus DIRECTLY to the wallet
    immediately (so the player sees it tick up and so quitting mid-run doesn't lose it). */
 function awardRoundCreditz() {
   const mode = state.gameMode === "challenge" ? "challenge" : (state.difficulty || "normal");
-  const amount = CREDITZ_PER_ROUND[mode] || 0;
+  const amount = CONFIG.creditzPerRound[mode] || 0;
   if (amount <= 0) return;
   state.runCreditz = (state.runCreditz || 0) + amount;
   save.creditz = (save.creditz || 0) + amount;
@@ -3253,7 +3252,7 @@ function awardRoundCreditz() {
    (Round bonuses were already paid out as each round completed. No multiplier — being
    on the leaderboard is its own reward, not a cash perk.) */
 function finalizeCreditz(entry) {
-  const scoreCreditz = Math.floor(state.score / 100);
+  const scoreCreditz = Math.floor(state.score / CONFIG.scorePerCreditz);
   const baseTotal = (state.runCreditz || 0) + scoreCreditz;
   save.creditz = (save.creditz || 0) + scoreCreditz;
   Save.write(save);
@@ -3993,16 +3992,24 @@ const METERS = {
     if (this.timer) clearInterval(this.timer);
     this.timer = null;
   },
-  setOverride(eff) {
+  setOverride(eff, isVirus) {
     this.override = eff || null;
+    // When a legit card sets the meter context (e.g. thermal throttle → high CPU),
+    // we don't want the value flagged red — it's an expected reading, not tampering.
+    this.overrideIsVirus = isVirus !== false;
     this.tick();
   },
   tick() {
     const s = this.state;
-    s.fps  = clamp(s.fps  + rng(-2, 2), 56, 64);
-    s.ping = clamp(s.ping + rng(-3, 3), 18, 32);
-    s.cpu  = clamp(s.cpu  + rng(-2, 2), 42, 56);
-    s.vol  = clamp(s.vol  + rng(-1, 1), 64, 78);
+    // Wider natural jitter — real systems vary a LOT.
+    // Bigger random walk so high CPU / dropped FPS / slow ping happen organically,
+    // making "the meter looks weird" a much weaker signal that something is a virus.
+    s.fps  = clamp(s.fps  + rng(-8, 8),   22, 95);
+    s.ping = clamp(s.ping + rng(-12, 12), 8,  180);
+    s.cpu  = clamp(s.cpu  + rng(-6, 6),   18, 92);
+    // VOL is the user's audio volume — it shouldn't randomly change. Stays put unless
+    // a virus's meterEffect explicitly tampers with it.
+    s.vol  = 72;
     fakeClock += 700 + rng(0, 600);
     const d = new Date(fakeClock);
     s.time = pad2(d.getUTCHours()) + ":" + pad2(d.getUTCMinutes()) + ":" + pad2(d.getUTCSeconds());
@@ -4036,7 +4043,8 @@ const METERS = {
       const tamperShown = Math.random() < profile.showTamper;
       if (tamperShown) {
         el.textContent = self.applyEffect(key, o[key]);
-        el.classList.toggle("bad", Math.random() < profile.redChance);
+        // Only viruses' tampered values turn red. Legit contextual matches stay neutral.
+        el.classList.toggle("bad", self.overrideIsVirus && Math.random() < profile.redChance);
         if (profile.briefFlash) {
           // Nightmare: revert to the normal value almost immediately — barely-there flash
           const baseVal = base;
@@ -4077,9 +4085,13 @@ const METERS = {
 };
 
 function meterEffectFor(card) {
-  if (!card || !card.isVirus) return null;
+  if (!card) return null;
   if (card.noMeter) return null;
+  // Legit cards can also have meterEffect so a "thermal throttle" notice spikes CPU,
+  // a "battery saver" notice drops it, "VPN dropped" raises ping, etc. — making the
+  // meters a context cue rather than a virus tell.
   if (card.meterEffect) return card.meterEffect;
+  if (!card.isVirus) return null;
   const v = VIRUSES[card.virusKey];
   return v && v.meterEffect ? v.meterEffect : null;
 }
@@ -4265,7 +4277,7 @@ function startChallenge() {
   state.screen = "play";
   render();
   METERS.start();
-  METERS.setOverride(meterEffectFor(state.deck[0]));
+  METERS.setOverride(meterEffectFor(state.deck[0]), !!(state.deck[0] && state.deck[0].isVirus));
   maybePlayCardSound();
 }
 
@@ -4284,7 +4296,7 @@ function startTraining(virusKey) {
   state.tampering = rollTampering(10, state.deck[0]);
   render();
   METERS.start();
-  METERS.setOverride(meterEffectFor(state.deck[0]));
+  METERS.setOverride(meterEffectFor(state.deck[0]), !!(state.deck[0] && state.deck[0].isVirus));
   maybePlayCardSound();
 }
 
@@ -4305,7 +4317,10 @@ function nextCard() {
     }
     state.tampering = rollTampering(10, state.deck[state.cardIdx]);
     render();
-    METERS.setOverride(meterEffectFor(state.deck[state.cardIdx]));
+    {
+      const c = state.deck[state.cardIdx];
+      METERS.setOverride(meterEffectFor(c), !!(c && c.isVirus));
+    }
     maybePlayCardSound();
     return;
   }
@@ -4337,7 +4352,10 @@ function nextCard() {
   }
   state.tampering = rollTampering(state.round, state.deck[state.cardIdx]);
   render();
-  METERS.setOverride(meterEffectFor(state.deck[state.cardIdx]));
+  {
+    const c = state.deck[state.cardIdx];
+    METERS.setOverride(meterEffectFor(c), !!(c && c.isVirus));
+  }
   maybePlayCardSound();
 }
 
@@ -4447,8 +4465,8 @@ function triggerEndOfRun(card) {
    Spawn N virus targets on screen, click them all before the timer runs out.
    ============================================================ */
 
-const MG_TARGETS = 5;
-const MG_DURATION = 6.5; // seconds
+const MG_TARGETS  = CONFIG.minigameTargets;
+const MG_DURATION = CONFIG.minigameDuration;
 
 /* Shared setup. opts: { savedCard, training } */
 function startMinigame(opts) {
@@ -4530,11 +4548,11 @@ function winQuarantine() {
   }
   const card = mg.savedCard;
   state.minigame = null;
-  // Continue the run — go to next card. No score / streak change; antivirus already deducted.
+  // Show a non-blocking quarantine toast and advance straight to the next card —
+  // no brief re-render of the misclicked card (which made it feel like a card got skipped).
   state.screen = "play";
-  render();
-  showReveal(true, { isVirus: true, virusKey: card.virusKey, _antivirusSave: true });
-  setTimeout(nextCard, 850);
+  showCreditzToast("🛡 Quarantined", card.virusKey + " · antivirus consumed");
+  nextCard();
 }
 
 function failQuarantine() {
@@ -5217,7 +5235,7 @@ const SHOP_ITEMS = [
   {
     id: "antivirus",
     name: "Antivirus",
-    price: 30,
+    price: CONFIG.antivirusPrice,
     icon: "🛡",
     description: "If you mistakenly press OK on a virus, you get one chance to quarantine it in a quick minigame. Win the minigame and the run continues — but the antivirus is consumed."
   }
@@ -5559,6 +5577,7 @@ document.addEventListener("click", (e) => {
     }
     case "skip-death":
       if (state.deathTimeout) { clearTimeout(state.deathTimeout); state.deathTimeout = null; }
+      Audio.stopDeath();
       state.screen = "infected";
       render();
       break;
@@ -5613,7 +5632,7 @@ document.addEventListener("click", (e) => {
       // resume meter ticker if we returned to play/training
       if (state.screen === "play" || state.screen === "training") {
         const card = state.deck[state.cardIdx];
-        if (card) METERS.setOverride(meterEffectFor(card));
+        if (card) METERS.setOverride(meterEffectFor(card), !!card.isVirus);
       }
       break;
     case "toggle-entry":
@@ -5693,6 +5712,8 @@ document.addEventListener("click", (e) => {
       break;
     case "menu":
       Audio.stopAmbient();
+      Audio.stopDeath();
+      if (state.deathTimeout) { clearTimeout(state.deathTimeout); state.deathTimeout = null; }
       METERS.stop();
       state.trainingVirus = null;
       state.sideCodexOpen = false;
