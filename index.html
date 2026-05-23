@@ -1157,6 +1157,22 @@
   .killer-card .bios,
   .killer-card .term,
   .killer-card .loading { animation: none !important; }
+  /* Toast cards are normally position:absolute (designed to live in the play-area
+     bottom-right). Inside the small killer-card replay box that becomes invisible,
+     so pin them back into the normal flow and center them. */
+  .killer-card .toast {
+    position: static;
+    right: auto; bottom: auto;
+    width: auto;
+    max-width: 320px;
+    margin: 0 auto;
+    animation: none !important;
+    transform: none !important;
+  }
+  .killer-card .desktop-stage {
+    /* Same for the desktop-shortcut card — keep it readable in the inset */
+    min-height: 140px;
+  }
   .killer-tells {
     background: var(--bg-2);
     border: 1px solid var(--border);
@@ -3233,23 +3249,20 @@ function awardRoundCreditz() {
   showCreditzToast("+" + amount + " ₢", "Round " + state.round + " cleared (" + mode + ")");
 }
 
-/* Called at end of run (in recordRun, after the entry is added). Adds score bonus
-   and any leaderboard-rank multiplier bonus. Round bonuses were already paid out. */
+/* Called at end of run (in recordRun, after the entry is added). Pays the score bonus.
+   (Round bonuses were already paid out as each round completed. No multiplier — being
+   on the leaderboard is its own reward, not a cash perk.) */
 function finalizeCreditz(entry) {
   const scoreCreditz = Math.floor(state.score / 100);
   const baseTotal = (state.runCreditz || 0) + scoreCreditz;
-  // Find our rank in the leaderboard (we were just added).
+  save.creditz = (save.creditz || 0) + scoreCreditz;
+  Save.write(save);
+  // Track rank for display, but don't apply it as a money bonus.
   const lb = Leaderboard.load();
   const idx = lb.findIndex(e => e.runId === entry.runId);
-  const rank = idx >= 0 ? idx + 1 : 0;
-  const multiplier = rank === 1 ? 4 : rank === 2 ? 3 : rank === 3 ? 2 : 1;
-  // Pay the score bonus now, then the multiplier delta on top of everything earned this run.
-  const multBonus = baseTotal * (multiplier - 1);
-  save.creditz = (save.creditz || 0) + scoreCreditz + multBonus;
-  Save.write(save);
-  state.lastRunCreditz = baseTotal * multiplier;
-  state.lastRunMultiplier = multiplier;
-  state.lastRunRank = rank;
+  state.lastRunCreditz = baseTotal;
+  state.lastRunMultiplier = 1;
+  state.lastRunRank = idx >= 0 ? idx + 1 : 0;
   state.lastRunBaseCreditz = baseTotal;
 }
 
@@ -5179,24 +5192,18 @@ function viewPlay(isTraining) {
 
 function creditzEarnedBlock() {
   const total = state.lastRunCreditz || 0;
-  const base  = state.lastRunBaseCreditz || 0;
-  const mult  = state.lastRunMultiplier || 1;
-  const rank  = state.lastRunRank || 0;
-  const rankLabel = rank === 1 ? "★ 1st on leaderboard"
-                 : rank === 2 ? "🥈 2nd on leaderboard"
-                 : rank === 3 ? "🥉 3rd on leaderboard"
-                 : rank > 0   ? "On leaderboard (#" + rank + ")"
-                              : "Not on leaderboard";
+  const roundEarned = state.runCreditz || 0;
+  const scoreEarned = Math.max(0, total - roundEarned);
   return `
     <div class="killer-tells" style="border-left-color: hsl(50 100% 60%);">
       <div class="killer-tells-title" style="color: hsl(50 100% 70%);">Creditz earned</div>
       <div class="row between" style="font-size:0.85rem; margin-top:4px;">
-        <span class="mute">Round bonuses + score (×100)</span>
-        <strong>${base.toLocaleString()} ₢</strong>
+        <span class="mute">Round bonuses</span>
+        <strong>${roundEarned.toLocaleString()} ₢</strong>
       </div>
       <div class="row between" style="font-size:0.85rem;">
-        <span class="mute">${rankLabel}</span>
-        <strong>×${mult}</strong>
+        <span class="mute">Score bonus (1 ₢ per 100 pts)</span>
+        <strong>${scoreEarned.toLocaleString()} ₢</strong>
       </div>
       <div class="row between" style="font-size:1.05rem; margin-top:6px; padding-top:6px; border-top:1px solid var(--border);">
         <strong>Total this run</strong>
