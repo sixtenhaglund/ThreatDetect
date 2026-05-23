@@ -341,7 +341,7 @@
   .v-LOOP       { color: #88ff88; }
   .v-FOSSIL     { color: #c4a484; }
   .v-HEX        { color: #88ddff; }
-  .v-HALLUCINATE    { color: #00d4aa; }
+  .v-ASSISTANT    { color: #00d4aa; }
   .codex-entry.v-EPILEPTICA { border-left-color: #ffffff; }
   .codex-entry.v-MELTDOWN   { border-left-color: #ff7733; }
   .codex-entry.v-STATIC     { border-left-color: #b0b0b0; }
@@ -361,7 +361,7 @@
   .codex-entry.v-LOOP       { border-left-color: #88ff88; }
   .codex-entry.v-FOSSIL     { border-left-color: #c4a484; }
   .codex-entry.v-HEX        { border-left-color: #88ddff; }
-  .codex-entry.v-HALLUCINATE    { border-left-color: #00d4aa; }
+  .codex-entry.v-ASSISTANT    { border-left-color: #00d4aa; }
 
   /* Animations */
   .fade-in { animation: fadeIn 0.4s ease; }
@@ -2033,11 +2033,11 @@
     100% { background-position: 35% 40%, 65% 65%; }
   }
 
-  /* A5515T4N7 (HALLUCINATE) — pure 64x64 green/black static. Each pixel
-     re-rolls 50/50 every 0.5s. JS (applyHallucinateStatic in main.js)
+  /* A5515T4N7 (ASSISTANT) — pure 64x64 green/black static. Each pixel
+     re-rolls 50/50 every 0.1s. JS (applyAssistantStatic in main.js)
      paints a fresh canvas → data-URL onto the background. CSS just keeps
      pixels crisp when the 64x64 image gets scaled up to fill the screen. */
-  .death-HALLUCINATE {
+  .death-ASSISTANT {
     background-color: #000;
     background-size: 100% 100%;
     background-repeat: no-repeat;
@@ -2045,10 +2045,10 @@
     image-rendering: -moz-crisp-edges;
     image-rendering: crisp-edges;
   }
-  .death-HALLUCINATE::before,
-  .death-HALLUCINATE::after,
-  .death-HALLUCINATE .death-fx::before,
-  .death-HALLUCINATE .death-fx::after { content: none; }
+  .death-ASSISTANT::before,
+  .death-ASSISTANT::after,
+  .death-ASSISTANT .death-fx::before,
+  .death-ASSISTANT .death-fx::after { content: none; }
 
   /* PULSE — heartbeat throb + sharp ECG spike + BPM banner. Dark + scary palette. */
   .death-PULSE { background: #060000; animation: pulseBeat 1.1s ease-in-out infinite; }
@@ -2401,7 +2401,7 @@
 
   /* HEX — no extra fx (handled in the main HEX block above: red dots only). */
 
-  /* HALLUCINATE — no extra fx (numbers/money handled in the main HALLUCINATE block above). */
+  /* ASSISTANT — no extra fx (numbers/money handled in the main ASSISTANT block above). */
 
   @media (max-width: 580px) {
     h1 { font-size: 1.8rem; }

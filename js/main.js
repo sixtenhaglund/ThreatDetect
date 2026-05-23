@@ -36,7 +36,7 @@ function render() {
   // Music: menu music plays on all out-of-game screens; in-game music is started
   // by startChallenge/startTraining. Death + minigame screens are silent on the music side.
   applyMusicForScreen();
-  applyHallucinateStatic();
+  applyAssistantStatic();
 }
 
 const MENU_MUSIC_SCREENS = new Set([
@@ -54,13 +54,13 @@ function applyMusicForScreen() {
 }
 
 /* ============================================================
-   A5515T4N7 (HALLUCINATE) — 64x64 black/green static effect
-   Each pixel is randomly black or green; the whole grid re-rolls every 0.5s.
+   A5515T4N7 (ASSISTANT) — 64x64 black/green static effect
+   Each pixel is randomly black or green; the whole grid re-rolls every 0.1s.
    ============================================================ */
-let _hallucStaticInterval = null;
+let _assistantStaticInterval = null;
 
-function paintHallucinateStatic() {
-  const el = document.querySelector(".death-HALLUCINATE");
+function paintAssistantStatic() {
+  const el = document.querySelector(".death-ASSISTANT");
   if (!el) return;
   const c = document.createElement("canvas");
   c.width = c.height = 64;
@@ -77,20 +77,19 @@ function paintHallucinateStatic() {
   el.style.backgroundImage = "url(" + c.toDataURL() + ")";
 }
 
-function applyHallucinateStatic() {
+function applyAssistantStatic() {
   const onScreen =
-    (state.screen === "dying"    && state.killer      === "HALLUCINATE") ||
-    (state.screen === "preview"  && state.previewVirus === "HALLUCINATE") ||
-    (state.screen === "infected" && state.killer      === "HALLUCINATE");
-  if (onScreen && !_hallucStaticInterval) {
-    paintHallucinateStatic();
-    _hallucStaticInterval = setInterval(paintHallucinateStatic, 500);
-  } else if (!onScreen && _hallucStaticInterval) {
-    clearInterval(_hallucStaticInterval);
-    _hallucStaticInterval = null;
+    (state.screen === "dying"    && state.killer      === "ASSISTANT") ||
+    (state.screen === "preview"  && state.previewVirus === "ASSISTANT") ||
+    (state.screen === "infected" && state.killer      === "ASSISTANT");
+  if (onScreen && !_assistantStaticInterval) {
+    paintAssistantStatic();
+    _assistantStaticInterval = setInterval(paintAssistantStatic, 100);
+  } else if (!onScreen && _assistantStaticInterval) {
+    clearInterval(_assistantStaticInterval);
+    _assistantStaticInterval = null;
   } else if (onScreen) {
-    // Re-paint immediately on screen change so the new node has a pattern.
-    paintHallucinateStatic();
+    paintAssistantStatic();
   }
 }
 

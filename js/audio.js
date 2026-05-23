@@ -621,23 +621,27 @@ Audio.deaths = {
     const count = Math.floor(4.4 / interval);
     for (let i = 0; i < count; i++) this.beep(t + i * interval, 880, 0.10, "square", 0.18);
   },
-  HALLUCINATE() {
-    // AI failure: a hopeful little 4-note chime ("ChatGPT thinks…") that breaks
-    // halfway into a dissonant detuned drone (the answer was wrong).
-    const t0 = this.ctx.currentTime;
-    const chime = [659.25, 783.99, 987.77, 1318.51]; // E5 G5 B5 E6 — upward, optimistic
-    chime.forEach((f, i) => this.beep(t0 + i * 0.18, f, 0.18, "sine", 0.22));
-    // Then a long detuned dissonant pad ("uh oh, that was wrong")
-    const o1 = this.ctx.createOscillator(); o1.type = "sine"; o1.frequency.value = 220;
-    const o2 = this.ctx.createOscillator(); o2.type = "sine"; o2.frequency.value = 233; // minor 2nd = clash
-    const g = this.ctx.createGain();
-    o1.connect(g); o2.connect(g); g.connect(this.sfxGain);
-    const padStart = t0 + 0.8;
-    g.gain.setValueAtTime(0, padStart);
-    g.gain.linearRampToValueAtTime(0.25, padStart + 0.6);
-    g.gain.setValueAtTime(0.25, padStart + 3);
-    g.gain.linearRampToValueAtTime(0, padStart + 3.5);
-    o1.start(padStart); o1.stop(padStart + 3.6);
-    o2.start(padStart); o2.stop(padStart + 3.6);
+  ASSISTANT() {
+    // Loud TV-static / glitch wall — the AI confidently failed and the machine screeches.
+    const ctx = this.ctx;
+    const t0 = ctx.currentTime;
+    const dur = 4.4;
+    // 1) Continuous wall of white noise through a wide bandpass (the main "shhhhh").
+    const buf = ctx.createBuffer(1, Math.floor(ctx.sampleRate * dur), ctx.sampleRate);
+    const data = buf.getChannelData(0);
+    for (let i = 0; i < data.length; i++) data[i] = Math.random() * 2 - 1;
+    const src = ctx.createBufferSource(); src.buffer = buf;
+    const bp = ctx.createBiquadFilter(); bp.type = "bandpass"; bp.frequency.value = 1800; bp.Q.value = 0.4;
+    const g = ctx.createGain(); g.gain.value = 0.55;
+    src.connect(bp); bp.connect(g); g.connect(this.sfxGain);
+    src.start(t0); src.stop(t0 + dur);
+    // 2) Jerk the bandpass frequency around so the static sounds like a broken tuner.
+    for (let i = 0; i < Math.floor(dur / 0.1); i++) {
+      bp.frequency.setValueAtTime(400 + Math.random() * 4000, t0 + i * 0.1);
+    }
+    // 3) Layer short glitch chunks on top — random pitch spikes for the digital-corruption feel.
+    for (let i = 0; i < Math.floor(dur / 0.08); i++) {
+      this.noiseBurst(t0 + i * 0.08, 0.06, 2000 + Math.random() * 5000, 3, 0.4);
+    }
   }
 };

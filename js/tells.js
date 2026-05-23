@@ -98,7 +98,7 @@ const TEXTUAL_TELLS = {
     { p: /0x[A-F0-9]{4,}/i,                                                         t: "Multiple hex-encoded values (0xDEADBEEF, 0xCAFEBABE, etc.)" },
     { p: /ring\s*-?\s*1|DMA|physical memory|memory.{0,10}forensics|hexdumper|memcheck/i, t: "Requests ring-1 / DMA / physical RAM access" }
   ],
-  HALLUCINATE: [
+  ASSISTANT: [
     { p: /ChatGTP|Cop1lot|Cl4ude|Geminni|cop1lot|cl4ude|geminni|chatgtp/,           t: "AI brand name is subtly misspelled (real AI assistants don't typo their own name)" },
     { p: /I (noticed|found|recommend|prepared)|Based on my analysis|Let me help/i,  t: "Friendly first-person AI tone ('I noticed…', 'Based on my analysis…')" },
     { p: /Confidence: ?\d+%|Accuracy: ?\d+%/i,                                       t: "Fake confidence / accuracy percentage attached to the recommendation" },

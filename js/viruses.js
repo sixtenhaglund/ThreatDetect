@@ -471,9 +471,9 @@ const VIRUSES = {
       { template: TPL.TERMINAL, title: "docker pull", message: "Pulling memhex/forensic-toolkit:latest from registry-malicious.host. Run with --privileged for ring -1 memory dumps.", meta: "Image: memhex/forensic-toolkit  Privilege: ring -1  Source: registry-malicious.host" }
     ]
   },
-  // Internal key kept as HALLUCINATE for CSS / death-animation / audio compatibility.
+  // Internal key kept as ASSISTANT for CSS / death-animation / audio compatibility.
   // Display name is leet-speak 'A5515T4N7' (an AI-assistant impersonator).
-  HALLUCINATE: {
+  ASSISTANT: {
     name: "A5515T4N7", color: "#00ff44",
     minRound: 6,
     description: "A scam dressed up as a helpful AI assistant. Cheerfully recommends sketchy downloads with confident-sounding explanations and made-up citations. Its tell is the AI tone: friendly first-person, fake confidence percentages, brand names that almost-but-don't-quite exist, and a tiny 'I may make mistakes' disclaimer at the end that excuses the lie. The telemetry it tampers with is suspiciously clean — perfectly round numbers no real computer ever shows.",
@@ -522,7 +522,7 @@ const DEATHS = {
   LOOP:       { text: "STACK OVERFLOW",        duration: 4500 },
   FOSSIL:     { text: "LEGACY EXPLOIT",        duration: 4500 },
   HEX:        { text: "0xDEADBEEF",            duration: 4500 },
-  HALLUCINATE:    { text: "I MAY HAVE MADE A MISTAKE", duration: 4500 }
+  ASSISTANT:    { text: "I MAY HAVE MADE A MISTAKE", duration: 4500 }
 };
 
 /* ============================================================

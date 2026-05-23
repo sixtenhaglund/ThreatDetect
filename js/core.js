@@ -53,17 +53,20 @@ const Save = {
         merged.sort((a, b) => (b.score || 0) - (a.score || 0));
         Leaderboard.write(merged.slice(0, 10));
       }
-      // One-shot migration: the "BUGBEAR" / "." virus was renamed to HALLUCINATE.
+      // One-shot migration: the "." virus has been renamed twice (BUGBEAR → HALLUCINATE → ASSISTANT).
       // Rename any references in unlocked / deathsBy so codex + first-death badges
-      // still work. Also auto-unlocks HALLUCINATE on first load after this update.
+      // still work. Also auto-unlocks ASSISTANT on first load after this update.
       const renameKey = function (arr) {
         if (!Array.isArray(arr)) return arr;
-        const out = arr.map(function (k) { return k === "BUGBEAR" ? "HALLUCINATE" : k; });
-        // De-dupe in case both old + new keys were already present.
+        const out = arr.map(function (k) {
+          if (k === "BUGBEAR" || k === "HALLUCINATE") return "ASSISTANT";
+          return k;
+        });
+        // De-dupe in case multiple old keys collapsed into ASSISTANT.
         return out.filter(function (v, i) { return out.indexOf(v) === i; });
       };
       const migratedUnlocked = renameKey(parsed.unlocked || d.unlocked);
-      if (migratedUnlocked.indexOf("HALLUCINATE") < 0) migratedUnlocked.push("HALLUCINATE");
+      if (migratedUnlocked.indexOf("ASSISTANT") < 0) migratedUnlocked.push("ASSISTANT");
       return {
         highestRound: parsed.highestRound || d.highestRound,
         highestScore: parsed.highestScore || d.highestScore,
