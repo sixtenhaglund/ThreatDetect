@@ -33,6 +33,23 @@ function render() {
   // Toggle a body class so #app can give itself right-padding when the side codex is open.
   const sideOpen = state.sideCodexOpen && (state.screen === "play" || state.screen === "training");
   document.body.classList.toggle("side-codex-open", sideOpen);
+  // Music: menu music plays on all out-of-game screens; in-game music is started
+  // by startChallenge/startTraining. Death + minigame screens are silent on the music side.
+  applyMusicForScreen();
+}
+
+const MENU_MUSIC_SCREENS = new Set([
+  "menu", "settings", "codex", "shop",
+  "difficulty-picker", "minigame-pick-difficulty", "minigame-pick-type",
+  "epilepsy-warning", "reset-confirm"
+]);
+
+function applyMusicForScreen() {
+  if (MENU_MUSIC_SCREENS.has(state.screen)) {
+    Audio.startMenuMusic();
+  } else {
+    Audio.stopMenuMusic();
+  }
 }
 
 document.addEventListener("click", (e) => {

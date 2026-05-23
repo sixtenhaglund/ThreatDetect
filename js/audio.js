@@ -159,6 +159,65 @@ const Audio = {
     a.shimO.stop(t + 0.6); a.shimO2.stop(t + 0.6); a.shimLfo.stop(t + 0.6);
     this.ambientNodes = null;
   },
+
+  /* Menu music — calmer, mysterious, warmer chord pad than the in-play track.
+     Two layers: a slow major-7-ish chord pad that breathes, and an occasional
+     high "tinkle" every few seconds for interest. */
+  startMenuMusic() {
+    if (!this.ctx || this.menuNodes) return;
+    const ctx = this.ctx;
+    const out = this.ambientGain;
+    const t0 = ctx.currentTime;
+    // Pad: 4 sine voices forming a Cmaj9 chord (C-E-G-D)
+    const padG = ctx.createGain(); padG.gain.value = 0;
+    padG.connect(out);
+    const freqs = [130.81, 164.81, 196.00, 293.66]; // C3 E3 G3 D4
+    const padOscs = freqs.map(function (f) {
+      const o = ctx.createOscillator(); o.type = "sine"; o.frequency.value = f;
+      const g = ctx.createGain(); g.gain.value = 0.12;
+      o.connect(g); g.connect(padG); o.start();
+      return o;
+    });
+    padG.gain.linearRampToValueAtTime(0.22, t0 + 2.5);
+    // Slow tremolo for the "breathing"
+    const padLfo = ctx.createOscillator(); padLfo.type = "sine"; padLfo.frequency.value = 0.12;
+    const padLfoGain = ctx.createGain(); padLfoGain.gain.value = 0.06;
+    padLfo.connect(padLfoGain); padLfoGain.connect(padG.gain); padLfo.start();
+    // Tinkle: a high sine bell every ~5 seconds, random pick from the chord notes one octave up
+    const tinkleG = ctx.createGain(); tinkleG.gain.value = 0.4;
+    tinkleG.connect(out);
+    const self = this;
+    const tinkleInterval = setInterval(function () {
+      if (!self.menuNodes) return;
+      if (Math.random() < 0.6) return; // 40% chance to skip = uneven pulses
+      const high = [523.25, 659.25, 783.99, 1174.66]; // C5 E5 G5 D6
+      const f = high[Math.floor(Math.random() * high.length)];
+      const start = ctx.currentTime;
+      const o = ctx.createOscillator(); o.type = "sine"; o.frequency.value = f;
+      const g = ctx.createGain();
+      o.connect(g); g.connect(tinkleG);
+      g.gain.setValueAtTime(0, start);
+      g.gain.linearRampToValueAtTime(0.06, start + 0.02);
+      g.gain.exponentialRampToValueAtTime(0.0005, start + 1.2);
+      o.start(start); o.stop(start + 1.3);
+    }, 2500);
+    this.menuNodes = { padG, padOscs, padLfo, tinkleG, tinkleInterval };
+  },
+
+  stopMenuMusic() {
+    if (!this.menuNodes) return;
+    const t = this.ctx.currentTime;
+    const m = this.menuNodes;
+    clearInterval(m.tinkleInterval);
+    [m.padG, m.tinkleG].forEach(function (g) {
+      g.gain.cancelScheduledValues(t);
+      g.gain.setValueAtTime(g.gain.value, t);
+      g.gain.linearRampToValueAtTime(0, t + 0.6);
+    });
+    m.padOscs.forEach(function (o) { o.stop(t + 0.7); });
+    m.padLfo.stop(t + 0.7);
+    this.menuNodes = null;
+  },
   _env(g, t, a, d, peak) {
     g.gain.cancelScheduledValues(t);
     g.gain.setValueAtTime(0, t);
