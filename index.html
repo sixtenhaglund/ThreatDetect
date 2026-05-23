@@ -871,26 +871,25 @@
     50%      { transform: scale(1.08); box-shadow: 0 0 0 2px rgba(0,0,0,0.6), 0 0 22px var(--primary), 0 0 36px rgba(0,255,120,0.7); }
   }
 
-  /* Play + side-codex split layout */
-  .play-layout {
-    display: flex;
-    gap: 16px;
-    align-items: flex-start;
-    justify-content: center;
-    width: 100%;
-  }
-  .play-layout > .panel { flex: 1 1 auto; min-width: 0; max-width: 760px; }
+  /* Side-codex overlays the right side without disturbing the play panel.
+     The play panel stays exactly where it normally renders; #app gets a
+     right-padding bump (via body.side-codex-open) so the panel shifts
+     LEFT to make room instead of being pushed up. */
   .codex-side {
-    flex: 0 0 360px;
-    max-height: calc(100vh - 60px);
+    position: fixed;
+    top: 24px;
+    right: 24px;
+    bottom: 24px;
+    width: 360px;
+    max-width: 38vw;
     overflow-y: auto;
-    position: sticky;
-    top: 30px;
+    z-index: 100;
   }
   .codex-side .codex-list { max-height: none; }
+  body.side-codex-open #app { padding-right: 408px; }
   @media (max-width: 980px) {
-    .play-layout { flex-direction: column; align-items: stretch; }
-    .codex-side { flex: 1 1 auto; max-height: 50vh; position: relative; top: 0; }
+    body.side-codex-open #app { padding-right: 24px; padding-bottom: 50vh; }
+    .codex-side { top: auto; right: 8px; left: 8px; bottom: 8px; width: auto; max-width: none; max-height: 48vh; }
   }
 
   /* Menu + leaderboard layout */
@@ -1078,41 +1077,48 @@
     pointer-events: none;
     z-index: 3;
   }
-  /* In-game death only: the killer card sits faded over the chaos as a reminder. */
-  .death-killer-bg {
-    position: absolute;
-    top: 50%; left: 50%;
-    transform: translate(-50%, -50%);
-    width: min(540px, 84%);
-    z-index: 8;
+  /* SYSTEM BREACH (viewInfected): the killer card fills the background, large + darkened.
+     The breach summary panel floats above it in the center. */
+  .breach-stage {
+    position: fixed; inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #050608;
+    overflow: hidden;
+    z-index: 50;
+  }
+  .breach-killer-bg {
+    position: absolute; inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1;
     pointer-events: none;
-    filter: brightness(0.35) saturate(0.75);
-    opacity: 0.55;
+    filter: brightness(0.35) saturate(0.6);
+    opacity: 0.7;
   }
-  /* In-game death only: tiny stats strip in the corner */
-  .death-stats-overlay {
-    position: fixed; top: 18px; left: 18px;
-    z-index: 600;
-    display: flex; gap: 14px;
-    font-family: "Cascadia Mono", Consolas, monospace;
-    background: rgba(0, 0, 0, 0.72);
-    border: 1px solid rgba(255, 255, 255, 0.25);
-    border-radius: 6px;
-    padding: 8px 14px;
-    color: #fff;
-    backdrop-filter: blur(4px);
+  .breach-killer-bg > * {
+    transform: scale(1.65);
+    transform-origin: center;
+    max-width: none;
   }
-  .death-stats-overlay > div { text-align: left; }
-  .death-stats-overlay span {
-    display: block;
-    font-size: 0.55rem;
-    letter-spacing: 0.18em;
-    color: rgba(255, 255, 255, 0.55);
-    text-transform: uppercase;
+  /* The killer-card wrapper above adds animation:none + a small dark inset background.
+     For the full-screen background variant we don't want the inset shadow. */
+  .breach-killer-bg.killer-card {
+    background: transparent;
+    box-shadow: none;
+    padding: 0;
+    min-height: 0;
+    border-radius: 0;
   }
-  .death-stats-overlay strong {
-    font-size: 1.05rem;
-    font-weight: 700;
+  .breach-content {
+    position: relative;
+    z-index: 5;
+    max-height: calc(100vh - 40px);
+    overflow-y: auto;
+    backdrop-filter: blur(2px);
+    background: rgba(8, 10, 14, 0.82);
   }
   .death-skip {
     position: fixed; right: 24px; bottom: 24px;
@@ -1134,44 +1140,17 @@
   .death-EPILEPTICA {
     background-color: #000;
     background-image:
-      /* Six colored particles — narrow bars that slide across the screen */
-      linear-gradient(90deg, transparent 0%, #ff00aa 15%, #ff00aa 85%, transparent 100%),
-      linear-gradient(90deg, transparent 0%, #00aaff 15%, #00aaff 85%, transparent 100%),
-      linear-gradient(90deg, transparent 0%, #aa66ff 15%, #aa66ff 85%, transparent 100%),
-      linear-gradient(90deg, transparent 0%, #ffff00 15%, #ffff00 85%, transparent 100%),
-      linear-gradient(90deg, transparent 0%, #00ff66 15%, #00ff66 85%, transparent 100%),
-      linear-gradient(90deg, transparent 0%, #ff5500 15%, #ff5500 85%, transparent 100%),
-      /* Scanlines (last layer, full size, repeat for vertical scroll) */
+      /* Scanlines scrolling vertically — kept for texture, no colored bars */
       repeating-linear-gradient(0deg, transparent 0 58px, rgba(140,140,140,0.5) 58px 62px, transparent 62px 120px);
-    background-repeat: no-repeat, no-repeat, no-repeat, no-repeat, no-repeat, no-repeat, repeat;
-    background-size:
-      260px 36px,
-      220px 28px,
-      240px 26px,
-      280px 30px,
-      200px 22px,
-      180px 20px,
-      100% 120px;
+    background-repeat: repeat;
+    background-size: 100% 120px;
     animation:
       epBars 2.4s linear infinite,
       epBgFlash 0.1s steps(2) infinite;
   }
-  /* Bars slide across — alternating left↔right; scanlines scroll vertically */
   @keyframes epBars {
-    0% {
-      background-position:
-        -400px 12%, 2000px 24%,
-        -400px 40%, 2000px 58%,
-        -400px 72%, 2000px 86%,
-        0 0;
-    }
-    100% {
-      background-position:
-        2000px 12%, -400px 24%,
-        2000px 40%, -400px 58%,
-        2000px 72%, -400px 86%,
-        0 240px;
-    }
+    0%   { background-position: 0 0; }
+    100% { background-position: 0 240px; }
   }
   @keyframes epBgFlash {
     0%   { background-color: #000; }
@@ -1610,18 +1589,20 @@
   }
   @keyframes mimicShard { to { background-position: 100px 100px; } }
 
-  /* NULL — completely still screen of 0s and 1s. No animation. */
+  /* NULL — still wall-to-wall 0s and 1s covering the whole screen. No animation.
+     Uses a long wrapping string so it fills the viewport at any reasonable size. */
   .death-NULL { background: #000; }
   .death-NULL::before {
-    content: "0 1 0 0 1 1 0 1 1 0 0 1 0 1 1 0 1 0 1 1 0 1 0 0 1 0 1 1 0 0 1 0 1 1 0 1\A1 0 0 1 1 0 1 1 0 1 0 0 1 1 0 1 0 1 0 0 1 1 0 1 1 0 0 1 0 1 1 0 0 1 1 0\A0 1 1 0 0 1 1 0 1 0 0 1 0 1 1 0 1 0 1 1 0 0 1 0 1 1 0 1 1 0 0 1 0 1 1 0\A1 0 1 1 0 1 0 0 1 0 0 1 1 0 1 1 0 0 1 0 1 1 0 1 0 1 1 0 1 0 0 1 1 0 1 1\A0 0 1 1 0 1 1 0 0 1 0 1 0 1 1 0 1 0 1 0 1 1 0 1 0 1 1 0 0 1 1 0 1 0 1 1\A1 1 0 1 0 0 1 1 0 1 1 0 0 1 0 1 1 0 1 1 0 0 1 0 1 0 1 1 0 1 0 1 1 0 0 1\A0 1 0 0 1 1 0 1 1 0 1 0 0 1 1 0 1 0 1 0 0 1 1 0 1 1 0 0 1 0 1 1 0 1 1 0\A1 0 1 1 0 1 0 1 0 1 1 0 0 1 0 1 1 0 1 0 1 1 0 1 0 0 1 1 0 1 0 1 0 1 1 0\A0 0 1 1 0 1 1 0 1 0 0 1 1 0 1 0 1 1 0 0 1 0 1 1 0 1 0 1 0 0 1 1 0 1 1 0\A1 1 0 0 1 0 1 1 0 1 1 0 0 1 0 0 1 1 0 1 0 1 1 0 0 1 1 0 1 0 1 0 0 1 1 0\A0 1 0 1 1 0 1 0 0 1 0 1 1 0 1 1 0 0 1 1 0 1 0 1 1 0 0 1 0 1 1 0 1 0 1 1\A1 0 1 0 1 1 0 1 1 0 0 1 0 1 0 1 1 0 1 0 0 1 1 0 1 0 1 1 0 0 1 0 1 1 0 1";
-    white-space: pre;
-    position: absolute; inset: 0; padding: 24px;
+    content: "0 1 0 1 1 0 0 1 1 0 1 0 0 1 0 1 1 0 1 0 0 1 1 0 1 1 0 0 1 0 1 0 1 1 0 1 0 0 1 1 0 1 1 0 0 1 0 1 1 0 1 0 1 1 0 0 1 1 0 1 0 0 1 0 1 1 0 1 0 1 1 0 0 1 1 0 1 0 0 1 1 0 1 0 1 1 0 1 0 0 1 1 0 1 0 1 1 0 0 1 0 1 1 0 1 0 0 1 1 0 1 1 0 1 0 0 1 0 1 1 0 0 1 1 0 1 0 0 1 1 0 1 1 0 0 1 0 1 1 0 1 0 1 0 1 1 0 0 1 1 0 1 0 0 1 0 1 1 0 1 0 1 1 0 0 1 0 1 1 0 1 1 0 0 1 0 1 0 1 1 0 1 0 0 1 0 1 1 0 1 0 1 1 0 0 1 1 0 1 0 0 1 0 1 1 0 1 0 1 1 0 0 1 1 0 1 0 0 1 1 0 1 1 0 0 1 0 1 1 0 1 0 0 1 1 0 1 0 1 1 0 0 1 0 1 1 0 1 1 0 0 1 0 1 0 1 1 0 0 1 1 0 1 0 0 1 0 1 1 0 1 0 1 0 0 1 1 0 1 0 1 1 0 0 1 1 0 1 0 0 1 0 1 1 0 1 0 1 1 0 0 1 1 0 1 0 0 1 0 1 1 0 1 1 0 0 1 0 1 0 1 1 0 0 1 1 0 1 0 0 1 0 1 1 0 1 0 1 1 0 1 0 0 1 1 0 1 0 0 1 1 0 1 0 1 1 0 0 1 1 0 1 0 0 1 0 1 1 0 1 1 0 1 0 0 1 0 1 1 0 1 0 1 1 0 0 1 1 0 1 0 0 1 0 1 0 1 1 0 1 1 0 0 1 0 1 0 1 1 0 0 1 1 0 1 0 0 1 0 1 1 0 1 0 1 1 0 0 1 1 0 1 0 0 1 0 1 1 0 1 0 1 1 0 1 0 0 1 1 0 1 0 0 1 1 0 1 0 1 1 0 0 1 1 0 1 0 0 1 0 1 1 0 1 1 0 0 1 0 1 0 1 1 0 1 0 0 1 0 1 1 0 1 0 1 1 0 0 1 0 1 1 0 1 1 0 0 1 0 1 0 1 1 0 0 1 1 0 1 0 0 1 0 1 1 0 1 0 1 1 0 0 1 1 0 1 0 0 1 0 1 1 0 1 0 0 1 1 0 1 0 1 1 0 0 1 1 0 1 0 0 1 0 1 1 0 1 1 0 0 1 0 1 0 1 1 0 0 1 1 0 1 0 0 1 0 1 1 0 1 0 1 0 0 1 1 0 1 0 1 1 0 0 1 1 0 1 0 0 1 0 1 1 0 1 0 1 1 0 0 1 1 0 1 0 0 1 0 1 1 0 1 1 0 0 1 0 1 0 1 1 0 0 1 1 0 1 0 0 1 0 1 1 0 1 0 1 1 0 1 0 0 1 1 0 1 0 0 1 1 0 1 0 1 1 0 0 1 1 0 1 0 0 1 0 1 1 0 1 1 0 1 0 0 1 0 1 1 0 1 0 1 1 0 0 1 1 0 1 0 0 1 0 1 0 1 1 0 1 1 0 0 1 0 1 0 1 1 0 0 1 1 0 1 0 0 1 0 1 1 0 1 0 1 1 0 0 1 1 0 1 0 0 1 0 1 1 0 1 0 1 1 0 1 0 0 1 1 0 1 0 0 1 1 0 1 0 1 1 0 0 1 1 0 1 0 0 1 0 1 1 0 1 1 0 0 1 0 1 0 1 1 0 1 0 0 1 0 1 1 0 1 0 1 1 0 0 1 0 1 1 0 1 1 0 0 1 0 1 0 1 1 0 0 1 1 0 1 0 0 1 0 1 1 0 1 0 1 0 1 1 0 1 0 0 1 1 0 1 0 1 1 0 0 1 1 0 1 0 0 1 0 1 1 0 1 0 1 1 0 0 1 1 0 1 0 0 1 0 1 1 0 1 1 0 0 1 0 1 0 1 1 0 0 1 1 0 1 0 0 1 0 1 1 0 1 0 1 1 0 1 0 0 1 1 0 1 0 0 1 1 0 1 0 1 1 0 0 1 1 0 1 0 0 1 0 1 1 0 1 1 0 1 0 0 1 0 1 1 0 1 0 1 1 0 0 1 1 0 1 0 0 1 0 1 0 1 1 0 0 1 1 0 1 0 0 1 0 1 1 0 1 0 1 1 0 0 1 1 0 1 0 0 1 0 1 1 0 1 0 1 1 0 1 0 0 1 1 0 1 0 0 1 1 0 1 0 1 1 0 0 1 1 0 1 0 0 1 0 1 1 0 1 1 0 0 1 0 1 0 1 1 0 0 1 1 0 1 0 0 1 0 1 1 0 1 0 1 0 0 1 1 0 1 0 1 1 0 0 1 1 0 1 0 0 1 0 1 1 0 1 0 1 1 0 0 1 1 0 1 0 0 1 0 1 1 0 1 1 0 0 1 0 1 0 1 1 0 1 0 0 1 0 1 1 0 1 0 1 1 0 0 1 0 1 1 0 1 1 0 0 1 0 1 0 1 1 0 0 1 1 0 1 0 0 1 0 1 1 0 1 0 1 1 0 1 0 0 1 1 0 1 0 0 1 1 0 1 0 1 1 0 0 1 1 0 1 0 0 1 0 1 1 0 1 1 0 0 1 0 1 0 1 1 0 1 0 0 1 0 1 1 0 1 0 1 1 0 0 1 0 1 1 0 1 1 0 0 1 0 1 0 1 1 0 0 1 1 0 1 0 0 1 0 1 1 0 1 0 1 0 1 1 0 1 0 0 1 1 0 1 0 1 1 0 0 1 1 0 1 0 0 1 0 1 1 0 1 0 1 1 0 0 1 1";
+    position: absolute; inset: 0; padding: 12px;
     font-family: "Cascadia Mono", monospace;
-    font-size: 1.4rem;
+    font-size: 1.15rem;
     color: #555;
     line-height: 1.6;
-    letter-spacing: 0.15em;
-    text-align: center;
+    letter-spacing: 0.05em;
+    word-spacing: 0.15em;
+    text-align: justify;
+    overflow: hidden;
   }
   .death-NULL::after { content: none; }
   .death-NULL .death-fx::before { content: none; }
@@ -1664,32 +1645,48 @@
     100% { transform: translate(8px, -12px)  rotate(8deg)  scale(1);    opacity: 0.85; }
   }
 
-  /* LOOP — recursive nested boxes + stack scroll */
-  .death-LOOP { background: #001a00; }
-  .death-LOOP::before {
-    content: ""; position: absolute; inset: 25%;
-    border: 3px solid #88ff88;
-    box-shadow:
-      inset 0 0 0 18px transparent, inset 0 0 0 21px #88ff88,
-      inset 0 0 0 42px transparent, inset 0 0 0 45px #66dd66,
-      inset 0 0 0 66px transparent, inset 0 0 0 69px #44bb44,
-      inset 0 0 0 90px transparent, inset 0 0 0 93px #228822,
-      inset 0 0 0 114px transparent, inset 0 0 0 117px #115511;
-    animation: loopRecurse 1.6s linear infinite;
+  /* LOOP — infinite-mirror tunnel: many concentric green rings spinning
+     in both directions, pulsing background, scrolling recurse() text. */
+  .death-LOOP {
+    background: radial-gradient(circle at center, #003a00 0%, #001a00 40%, #000800 100%);
+    animation: loopBgPulse 1.4s ease-in-out infinite;
   }
-  @keyframes loopRecurse {
-    from { transform: scale(0.5) rotate(0deg);   opacity: 0; }
-    to   { transform: scale(2.5) rotate(360deg); opacity: 1; }
+  @keyframes loopBgPulse {
+    0%, 100% { filter: brightness(0.9) saturate(1); }
+    50%      { filter: brightness(1.4) saturate(1.3); }
+  }
+  .death-LOOP::before {
+    /* Three sets of concentric rings stacked via box-shadow, spinning + scaling */
+    content: ""; position: absolute;
+    top: 50%; left: 50%;
+    width: 0; height: 0;
+    border-radius: 50%;
+    box-shadow:
+      0 0 0 30px transparent,  0 0 0 34px rgba(136,255,136,0.95),
+      0 0 0 60px transparent,  0 0 0 64px rgba(102,221,102,0.85),
+      0 0 0 96px transparent,  0 0 0 100px rgba(68,187,68,0.75),
+      0 0 0 138px transparent, 0 0 0 142px rgba(40,150,40,0.65),
+      0 0 0 188px transparent, 0 0 0 192px rgba(20,110,20,0.55),
+      0 0 0 246px transparent, 0 0 0 250px rgba(15,85,15,0.5),
+      0 0 0 312px transparent, 0 0 0 316px rgba(10,65,10,0.42),
+      0 0 0 386px transparent, 0 0 0 390px rgba(8,50,8,0.32);
+    animation: loopRings 2.2s linear infinite;
+  }
+  @keyframes loopRings {
+    from { transform: translate(-50%, -50%) scale(0.4) rotate(0deg); }
+    to   { transform: translate(-50%, -50%) scale(2)   rotate(360deg); }
   }
   .death-LOOP::after {
-    content: "recurse() → recurse() → recurse() → recurse() → recurse() → recurse() → ";
+    content: "recurse() → recurse() → recurse() → recurse() → recurse() → recurse() → recurse() → recurse() → ";
     position: absolute; inset: auto 0 5% 0;
     text-align: center;
     font-family: monospace; font-size: 1.2rem;
     color: #88ff88;
     letter-spacing: 0.1em;
-    text-shadow: 0 0 8px #44ff44;
+    text-shadow: 0 0 8px #44ff44, 0 0 18px #00ff00;
     white-space: nowrap;
+    background: rgba(0, 30, 0, 0.55);
+    padding: 6px 0;
     animation: loopScroll 4s linear infinite;
   }
   @keyframes loopScroll { from { transform: translateX(100%); } to { transform: translateX(-100%); } }
@@ -1798,75 +1795,24 @@
     50%      { background-position: 70% 30%, 25% 75%; }
   }
 
-  /* BUGBEAR — wall-to-wall money and numbers, nothing else. */
-  .death-BUGBEAR { background: #2a1500; }
+  /* "." — a single huge centered period that pulses very gently. Pure minimalism. */
+  .death-BUGBEAR { background: #0a0a0a; }
   .death-BUGBEAR::before {
-    content: "$5,000  $500  $25,000  $1,000  $50,000  $2,500  $100  $10,000  $750  $99,999  $1,234,567  $8,800  $42  $3,141  $77,777  $1.00  $500,000  $9,000  $123  $666,666  $1,000,000  $1,776  $8.88  $40,404  $13,000  $200  $99  $987,654  $1,492  $0.99  $4,200  $2,025  $314,159  $7,777  $33  $69,420  $5,555  $1,000,000,000";
-    position: absolute; inset: 0; padding: 20px;
-    display: flex; flex-wrap: wrap; align-items: center; justify-content: space-around;
-    font-family: sans-serif; font-size: 2.6rem; font-weight: 900;
-    color: #ffcc66;
-    text-shadow: 0 0 14px #ff5500, 0 0 30px #ff8800;
-    letter-spacing: 0.04em;
-    line-height: 1.5;
-    word-spacing: 0.4em;
-    animation: bugbearShake 0.22s ease-in-out infinite;
-  }
-  @keyframes bugbearShake {
-    0%, 100% { transform: rotate(-2deg) scale(1); }
-    50%      { transform: rotate(2deg) scale(1.05); }
-  }
-  .death-BUGBEAR::after {
-    content: "$1,000,000  $50  $500,000  $9,999  $2,000,000  $1  $750  $250,000  $0.50  $77  $4,000  $1,250  $999,999  $300  $80,000  $42,000  $1.50  $66,666  $5,000,000  $14  $375,000  $128  $7,500  $1,000,000  $9.99  $20,000  $400  $111,111  $850  $2.00";
-    position: absolute; inset: 0; padding: 30px;
-    display: flex; flex-wrap: wrap; align-items: center; justify-content: space-around;
-    font-family: serif; font-size: 3.6rem; font-weight: 900;
-    color: #00aa44;
-    text-shadow: 0 0 12px #66ff88, 0 0 24px #008822;
-    letter-spacing: 0.03em;
-    line-height: 1.6;
-    word-spacing: 0.5em;
-    mix-blend-mode: screen;
-    animation: bugbearFloat 1.4s ease-in-out infinite;
-  }
-  @keyframes bugbearFloat {
-    0%, 100% { transform: translate(0, 0)    rotate(1deg)  scale(1); }
-    33%      { transform: translate(-12px, 8px) rotate(-2deg) scale(1.04); }
-    66%      { transform: translate(10px, -10px) rotate(3deg) scale(0.96); }
-  }
-  /* Two more dense layers of pure numbers via .death-fx */
-  .death-BUGBEAR .death-fx::before {
-    content: "1234  5678  9012  3456  7890  4321  8765  2109  6543  0987  1111  2222  3333  4444  5555  6666  7777  8888  9999  0000  1010  2020  3030  4040  5050  6060  7070  8080  9090  1212  2323  3434  4545  5656  6767  7878  8989";
-    position: absolute; inset: 0; padding: 16px;
-    display: flex; flex-wrap: wrap; align-items: center; justify-content: space-around;
-    font-family: monospace; font-size: 1.6rem; font-weight: 700;
-    color: #ff8844;
-    letter-spacing: 0.1em;
-    line-height: 1.8;
-    opacity: 0.6;
-    mix-blend-mode: screen;
-    animation: bugbearDrift 6s linear infinite;
-  }
-  @keyframes bugbearDrift {
-    from { transform: translateY(0); }
-    to   { transform: translateY(-80px); }
-  }
-  .death-BUGBEAR .death-fx::after {
-    content: "$$$  $$$  $$$  $$$  $$$  $$$  $$$  $$$  $$$  $$$  $$$  $$$  $$$  $$$  $$$  $$$  $$$  $$$";
+    content: ".";
     position: absolute; inset: 0;
-    display: flex; align-items: center; justify-content: space-around;
-    font-family: serif; font-size: 5rem; font-weight: 900;
-    color: #ffee00;
-    text-shadow: 0 0 28px #ffaa00;
-    opacity: 0.85;
-    letter-spacing: 0.2em;
-    mix-blend-mode: screen;
-    animation: bugbearPulse 0.5s steps(2) infinite;
+    display: flex; align-items: center; justify-content: center;
+    font-family: serif;
+    font-size: 28rem;
+    line-height: 0.6;
+    color: #cccccc;
+    text-shadow: 0 0 60px rgba(255, 255, 255, 0.25);
+    animation: dotBreathe 3s ease-in-out infinite;
   }
-  @keyframes bugbearPulse {
-    0%, 100% { transform: scale(1)   rotate(0deg); }
-    50%      { transform: scale(1.1) rotate(-3deg); }
+  @keyframes dotBreathe {
+    0%, 100% { opacity: 0.85; transform: scale(1); }
+    50%      { opacity: 1;    transform: scale(1.08); }
   }
+  .death-BUGBEAR::after { content: none; }
 
   /* PULSE — heartbeat throb + sharp ECG spike + BPM banner. Dark + scary palette. */
   .death-PULSE { background: #060000; animation: pulseBeat 1.1s ease-in-out infinite; }
@@ -1906,14 +1852,14 @@
      via .death-fx::before and .death-fx::after for more chaos.
      ============================================================ */
 
-  /* EPILEPTICA — bouncing warning triangles + lightning strikes */
+  /* EPILEPTICA — bouncing warning triangles only (no colored lightning bars). */
   .death-EPILEPTICA .death-fx::before {
     content: "⚠ ⚠ ⚠ ⚠ ⚠ ⚠ ⚠";
     position: absolute; inset: 0;
     display: flex; align-items: center; justify-content: space-around;
     font-size: 3.2rem;
-    color: #ffff00;
-    text-shadow: 0 0 16px #ff00aa, 0 0 28px #00ddff;
+    color: #ffffff;
+    text-shadow: 0 0 16px rgba(255,255,255,0.6);
     mix-blend-mode: difference;
     animation: epWarnBounce 0.42s steps(4) infinite;
   }
@@ -1922,18 +1868,6 @@
     50%  { transform: translateY(20vh)  rotate(14deg)  scale(1.4); opacity: 1; }
     100% { transform: translateY(-30vh) rotate(-12deg) scale(0.8); opacity: 0.4; }
   }
-  .death-EPILEPTICA .death-fx::after {
-    content: ""; position: absolute; inset: 0;
-    background:
-      linear-gradient(78deg, transparent 0 48%, #ffff00 49% 51%, transparent 52% 100%),
-      linear-gradient(-71deg, transparent 0 38%, #ff00aa 39% 41%, transparent 42% 100%),
-      linear-gradient(45deg, transparent 0 65%, #00ddff 66% 68%, transparent 69% 100%);
-    background-size: 100% 100%;
-    mix-blend-mode: screen;
-    opacity: 0.85;
-    animation: epLightning 0.18s steps(3) infinite;
-  }
-  @keyframes epLightning { 0%, 60% { opacity: 0; } 70%, 90% { opacity: 1; } }
 
   /* MELTDOWN — bubbling lava blobs + heat shimmer at edges */
   .death-MELTDOWN { animation: meltShake 0.18s ease-in-out infinite; }
@@ -2260,18 +2194,19 @@
     100% { transform: translate(0, 0)        rotate(0deg)   scale(1); }
   }
 
-  /* LOOP — infinite symbol pulsing + stack trace cascade */
+  /* LOOP — giant centered ∞ pulsing on top of the rings + stack trace cascade */
   .death-LOOP .death-fx::before {
     content: "∞";
-    position: absolute; top: 10%; right: 10%;
-    font-size: 9rem; font-weight: 900;
-    color: #88ff88;
-    text-shadow: 0 0 30px #44ff44;
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16rem; font-weight: 900;
+    color: #ccffcc;
+    text-shadow: 0 0 40px #44ff44, 0 0 80px #00ff00;
     animation: loopInfinity 1.4s ease-in-out infinite;
   }
   @keyframes loopInfinity {
-    0%, 100% { transform: rotate(0deg)   scale(1); }
-    50%      { transform: rotate(180deg) scale(1.3); }
+    0%, 100% { transform: rotate(0deg)   scale(1)    ; opacity: 0.7; }
+    50%      { transform: rotate(180deg) scale(1.25) ; opacity: 1;   }
   }
   .death-LOOP .death-fx::after {
     content: "  at fn() line ∞\A  at fn() line ∞\A  at fn() line ∞\A  at fn() line ∞\A  at fn() line ∞\A  at fn() line ∞\A  at fn() line ∞\A  at fn() line ∞";
@@ -2501,7 +2436,7 @@ const VIRUSES = {
   },
   WORM: {
     name: "WORM", color: "#44ff44",
-    minRound: 1,
+    minRound: 3,
     meterEffect: { ping: 9999 },
     description: "A self-replicating network worm that wears a paper trail like camouflage. Disguises each copy as an HR document, accounting spreadsheet, or IT patch (Resume.pdf.exe, Q4_Summary.xlsx.exe, SystemFix_IT.exe), then spreads laterally through mounted shares and mass email. The classic double-extension trick — looks like a document, runs like an executable, because Windows hides the real extension by default.",
     signs: [
@@ -2755,24 +2690,25 @@ const VIRUSES = {
     ]
   },
   BUGBEAR: {
-    name: "BUGBEAR", color: "#ff9966",
+    name: ".", color: "#888888",
     minRound: 6,
-    description: "A social-engineering scam dressed as a friendly security researcher. Pretends to be a whitehat from BugCrowd or HackerOne who 'found a critical bug in your account' and offers a bounty reward — if you'll just verify your identity at a lookalike domain (hacker0ne.host instead of hackerone.com, with a zero swapped for the letter o). The kindness is the bait; the 24-hour deadline is the hook.",
+    description: "A virus that knows when to stop. Its errors are sparse, almost empty — a single period where a full alert should be. No urgency, no demands, just the smallest possible interruption. The quietness is the trick: by giving you almost nothing to read, it bets you'll click OK without thinking.",
     signs: [
-      "Claims to be a security researcher offering a bounty or reward",
-      "Asks you to confirm identity or 'verify ownership' of your account",
-      "Mentions HackerOne, BugCrowd, or 'responsible disclosure' (sometimes spelled off)",
-      "Email-like tone — friendly, urgent, with a deadline",
-      "Flashing buttons and red border pulse (FOMO urgency)",
-      "Game panel background tinted amber/orange"
+      "Message is unusually short — sometimes just a single character or '.'",
+      "Title is a single period, dot, or empty",
+      "Process name is a symbol or one-character file like '.exe' or '..exe'",
+      "No source, no version, no error code — almost all metadata fields missing",
+      "Buttons are unlabeled or labeled with a period",
+      "Card background may look suspiciously empty / void"
     ],
-    meterEffect: { vol: 100 },
+    meterEffect: { fps: "blank" },
     errors: [
-      { template: TPL.TOAST, title: "Security Researcher", message: "Hi! I'm Maya from BugCrowd. I found a critical RCE in your account. Verify ownership at hackerone-verify.host to claim a $5,000 reward.", meta: "Sender: maya@bugcrowd-team.host  ·  Reward: $5,000  ·  Expires: 24h" },
-      { template: TPL.WIN11, title: "Responsible Disclosure", message: "A whitehat researcher reported a vulnerability in your account. Click here to confirm your identity and approve the patch. Failure to confirm may result in data loss.", meta: "Researcher: external  |  Severity: Critical  |  Action: Verify identity" },
-      { template: TPL.WIN11, title: "Bounty Pending", message: "Your account is eligible for a $500 bug bounty payout. Sign in at hackerone-bug.host within 24 hours to claim, otherwise the offer expires.", meta: "Amount: $500 USD  |  Domain: hackerone-bug.host  |  Window: 24h" },
-      { template: TPL.AV, title: "Bug Bounty Verification", message: "BugCrowd researcher needs to verify your identity to award the $5,000 bounty. Sign in at hackerone-verify.host.", meta: "Reward: $5,000 USD · Domain: hackerone-verify.host · Deadline: 24h" },
-      { template: TPL.TOAST, title: "Disclosure Pending", message: "Whitehat researcher Maya has reported a CVE in your account. Confirm details at hacker0ne.host to receive patch.", meta: "Researcher: Maya · Domain: hacker0ne.host · Reward: $500" }
+      { template: TPL.WIN11, title: ".", message: ".", meta: "Process: ." },
+      { template: TPL.WIN11, title: ".", message: "Continue?", meta: "Process: ..exe  |  Signed: ." },
+      { template: TPL.TOAST, title: ".", message: "Click to continue.", meta: "." },
+      { template: TPL.TERMINAL, title: ".", message: ".", meta: ". : . . ." },
+      { template: TPL.WIN11, title: "", message: ".", meta: "" },
+      { template: TPL.AV, title: ".", message: ".", meta: "Threat: . · Severity: . · Source: ." }
     ]
   }
 };
@@ -2935,7 +2871,7 @@ const DEATHS = {
   LOOP:       { text: "STACK OVERFLOW",        duration: 4500 },
   FOSSIL:     { text: "LEGACY EXPLOIT",        duration: 4500 },
   HEX:        { text: "0xDEADBEEF",            duration: 4500 },
-  BUGBEAR:    { text: "BOUNTY CLAIMED",        duration: 4500 }
+  BUGBEAR:    { text: ".",                     duration: 4500 }
 };
 
 /* ============================================================
@@ -3571,7 +3507,7 @@ Audio.deaths = {
     const bp = ctx.createBiquadFilter(); bp.type = "bandpass"; bp.Q.value = 0.5;
     bp.frequency.setValueAtTime(2200, t);
     bp.frequency.exponentialRampToValueAtTime(280, t + 3.5);
-    const g = ctx.createGain(); g.gain.value = 0.28;
+    const g = ctx.createGain(); g.gain.value = 0.85;
     src.connect(bp); bp.connect(g); g.connect(this.sfxGain);
     src.start(t);
   },
@@ -3732,17 +3668,15 @@ Audio.deaths = {
     for (let i = 0; i < count; i++) this.beep(t + i * interval, 880, 0.10, "square", 0.18);
   },
   BUGBEAR() {
+    // "." virus — a single soft tick. Almost silent.
     const t = this.ctx.currentTime;
-    [880, 1108, 1318, 1568, 880, 1108, 1318, 1568].forEach((f, i) => {
-      const start = t + i * 0.18 + (i >= 4 ? 0.4 : 0);
-      const o = this.ctx.createOscillator(); o.type = "triangle"; o.frequency.value = f;
-      const g = this.ctx.createGain();
-      o.connect(g); g.connect(this.sfxGain);
-      g.gain.setValueAtTime(0, start);
-      g.gain.linearRampToValueAtTime(0.22, start + 0.01);
-      g.gain.exponentialRampToValueAtTime(0.001, start + 0.4);
-      o.start(start); o.stop(start + 0.45);
-    });
+    const o = this.ctx.createOscillator(); o.type = "sine"; o.frequency.value = 900;
+    const g = this.ctx.createGain();
+    o.connect(g); g.connect(this.sfxGain);
+    g.gain.setValueAtTime(0, t);
+    g.gain.linearRampToValueAtTime(0.18, t + 0.005);
+    g.gain.exponentialRampToValueAtTime(0.001, t + 0.05);
+    o.start(t); o.stop(t + 0.08);
   }
 };
 
@@ -3886,6 +3820,8 @@ const state = {
   score: 0, round: 1, lives: CONFIG.startLives,
   streak: 0, deck: [], cardIdx: 0,
   correct: 0, total: 0,
+  roundCorrect: 0,        // correct calls in the current round only (out of cardsPerRound)
+  threatsNeutralized: 0,  // virus cards correctly reported across the run
   killer: null,         // virus key when died to virus
   killerCard: null,     // the exact card object that killed the player
   firstDeath: false,    // true if this is the first time this virus has killed the player
@@ -3901,6 +3837,7 @@ const state = {
   // codex animation preview
   previewVirus: null,
   previewTimeout: null,
+  codexScrollY: 0,        // remembers scroll position while we leave the codex to play a preview
   // training reveal — shows the post-mortem for a wrongly-classified card
   trainingReveal: null,
   // ui tampering
@@ -4015,6 +3952,8 @@ function startChallenge() {
   state.streak = 0;
   state.correct = 0;
   state.total = 0;
+  state.roundCorrect = 0;
+  state.threatsNeutralized = 0;
   state.killer = null;
   state.falsePositive = null;
   state.cardIdx = 0;
@@ -4081,6 +4020,7 @@ function nextCard() {
       return;
     }
     state.round++;
+    state.roundCorrect = 0;  // fresh counter each round
     if (state.round > save.highestRound) { save.highestRound = state.round; Save.write(save); }
     // Unlock Nightmare once you reach round 3 on Normal or Hard difficulty
     if (state.gameMode === "normal" && state.round >= 3 &&
@@ -4122,6 +4062,8 @@ function choose(reportedAsVirus) {
   Audio.click();
   if (correct) {
     state.correct++;
+    state.roundCorrect++;
+    if (card.isVirus) state.threatsNeutralized++;
     state.streak++;
     if (state.screen === "training") state.trainingStreak++;
     const bonus = Math.min(state.streak, CONFIG.streakCap) * CONFIG.streakBonus;
@@ -4773,18 +4715,16 @@ function viewPlay(isTraining) {
       <div class="codex-list">${renderCodexEntries({ allowPreview: false })}</div>
     </aside>` : "";
   return `
-    <div class="play-layout${state.sideCodexOpen ? " has-side-codex" : ""}">
-      <div class="panel stack fade-in${panelBgFx}">
-        ${hud}
-        ${meters}
-        <div class="row between">
-          <span class="tiny">${isTraining ? "Repeat as needed" : `Card ${state.cardIdx + 1} / ${state.deck.length}`}</span>
-          <span class="tiny">${isTraining ? `Best streak this session: ×${state.trainingStreak}` : `Streak ×${state.streak}`}</span>
-        </div>
-        <div class="card-wrap${tamperCls}${fxClasses}" ${swap ? "style='direction:rtl;'" : ""}>${renderCard(card)}</div>
+    <div class="panel stack fade-in${panelBgFx}">
+      ${hud}
+      ${meters}
+      <div class="row between">
+        <span class="tiny">${isTraining ? "Repeat as needed" : `Card ${state.cardIdx + 1} / ${state.deck.length}`}</span>
+        <span class="tiny">${isTraining ? `Best streak this session: ×${state.trainingStreak}` : `Streak ×${state.streak}`}</span>
       </div>
-      ${sidebar}
-    </div>`;
+      <div class="card-wrap${tamperCls}${fxClasses}" ${swap ? "style='direction:rtl;'" : ""}>${renderCard(card)}</div>
+    </div>
+    ${sidebar}`;
 }
 
 function viewEpilepsyWarning() {
@@ -4810,19 +4750,10 @@ function viewEpilepsyWarning() {
 
 function viewDying() {
   const k = state.killer;
-  const card = state.killerCard;
   const photoCls = save.settings.photosensitive ? " photo-safe" : "";
-  const accuracy = state.total ? Math.round(state.correct / state.total * 100) : 0;
   return `
     <div class="death-stage death-${k}${photoCls}">
-      ${card ? `<div class="death-killer-bg killer-card">${renderCard(card)}</div>` : ""}
       <div class="death-fx"></div>
-      <div class="death-stats-overlay">
-        <div><span>Score</span><strong>${state.score}</strong></div>
-        <div><span>Accuracy</span><strong>${accuracy}%</strong></div>
-        <div><span>Correct</span><strong>${state.correct}/${state.total}</strong></div>
-        <div><span>Round</span><strong>${state.round}</strong></div>
-      </div>
       <button class="btn death-skip" data-action="skip-death">Skip →</button>
     </div>`;
 }
@@ -4839,56 +4770,53 @@ function viewPreview() {
 
 function viewInfected() {
   const v = state.killer ? VIRUSES[state.killer] : null;
-  const accuracy = state.total ? Math.round(state.correct / state.total * 100) : 0;
   const cls = state.killer ? "v-" + state.killer : "";
   const card = state.killerCard;
   const textTells = textualTellsFor(card);
   const fxTells = activeTells(card);
   const hasAnyTell = textTells.length + fxTells.length > 0;
   return `
-    <div class="panel center stack fade-in">
-      <h3 style="color: var(--destruct)">SYSTEM BREACH</h3>
-      <h1 class="glitch ${cls}">INFECTED</h1>
-      ${v ? `<h2 class="${cls}">${esc(v.name)}${state.firstDeath ? ' <span class="new-badge">NEW</span>' : ''}</h2><p class="mute" style="max-width:460px;margin:0 auto;">${esc(v.description)}</p>` : ""}
-      ${card ? `
-        <div class="killer-display">
-          <div class="killer-label tiny">The alert that fooled you</div>
-          <div class="killer-card">${renderCard(card)}</div>
-        </div>` : ""}
-      ${hasAnyTell ? `
-        <div class="killer-tells">
-          <div class="killer-tells-title">Why it was a virus</div>
-          ${textTells.length ? `
-            <div class="tells-section">
-              <div class="tells-section-label">In the alert text:</div>
-              <ul class="killer-tells-list">
-                ${textTells.map(t => `<li>${esc(t)}</li>`).join("")}
-              </ul>
-            </div>` : ""}
-          ${fxTells.length ? `
-            <div class="tells-section">
-              <div class="tells-section-label">How it visually misbehaved:</div>
-              <ul class="killer-tells-list">
-                ${fxTells.map(t => `<li>${esc(t)}</li>`).join("")}
-              </ul>
-            </div>` : ""}
-          ${textTells.length === 0 && fxTells.length === 0 ? `
-            <p class="mute" style="font-size:0.82rem;">This one looked clean. The only giveaway was buried in the details — re-read the popup above carefully.</p>` : ""}
-        </div>` : `
-        <div class="killer-tells">
-          <div class="killer-tells-title">Why it was a virus</div>
-          <p class="mute" style="font-size:0.82rem;">This variant has no obvious tells — that's why MIMIC and stealthy viruses are dangerous. Study the codex entry to learn what to look for next time.</p>
-        </div>`}
-      <div class="hud" style="margin-top: 8px;">
-        <div class="cell"><div class="label">Score</div><div class="value">${state.score}</div></div>
-        <div class="cell"><div class="label">Accuracy</div><div class="value">${accuracy}%</div></div>
-        <div class="cell"><div class="label">Correct</div><div class="value">${state.correct}/${state.total}</div></div>
-        <div class="cell"><div class="label">Round</div><div class="value">${state.round}</div></div>
-      </div>
-      <div class="row center">
-        <button class="btn primary" data-action="play">Try Again</button>
-        <button class="btn" data-action="study-killer">Study This Threat</button>
-        <button class="btn" data-action="menu">Main Menu</button>
+    <div class="breach-stage">
+      ${card ? `<div class="breach-killer-bg killer-card">${renderCard(card)}</div>` : ""}
+      <div class="breach-content panel center stack">
+        <h3 style="color: var(--destruct)">SYSTEM BREACH</h3>
+        <h1 class="glitch ${cls}">INFECTED</h1>
+        ${v ? `<h2 class="${cls}">${esc(v.name)}${state.firstDeath ? ' <span class="new-badge">NEW</span>' : ''}</h2><p class="mute" style="max-width:460px;margin:0 auto;">${esc(v.description)}</p>` : ""}
+        ${hasAnyTell ? `
+          <div class="killer-tells">
+            <div class="killer-tells-title">Why it was a virus</div>
+            ${textTells.length ? `
+              <div class="tells-section">
+                <div class="tells-section-label">In the alert text:</div>
+                <ul class="killer-tells-list">
+                  ${textTells.map(t => `<li>${esc(t)}</li>`).join("")}
+                </ul>
+              </div>` : ""}
+            ${fxTells.length ? `
+              <div class="tells-section">
+                <div class="tells-section-label">How it visually misbehaved:</div>
+                <ul class="killer-tells-list">
+                  ${fxTells.map(t => `<li>${esc(t)}</li>`).join("")}
+                </ul>
+              </div>` : ""}
+            ${textTells.length === 0 && fxTells.length === 0 ? `
+              <p class="mute" style="font-size:0.82rem;">This one looked clean. The only giveaway was buried in the details — re-read the popup above carefully.</p>` : ""}
+          </div>` : `
+          <div class="killer-tells">
+            <div class="killer-tells-title">Why it was a virus</div>
+            <p class="mute" style="font-size:0.82rem;">This variant has no obvious tells — that's why MIMIC and stealthy viruses are dangerous. Study the codex entry to learn what to look for next time.</p>
+          </div>`}
+        <div class="hud" style="margin-top: 8px;">
+          <div class="cell"><div class="label">Score</div><div class="value">${state.score}</div></div>
+          <div class="cell"><div class="label">Threats</div><div class="value">${state.threatsNeutralized || 0}</div></div>
+          <div class="cell"><div class="label">Correct</div><div class="value">${state.roundCorrect || 0}/${CONFIG.cardsPerRound}</div></div>
+          <div class="cell"><div class="label">Round</div><div class="value">${state.round}</div></div>
+        </div>
+        <div class="row center">
+          <button class="btn primary" data-action="play">Try Again</button>
+          <button class="btn" data-action="study-killer">Study This Threat</button>
+          <button class="btn" data-action="menu">Main Menu</button>
+        </div>
       </div>
     </div>`;
 }
@@ -4976,6 +4904,9 @@ function render() {
     default:                  html = viewMenu();
   }
   app.innerHTML = html + '<div id="reveal" class="reveal"></div>';
+  // Toggle a body class so #app can give itself right-padding when the side codex is open.
+  const sideOpen = state.sideCodexOpen && (state.screen === "play" || state.screen === "training");
+  document.body.classList.toggle("side-codex-open", sideOpen);
 }
 
 document.addEventListener("click", (e) => {
@@ -5071,6 +5002,9 @@ document.addEventListener("click", (e) => {
     case "preview-virus": {
       unlockAudio();
       const k = btn.dataset.key;
+      // Remember where we were scrolled in the codex so we can restore it on auto-return.
+      const listEl = document.querySelector(".codex-list");
+      state.codexScrollY = listEl ? listEl.scrollTop : 0;
       state.previewVirus = k;
       // Don't touch prevScreen — preview always returns to codex,
       // and the codex's own back button needs prevScreen intact.
@@ -5086,6 +5020,9 @@ document.addEventListener("click", (e) => {
         Audio.stopDeath();
         state.screen = "codex";
         render();
+        // Restore the scroll position so the page doesn't jump back to the top.
+        const back = document.querySelector(".codex-list");
+        if (back) back.scrollTop = state.codexScrollY;
       }, dur);
       break;
     }
@@ -5095,6 +5032,9 @@ document.addEventListener("click", (e) => {
       state.previewVirus = null;
       state.screen = "codex";
       render();
+      // Restore scroll just like the auto-return path does.
+      const backList = document.querySelector(".codex-list");
+      if (backList) backList.scrollTop = state.codexScrollY;
       break;
     case "training-continue":
       state.trainingReveal = null;
