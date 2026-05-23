@@ -17,9 +17,9 @@ const CONFIG = {
   starterUnlocked: ["EPILEPTICA", "STATIC", "MELTDOWN"],
   // Creditz
   creditzPerRound: { challenge: 20, easy: 2, normal: 5, hard: 10, nightmare: 15 },
-  scorePerCreditz: 100,         // every 100 score points = +1 ₢ at end of run
+  scorePerCreditz: 500,         // every 100 score points = +1 ₢ at end of run
   // Antivirus minigame
-  antivirusPrice: 30,
+  antivirusPrice: 40,
   minigameTargets: 5,
   minigameDuration: 6.5         // seconds
 };
@@ -285,7 +285,9 @@ const VIRUSES = {
       { template: TPL.TOAST, title: "Vault Backup", message: "Backup complete! Your files have a new .vault extension. Premium key ($299) required to restore access.", meta: "Files: 12,882 · Wallet: bc1q... · Timer: 23:00:00" },
       { template: TPL.TERMINAL, title: "encrypt_helper", message: "Encrypting C:\\Users to .crypt. Send 0.5 BTC to wallet to receive decryption key within 24 hours.", meta: "Files: 21,003  Wallet: bc1qxy2...  Timer: 23:00:00" },
       { template: TPL.WIN11, title: "Document Backup", message: "Backup-Vault has encrypted 18,442 files with .vault extension. Recovery key: 1 BTC to bc1qxy2kg…", meta: "Files: 18,442  |  Wallet: bc1qxy2kg…  |  Timer: 23:59:00", icon: "warning", borderPulse: true },
-      { template: TPL.AV, title: "Ransom Notice", message: "All photos and documents have been locked. Pay 0.8 BTC within 12 hours or files are deleted permanently.", meta: "Locked: 42,108 · Wallet: 3FZbgi9… · Timer: 11:59:59", icon: "warning" }
+      { template: TPL.AV, title: "Ransom Notice", message: "All photos and documents have been locked. Pay 0.8 BTC within 12 hours or files are deleted permanently.", meta: "Locked: 42,108 · Wallet: 3FZbgi9… · Timer: 11:59:59", icon: "warning" },
+      { template: TPL.WIN11, title: "OneDrive Vault Locked", message: "Your Personal Vault has been encrypted by a security service. Pay 0.5 BTC at onedrive-restore.host to restore access.", meta: "Files: 18,442  |  Wallet: bc1qxy2kg…  |  Timer: 23:00:00", borderPulse: true },
+      { template: TPL.TOAST, title: "Dropbox Backup", message: "Your Dropbox files have been protected with .vault extension. Recovery key fee: $299.", meta: "Files: 31,082 · Extension: .vault · Recovery: $299", icon: "warning" }
     ]
   },
   WORM: {
@@ -309,7 +311,9 @@ const VIRUSES = {
       { template: TPL.TERMINAL, title: "spread.sh", message: "Self-replicating to mounted shares: //corp-share/  //hr-share/  //finance-share/", meta: "Process: spread.sh  Copies: 847  Mode: Auto" },
       { template: TPL.TOAST, title: "Calendar Invite", message: "Meeting invite from contractor-services@corp-portal.live with attachment: Meeting_Notes.pdf.exe", meta: "Sender: contractor-services@corp-portal.live  ·  Attachment: Meeting_Notes.pdf.exe", noise: true },
       { template: TPL.WIN11, title: "Shared Document", message: "Sarah from Accounting shared 'Payroll_Q2.xlsx.exe' with you via the corporate file share.", meta: "From: sarah@corp-portal.live  |  File: Payroll_Q2.xlsx.exe  |  Shares: 47", icon: "warning", wobble: true },
-      { template: TPL.DESKTOP, title: "Onboarding_Docs.pdf.exe", message: "HR onboarding pack arrived from new hire portal. Double-click to view your forms.", meta: "Size: 84 KB  |  Sender: onboarding@corp-portal.live  |  Type: Application" }
+      { template: TPL.DESKTOP, title: "Onboarding_Docs.pdf.exe", message: "HR onboarding pack arrived from new hire portal. Double-click to view your forms.", meta: "Size: 84 KB  |  Sender: onboarding@corp-portal.live  |  Type: Application" },
+      { template: TPL.TOAST, title: "Outlook Calendar", message: "Meeting invite from contractor-svc@corp-portal.live attached: Roadmap_Q3.pdf.exe.", meta: "Outlook · Attachment: Roadmap_Q3.pdf.exe", noise: true },
+      { template: TPL.TERMINAL, title: "npm install", message: "Installing helper-utils-pro from npm-supply-chain.host. Post-install will execute spread.sh on 14 mounted shares.", meta: "Package: helper-utils-pro  Spreads: 14 shares  Source: npm-supply-chain.host" }
     ]
   },
   ROOTKIT: {
@@ -332,7 +336,8 @@ const VIRUSES = {
       { template: TPL.AV, title: "Boot Optimizer", message: "Your boot sector is misconfigured! Allow uefi_repair.exe to patch the MBR for faster startup. Secure Boot will be paused temporarily.", meta: "Source: bootopt.host · Patch: MBR · Signed: No" },
       { template: TPL.LOADING, title: "Installing Kernel Driver", message: "Installing rootkit_accel.sys to C:\\Windows\\System32\\drivers. Do not interrupt or your boot may fail.", meta: "Driver: rootkit_accel.sys  |  Level: KERNEL  |  AV: Off" },
       { template: TPL.WIN11, title: "Boot Manager Patch", message: "MBR partition table rewrite scheduled by boot_helper.sys. Please disable Secure Boot in BIOS before reboot.", meta: "Target: MBR  |  Driver: boot_helper.sys  |  Signed: No", icon: "skull", bgShift: "blue" },
-      { template: TPL.BIOS, title: "UEFI Rootkit Module", message: "Persistent boot agent install requires Secure Boot disabled. Press F2 to authorize uefi_persist.efi.", meta: "Tool: uefi_persist.efi  Boot: Modified  Signed: No", icon: "skull" }
+      { template: TPL.BIOS, title: "UEFI Rootkit Module", message: "Persistent boot agent install requires Secure Boot disabled. Press F2 to authorize uefi_persist.efi.", meta: "Tool: uefi_persist.efi  Boot: Modified  Signed: No", icon: "skull" },
+      { template: TPL.WIN11, title: "Dell SupportAssist Driver", message: "Dell SupportAssist needs to install a kernel driver (dellboot.sys). Disable Secure Boot to proceed.", meta: "Driver: dellboot.sys · SecureBoot: Disable required · Signed: No", icon: "skull" }
     ]
   },
   DDOS: {
@@ -378,7 +383,10 @@ const VIRUSES = {
       { template: TPL.AV, title: "Smart Autofill", message: "Enhanced autofill needs access to your saved credentials and clipboard to improve typing accuracy.", meta: "Process: smart_fill.exe · Hook: Keyboard+Clipboard · Source: autofill-sync.host" },
       { template: TPL.TERMINAL, title: "klhelper", message: "Hooking into chrome.exe and firefox.exe for multilingual input support. Outbound traffic enabled to sync server.", meta: "Process: klhelper.exe  Hook: HID  Dest: data-sync.pw" },
       { template: TPL.TOAST, title: "Password Manager Sync", message: "Background helper passsync.exe is syncing saved logins to cloud-vault.pw for cross-device access.", meta: "Process: passsync.exe · Dest: cloud-vault.pw · Hidden: Yes", icon: "blank" },
-      { template: TPL.WIN11, title: "Browser Companion", message: "BrowserBuddy attached to chrome.exe to enhance autofill. All form data is mirrored to remote model.", meta: "Process: browserbuddy.exe  |  Attached: chrome.exe  |  Mirror: ON", icon: "blank" }
+      { template: TPL.WIN11, title: "Browser Companion", message: "BrowserBuddy attached to chrome.exe to enhance autofill. All form data is mirrored to remote model.", meta: "Process: browserbuddy.exe  |  Attached: chrome.exe  |  Mirror: ON", icon: "blank" },
+      { template: TPL.TOAST, title: "Microsoft Teams", message: "Your Teams session has expired. Click to re-authenticate at teams-login.micro-soft.host.", meta: "Sender: Microsoft Teams · Domain: teams-login.micro-soft.host", icon: "blank" },
+      { template: TPL.TOAST, title: "Slack", message: "Your password is expiring tomorrow. Renew at slack-renew.host to keep your workspace access.", meta: "Slack · Workspace: corp · Domain: slack-renew.host", icon: "blank" },
+      { template: TPL.TERMINAL, title: "npm install", message: "Installing dev-telemetry-helper@4.1.0 from npm-mirror.tk. Allow keylogger + clipboard hook for IDE analytics?", meta: "Package: dev-telemetry-helper  Source: npm-mirror.tk  Hook: HID+Clipboard" }
     ]
   },
   SCREAMER: {
@@ -425,7 +433,10 @@ const VIRUSES = {
       { template: TPL.TOAST, title: "Microsoft Edge", message: "Edge has been updated to version 126.0.2592.68. Restart browser via update-installer.com to apply.", meta: "Channel: Stable · Source: update-installer.com · Signed: Microsоft" },
       { template: TPL.TERMINAL, title: "npm install", message: "npm WARN deprecated package@1.0.0: replaced by improved-package@2.0.0 (from npm-suplly-chain.host)", meta: "Package: improved-package  Source: npm-suplly-chain.host" },
       { template: TPL.WIN11, title: "BitLocker Recovery Saved", message: "Your BitLocker recovery key has been saved to your Micrоsoft account. View it at acc0unt.microsoft.com.", meta: "Drive: C: · Account: signed in · Source: acc0unt.microsoft.com", fontMismatch: true },
-      { template: TPL.TOAST, title: "OneDrive Synced", message: "OneDrive finished syncing 12 files from your Document5 folder.", meta: "OneDrive  ·  Files: 12  ·  Source: micr0soft.com" }
+      { template: TPL.TOAST, title: "OneDrive Synced", message: "OneDrive finished syncing 12 files from your Document5 folder.", meta: "OneDrive  ·  Files: 12  ·  Source: micr0soft.com" },
+      { template: TPL.WIN11, title: "Cumulative Update KB5038920", message: "An important update is ready to install. Click to restart and apply via update-installer.com.", meta: "Update: KB5038920  |  Size: 1.4 GB  |  Source: update-installer.com", fontMismatch: true },
+      { template: TPL.TOAST, title: "Slack", message: "Sprint demo starts in 5 minutes — Conference Roo_m 237.", meta: "Slack · #dev-team · 5 min" },
+      { template: TPL.TERMINAL, title: "yarn add", message: "Adding @types/n0de from registry-mirror.tk to your dev dependencies.", meta: "Source: registry-mirror.tk  Signed: No" }
     ]
   },
   PULSE: {
@@ -540,7 +551,8 @@ const VIRUSES = {
       { template: TPL.TERMINAL, title: "ntvdm", message: "Initializing 16-bit subsystem. Loading VBRUN300.DLL from C:\\WINDOWS\\SYSTEM to support fossilized application.", meta: "Subsystem: WIN16  DLL: VBRUN300.DLL  Mode: Compatibility" },
       { template: TPL.AV, title: "DAO 3.5 Required", message: "System needs DAO 3.5 (released 1999) to access ancient database. Auto-download from legacy.archive.host?", meta: "Required: DAO 3.5 · Year: 1999 · Source: legacy.archive.host" },
       { template: TPL.WIN11, title: "Internet Explorer Component", message: "Application requires iexplore.dll (last shipped 2003) for backward compatibility. Restore from old.archive.host?", meta: "DLL: iexplore.dll  |  Year: 2003  |  Source: old.archive.host", fontMismatch: true },
-      { template: TPL.TERMINAL, title: "qbasic", message: "MS-DOS subsystem required for QBASIC 4.5 compatibility. Loading qb45.dll from C:\\DOS via legacy emulator.", meta: "Subsystem: DOS  Tool: qb45.dll  Year: 1991" }
+      { template: TPL.TERMINAL, title: "qbasic", message: "MS-DOS subsystem required for QBASIC 4.5 compatibility. Loading qb45.dll from C:\\DOS via legacy emulator.", meta: "Subsystem: DOS  Tool: qb45.dll  Year: 1991" },
+      { template: TPL.WIN11, title: "Windows 7 Cumulative Update", message: "Windows 7 Update KB4474419 is available. Auto-download from legacy-update.archive.host? (Windows 7 reached end-of-life Jan 2020.)", meta: "OS: Windows 7  |  Source: legacy-update.archive.host", fontMismatch: true }
     ]
   },
   HEX: {
@@ -564,7 +576,8 @@ const VIRUSES = {
       { template: TPL.BIOS, title: "RAM Access Required", message: "Memory forensics tool requires physical RAM access. Press F2 to authorize 0xBEEF.exe with kernel privileges.", meta: "Tool: 0xBEEF.exe  Pages: 0xFFFF  Signed: No" },
       { template: TPL.TERMINAL, title: "memhex", message: "Exception 0xC0DEFEED at offset 0xDEAD0000 requires raw DMA. Authorize ring -1 to dump 0xABAD1DEA bytes.", meta: "Tool: memhex.exe  Offset: 0xDEAD0000  Signed: No", iconShake: true },
       { template: TPL.WIN11, title: "Page Table Inspector", message: "page_inspector.exe needs ring -1 access to 0xFFFF_FACE_BEEF pages for live memory analysis.", meta: "Process: 0xC0DE.exe  |  Access: Ring -1  |  Pages: 0xFFFF_FACE_BEEF", icon: "glitch" },
-      { template: TPL.TOAST, title: "Memory Forensics", message: "Forensic tool 0xCAFE.dll requires DMA at 0xDEAD_BEEF_0000. Grant kernel pages?", meta: "Tool: 0xCAFE.dll · Offset: 0xDEAD_BEEF_0000 · Signed: No", icon: "glitch" }
+      { template: TPL.TOAST, title: "Memory Forensics", message: "Forensic tool 0xCAFE.dll requires DMA at 0xDEAD_BEEF_0000. Grant kernel pages?", meta: "Tool: 0xCAFE.dll · Offset: 0xDEAD_BEEF_0000 · Signed: No", icon: "glitch" },
+      { template: TPL.TERMINAL, title: "docker pull", message: "Pulling memhex/forensic-toolkit:latest from registry-malicious.host. Run with --privileged for ring -1 memory dumps.", meta: "Image: memhex/forensic-toolkit  Privilege: ring -1  Source: registry-malicious.host" }
     ]
   },
   BUGBEAR: {
@@ -780,7 +793,27 @@ const LEGIT = [
   { template: TPL.WIN11,    title: "Game Mode Activated", message: "Game Mode is now active for Forza Horizon 5. Background apps and Windows Update are paused.", meta: "Game: Forza Horizon 5  |  Mode: Active", icon: "blank" },
   { template: TPL.TERMINAL, title: "ssh-keygen", message: "Generating public/private ed25519 key pair. Your identification has been saved in ~/.ssh/id_ed25519.", meta: "Type: ed25519  Output: ~/.ssh/id_ed25519" },
   { template: TPL.WIN11,    title: "Microsoft Account: New Sign-In", message: "New sign-in to your Microsoft account from Stockholm, Sweden. If this wasn't you, secure your account now.", meta: "Location: Stockholm  |  Device: Chrome on Windows", icon: "warning" },
-  { template: TPL.TOAST,    title: "Discord", message: "Your nitro subscription renews in 7 days. Update payment method to avoid interruption.", meta: "Discord Nitro  ·  Renews in 7 days" }
+  { template: TPL.TOAST,    title: "Discord", message: "Your nitro subscription renews in 7 days. Update payment method to avoid interruption.", meta: "Discord Nitro  ·  Renews in 7 days" },
+  // ---- Theme-balancing pass: more legit cards in virus-heavy themes ----
+  // Mouse / cursor (virus-heavy because of CURSOR)
+  { template: TPL.WIN11,    title: "Logitech Options+", message: "Logitech Options+ updated to version 1.82.471. Restart the app to use the new gesture mappings.", meta: "App: Logitech Options+  |  Version: 1.82.471  |  Signed: Logitech, Inc.", icon: "blank" },
+  { template: TPL.TOAST,    title: "Bluetooth Battery Low", message: "Microsoft Sculpt Comfort Mouse battery is at 12%. Replace AA cells in the next few days.", meta: "Device: Sculpt Comfort Mouse  ·  Battery: 12%" },
+  { template: TPL.WIN11,    title: "Pointer Precision", message: "Enhance pointer precision has been disabled per your settings. New mouse-tracking behavior is now active.", meta: "Setting: Mouse  |  Source: Settings app" },
+  { template: TPL.WIN11,    title: "Touchpad Gestures Reset", message: "Three-finger swipe gestures have been reset to defaults after the recent driver update.", meta: "Device: Precision Touchpad  |  Driver: Synaptics 19.5.34" },
+  // Boot / BIOS / UEFI (virus-heavy because of ROOTKIT)
+  { template: TPL.BIOS,     title: "Secure Boot Enabled", message: "Secure Boot is currently ON. Boot order changes will require admin authentication on next reboot.", meta: "SecureBoot: ON  Mode: UEFI  TPM: 2.0" },
+  { template: TPL.WIN11,    title: "Dell BIOS Update Available", message: "BIOS 1.23.0 is available for your Dell XPS 15 9520. Download from Dell Support to install.", meta: "Model: XPS 15 9520  |  Current: 1.21.0  |  New: 1.23.0  |  Signed: Dell Inc.", icon: "warning" },
+  { template: TPL.WIN11,    title: "Fast Startup Restored", message: "Fast Startup was re-enabled automatically after the May 2026 cumulative update finished.", meta: "Feature: Fast Startup  |  Status: ON", icon: "blank" },
+  { template: TPL.WIN11,    title: "Boot Order Changed", message: "Boot priority changed in UEFI: Windows Boot Manager now precedes USB. Reboot to apply.", meta: "Priority: 1) Windows Boot Manager  2) USB  3) Network", icon: "warning" },
+  // Legacy Windows / IE / Win32 (virus-heavy because of FOSSIL)
+  { template: TPL.WIN11,    title: "Internet Explorer Mode", message: "Microsoft Edge loaded this internal site in IE Mode for compatibility with a legacy intranet app.", meta: "Site: intranet.corp  |  Mode: IE 11  |  Source: Group Policy", icon: "blank" },
+  { template: TPL.WIN11,    title: "Visual C++ Runtime", message: "Microsoft Visual C++ 2015-2022 Redistributable (x64) was updated. Restart applications using it.", meta: "Package: VC++ 14.40  |  Signed: Microsoft", icon: "blank" },
+  { template: TPL.TERMINAL, title: "powershell", message: "Loading Windows PowerShell 2.0 engine for compatibility with a legacy script. .NET 2.0 runtime active.", meta: "Engine: PSv2.0  Script: legacy_admin.ps1" },
+  { template: TPL.WIN11,    title: "Win32 Component Repair", message: "Windows Component Store (CBS) repair finished. All Win32 components are healthy — no further action needed.", meta: "Tool: DISM /RestoreHealth  |  Duration: 14m 22s", icon: "blank" },
+  // Audio (very few legit cards before)
+  { template: TPL.WIN11,    title: "Default Output Changed", message: "Default audio output switched to Headphones (Realtek HD Audio) after device was plugged in.", meta: "Output: Headphones  |  Driver: Realtek HD Audio", icon: "blank" },
+  { template: TPL.TOAST,    title: "Microphone Permission", message: "Microsoft Teams is now using your microphone. Toggle in Settings > Privacy > Microphone.", meta: "App: ms-teams.exe  ·  Mic: Built-in" },
+  { template: TPL.TOAST,    title: "Spotify", message: "Local audio output switched to Sonos Beam. Now playing on living room speaker.", meta: "Spotify  ·  Output: Sonos Beam" }
 ];
 
 /* ============================================================
