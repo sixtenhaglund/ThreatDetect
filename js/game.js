@@ -149,11 +149,18 @@ function finalizeCreditz(entry) {
 
 /* Floating "+X ₢" notification that appears briefly on the screen. */
 function showCreditzToast(amount, sub) {
+  // Put all toasts in a shared stack container so simultaneous earnings (e.g. round
+  // complete + antivirus quarantine) are both visible instead of overlapping.
+  let stack = document.getElementById("toast-stack");
+  if (!stack) {
+    stack = document.createElement("div");
+    stack.id = "toast-stack";
+    document.body.appendChild(stack);
+  }
   const el = document.createElement("div");
   el.className = "creditz-toast";
   el.innerHTML = '<strong>' + esc(amount) + '</strong><span>' + esc(sub || "") + '</span>';
-  document.body.appendChild(el);
-  // Force reflow so the transition runs from the initial state.
+  stack.appendChild(el);
   void el.offsetWidth;
   el.classList.add("show");
   setTimeout(() => {
@@ -452,6 +459,31 @@ function shuffle(arr) {
 
 function rand(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
 
+/* Substitute {name}, {tld}, {app}, etc. tokens in a string using RANDOM_POOLS.
+   Unknown tokens are left as-is. */
+function substitutePlaceholders(str) {
+  if (typeof str !== "string") return str;
+  return str.replace(/\{(\w+)\}/g, (m, key) => {
+    const pool = RANDOM_POOLS[key];
+    return pool ? rand(pool) : m;
+  });
+}
+
+/* Called once per card when a deck is built. Stable from there on:
+     - swaps in random app names / usernames / TLDs / etc.
+     - picks a random icon color
+     - picks a random Report/OK button label pair */
+function randomizeCard(card) {
+  const c = Object.assign({}, card);
+  c.title   = substitutePlaceholders(card.title || "");
+  c.message = substitutePlaceholders(card.message || "");
+  c.meta    = substitutePlaceholders(card.meta || "");
+  if (!c.iconColor)   c.iconColor   = rand(ICON_COLORS);
+  if (!c.labelReport) c.labelReport = rand(REPORT_SYNONYMS);
+  if (!c.labelOk)     c.labelOk     = rand(OK_SYNONYMS);
+  return c;
+}
+
 function availableViruses(round) {
   return Object.keys(VIRUSES).filter(k => VIRUSES[k].minRound <= round);
 }
@@ -489,7 +521,7 @@ function buildDeck(round) {
   const legitCount = CONFIG.cardsPerRound - virusCount;
   const pickedViruses = shuffle(virusCards).slice(0, virusCount);
   const pickedLegit   = shuffle(legitCards).slice(0, legitCount);
-  return shuffle(pickedViruses.concat(pickedLegit));
+  return shuffle(pickedViruses.concat(pickedLegit)).map(randomizeCard);
 }
 
 function rollTampering(round, card) {
@@ -581,7 +613,7 @@ function buildTrainingDeck(virusKey) {
   const v = VIRUSES[virusKey];
   const virusCards = v.errors.map(e => ({ ...e, isVirus: true, virusKey }));
   const legitCards = shuffle(LEGIT).slice(0, 12).map(e => ({ ...e, isVirus: false, virusKey: null }));
-  return shuffle(virusCards.concat(virusCards).concat(legitCards));
+  return shuffle(virusCards.concat(virusCards).concat(legitCards)).map(randomizeCard);
 }
 
 function nextCard() {
@@ -748,8 +780,17 @@ function triggerEndOfRun(card) {
 function startMinigame(opts) {
   opts = opts || {};
   unlockAudio();
+  // Pick target count + timer based on the current difficulty.
+  // Practice always uses the default (normal-ish); challenge mode has its own row.
+  const diff = opts.training
+    ? null
+    : (state.gameMode === "challenge" ? "challenge" : (state.difficulty || "normal"));
+  const cfg = (diff && CONFIG.minigameByDifficulty[diff]) || {
+    targets: CONFIG.minigameTargets,
+    duration: CONFIG.minigameDuration
+  };
   const targets = [];
-  for (let i = 0; i < MG_TARGETS; i++) {
+  for (let i = 0; i < cfg.targets; i++) {
     targets.push({
       x: 10 + Math.random() * 80,    // % of viewport
       y: 18 + Math.random() * 68,
@@ -760,8 +801,8 @@ function startMinigame(opts) {
     active: true,
     targets,
     hits: 0,
-    needed: MG_TARGETS,
-    timeLeft: MG_DURATION,
+    needed: cfg.targets,
+    timeLeft: cfg.duration,
     startTime: Date.now(),
     savedCard: opts.savedCard || null,
     training: !!opts.training,
@@ -885,9 +926,17 @@ function toggleCodex(key) {
    so the icon stays stable per card but varies card-to-card — classic X, warning, glitch, blank, ∅, skull, ?. */
 
 function iconFor(card) {
-  if (card && card.icon && ICONS[card.icon]) return ICONS[card.icon];
-  const t = card ? ICON_BY_TEMPLATE[card.template] : null;
-  return ICONS[t || "error"];
+  let svg;
+  if (card && card.icon && ICONS[card.icon])      svg = ICONS[card.icon];
+  else if (card && ICON_BY_TEMPLATE[card.template]) svg = ICONS[ICON_BY_TEMPLATE[card.template]];
+  else                                               svg = ICONS.error;
+  // Recolor the primary `fill="#xxxxxx"` (first one in the SVG) with the per-card
+  // iconColor if it's set. Cheaper than per-icon templating — keeps shapes intact
+  // but lets the same icon appear in different colors across cards.
+  if (card && card.iconColor) {
+    svg = svg.replace(/fill="#[0-9a-fA-F]{3,8}"/, 'fill="' + card.iconColor + '"');
+  }
+  return svg;
 }
 
 // Back-compat exports for any code still referencing the old names directly.
@@ -896,8 +945,8 @@ const WARN_ICON_SVG  = ICON_VARIANTS[1];
 
 function renderActions(card) {
   // Report = Virus, OK = Safe. Hidden when NULL tampering active.
-  const left  = `<button class="btn danger" data-action="virus">Report</button>`;
-  const right = `<button class="btn primary" data-action="check">OK</button>`;
+  const left  = `<button class="btn danger" data-action="virus">${card.labelReport || "Report"}</button>`;
+  const right = `<button class="btn primary" data-action="check">${card.labelOk || "OK"}</button>`;
   return left + right;
 }
 
@@ -925,8 +974,8 @@ function renderWin11(card) {
         </div>
       </div>
       <div class="win-actions">
-        <button class="btn" data-action="virus">Report</button>
-        <button class="btn primary" data-action="check">OK</button>
+        <button class="btn" data-action="virus">${card.labelReport || "Report"}</button>
+        <button class="btn primary" data-action="check">${card.labelOk || "OK"}</button>
       </div>
     </div>`;
 }
@@ -946,8 +995,8 @@ function renderAV(card) {
         </div>
       </div>
       <div class="av-actions">
-        <button class="btn danger" data-action="virus">Report</button>
-        <button class="btn primary" data-action="check">OK</button>
+        <button class="btn danger" data-action="virus">${card.labelReport || "Report"}</button>
+        <button class="btn primary" data-action="check">${card.labelOk || "OK"}</button>
       </div>
     </div>`;
 }
@@ -960,8 +1009,8 @@ function renderBIOS(card) {
       ${card.meta ? `<div class="bios-row" style="margin-top:10px"><span class="bios-key">DEBUG:</span>&nbsp;${esc(card.meta)}</div>` : ""}
       <div class="bios-warn">Press a key to continue or report as threat.</div>
       <div class="bios-actions">
-        <span><span class="key">F2</span> <button class="btn danger" data-action="virus" style="padding:4px 12px;font-size:12px">Report</button></span>
-        <span><span class="key">F10</span> <button class="btn primary" data-action="check" style="padding:4px 12px;font-size:12px">OK</button></span>
+        <span><span class="key">F2</span> <button class="btn danger" data-action="virus" style="padding:4px 12px;font-size:12px">${card.labelReport || "Report"}</button></span>
+        <span><span class="key">F10</span> <button class="btn primary" data-action="check" style="padding:4px 12px;font-size:12px">${card.labelOk || "OK"}</button></span>
       </div>
     </div>`;
 }
@@ -981,8 +1030,8 @@ function renderTerminal(card) {
         <div class="term-line"><span class="prompt">$</span> <span class="term-cursor"></span></div>
       </div>
       <div class="term-actions">
-        <button class="term-btn" data-action="virus">Report</button>
-        <button class="term-btn" data-action="check" style="background:#003366;border-color:#66ddff;color:#66ddff;">OK</button>
+        <button class="term-btn" data-action="virus">${card.labelReport || "Report"}</button>
+        <button class="term-btn" data-action="check" style="background:#003366;border-color:#66ddff;color:#66ddff;">${card.labelOk || "OK"}</button>
       </div>
     </div>`;
 }
@@ -1003,8 +1052,8 @@ function renderToast(card) {
       </div>
     </div>
     <div class="row" style="gap:10px;margin-top:14px;">
-      <button class="btn danger big" data-action="virus">Report</button>
-      <button class="btn primary big" data-action="check">OK</button>
+      <button class="btn danger big" data-action="virus">${card.labelReport || "Report"}</button>
+      <button class="btn primary big" data-action="check">${card.labelOk || "OK"}</button>
     </div>`;
 }
 
@@ -1028,8 +1077,8 @@ function renderDesktop(card) {
       </div>
     </div>
     <div class="row" style="gap:10px;margin-top:14px;">
-      <button class="btn danger big" data-action="virus">Report</button>
-      <button class="btn primary big" data-action="check">OK</button>
+      <button class="btn danger big" data-action="virus">${card.labelReport || "Report"}</button>
+      <button class="btn primary big" data-action="check">${card.labelOk || "OK"}</button>
     </div>`;
 }
 
@@ -1043,8 +1092,8 @@ function renderLoading(card) {
       ${card.meta ? `<div class="loading-step">> ${esc(card.meta)}</div>` : ""}
     </div>
     <div class="row" style="gap:10px;margin-top:14px;">
-      <button class="btn danger big" data-action="virus">Report</button>
-      <button class="btn primary big" data-action="check">OK</button>
+      <button class="btn danger big" data-action="virus">${card.labelReport || "Report"}</button>
+      <button class="btn primary big" data-action="check">${card.labelOk || "OK"}</button>
     </div>`;
 }
 
@@ -1062,8 +1111,8 @@ function renderWin311(card) {
         </div>
       </div>
       <div class="w311-actions">
-        <button class="w311-btn" data-action="virus">Report</button>
-        <button class="w311-btn" data-action="check">OK</button>
+        <button class="w311-btn" data-action="virus">${card.labelReport || "Report"}</button>
+        <button class="w311-btn" data-action="check">${card.labelOk || "OK"}</button>
       </div>
     </div>`;
 }
@@ -1088,8 +1137,8 @@ Technical information:
 *** STOP: ${esc(card.meta || "0x000000F4")}
 *** Press any key to continue _</div>
       <div class="row" style="gap:10px;margin-top:14px;">
-        <button class="btn danger big" data-action="virus">Report</button>
-        <button class="btn primary big" data-action="check">OK</button>
+        <button class="btn danger big" data-action="virus">${card.labelReport || "Report"}</button>
+        <button class="btn primary big" data-action="check">${card.labelOk || "OK"}</button>
       </div>
     </div>`;
 }
@@ -1105,8 +1154,8 @@ function renderNorton(card) {
         <div class="norton-prompt">Press [ Y ] to continue, [ N ] to cancel</div>
       </div>
       <div class="row" style="gap:10px;margin-top:14px;">
-        <button class="btn danger big" data-action="virus">Report</button>
-        <button class="btn primary big" data-action="check">OK</button>
+        <button class="btn danger big" data-action="virus">${card.labelReport || "Report"}</button>
+        <button class="btn primary big" data-action="check">${card.labelOk || "OK"}</button>
       </div>
     </div>`;
 }
@@ -1125,8 +1174,8 @@ function renderMac(card) {
       </div>
     </div>
     <div class="row" style="gap:10px;margin-top:14px;justify-content:center;">
-      <button class="btn danger big" data-action="virus">Report</button>
-      <button class="btn primary big" data-action="check">OK</button>
+      <button class="btn danger big" data-action="virus">${card.labelReport || "Report"}</button>
+      <button class="btn primary big" data-action="check">${card.labelOk || "OK"}</button>
     </div>`;
 }
 
@@ -1145,8 +1194,8 @@ function renderChat(card) {
       </div>
     </div>
     <div class="row" style="gap:10px;margin-top:14px;justify-content:center;">
-      <button class="btn danger big" data-action="virus">Report</button>
-      <button class="btn primary big" data-action="check">OK</button>
+      <button class="btn danger big" data-action="virus">${card.labelReport || "Report"}</button>
+      <button class="btn primary big" data-action="check">${card.labelOk || "OK"}</button>
     </div>`;
 }
 
@@ -1163,8 +1212,8 @@ function renderPhone(card) {
       </div>
     </div>
     <div class="row" style="gap:10px;margin-top:14px;justify-content:center;">
-      <button class="btn danger big" data-action="virus">Report</button>
-      <button class="btn primary big" data-action="check">OK</button>
+      <button class="btn danger big" data-action="virus">${card.labelReport || "Report"}</button>
+      <button class="btn primary big" data-action="check">${card.labelOk || "OK"}</button>
     </div>`;
 }
 
@@ -1186,8 +1235,8 @@ function renderPrint(card) {
       </div>
     </div>
     <div class="row" style="gap:10px;margin-top:14px;justify-content:center;">
-      <button class="btn danger big" data-action="virus">Report</button>
-      <button class="btn primary big" data-action="check">OK</button>
+      <button class="btn danger big" data-action="virus">${card.labelReport || "Report"}</button>
+      <button class="btn primary big" data-action="check">${card.labelOk || "OK"}</button>
     </div>`;
 }
 
@@ -1206,8 +1255,8 @@ function renderCaptcha(card) {
       ${card.meta ? `<div class="captcha-meta">${esc(card.meta)}</div>` : ""}
     </div>
     <div class="row" style="gap:10px;margin-top:14px;justify-content:center;">
-      <button class="btn danger big" data-action="virus">Report</button>
-      <button class="btn primary big" data-action="check">OK</button>
+      <button class="btn danger big" data-action="virus">${card.labelReport || "Report"}</button>
+      <button class="btn primary big" data-action="check">${card.labelOk || "OK"}</button>
     </div>`;
 }
 
@@ -1226,8 +1275,8 @@ function renderUpdate(card) {
       </div>
     </div>
     <div class="row" style="gap:10px;margin-top:14px;justify-content:center;">
-      <button class="btn danger big" data-action="virus">Report</button>
-      <button class="btn primary big" data-action="check">OK</button>
+      <button class="btn danger big" data-action="virus">${card.labelReport || "Report"}</button>
+      <button class="btn primary big" data-action="check">${card.labelOk || "OK"}</button>
     </div>`;
 }
 

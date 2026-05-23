@@ -20,8 +20,16 @@ const CONFIG = {
   scorePerCreditz: 500,         // every 100 score points = +1 ₢ at end of run
   // Antivirus minigame
   antivirusPrice: 40,
+  minigameByDifficulty: {
+    easy:      { targets: 3,  duration: 6.0 },
+    normal:    { targets: 5,  duration: 6.0 },
+    hard:      { targets: 8,  duration: 5.5 },
+    nightmare: { targets: 10, duration: 5.0 },
+    challenge: { targets: 6,  duration: 5.0 }
+  },
+  // Fallback used by Practice mode (or if difficulty is missing somehow)
   minigameTargets: 5,
-  minigameDuration: 6.5         // seconds
+  minigameDuration: 6.0
 };
 
 /* ============================================================
@@ -108,6 +116,27 @@ const ICONS = {
 };
 
 // Default icon per template — used when a card doesn't specify its own.
+// Pools of random fill-ins. Card text can use {token} placeholders (e.g. {name},
+// {tld}) and they get substituted at deck-build time so the same card stays stable
+// across re-renders but differs between runs.
+const RANDOM_POOLS = {
+  name:       ["Sarah", "Maya", "Alex", "Jordan", "Sam", "Taylor", "Chris", "Casey", "Mike", "Anna", "Lukas", "Sofie", "Oliver", "Emma", "Hugo", "Lina", "Noah", "Ella", "Erik", "Maja"],
+  surname:    ["K.", "J.", "M.", "Olsson", "Berg", "Andersson", "Smith", "Jones", "Chen", "Khan", "Lindqvist", "Holm", "Eriksson"],
+  department: ["Accounting", "Engineering", "HR", "Marketing", "Sales", "IT", "Legal", "Operations", "Finance", "Procurement", "DevOps"],
+  tld:        [".host", ".tk", ".live", ".pw", ".ru", ".net", ".biz", ".xyz", ".support", ".help", ".online", ".click", ".info", ".app"],
+  app:        ["Microsoft Teams", "Slack", "Discord", "Outlook", "OneDrive", "Notion", "Zoom", "SharePoint", "Asana", "Linear", "Trello"],
+  brand:      ["Microsoft", "Google", "Apple", "Amazon", "Adobe", "Dropbox", "GitHub"],
+  city:       ["Stockholm", "Berlin", "Helsinki", "Oslo", "Copenhagen", "Tallinn", "Amsterdam", "Riga"]
+};
+
+// Icon colors a card may get assigned. Picked once per card at deal time.
+const ICON_COLORS = ["#c42b1c", "#f5a623", "#1f6feb", "#aa66ff", "#00b86b", "#ff44aa", "#ffd700", "#888888"];
+
+// Button-label synonyms. Each card gets one pair at deal time so the buttons
+// don't always say "Report" / "OK".
+const REPORT_SYNONYMS = ["Report", "Virus", "Unsafe", "Block", "Threat", "Quarantine"];
+const OK_SYNONYMS     = ["OK", "Continue", "Safe", "Allow", "Proceed", "Trust"];
+
 const ICON_BY_TEMPLATE = {
   win11:    "error",
   av:       "warning",
@@ -140,8 +169,8 @@ const SHOP_ITEMS = [
 
 
 /* ---- Antivirus minigame tuning ---- */
-const MG_TARGETS  = CONFIG.minigameTargets;
-const MG_DURATION = CONFIG.minigameDuration;
+// (Per-difficulty minigame sizing now lives in CONFIG.minigameByDifficulty;
+// startMinigame picks the right row at run time.)
 
 /* ---- The 20 viruses, each with description, signs, errors, meter tampering ---- */
 const VIRUSES = {

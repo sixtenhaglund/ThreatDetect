@@ -985,13 +985,21 @@
     .lb-panel { flex: 1 1 auto; }
   }
 
-  /* Floating "+X ₢" toast shown when creditz are earned (round complete). */
-  .creditz-toast {
+  /* Floating "+X ₢" toasts stack vertically so multiple simultaneous earnings
+     (e.g. round-complete + antivirus quarantine) are all visible at once. */
+  #toast-stack {
     position: fixed;
     top: 24px;
     left: 50%;
-    transform: translate(-50%, -30px);
+    transform: translateX(-50%);
     z-index: 700;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: center;
+    pointer-events: none;
+  }
+  .creditz-toast {
     background: linear-gradient(180deg, rgba(70, 50, 0, 0.95), rgba(40, 28, 0, 0.95));
     border: 1px solid hsl(50 100% 50% / 0.6);
     border-radius: 8px;
@@ -1001,6 +1009,7 @@
     box-shadow: 0 0 24px hsl(50 100% 50% / 0.3), 0 6px 18px rgba(0,0,0,0.5);
     font-family: "Cascadia Mono", Consolas, monospace;
     opacity: 0;
+    transform: translateY(-12px);
     transition: opacity 0.35s ease, transform 0.35s ease;
     display: flex;
     flex-direction: column;
@@ -1010,7 +1019,7 @@
   }
   .creditz-toast strong { font-size: 1.4rem; font-weight: 800; line-height: 1; }
   .creditz-toast span   { font-size: 0.7rem; letter-spacing: 0.12em; color: hsl(50 60% 70%); }
-  .creditz-toast.show   { opacity: 1; transform: translate(-50%, 0); }
+  .creditz-toast.show   { opacity: 1; transform: translateY(0); }
 
   /* Shop layout */
   .shop-list {
