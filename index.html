@@ -3014,7 +3014,7 @@ const Save = {
 
 /* Leaderboard lives in its OWN localStorage key so it survives Save.reset().
    Personal stats (best round, best score) are still wiped — only the top-runs list is global. */
-const LB_KEY = "threatdetect_leaderboard_v1";
+const LB_KEY = "threatdetect_leaderboard_v2";
 const Leaderboard = {
   load() {
     try {
@@ -3090,6 +3090,9 @@ function describeMeterEffect(effect) {
       "null": "CPU meter read NULL or ∞",
       blank: "CPU meter went blank (—)"
     },
+    ping: {
+      spike: "PING meter spiked randomly between normal and 9999ms"
+    },
     time: {
       wrong:     "System clock showed an impossible date",
       countdown: "System clock displayed a countdown timer instead of a time",
@@ -3104,7 +3107,7 @@ function describeMeterEffect(effect) {
     }
     if (typeof value === "number") {
       const unit = meter === "ping" ? "ms" : meter === "vol" ? "%" : meter === "cpu" ? "°C" : "";
-      labels.push(meter.toUpperCase() + " meter pinned at an impossible " + value + unit);
+      labels.push(meter.toUpperCase() + " meter pinned at " + value + unit);
       continue;
     }
     labels.push(meter.toUpperCase() + " meter showed '" + value + "'");
@@ -4643,6 +4646,7 @@ function renderCodexEntries(opts) {
     const isOpen = state.openCodex === key;
     const filtered = state.codexFilter && state.codexFilter !== key;
     if (filtered) return "";
+    const meterLabels = unlocked ? describeMeterEffect(v.meterEffect) : [];
     return `
       <div class="codex-entry v-${key} ${isOpen ? "open" : ""}">
         <div class="codex-head" data-action="toggle-entry" data-key="${key}">
@@ -4653,6 +4657,8 @@ function renderCodexEntries(opts) {
         <div class="codex-body">
           <p class="desc">${unlocked ? esc(v.description) : "Encounter and identify this threat to unlock its file."}</p>
           ${unlocked ? `<p class="tiny">How to identify</p><ul>${v.signs.map(s => `<li>${esc(s)}</li>`).join("")}</ul>${
+            meterLabels.length ? `<p class="tiny" style="margin-top:10px;">Telemetry tampering</p><ul>${meterLabels.map(t => `<li>${esc(t)}</li>`).join("")}</ul>` : ""
+          }${
             allowPreview ? `<button class="btn" data-action="preview-virus" data-key="${key}" style="margin-top:12px;">▶ Watch Death Animation</button>` : ""
           }` : ""}
         </div>
