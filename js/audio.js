@@ -42,30 +42,121 @@ const Audio = {
     this.ambientGain.gain.value = save.settings.ambient;
     this.sfxGain.gain.value     = save.settings.sfx;
   },
+  /* Layered procedural music. Four layers fade in as the run gets harder:
+       L1 drone     — always playing (creates the base 'room is alive' feel)
+       L2 arpeggio  — fades in around round-fraction 0.2 (slow 4-note melody)
+       L3 kick      — fades in around 0.5 (heartbeat-like sub pulse)
+       L4 shimmer   — fades in around 0.75 (high tense pad with tremolo)
+     Call updateMusicIntensity(0..1) any time the round changes. */
   startAmbient() {
     if (!this.ctx || this.ambientNodes) return;
     const ctx = this.ctx;
+    const out = this.ambientGain;
+    const t0 = ctx.currentTime;
+
+    // ----- L1 drone -----
     const o1 = ctx.createOscillator(); o1.type = "sawtooth"; o1.frequency.value = 55;
     const o2 = ctx.createOscillator(); o2.type = "sawtooth"; o2.frequency.value = 55.4;
     const o3 = ctx.createOscillator(); o3.type = "sine";     o3.frequency.value = 110;
-    const lp = ctx.createBiquadFilter(); lp.type = "lowpass"; lp.frequency.value = 320; lp.Q.value = 0.4;
-    const g = ctx.createGain(); g.gain.value = 0.0;
-    o1.connect(lp); o2.connect(lp); o3.connect(lp); lp.connect(g); g.connect(this.ambientGain);
+    const droneLp = ctx.createBiquadFilter();
+    droneLp.type = "lowpass"; droneLp.frequency.value = 320; droneLp.Q.value = 0.4;
+    const droneG = ctx.createGain(); droneG.gain.value = 0;
+    o1.connect(droneLp); o2.connect(droneLp); o3.connect(droneLp);
+    droneLp.connect(droneG); droneG.connect(out);
     o1.start(); o2.start(); o3.start();
-    g.gain.linearRampToValueAtTime(0.18, ctx.currentTime + 1.5);
-    const lfo = ctx.createOscillator(); lfo.type = "sine"; lfo.frequency.value = 0.15;
-    const lfoGain = ctx.createGain(); lfoGain.gain.value = 90;
-    lfo.connect(lfoGain); lfoGain.connect(lp.frequency); lfo.start();
-    this.ambientNodes = { o1, o2, o3, lp, g, lfo, lfoGain };
+    droneG.gain.linearRampToValueAtTime(0.18, t0 + 1.5);
+    const droneLfo = ctx.createOscillator(); droneLfo.type = "sine"; droneLfo.frequency.value = 0.15;
+    const droneLfoGain = ctx.createGain(); droneLfoGain.gain.value = 90;
+    droneLfo.connect(droneLfoGain); droneLfoGain.connect(droneLp.frequency); droneLfo.start();
+
+    // ----- L2 arpeggio (A2 - C3 - D3 - C3, minor, eerie) -----
+    const arpG = ctx.createGain(); arpG.gain.value = 0;
+    arpG.connect(out);
+    let arpStep = 0;
+    const self = this;
+    const arpInterval = setInterval(function () {
+      if (!self.ambientNodes) return;
+      const notes = [110, 130.81, 146.83, 130.81];
+      const f = notes[arpStep % notes.length];
+      const start = ctx.currentTime;
+      const o = ctx.createOscillator(); o.type = "sine"; o.frequency.value = f;
+      const g = ctx.createGain();
+      o.connect(g); g.connect(arpG);
+      g.gain.setValueAtTime(0, start);
+      g.gain.linearRampToValueAtTime(0.3, start + 0.04);
+      g.gain.exponentialRampToValueAtTime(0.001, start + 0.55);
+      o.start(start); o.stop(start + 0.6);
+      arpStep++;
+    }, 800);
+
+    // ----- L3 kick pulse (low sine thump) -----
+    const kickG = ctx.createGain(); kickG.gain.value = 0;
+    kickG.connect(out);
+    const kickInterval = setInterval(function () {
+      if (!self.ambientNodes) return;
+      const start = ctx.currentTime;
+      const o = ctx.createOscillator(); o.type = "sine";
+      o.frequency.setValueAtTime(80, start);
+      o.frequency.exponentialRampToValueAtTime(40, start + 0.1);
+      const g = ctx.createGain();
+      o.connect(g); g.connect(kickG);
+      g.gain.setValueAtTime(0.55, start);
+      g.gain.exponentialRampToValueAtTime(0.001, start + 0.15);
+      o.start(start); o.stop(start + 0.2);
+    }, 1600);
+
+    // ----- L4 high shimmer (two sines + slow tremolo) -----
+    const shimG = ctx.createGain(); shimG.gain.value = 0;
+    shimG.connect(out);
+    const shimO  = ctx.createOscillator(); shimO.type  = "sine"; shimO.frequency.value  = 880;
+    const shimO2 = ctx.createOscillator(); shimO2.type = "sine"; shimO2.frequency.value = 1318.5;
+    shimO.connect(shimG); shimO2.connect(shimG);
+    shimO.start(); shimO2.start();
+    const shimLfo = ctx.createOscillator(); shimLfo.type = "sine"; shimLfo.frequency.value = 0.3;
+    const shimLfoGain = ctx.createGain(); shimLfoGain.gain.value = 0.04;
+    shimLfo.connect(shimLfoGain); shimLfoGain.connect(shimG.gain); shimLfo.start();
+
+    this.ambientNodes = {
+      o1, o2, o3, droneG, droneLfo,
+      arpG, arpInterval,
+      kickG, kickInterval,
+      shimG, shimO, shimO2, shimLfo
+    };
   },
+
+  /* Re-balance the music layers for a given progress fraction (0–1).
+     L1 stays full; L2/L3/L4 each cross a threshold to fade in. */
+  updateMusicIntensity(t) {
+    if (!this.ambientNodes || !this.ctx) return;
+    const tNow = this.ctx.currentTime;
+    const fade = 2.0;
+    const tt = Math.max(0, Math.min(1, t));
+    const arp  = Math.max(0, Math.min(1, (tt - 0.20) / 0.30)) * 0.12;
+    const kick = Math.max(0, Math.min(1, (tt - 0.50) / 0.30)) * 0.14;
+    const shim = Math.max(0, Math.min(1, (tt - 0.75) / 0.25)) * 0.08;
+    const { arpG, kickG, shimG } = this.ambientNodes;
+    arpG.gain.cancelScheduledValues(tNow);
+    arpG.gain.linearRampToValueAtTime(arp,  tNow + fade);
+    kickG.gain.cancelScheduledValues(tNow);
+    kickG.gain.linearRampToValueAtTime(kick, tNow + fade);
+    shimG.gain.cancelScheduledValues(tNow);
+    shimG.gain.linearRampToValueAtTime(shim, tNow + fade);
+  },
+
   stopAmbient() {
     if (!this.ambientNodes) return;
-    const { o1, o2, o3, g, lfo } = this.ambientNodes;
     const t = this.ctx.currentTime;
-    g.gain.cancelScheduledValues(t);
-    g.gain.setValueAtTime(g.gain.value, t);
-    g.gain.linearRampToValueAtTime(0, t + 0.5);
-    o1.stop(t + 0.6); o2.stop(t + 0.6); o3.stop(t + 0.6); lfo.stop(t + 0.6);
+    const a = this.ambientNodes;
+    clearInterval(a.arpInterval);
+    clearInterval(a.kickInterval);
+    [a.droneG, a.arpG, a.kickG, a.shimG].forEach(function (g) {
+      g.gain.cancelScheduledValues(t);
+      g.gain.setValueAtTime(g.gain.value, t);
+      g.gain.linearRampToValueAtTime(0, t + 0.5);
+    });
+    a.o1.stop(t + 0.6); a.o2.stop(t + 0.6); a.o3.stop(t + 0.6);
+    a.droneLfo.stop(t + 0.6);
+    a.shimO.stop(t + 0.6); a.shimO2.stop(t + 0.6); a.shimLfo.stop(t + 0.6);
     this.ambientNodes = null;
   },
   _env(g, t, a, d, peak) {

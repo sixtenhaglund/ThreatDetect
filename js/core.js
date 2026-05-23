@@ -149,7 +149,7 @@ function awardRoundCreditz() {
   let amount = CONFIG.creditzPerRound[mode] || 0;
   // Endless: +1 ₢ for each round already cleared. So round 1 ends at base,
   // round 2 at base+1, round 3 at base+2, etc. Rewards longer runs.
-  if (state.gameMode === "endless") amount += Math.max(0, state.round - 1);
+  if (state.gameMode === "endless") amount += Math.max(0, state.round - 1 * 5);
   if (amount <= 0) return;
   state.runCreditz = (state.runCreditz || 0) + amount;
   save.creditz = (save.creditz || 0) + amount;

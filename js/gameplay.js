@@ -178,6 +178,7 @@ function go(screen) {
 function startChallenge() {
   unlockAudio();
   Audio.startAmbient();
+  Audio.updateMusicIntensity(0);   // round 1 = minimal layers
   state.score = 0;
   state.round = 1;
   state.lives = CONFIG.startLives;
@@ -263,6 +264,9 @@ function nextCard() {
     }
     state.round++;
     state.roundCorrect = 0;  // fresh counter each round
+    // Music intensity ramps with round progress. Endless caps at full at round 10+.
+    const denom = state.gameMode === "endless" ? 10 : CONFIG.totalRounds;
+    Audio.updateMusicIntensity((state.round - 1) / Math.max(1, denom - 1));
     if (state.round > save.highestRound) { save.highestRound = state.round; Save.write(save); }
     // Unlock Nightmare once you reach round 3 on Normal or Hard difficulty
     if (state.gameMode === "normal" && state.round >= 3 &&
