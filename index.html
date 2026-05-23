@@ -1042,6 +1042,42 @@
     pointer-events: none;
     z-index: 3;
   }
+  /* In-game death only: the killer card sits faded over the chaos as a reminder. */
+  .death-killer-bg {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: min(540px, 84%);
+    z-index: 8;
+    pointer-events: none;
+    filter: brightness(0.35) saturate(0.75);
+    opacity: 0.55;
+  }
+  /* In-game death only: tiny stats strip in the corner */
+  .death-stats-overlay {
+    position: fixed; top: 18px; left: 18px;
+    z-index: 600;
+    display: flex; gap: 14px;
+    font-family: "Cascadia Mono", Consolas, monospace;
+    background: rgba(0, 0, 0, 0.72);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 6px;
+    padding: 8px 14px;
+    color: #fff;
+    backdrop-filter: blur(4px);
+  }
+  .death-stats-overlay > div { text-align: left; }
+  .death-stats-overlay span {
+    display: block;
+    font-size: 0.55rem;
+    letter-spacing: 0.18em;
+    color: rgba(255, 255, 255, 0.55);
+    text-transform: uppercase;
+  }
+  .death-stats-overlay strong {
+    font-size: 1.05rem;
+    font-weight: 700;
+  }
   .death-skip {
     position: fixed; right: 24px; bottom: 24px;
     z-index: 600; opacity: 0.75;
@@ -1199,45 +1235,44 @@
     100% { transform: translateY(-45px) scale(1.25); opacity: 0.55; }
   }
 
-  /* STATIC — chunky pure black-and-white pixel noise (~128 tile resolution) */
+  /* STATIC — chunky 64x64 pure black-and-white pixel noise. No color, no text. */
   .death-STATIC {
     background-color: #000;
     background-image: repeating-conic-gradient(
       from 0deg at 50% 50%,
       #fff 0 25%, #000 25% 50%, #fff 50% 75%, #000 75% 100%
     );
-    background-size: 10px 10px;
+    background-size: 64px 64px;
     animation: staticPx 0.1s steps(6) infinite;
   }
   @keyframes staticPx {
     0%   { background-position: 0 0; }
-    16%  { background-position: 5px 0; }
-    33%  { background-position: 0 5px; }
-    50%  { background-position: -5px 5px; }
-    66%  { background-position: 5px -5px; }
-    83%  { background-position: -5px 0; }
+    16%  { background-position: 32px 0; }
+    33%  { background-position: 0 32px; }
+    50%  { background-position: -32px 32px; }
+    66%  { background-position: 32px -32px; }
+    83%  { background-position: -32px 0; }
     100% { background-position: 0 0; }
   }
   .death-STATIC::before {
-    /* Second offset pixel pattern at 12px, blended via difference for denser noise */
+    /* Second 64x64 offset b/w layer, blended via difference for denser noise */
     content: ""; position: absolute; inset: 0;
     background-image: repeating-conic-gradient(
       from 90deg at 50% 50%,
       #000 0 25%, #fff 25% 50%, #000 50% 75%, #fff 75% 100%
     );
-    background-size: 12px 12px;
+    background-size: 64px 64px;
     mix-blend-mode: difference;
     animation: staticPx2 0.08s steps(5) infinite;
   }
   @keyframes staticPx2 {
     0%   { background-position: 0 0; }
-    20%  { background-position: 6px 6px; }
-    40%  { background-position: -6px 0; }
-    60%  { background-position: 0 -6px; }
-    80%  { background-position: 6px -6px; }
+    20%  { background-position: 32px 32px; }
+    40%  { background-position: -32px 0; }
+    60%  { background-position: 0 -32px; }
+    80%  { background-position: 32px -32px; }
     100% { background-position: 0 0; }
   }
-  /* STATIC has no centered title — the pixel noise speaks for itself */
 
   /* REDRUM — blood drip + splatter + reverse text */
   .death-REDRUM { background: #1a0000; }
@@ -1539,64 +1574,58 @@
   }
   @keyframes mimicShard { to { background-position: 100px 100px; } }
 
-  /* NULL — ∅ field collapsing into a flatline */
+  /* NULL — completely still screen of 0s and 1s. No animation. */
   .death-NULL { background: #000; }
   .death-NULL::before {
-    content: "∅ ∅ ∅ ∅ ∅ ∅ ∅ ∅ ∅ ∅ ∅ ∅ ∅ ∅ ∅ ∅ ∅ ∅";
-    position: absolute; inset: 0;
-    display: flex; flex-wrap: wrap; align-items: center; justify-content: center;
-    font-size: 4.5rem; color: #555;
-    letter-spacing: 1.5em;
+    content: "0 1 0 0 1 1 0 1 1 0 0 1 0 1 1 0 1 0 1 1 0 1 0 0 1 0 1 1 0 0 1 0 1 1 0 1\A1 0 0 1 1 0 1 1 0 1 0 0 1 1 0 1 0 1 0 0 1 1 0 1 1 0 0 1 0 1 1 0 0 1 1 0\A0 1 1 0 0 1 1 0 1 0 0 1 0 1 1 0 1 0 1 1 0 0 1 0 1 1 0 1 1 0 0 1 0 1 1 0\A1 0 1 1 0 1 0 0 1 0 0 1 1 0 1 1 0 0 1 0 1 1 0 1 0 1 1 0 1 0 0 1 1 0 1 1\A0 0 1 1 0 1 1 0 0 1 0 1 0 1 1 0 1 0 1 0 1 1 0 1 0 1 1 0 0 1 1 0 1 0 1 1\A1 1 0 1 0 0 1 1 0 1 1 0 0 1 0 1 1 0 1 1 0 0 1 0 1 0 1 1 0 1 0 1 1 0 0 1\A0 1 0 0 1 1 0 1 1 0 1 0 0 1 1 0 1 0 1 0 0 1 1 0 1 1 0 0 1 0 1 1 0 1 1 0\A1 0 1 1 0 1 0 1 0 1 1 0 0 1 0 1 1 0 1 0 1 1 0 1 0 0 1 1 0 1 0 1 0 1 1 0\A0 0 1 1 0 1 1 0 1 0 0 1 1 0 1 0 1 1 0 0 1 0 1 1 0 1 0 1 0 0 1 1 0 1 1 0\A1 1 0 0 1 0 1 1 0 1 1 0 0 1 0 0 1 1 0 1 0 1 1 0 0 1 1 0 1 0 1 0 0 1 1 0\A0 1 0 1 1 0 1 0 0 1 0 1 1 0 1 1 0 0 1 1 0 1 0 1 1 0 0 1 0 1 1 0 1 0 1 1\A1 0 1 0 1 1 0 1 1 0 0 1 0 1 0 1 1 0 1 0 0 1 1 0 1 0 1 1 0 0 1 0 1 1 0 1";
+    white-space: pre;
+    position: absolute; inset: 0; padding: 24px;
+    font-family: "Cascadia Mono", monospace;
+    font-size: 1.4rem;
+    color: #555;
     line-height: 1.6;
-    opacity: 0.8;
-    animation: nullEmpty 2.4s ease-in-out infinite;
+    letter-spacing: 0.15em;
+    text-align: center;
   }
-  @keyframes nullEmpty {
-    0%   { letter-spacing: 1.5em; opacity: 0.8; transform: scale(1); filter: blur(0); }
-    100% { letter-spacing: 0;     opacity: 0;   transform: scale(0.4); filter: blur(6px); }
-  }
-  .death-NULL::after {
-    content: "—";
-    position: absolute; inset: 0;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 14rem; color: #2a2a2a;
-    animation: nullDash 3.5s ease-in-out infinite;
-  }
-  @keyframes nullDash {
-    0%, 100% { opacity: 0; transform: scaleX(0); }
-    50%      { opacity: 1; transform: scaleX(1); }
-  }
+  .death-NULL::after { content: none; }
+  .death-NULL .death-fx::before { content: none; }
+  .death-NULL .death-fx::after  { content: none; }
 
-  /* CURSOR — swarm of cursors drifting in opposite directions */
+  /* CURSOR — wall of arrows glitching around chaotically */
   .death-CURSOR { background: #1a0f00; }
   .death-CURSOR::before {
-    content: "▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶";
+    content: "▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶";
     position: absolute; inset: 0;
     display: flex; flex-wrap: wrap; align-items: center; justify-content: space-around;
-    font-size: 2.8rem; color: #ffaa44;
+    font-size: 2.4rem; color: #ffaa44;
     text-shadow: 0 0 12px #ff8800;
-    line-height: 1.4;
-    opacity: 0.75;
-    animation: cursorDrift1 2.5s ease-in-out infinite;
+    line-height: 1.6;
+    letter-spacing: 0.6em;
+    animation: cursorGlitch1 0.16s steps(4) infinite;
   }
-  @keyframes cursorDrift1 {
-    0%   { transform: translate(-40px,-30px) rotate(-8deg); }
-    50%  { transform: translate(80px,30px) rotate(8deg); }
-    100% { transform: translate(-40px,-30px) rotate(-8deg); }
+  @keyframes cursorGlitch1 {
+    0%   { transform: translate(-12px, 8px)  rotate(-6deg); opacity: 0.9; }
+    25%  { transform: translate(14px, -10px) rotate(6deg);  opacity: 0.5; }
+    50%  { transform: translate(-6px, -14px) rotate(-3deg); opacity: 1; }
+    75%  { transform: translate(18px, 6px)   rotate(4deg);  opacity: 0.7; }
+    100% { transform: translate(-12px, 8px)  rotate(-6deg); opacity: 0.9; }
   }
   .death-CURSOR::after {
-    content: "▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶";
+    content: "▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶";
     position: absolute; inset: 0;
     display: flex; flex-wrap: wrap; align-items: center; justify-content: space-around;
-    font-size: 1.8rem; color: #ff8844;
-    line-height: 2;
-    opacity: 0.45;
-    animation: cursorDrift2 3.5s linear infinite;
+    font-size: 3.2rem; color: #ff5500;
+    text-shadow: 0 0 14px #ff8800;
+    line-height: 1.3;
+    letter-spacing: 0.4em;
+    mix-blend-mode: screen;
+    animation: cursorGlitch2 0.13s steps(3) infinite;
   }
-  @keyframes cursorDrift2 {
-    0%   { transform: translate(60px,40px) rotate(0deg); }
-    50%  { transform: translate(-80px,-60px) rotate(180deg); }
-    100% { transform: translate(60px,40px) rotate(360deg); }
+  @keyframes cursorGlitch2 {
+    0%   { transform: translate(8px, -12px)  rotate(8deg)  scale(1);    opacity: 0.85; }
+    33%  { transform: translate(-16px, 10px) rotate(-12deg) scale(1.08); opacity: 0.4; }
+    66%  { transform: translate(12px, 14px)  rotate(10deg)  scale(0.95); opacity: 1; }
+    100% { transform: translate(8px, -12px)  rotate(8deg)  scale(1);    opacity: 0.85; }
   }
 
   /* LOOP — recursive nested boxes + stack scroll */
@@ -1651,79 +1680,167 @@
     opacity: 0.95;
   }
 
-  /* HEX — dense hex dump + flashing red corruption bytes */
-  .death-HEX { background: #001525; }
+  /* HEX — lots of red dots flickering and bouncing around. */
+  .death-HEX { background: #050000; }
   .death-HEX::before {
-    content: "0x0000 DE AD BE EF CA FE BA BE\A0x0008 FE ED FA CE C0 DE F0 0D\A0x0010 BA AD F0 0D AB AD 1D EA\A0x0018 DE FE C8 ED FA CE FE ED\A0x0020 8B AD F0 0D FE ED BA BE\A0x0028 DE AD BE EF C0 DE BA BE\A0x0030 CA FE D0 0D BA AD F0 0D\A0x0038 FE ED FA CE DE AD BE EF\A0x0040 0F AC C0 DE BA AD F0 0D";
-    white-space: pre;
-    position: absolute; inset: 0; padding: 30px;
-    font-family: "Cascadia Mono", monospace;
-    font-size: 18px;
-    color: #66ccff;
-    text-shadow: 0 0 6px #44aaff;
-    line-height: 1.8;
-    letter-spacing: 0.04em;
-    opacity: 0.95;
-    animation: hexShift 0.3s steps(8) infinite;
+    content: ""; position: absolute; inset: 0;
+    background:
+      radial-gradient(circle, #ff0000 0 5px, transparent 7px) 8% 12% / 90px 90px,
+      radial-gradient(circle, #ff2222 0 4px, transparent 6px) 34% 28% / 110px 110px,
+      radial-gradient(circle, #ff0000 0 6px, transparent 8px) 62% 18% / 80px 80px,
+      radial-gradient(circle, #ff4444 0 4px, transparent 6px) 78% 42% / 100px 100px,
+      radial-gradient(circle, #ff0000 0 5px, transparent 7px) 12% 64% / 85px 85px,
+      radial-gradient(circle, #ff2222 0 6px, transparent 8px) 50% 82% / 95px 95px,
+      radial-gradient(circle, #ff0000 0 4px, transparent 6px) 88% 88% / 75px 75px;
+    background-repeat: repeat;
+    animation: hexDotsFlicker 0.18s steps(2) infinite, hexDotsBounce 2.6s ease-in-out infinite;
   }
-  @keyframes hexShift {
-    0%   { transform: translateY(0); }
-    100% { transform: translateY(-200px); }
+  @keyframes hexDotsFlicker {
+    0%, 100% { opacity: 1; }
+    50%      { opacity: 0.35; }
+  }
+  @keyframes hexDotsBounce {
+    0%   { background-position: 8% 12%, 34% 28%, 62% 18%, 78% 42%, 12% 64%, 50% 82%, 88% 88%; }
+    25%  { background-position: 24% 32%, 14% 58%, 82% 38%, 58% 12%, 32% 84%, 70% 62%, 8% 18%; }
+    50%  { background-position: 88% 18%, 62% 8%,  18% 72%, 38% 88%, 92% 42%, 18% 32%, 48% 58%; }
+    75%  { background-position: 42% 78%, 88% 62%, 38% 28%, 12% 42%, 68% 18%, 84% 88%, 28% 8%; }
+    100% { background-position: 8% 12%, 34% 28%, 62% 18%, 78% 42%, 12% 64%, 50% 82%, 88% 88%; }
   }
   .death-HEX::after {
     content: ""; position: absolute; inset: 0;
     background:
-      radial-gradient(circle at 12% 22%, rgba(255,0,0,0.55) 0 1.2%, transparent 2.2%),
-      radial-gradient(circle at 78% 35%, rgba(255,0,0,0.55) 0 1.2%, transparent 2.2%),
-      radial-gradient(circle at 38% 60%, rgba(255,0,0,0.55) 0 1.2%, transparent 2.2%),
-      radial-gradient(circle at 88% 78%, rgba(255,0,0,0.55) 0 1.2%, transparent 2.2%),
-      radial-gradient(circle at 24% 84%, rgba(255,0,0,0.55) 0 1.2%, transparent 2.2%);
-    animation: hexHighlight 0.4s steps(4) infinite;
+      radial-gradient(circle, #ff0000 0 7px, transparent 10px) 20% 50% / 140px 140px,
+      radial-gradient(circle, #ff3333 0 5px, transparent 8px) 70% 70% / 120px 120px,
+      radial-gradient(circle, #ff0000 0 6px, transparent 9px) 45% 25% / 130px 130px,
+      radial-gradient(circle, #ff5555 0 4px, transparent 7px) 90% 30% / 100px 100px;
+    background-repeat: repeat;
+    mix-blend-mode: screen;
+    animation: hexDotsFlicker2 0.22s steps(3) infinite, hexDotsBounce2 3.4s ease-in-out infinite;
   }
-  @keyframes hexHighlight { 50% { opacity: 0.2; transform: translate(24px, -12px); } }
+  @keyframes hexDotsFlicker2 {
+    0%, 100% { opacity: 0.9; }
+    33%      { opacity: 0.4; }
+    66%      { opacity: 1; }
+  }
+  @keyframes hexDotsBounce2 {
+    0%   { background-position: 20% 50%, 70% 70%, 45% 25%, 90% 30%; }
+    33%  { background-position: 80% 30%, 20% 40%, 70% 80%, 10% 70%; }
+    66%  { background-position: 50% 80%, 90% 20%, 15% 60%, 60% 45%; }
+    100% { background-position: 20% 50%, 70% 70%, 45% 25%, 90% 30%; }
+  }
+  .death-HEX .death-fx::before {
+    content: ""; position: absolute; inset: 0;
+    background:
+      radial-gradient(circle, #ff0000 0 3px, transparent 5px) 5% 30% / 60px 60px,
+      radial-gradient(circle, #ff2222 0 3px, transparent 5px) 33% 70% / 70px 70px,
+      radial-gradient(circle, #ff0000 0 4px, transparent 6px) 66% 55% / 65px 65px,
+      radial-gradient(circle, #ff3333 0 3px, transparent 5px) 90% 20% / 55px 55px,
+      radial-gradient(circle, #ff0000 0 3px, transparent 5px) 75% 85% / 60px 60px;
+    background-repeat: repeat;
+    animation: hexDotsFlicker3 0.13s steps(2) infinite, hexDotsBounce3 1.8s ease-in-out infinite;
+  }
+  @keyframes hexDotsFlicker3 {
+    0%, 100% { opacity: 0.8; }
+    50%      { opacity: 0.2; }
+  }
+  @keyframes hexDotsBounce3 {
+    0%   { background-position: 5% 30%, 33% 70%, 66% 55%, 90% 20%, 75% 85%; }
+    50%  { background-position: 60% 75%, 80% 25%, 18% 80%, 45% 50%, 22% 12%; }
+    100% { background-position: 5% 30%, 33% 70%, 66% 55%, 90% 20%, 75% 85%; }
+  }
+  .death-HEX .death-fx::after {
+    content: ""; position: absolute; inset: 0;
+    background:
+      radial-gradient(circle, #ff0000 0 9px, transparent 12px) 35% 40% / 200px 200px,
+      radial-gradient(circle, #ff4444 0 7px, transparent 10px) 65% 65% / 180px 180px;
+    background-repeat: repeat;
+    mix-blend-mode: screen;
+    animation: hexDotsFlicker 0.3s steps(2) infinite, hexDotsBounceBig 4.2s ease-in-out infinite;
+  }
+  @keyframes hexDotsBounceBig {
+    0%, 100% { background-position: 35% 40%, 65% 65%; }
+    50%      { background-position: 70% 30%, 25% 75%; }
+  }
 
-  /* BUGBEAR — chaotic cascading reward popups */
+  /* BUGBEAR — wall-to-wall money and numbers, nothing else. */
   .death-BUGBEAR { background: #2a1500; }
   .death-BUGBEAR::before {
-    content: "$5,000\A$500\A$25,000\A$1,000\A$50,000\A$2,500\A$100\A$10,000\A$750";
-    white-space: pre;
-    position: absolute; inset: 0;
+    content: "$5,000  $500  $25,000  $1,000  $50,000  $2,500  $100  $10,000  $750  $99,999  $1,234,567  $8,800  $42  $3,141  $77,777  $1.00  $500,000  $9,000  $123  $666,666  $1,000,000  $1,776  $8.88  $40,404  $13,000  $200  $99  $987,654  $1,492  $0.99  $4,200  $2,025  $314,159  $7,777  $33  $69,420  $5,555  $1,000,000,000";
+    position: absolute; inset: 0; padding: 20px;
     display: flex; flex-wrap: wrap; align-items: center; justify-content: space-around;
-    font-family: sans-serif; font-size: 3.2rem; font-weight: 900;
-    color: #ffaa66;
-    text-shadow: 0 0 18px #ff5500;
+    font-family: sans-serif; font-size: 2.6rem; font-weight: 900;
+    color: #ffcc66;
+    text-shadow: 0 0 14px #ff5500, 0 0 30px #ff8800;
     letter-spacing: 0.04em;
-    line-height: 1.4;
+    line-height: 1.5;
+    word-spacing: 0.4em;
     animation: bugbearShake 0.22s ease-in-out infinite;
   }
   @keyframes bugbearShake {
     0%, 100% { transform: rotate(-2deg) scale(1); }
-    50%      { transform: rotate(2deg) scale(1.08); }
+    50%      { transform: rotate(2deg) scale(1.05); }
   }
   .death-BUGBEAR::after {
-    content: "CLAIM NOW   CLAIM NOW   CLAIM NOW   CLAIM NOW   CLAIM NOW   CLAIM NOW   ";
-    position: absolute; inset: auto 0 8% 0;
-    text-align: center;
-    font-family: sans-serif; font-size: 1.4rem; font-weight: 700;
-    color: #ff5500;
-    background: rgba(0,0,0,0.55);
-    padding: 8px 0;
-    letter-spacing: 0.2em;
-    text-shadow: 0 0 8px #ffaa00;
-    white-space: nowrap;
-    animation: bugbearScroll 5s linear infinite;
+    content: "$1,000,000  $50  $500,000  $9,999  $2,000,000  $1  $750  $250,000  $0.50  $77  $4,000  $1,250  $999,999  $300  $80,000  $42,000  $1.50  $66,666  $5,000,000  $14  $375,000  $128  $7,500  $1,000,000  $9.99  $20,000  $400  $111,111  $850  $2.00";
+    position: absolute; inset: 0; padding: 30px;
+    display: flex; flex-wrap: wrap; align-items: center; justify-content: space-around;
+    font-family: serif; font-size: 3.6rem; font-weight: 900;
+    color: #00aa44;
+    text-shadow: 0 0 12px #66ff88, 0 0 24px #008822;
+    letter-spacing: 0.03em;
+    line-height: 1.6;
+    word-spacing: 0.5em;
+    mix-blend-mode: screen;
+    animation: bugbearFloat 1.4s ease-in-out infinite;
   }
-  @keyframes bugbearScroll { from { transform: translateX(-50%); } to { transform: translateX(50%); } }
+  @keyframes bugbearFloat {
+    0%, 100% { transform: translate(0, 0)    rotate(1deg)  scale(1); }
+    33%      { transform: translate(-12px, 8px) rotate(-2deg) scale(1.04); }
+    66%      { transform: translate(10px, -10px) rotate(3deg) scale(0.96); }
+  }
+  /* Two more dense layers of pure numbers via .death-fx */
+  .death-BUGBEAR .death-fx::before {
+    content: "1234  5678  9012  3456  7890  4321  8765  2109  6543  0987  1111  2222  3333  4444  5555  6666  7777  8888  9999  0000  1010  2020  3030  4040  5050  6060  7070  8080  9090  1212  2323  3434  4545  5656  6767  7878  8989";
+    position: absolute; inset: 0; padding: 16px;
+    display: flex; flex-wrap: wrap; align-items: center; justify-content: space-around;
+    font-family: monospace; font-size: 1.6rem; font-weight: 700;
+    color: #ff8844;
+    letter-spacing: 0.1em;
+    line-height: 1.8;
+    opacity: 0.6;
+    mix-blend-mode: screen;
+    animation: bugbearDrift 6s linear infinite;
+  }
+  @keyframes bugbearDrift {
+    from { transform: translateY(0); }
+    to   { transform: translateY(-80px); }
+  }
+  .death-BUGBEAR .death-fx::after {
+    content: "$$$  $$$  $$$  $$$  $$$  $$$  $$$  $$$  $$$  $$$  $$$  $$$  $$$  $$$  $$$  $$$  $$$  $$$";
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: space-around;
+    font-family: serif; font-size: 5rem; font-weight: 900;
+    color: #ffee00;
+    text-shadow: 0 0 28px #ffaa00;
+    opacity: 0.85;
+    letter-spacing: 0.2em;
+    mix-blend-mode: screen;
+    animation: bugbearPulse 0.5s steps(2) infinite;
+  }
+  @keyframes bugbearPulse {
+    0%, 100% { transform: scale(1)   rotate(0deg); }
+    50%      { transform: scale(1.1) rotate(-3deg); }
+  }
 
-  /* PULSE — heartbeat throb + sharp ECG spike + BPM banner */
-  .death-PULSE { background: #2a0020; animation: pulseBeat 0.75s ease-in-out infinite; }
-  @keyframes pulseBeat { 50% { background: #ff55aa; filter: brightness(1.5); } }
+  /* PULSE — heartbeat throb + sharp ECG spike + BPM banner. Dark + scary palette. */
+  .death-PULSE { background: #060000; animation: pulseBeat 1.1s ease-in-out infinite; }
+  @keyframes pulseBeat { 50% { background: #5a0000; filter: brightness(1.1); } }
   .death-PULSE::before {
     content: ""; position: absolute; left: 0; right: 0; top: 50%;
-    height: 2px; background: #ff88dd;
-    box-shadow: 0 0 16px #ff44aa;
+    height: 2px; background: #ff2222;
+    box-shadow: 0 0 16px #aa0000;
     transform-origin: 0 50%;
-    animation: pulseEcg 0.75s ease-in-out infinite;
+    animation: pulseEcg 1.1s ease-in-out infinite;
   }
   @keyframes pulseEcg {
     0%, 30% { transform: scaleY(1) translateY(0); }
@@ -1738,10 +1855,10 @@
     position: absolute; inset: auto 0 14% 0;
     text-align: center;
     font-family: monospace; font-size: 1.4rem;
-    color: #ffaadd;
-    text-shadow: 0 0 8px #ff44aa;
+    color: #ff5555;
+    text-shadow: 0 0 8px #aa0000;
     letter-spacing: 0.15em;
-    background: rgba(0,0,0,0.55);
+    background: rgba(0,0,0,0.75);
     padding: 8px 0;
     white-space: nowrap;
     animation: pulseBpm 3s linear infinite;
@@ -1805,54 +1922,9 @@
     0%, 100% { transform: translateY(0)  scale(1); opacity: 0.8; }
     50%      { transform: translateY(-40vh) scale(1.6); opacity: 0.2; }
   }
-  .death-MELTDOWN .death-fx::after {
-    content: "🔥 CORE BREACH 🔥   THERMAL OVERRIDE   🔥 CORE BREACH 🔥   THERMAL OVERRIDE   ";
-    position: absolute; inset: 8% 0 auto 0;
-    text-align: center;
-    font-family: sans-serif; font-size: 1.6rem; font-weight: 900;
-    color: #fff;
-    background: rgba(170,0,0,0.7);
-    padding: 10px 0;
-    letter-spacing: 0.15em;
-    text-shadow: 0 0 14px #ff5500;
-    white-space: nowrap;
-    animation: meltTicker 6s linear infinite;
-  }
-  @keyframes meltTicker { from { transform: translateX(100%); } to { transform: translateX(-100%); } }
+  /* (no CORE BREACH banner — the bubbles + screen shake are enough) */
 
-  /* STATIC — horizontal tearing bands + brief color glitch flashes */
-  .death-STATIC .death-fx::before {
-    content: ""; position: absolute; inset: 0;
-    background:
-      linear-gradient(180deg, transparent 0 18%, rgba(255,0,80,0.35) 18% 20%, transparent 20% 100%),
-      linear-gradient(180deg, transparent 0 47%, rgba(0,200,255,0.4) 47% 49%, transparent 49% 100%),
-      linear-gradient(180deg, transparent 0 72%, rgba(0,255,80,0.35) 72% 74%, transparent 74% 100%);
-    mix-blend-mode: screen;
-    animation: staticTear 0.6s steps(3) infinite;
-  }
-  @keyframes staticTear {
-    0%   { transform: translateY(0); }
-    33%  { transform: translateY(-18px); }
-    66%  { transform: translateY(22px); }
-    100% { transform: translateY(0); }
-  }
-  .death-STATIC .death-fx::after {
-    content: "NO SIGNAL";
-    position: absolute; inset: 0;
-    display: flex; align-items: center; justify-content: center;
-    font-family: monospace; font-size: 3.6rem; font-weight: 900;
-    color: #fff;
-    background: rgba(0,0,0,0.45);
-    letter-spacing: 0.4em;
-    text-shadow: 0 0 18px #fff, 2px 0 #ff0088, -2px 0 #00ddff;
-    animation: staticGlitch 1.2s steps(6) infinite;
-  }
-  @keyframes staticGlitch {
-    0%, 70%, 100% { opacity: 0.85; transform: translate(0,0); }
-    72%           { opacity: 1;    transform: translate(-8px, 2px); }
-    78%           { opacity: 0.4;  transform: translate(6px, -2px); }
-    85%           { opacity: 1;    transform: translate(-4px, 4px); }
-  }
+  /* STATIC — no extra fx (chunky b/w pixels only — see .death-STATIC above). */
 
   /* REDRUM — door silhouette + KNOCK KNOCK KNOCK from one side */
   .death-REDRUM .death-fx::before {
@@ -2011,40 +2083,7 @@
   }
   @keyframes wormInbox { from { transform: translateX(100%); } to { transform: translateX(-100%); } }
 
-  /* ROOTKIT — boot-sector loading bar + ring 0 banner */
-  .death-ROOTKIT { animation: rkShake 0.3s ease-in-out infinite; }
-  @keyframes rkShake {
-    0%, 100% { transform: translate(0, 0); }
-    50%      { transform: translate(2px, -1px); }
-  }
-  .death-ROOTKIT .death-fx::before {
-    content: ""; position: absolute; left: 8%; right: 8%; bottom: 14%;
-    height: 18px;
-    background: linear-gradient(90deg, #ff3300 0%, #ff3300 100%);
-    box-shadow: 0 0 24px #ff3300, inset 0 0 8px rgba(0,0,0,0.6);
-    border: 2px solid #fff;
-    animation: rkBoot 1.1s linear infinite;
-    z-index: 5;
-  }
-  @keyframes rkBoot {
-    0%   { transform: scaleX(0); transform-origin: 0 50%; }
-    90%  { transform: scaleX(1); transform-origin: 0 50%; }
-    100% { transform: scaleX(0); transform-origin: 100% 50%; }
-  }
-  .death-ROOTKIT .death-fx::after {
-    content: "★ RING 0 ACQUIRED ★   SECURE BOOT: DISABLED   ★ RING 0 ACQUIRED ★   KERNEL OWNED";
-    position: absolute; inset: 14% 0 auto 0;
-    text-align: center;
-    font-family: sans-serif; font-size: 1.3rem; font-weight: 900;
-    color: #fff;
-    background: #ff3300;
-    padding: 8px 0;
-    letter-spacing: 0.2em;
-    white-space: nowrap;
-    z-index: 5;
-    animation: rkBanner 4s linear infinite;
-  }
-  @keyframes rkBanner { from { transform: translateX(100%); } to { transform: translateX(-100%); } }
+  /* ROOTKIT — no extra fx (the BSOD + register scroll stand on their own). */
 
   /* DDOS — pulsing crosshair target + IP address spam */
   .death-DDOS .death-fx::before {
@@ -2083,36 +2122,7 @@
   }
   @keyframes ddosIp { from { transform: translateX(100%); } to { transform: translateX(-100%); } }
 
-  /* LEECH — fake mouse cursor moving + dripping data icon */
-  .death-LEECH .death-fx::before {
-    content: "▶";
-    position: absolute; top: 25%; left: 0;
-    font-size: 2.4rem;
-    color: #ffffff;
-    text-shadow: 0 0 12px #aa00ff;
-    animation: leechCursor2 4s ease-in-out infinite;
-  }
-  @keyframes leechCursor2 {
-    0%   { left: 5%;  top: 25%; }
-    25%  { left: 75%; top: 40%; }
-    50%  { left: 30%; top: 65%; }
-    75%  { left: 88%; top: 22%; }
-    100% { left: 5%;  top: 25%; }
-  }
-  .death-LEECH .death-fx::after {
-    content: "💧 💧 💧 💧 💧 💧 💧 💧";
-    position: absolute; inset: 0 0 auto 0;
-    display: flex; justify-content: space-around;
-    font-size: 1.8rem;
-    color: #aa00ff;
-    text-shadow: 0 0 12px #aa00ff;
-    animation: leechDrip 2.2s ease-in infinite;
-  }
-  @keyframes leechDrip {
-    0%   { transform: translateY(-20vh); opacity: 0; }
-    30%  { opacity: 1; }
-    100% { transform: translateY(120vh); opacity: 0; }
-  }
+  /* LEECH — no extra fx (the keylog scroll + EXFIL banner do the work). */
 
   /* SCREAMER — giant skull + rotating siren bars */
   .death-SCREAMER .death-fx::before {
@@ -2145,118 +2155,73 @@
   }
   @keyframes screamerSiren { to { transform: rotate(360deg); } }
 
-  /* MIMIC — fake "all clear" desktop background flickering + system tray ghosts */
-  .death-MIMIC .death-fx::before {
-    content: "✓ All systems operational";
-    position: absolute; inset: 0;
-    display: flex; align-items: center; justify-content: center;
-    font-family: sans-serif; font-size: 2.4rem; font-weight: 700;
-    color: #66ff99;
-    background: rgba(0,40,80,0.85);
-    text-shadow: 0 0 14px #44ff88;
-    letter-spacing: 0.05em;
-    animation: mimicLie 1.5s steps(2) infinite;
-  }
-  @keyframes mimicLie {
-    0%, 75%, 100% { opacity: 0; }
-    80%, 92%      { opacity: 1; color: #66ff99; }
-    93%, 99%      { opacity: 1; color: #ff4444; background: rgba(80,0,0,0.85); }
-  }
-  .death-MIMIC .death-fx::after {
-    content: "🟦 🟦 🟦 🟦 🟦 🟦 🟦 🟦";
-    position: absolute; inset: auto 0 0 0;
-    display: flex; justify-content: space-around;
-    font-size: 2.2rem;
-    background: rgba(0,30,60,0.7);
-    padding: 8px 0;
-    animation: mimicTray 0.6s steps(2) infinite;
-  }
-  @keyframes mimicTray { 50% { opacity: 0.3; transform: translateX(20px); } }
+  /* MIMIC — no extra fx (the warping System OK + shard pattern were already busy). */
 
-  /* PULSE — secondary slow heartbeat + brainwave EEG strip */
+  /* PULSE — secondary slow EEG line + big dark heartbeat */
   .death-PULSE .death-fx::before {
     content: ""; position: absolute; top: 25%; left: 0; right: 0;
     height: 2px;
-    background: #ffaadd;
-    box-shadow: 0 0 10px #ff44aa;
-    animation: pulseEeg 1.2s ease-in-out infinite;
+    background: #aa0000;
+    box-shadow: 0 0 10px #660000;
+    animation: pulseEeg 1.6s ease-in-out infinite;
   }
   @keyframes pulseEeg {
     0%, 100% { transform: scaleY(1); }
-    20%      { transform: scaleY(12); }
-    25%      { transform: scaleY(-8); }
-    30%      { transform: scaleY(20); }
-    35%      { transform: scaleY(-14); }
+    20%      { transform: scaleY(10); }
+    25%      { transform: scaleY(-6); }
+    30%      { transform: scaleY(16); }
+    35%      { transform: scaleY(-10); }
     40%      { transform: scaleY(1); }
   }
   .death-PULSE .death-fx::after {
     content: "♥";
     position: absolute; top: 8%; right: 8%;
     font-size: 6rem;
-    color: #ff44aa;
-    text-shadow: 0 0 24px #ff88dd;
-    animation: pulseBigHeart 1.5s ease-in-out infinite;
+    color: #660000;
+    text-shadow: 0 0 24px #220000;
+    animation: pulseBigHeart 2.2s ease-in-out infinite;
   }
   @keyframes pulseBigHeart {
-    0%, 100% { transform: scale(1);   opacity: 0.8; }
-    50%      { transform: scale(1.5); opacity: 1; }
+    0%, 100% { transform: scale(1);   opacity: 0.6; }
+    50%      { transform: scale(1.35); opacity: 0.95; }
   }
 
-  /* NULL — giant 0x00000000 banner + missing window chrome silhouettes */
-  .death-NULL .death-fx::before {
-    content: "0x00000000";
-    position: absolute; inset: auto 0 22% 0;
-    text-align: center;
-    font-family: "Cascadia Mono", monospace; font-size: 3rem;
-    color: #444;
-    letter-spacing: 0.2em;
-    text-shadow: 0 0 16px #222;
-    animation: nullCode 2.5s ease-in-out infinite;
-  }
-  @keyframes nullCode {
-    0%, 100% { opacity: 0.6; letter-spacing: 0.2em; }
-    50%      { opacity: 0;   letter-spacing: 2em; }
-  }
-  .death-NULL .death-fx::after {
-    content: "□  □  □  □  □  □  □  □";
-    position: absolute; inset: 8% 0 auto 0;
-    display: flex; justify-content: space-around;
-    font-size: 2.4rem;
-    color: #333;
-    letter-spacing: 0.5em;
-    animation: nullEmpty2 3s steps(4) infinite;
-  }
-  @keyframes nullEmpty2 {
-    0%, 75% { opacity: 0.4; }
-    80%, 95% { opacity: 0; transform: translateY(10px); }
-  }
+  /* NULL — no extra fx (handled in the main NULL rules: still 0/1 grid only). */
 
-  /* CURSOR — fake click rings expanding + targeting reticle */
+  /* CURSOR — additional arrow layers glitching at different speeds */
   .death-CURSOR .death-fx::before {
-    content: ""; position: absolute; inset: 0;
-    background:
-      radial-gradient(circle at 25% 35%, transparent 0 8px, rgba(255,170,68,0.7) 9px 11px, transparent 12px),
-      radial-gradient(circle at 70% 60%, transparent 0 8px, rgba(255,170,68,0.7) 9px 11px, transparent 12px),
-      radial-gradient(circle at 50% 20%, transparent 0 8px, rgba(255,170,68,0.7) 9px 11px, transparent 12px),
-      radial-gradient(circle at 80% 80%, transparent 0 8px, rgba(255,170,68,0.7) 9px 11px, transparent 12px);
-    animation: cursorClicks 1.6s ease-out infinite;
+    content: "▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶";
+    position: absolute; inset: 0;
+    display: flex; flex-wrap: wrap; align-items: center; justify-content: space-around;
+    font-size: 1.8rem; color: #ffff66;
+    text-shadow: 0 0 8px #ff8800;
+    line-height: 2;
+    letter-spacing: 0.5em;
+    animation: cursorGlitch3 0.09s steps(2) infinite;
   }
-  @keyframes cursorClicks {
-    0%   { transform: scale(0.3); opacity: 1; }
-    100% { transform: scale(2.5); opacity: 0; }
+  @keyframes cursorGlitch3 {
+    0%   { transform: translate(-22px, 16px) rotate(15deg);  opacity: 0.7; }
+    50%  { transform: translate(20px, -18px) rotate(-15deg); opacity: 0.3; }
+    100% { transform: translate(-22px, 16px) rotate(15deg);  opacity: 0.7; }
   }
   .death-CURSOR .death-fx::after {
-    content: "+";
+    content: "▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶";
     position: absolute; inset: 0;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 8rem; font-weight: 100;
-    color: #ffaa44;
-    text-shadow: 0 0 18px #ff8800;
-    animation: cursorReticle 2s ease-in-out infinite;
+    display: flex; flex-wrap: wrap; align-items: center; justify-content: space-around;
+    font-size: 4rem; color: #ff8844;
+    text-shadow: 0 0 18px #ff5500;
+    line-height: 1.15;
+    letter-spacing: 0.25em;
+    opacity: 0.45;
+    animation: cursorGlitch4 0.22s steps(5) infinite;
   }
-  @keyframes cursorReticle {
-    0%, 100% { transform: scale(1) rotate(0deg); opacity: 0.8; }
-    50%      { transform: scale(1.4) rotate(45deg); opacity: 1; }
+  @keyframes cursorGlitch4 {
+    0%   { transform: translate(0, 0)        rotate(0deg)   scale(1); }
+    20%  { transform: translate(-30px, 10px) rotate(-20deg) scale(1.05); }
+    40%  { transform: translate(28px, -16px) rotate(20deg)  scale(0.92); }
+    60%  { transform: translate(-10px, 24px) rotate(-10deg) scale(1.1); }
+    80%  { transform: translate(16px, -8px)  rotate(15deg)  scale(0.96); }
+    100% { transform: translate(0, 0)        rotate(0deg)   scale(1); }
   }
 
   /* LOOP — infinite symbol pulsing + stack trace cascade */
@@ -2314,69 +2279,9 @@
   }
   @keyframes fossilBoot { 50% { opacity: 0.4; } }
 
-  /* HEX — giant ASCII corruption text + register dump scrolling sideways */
-  .death-HEX .death-fx::before {
-    content: "C0DE F00D BAAD F00D DEAD BEEF FEED FACE";
-    position: absolute; inset: auto 0 25% 0;
-    text-align: center;
-    font-family: monospace; font-size: 2.6rem; font-weight: 900;
-    color: #ff4444;
-    text-shadow: 0 0 14px #ff0000, 0 0 28px #ff0000;
-    letter-spacing: 0.15em;
-    background: rgba(0,0,0,0.65);
-    padding: 12px 0;
-    animation: hexCorrupt 0.55s steps(2) infinite;
-  }
-  @keyframes hexCorrupt {
-    0%, 100% { opacity: 1; }
-    50%      { opacity: 0.3; transform: translateX(6px) skewX(-3deg); }
-  }
-  .death-HEX .death-fx::after {
-    content: "EAX=0xDEADBEEF EBX=0xCAFEBABE ECX=0xBAADF00D EDX=0xC0DEFEED ESI=0xFEEDFACE EDI=0xABAD1DEA";
-    position: absolute; inset: auto 0 8% 0;
-    text-align: center;
-    font-family: monospace; font-size: 1rem;
-    color: #88ddff;
-    background: rgba(0,20,40,0.85);
-    padding: 6px 0;
-    letter-spacing: 0.06em;
-    text-shadow: 0 0 6px #44aaff;
-    white-space: nowrap;
-    animation: hexRegs 4s linear infinite;
-  }
-  @keyframes hexRegs { from { transform: translateX(100%); } to { transform: translateX(-100%); } }
+  /* HEX — no extra fx (handled in the main HEX block above: red dots only). */
 
-  /* BUGBEAR — giant fake check + envelope spam */
-  .death-BUGBEAR .death-fx::before {
-    content: "✉ ✉ ✉ ✉ ✉ ✉ ✉ ✉ ✉ ✉";
-    position: absolute; inset: 0;
-    display: flex; align-items: center; justify-content: space-around;
-    font-size: 3.5rem;
-    color: #ffaa66;
-    text-shadow: 0 0 18px #ff5500;
-    animation: bugbearMail 0.6s ease-in-out infinite;
-  }
-  @keyframes bugbearMail {
-    0%, 100% { transform: translateY(-30vh) rotate(-8deg); opacity: 0.3; }
-    50%      { transform: translateY(20vh)  rotate(12deg); opacity: 1; }
-  }
-  .death-BUGBEAR .death-fx::after {
-    content: "PAY TO YOU: $50,000.00";
-    position: absolute; top: 18%; left: 50%;
-    transform: translateX(-50%);
-    font-family: serif; font-size: 2.2rem; font-weight: 900;
-    color: #002200;
-    background: #ffffe0;
-    border: 4px double #ffaa00;
-    padding: 12px 28px;
-    letter-spacing: 0.1em;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.6);
-    animation: bugbearCheck 1.8s ease-in-out infinite;
-  }
-  @keyframes bugbearCheck {
-    0%, 100% { transform: translateX(-50%) rotate(-3deg) scale(1); }
-    50%      { transform: translateX(-50%) rotate(3deg)  scale(1.1); }
-  }
+  /* BUGBEAR — no extra fx (numbers/money handled in the main BUGBEAR block above). */
 
   @media (max-width: 580px) {
     h1 { font-size: 1.8rem; }
@@ -3297,6 +3202,7 @@ const AUDIO_BLOBS = {
 
 const Audio = {
   ctx: null, masterGain: null, ambientGain: null, sfxGain: null,
+  deathGain: null,        // dedicated gain for death sounds — disconnecting it instantly silences everything in flight
   ambientNodes: null,
   unlocked: false,
   init() {
@@ -3512,22 +3418,49 @@ Audio.death = function(key, skipJumpscare) {
     this.boostFor(4);
     this.stinger();
   }
+  // Tear down any previous death audio chain so old sounds can't bleed into this one.
+  this.killDeathChain();
+  // Build a fresh, isolated gain node for this death. Disconnecting it later cuts ALL
+  // scheduled oscillators routed through it — even ones still in the future.
+  this.deathGain = this.ctx.createGain();
+  this.deathGain.gain.value = save.settings.sfx;
+  this.deathGain.connect(this.masterGain);
+  // While the death function runs, point sfxGain at deathGain so helper functions
+  // (beep, scream, heartbeat, noiseBurst) automatically route their output there.
+  const realSfx = this.sfxGain;
+  this.sfxGain = this.deathGain;
   const fn = this.deaths[key];
-  if (fn) fn.call(this);
-  else this.gameOver();
+  try {
+    if (fn) fn.call(this);
+    else this.gameOver();
+  } finally {
+    this.sfxGain = realSfx;
+  }
 };
 
-/* Cut any in-flight death sounds — used when leaving the codex preview early or on auto-return.
-   Ramps sfxGain to 0 quickly (silences anything still playing), holds, then restores. */
+/* Schedule a callback that should run inside the current death's audio scope.
+   Used by deaths that play multiple sounds over time (SCREAMER, PULSE, FOSSIL).
+   If stopDeath fires before the callback, the callback becomes a no-op. */
+Audio.scheduleDeath = function(delayMs, fn) {
+  const dg = this.deathGain;
+  setTimeout(() => {
+    if (this.deathGain !== dg) return;
+    const realSfx = this.sfxGain;
+    this.sfxGain = dg;
+    try { fn.call(this); } finally { this.sfxGain = realSfx; }
+  }, delayMs);
+};
+
+/* Hard-cut everything currently playing through the death chain. */
+Audio.killDeathChain = function() {
+  if (!this.deathGain) return;
+  try { this.deathGain.disconnect(); } catch (e) {}
+  this.deathGain = null;
+};
+
+/* Public: leave preview / skip death animation. Silences any in-flight death audio. */
 Audio.stopDeath = function() {
-  if (!this.ctx) return;
-  const t = this.ctx.currentTime;
-  const base = save.settings.sfx;
-  this.sfxGain.gain.cancelScheduledValues(t);
-  this.sfxGain.gain.setValueAtTime(this.sfxGain.gain.value, t);
-  this.sfxGain.gain.linearRampToValueAtTime(0, t + 0.05);
-  this.sfxGain.gain.setValueAtTime(0, t + 0.35);
-  this.sfxGain.gain.linearRampToValueAtTime(base, t + 0.55);
+  this.killDeathChain();
 };
 
 Audio.noiseBurst = function(start, duration, freq, q, gain) {
@@ -3671,36 +3604,44 @@ Audio.deaths = {
   },
   SCREAMER() {
     this.scream();
-    setTimeout(() => this.scream(), 1100);
+    this.scheduleDeath(1100, () => this.scream());
   },
   MIMIC() {
+    // Single constant 800Hz sine droning for the full death duration.
     const t = this.ctx.currentTime;
     const o = this.ctx.createOscillator(); o.type = "sine"; o.frequency.value = 800;
     const g = this.ctx.createGain();
     o.connect(g); g.connect(this.sfxGain);
     g.gain.setValueAtTime(0, t);
     g.gain.linearRampToValueAtTime(0.25, t + 0.05);
-    g.gain.linearRampToValueAtTime(0.25, t + 0.5);
-    o.start(t);
-    o.frequency.setValueAtTime(800, t + 0.6);
-    o.frequency.exponentialRampToValueAtTime(55, t + 3);
-    g.gain.linearRampToValueAtTime(0.42, t + 2);
-    g.gain.linearRampToValueAtTime(0, t + 4);
-    o.stop(t + 4.1);
+    g.gain.setValueAtTime(0.25, t + 4.4);
+    g.gain.linearRampToValueAtTime(0, t + 4.5);
+    o.start(t); o.stop(t + 4.6);
   },
   PULSE() {
-    for (let i = 0; i < 6; i++) setTimeout(() => this.heartbeat(), i * 800);
+    // Slower, lower-pitched heartbeats — darker and scarier than the standard one.
+    const playBeat = () => {
+      const t = this.ctx.currentTime;
+      const o = this.ctx.createOscillator(); o.type = "sine"; o.frequency.value = 38;
+      const g = this.ctx.createGain();
+      o.connect(g); g.connect(this.sfxGain);
+      this._env(g, t,        0.005, 0.32, 0.55);
+      this._env(g, t + 0.32, 0.005, 0.36, 0.5);
+      o.start(t); o.stop(t + 0.9);
+    };
+    for (let i = 0; i < 4; i++) this.scheduleDeath(i * 1100, playBeat);
   },
   NULL() {
+    // Just a quiet sustained bass hum — almost silent.
     const t = this.ctx.currentTime;
-    const start = t + 2;
-    const o = this.ctx.createOscillator(); o.type = "sine"; o.frequency.value = 50;
+    const o = this.ctx.createOscillator(); o.type = "sine"; o.frequency.value = 42;
     const g = this.ctx.createGain();
     o.connect(g); g.connect(this.sfxGain);
-    g.gain.setValueAtTime(0, start);
-    g.gain.linearRampToValueAtTime(0.55, start + 0.005);
-    g.gain.exponentialRampToValueAtTime(0.001, start + 0.6);
-    o.start(start); o.stop(start + 0.7);
+    g.gain.setValueAtTime(0, t);
+    g.gain.linearRampToValueAtTime(0.06, t + 0.8);
+    g.gain.setValueAtTime(0.06, t + 4);
+    g.gain.linearRampToValueAtTime(0, t + 4.5);
+    o.start(t); o.stop(t + 4.6);
   },
   CURSOR() {
     const t = this.ctx.currentTime;
@@ -3725,19 +3666,10 @@ Audio.deaths = {
     }
   },
   FOSSIL() {
-    const t = this.ctx.currentTime;
-    [1209, 1336, 1477].forEach((f, i) => {
-      const start = t + i * 0.5;
-      const o = this.ctx.createOscillator(); o.type = "sine"; o.frequency.value = f;
-      const g = this.ctx.createGain();
-      o.connect(g); g.connect(this.sfxGain);
-      g.gain.setValueAtTime(0, start);
-      g.gain.linearRampToValueAtTime(0.18, start + 0.05);
-      g.gain.linearRampToValueAtTime(0.18, start + 0.4);
-      g.gain.exponentialRampToValueAtTime(0.001, start + 0.5);
-      o.start(start); o.stop(start + 0.55);
-    });
-    this.noiseBurst(t + 1.7, 2.5, 1500, 0.8, 0.18);
+    // Loud scream — startling against the calm DOS-era visuals.
+    this.scream();
+    this.scheduleDeath(1200, () => this.scream());
+    this.scheduleDeath(2400, () => this.scream());
   },
   HEX() {
     const t = this.ctx.currentTime;
@@ -3913,6 +3845,7 @@ const state = {
   trainingStreak: 0,
   // codex animation preview
   previewVirus: null,
+  previewTimeout: null,
   // training reveal — shows the post-mortem for a wrongly-classified card
   trainingReveal: null,
   // ui tampering
@@ -4211,8 +4144,15 @@ function showReveal(correct, card) {
 }
 
 function toggleCodex(key) {
-  state.openCodex = (state.openCodex === key) ? null : key;
-  render();
+  const wasOpen = state.openCodex === key;
+  state.openCodex = wasOpen ? null : key;
+  // DOM-only update: avoids re-rendering the whole panel, which would otherwise
+  // re-play the .fade-in animation (the "black flash") and scroll back to the top.
+  document.querySelectorAll(".codex-entry.open").forEach(el => el.classList.remove("open"));
+  if (state.openCodex) {
+    const el = document.querySelector(".codex-entry.v-" + state.openCodex);
+    if (el) el.classList.add("open");
+  }
 }
 
 /* ============================================================
@@ -4571,7 +4511,7 @@ function viewCodex() {
       </div>`;
   }).join("");
   return `
-    <div class="panel wide stack fade-in">
+    <div class="panel wide stack">
       <div class="row between">
         <h2>${state.codexFilter ? "Killer Threat File" : "Virus Codex"}</h2>
         <button class="btn" data-action="back-from-codex">Back</button>
@@ -4738,10 +4678,19 @@ function viewEpilepsyWarning() {
 
 function viewDying() {
   const k = state.killer;
+  const card = state.killerCard;
   const photoCls = save.settings.photosensitive ? " photo-safe" : "";
+  const accuracy = state.total ? Math.round(state.correct / state.total * 100) : 0;
   return `
     <div class="death-stage death-${k}${photoCls}">
+      ${card ? `<div class="death-killer-bg killer-card">${renderCard(card)}</div>` : ""}
       <div class="death-fx"></div>
+      <div class="death-stats-overlay">
+        <div><span>Score</span><strong>${state.score}</strong></div>
+        <div><span>Accuracy</span><strong>${accuracy}%</strong></div>
+        <div><span>Correct</span><strong>${state.correct}/${state.total}</strong></div>
+        <div><span>Round</span><strong>${state.round}</strong></div>
+      </div>
       <button class="btn death-skip" data-action="skip-death">Skip →</button>
     </div>`;
 }
@@ -4984,10 +4933,20 @@ document.addEventListener("click", (e) => {
       state.screen = "preview";
       render();
       Audio.death(k);
-      // No auto-return — the animation loops until the player clicks Back to Codex.
+      // Auto-return after the same duration the animation runs in-game.
+      if (state.previewTimeout) clearTimeout(state.previewTimeout);
+      const dur = (DEATHS[k] || {}).duration || 4500;
+      state.previewTimeout = setTimeout(() => {
+        state.previewTimeout = null;
+        state.previewVirus = null;
+        Audio.stopDeath();
+        state.screen = "codex";
+        render();
+      }, dur);
       break;
     }
     case "back-from-preview":
+      if (state.previewTimeout) { clearTimeout(state.previewTimeout); state.previewTimeout = null; }
       Audio.stopDeath();
       state.previewVirus = null;
       state.screen = "codex";
