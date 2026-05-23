@@ -417,9 +417,9 @@ const VIRUSES = {
       { template: TPL.TERMINAL, title: "recur_helper", message: "Process recur_helper.exe entering retry loop. Permission denied at /system/loop/loop/loop/.../loop/", meta: "Process: recur_helper.exe  Depth: ∞  Retries: ∞", icon: "question" }
     ]
   },
-  FOSSIL: {
-    // Internal key kept as FOSSIL for CSS / death-animation / save compatibility.
-    // Display name is OLD.exe (an old executable file pretending to still be useful).
+  OLDEXE: {
+    // Internal key OLDEXE = display name "OLD.exe" with the dot stripped
+    // (dots aren't valid in JS object keys / CSS class names).
     name: "OLD.exe", color: "#c4a484",
     minRound: 6,
     description: "A legacy-exploit virus that resurrects abandoned Windows components. Activates the 16-bit subsystem (ntvdm.exe), demands deprecated runtimes (MFC42.DLL, DAO 3.5, VBRUN300.DLL), and references winhelp.exe like it's 2002 — exploiting forgotten code paths that haven't been patched since Windows 95 because nobody remembered they were still shipping. Reads like a relic because it is one.",
@@ -443,7 +443,7 @@ const VIRUSES = {
       { template: TPL.WIN11, title: "Internet Explorer Component", message: "Application requires iexplore.dll (last shipped 2003) for backward compatibility. Restore from old.archive.host?", meta: "DLL: iexplore.dll  |  Year: 2003  |  Source: old.archive.host", fontMismatch: true },
       { template: TPL.TERMINAL, title: "qbasic", message: "MS-DOS subsystem required for QBASIC 4.5 compatibility. Loading qb45.dll from C:\\DOS via legacy emulator.", meta: "Subsystem: DOS  Tool: qb45.dll  Year: 1991" },
       { template: TPL.WIN11, title: "Windows 7 Cumulative Update", message: "Windows 7 Update KB4474419 is available. Auto-download from legacy-update.archive.host? (Windows 7 reached end-of-life Jan 2020.)", meta: "OS: Windows 7  |  Source: legacy-update.archive.host", fontMismatch: true },
-      // ---- Theme-balancing pass: new visual templates for FOSSIL ----
+      // ---- Theme-balancing pass: new visual templates for OLDEXE ----
       { template: TPL.WIN311, title: "Program Manager", message: "WIN.COM has detected a missing system file (HIMEM.SYS). Install from legacy.archive.host to continue?", meta: "Source: legacy.archive.host  Year: 1992" },
       { template: TPL.WIN311, title: "File Manager", message: "Cannot open A:\\AUTOEXEC.BAT. Insert disk and retry, or download replacement from old-dos.host.", meta: "Source: old-dos.host  Signed: No" },
       { template: TPL.NORTON, title: "VIRUS DETECTED", message: "Norton AntiVirus 4.0 found 14 threats in C:\\WINDOWS. Press Y to remove via norton-update.host.", meta: "Threats: 14  Tool: navw32.exe  Source: norton-update.host" },
@@ -524,7 +524,7 @@ const DEATHS = {
   NULL:       { text: "INTERFACE LOST",        duration: 4500 },
   CURSOR:     { text: "POINTER STOLEN",        duration: 4500 },
   LOOP:       { text: "STACK OVERFLOW",        duration: 4500 },
-  FOSSIL:     { text: "LEGACY EXPLOIT",        duration: 4500 },
+  OLDEXE:     { text: "LEGACY EXPLOIT",        duration: 4500 },
   HEX:        { text: "0xDEADBEEF",            duration: 4500 },
   ASSISTANT:    { text: "I MAY HAVE MADE A MISTAKE", duration: 4500 }
 };

@@ -90,7 +90,7 @@ const TEXTUAL_TELLS = {
     { p: /(\.\.\/){2,}|\/loop\/loop/i,                                              t: "File path with deeply nested traversal (../../../) or /loop/loop/" },
     { p: /depth:?\s*∞|recursion depth|stack overflow|retry until|autoretry/i,       t: "Infinite recursion, retry loop, or stack overflow language" }
   ],
-  FOSSIL: [
+  OLDEXE: [
     { p: /WIN16|MFC42|DAO 3\.5|WinHelp|VBRUN300|ntvdm|Windows 9[58]/i,              t: "References an abandoned Windows component (WIN16, MFC42, WinHelp, etc.)" },
     { p: /legacy\.archive|old\.windowsupdate|deprecated 200\d/i,                    t: "Asks you to download from a 'legacy' or 'archive' domain" }
   ],

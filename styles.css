@@ -339,7 +339,7 @@
   .v-NULL       { color: #777777; }
   .v-CURSOR     { color: #ffaa44; }
   .v-LOOP       { color: #88ff88; }
-  .v-FOSSIL     { color: #c4a484; }
+  .v-OLDEXE     { color: #c4a484; }
   .v-HEX        { color: #88ddff; }
   .v-ASSISTANT    { color: #00d4aa; }
   .codex-entry.v-EPILEPTICA { border-left-color: #ffffff; }
@@ -359,7 +359,7 @@
   .codex-entry.v-NULL       { border-left-color: #555555; }
   .codex-entry.v-CURSOR     { border-left-color: #ffaa44; }
   .codex-entry.v-LOOP       { border-left-color: #88ff88; }
-  .codex-entry.v-FOSSIL     { border-left-color: #c4a484; }
+  .codex-entry.v-OLDEXE     { border-left-color: #c4a484; }
   .codex-entry.v-HEX        { border-left-color: #88ddff; }
   .codex-entry.v-ASSISTANT    { border-left-color: #00d4aa; }
 
@@ -1916,15 +1916,15 @@
      Just three layers: solid black, a weak yellow phosphor wash on top,
      and a single line-drawn picture of an old CRT computer in the center.
      No scanlines, no BIOS text, no flicker — quiet and still. */
-  .death-FOSSIL { background: #000; }
-  .death-FOSSIL::before {
+  .death-OLDEXE { background: #000; }
+  .death-OLDEXE::before {
     /* Weak yellow overlay — the "tired phosphor" tint. Low alpha so it
        reads as a wash, not a color. */
     content: ""; position: absolute; inset: 0;
     background: rgba(255, 215, 90, 0.07);
     pointer-events: none;
   }
-  .death-FOSSIL::after {
+  .death-OLDEXE::after {
     /* Black-and-white SVG of a CRT monitor + PC tower, centered.
        White strokes on transparent so the yellow wash shows through and
        the picture reads as pure black-and-white linework. */
@@ -2385,9 +2385,9 @@
 
   /* OLD.exe — death-fx layer cleared. The whole death screen is now just
      a black background + weak yellow wash + the centered CRT picture
-     (handled on .death-FOSSIL itself above). */
-  .death-FOSSIL .death-fx::before,
-  .death-FOSSIL .death-fx::after { content: none; }
+     (handled on .death-OLDEXE itself above). */
+  .death-OLDEXE .death-fx::before,
+  .death-OLDEXE .death-fx::after { content: none; }
 
   /* HEX — no extra fx (handled in the main HEX block above: red dots only). */
 

@@ -53,16 +53,19 @@ const Save = {
         merged.sort((a, b) => (b.score || 0) - (a.score || 0));
         Leaderboard.write(merged.slice(0, 10));
       }
-      // One-shot migration: the "." virus has been renamed twice (BUGBEAR → HALLUCINATE → ASSISTANT).
-      // Rename any references in unlocked / deathsBy so codex + first-death badges
-      // still work. Also auto-unlocks ASSISTANT on first load after this update.
+      // One-shot virus-key migrations:
+      //   BUGBEAR → HALLUCINATE → ASSISTANT  (the "." virus, renamed twice)
+      //   FOSSIL → OLDEXE                    (display name became "OLD.exe")
+      // Rename references in unlocked / deathsBy so codex + first-death badges
+      // still work. Also auto-unlocks ASSISTANT on first load after that update.
       const renameKey = function (arr) {
         if (!Array.isArray(arr)) return arr;
         const out = arr.map(function (k) {
           if (k === "BUGBEAR" || k === "HALLUCINATE") return "ASSISTANT";
+          if (k === "FOSSIL") return "OLDEXE";
           return k;
         });
-        // De-dupe in case multiple old keys collapsed into ASSISTANT.
+        // De-dupe in case multiple old keys collapsed into the same new one.
         return out.filter(function (v, i) { return out.indexOf(v) === i; });
       };
       const migratedUnlocked = renameKey(parsed.unlocked || d.unlocked);

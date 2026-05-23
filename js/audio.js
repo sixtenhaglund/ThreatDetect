@@ -381,7 +381,7 @@ Audio.death = function(key, skipJumpscare) {
 };
 
 /* Schedule a callback that should run inside the current death's audio scope.
-   Used by deaths that play multiple sounds over time (SCREAMER, PULSE, FOSSIL).
+   Used by deaths that play multiple sounds over time (SCREAMER, PULSE).
    If stopDeath fires before the callback, the callback becomes a no-op. */
 Audio.scheduleDeath = function(delayMs, fn) {
   const dg = this.deathGain;
@@ -609,7 +609,7 @@ Audio.deaths = {
       o.start(start); o.stop(start + 0.6);
     }
   },
-  FOSSIL() {
+  OLDEXE() {
     // Quiet computer hum. A sustained low sine + second harmonic + a faint
     // high-passed hiss for "fan noise" texture. No glitches, no screams —
     // an old machine just sitting in a quiet room, humming.
