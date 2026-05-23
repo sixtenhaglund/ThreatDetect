@@ -1035,9 +1035,13 @@
     position: fixed; inset: 0; z-index: 500;
     background: #000; color: #fff;
     overflow: hidden;
-    animation: deathFadeIn 0.15s ease;
   }
-  @keyframes deathFadeIn { from { opacity: 0; } to { opacity: 1; } }
+  /* Extra animation layer per virus — adds a 3rd-and-4th pseudo slot beyond ::before/::after */
+  .death-fx {
+    position: absolute; inset: 0;
+    pointer-events: none;
+    z-index: 3;
+  }
   .death-skip {
     position: fixed; right: 24px; bottom: 24px;
     z-index: 600; opacity: 0.75;
@@ -1046,9 +1050,10 @@
     color: #fff;
   }
   .death-skip:hover { opacity: 1; background: rgba(0,0,0,0.85); }
-  .death-stage.photo-safe { animation-duration: 1.6s !important; }
   .death-stage.photo-safe::before,
-  .death-stage.photo-safe::after {
+  .death-stage.photo-safe::after,
+  .death-stage.photo-safe .death-fx::before,
+  .death-stage.photo-safe .death-fx::after {
     animation-duration: 2s !important;
     filter: brightness(0.65);
   }
@@ -1742,6 +1747,636 @@
     animation: pulseBpm 3s linear infinite;
   }
   @keyframes pulseBpm { to { transform: translateX(-50%); } }
+
+  /* ============================================================
+     EXTRA FX LAYERS — every virus gets two more animated slots
+     via .death-fx::before and .death-fx::after for more chaos.
+     ============================================================ */
+
+  /* EPILEPTICA — bouncing warning triangles + lightning strikes */
+  .death-EPILEPTICA .death-fx::before {
+    content: "⚠ ⚠ ⚠ ⚠ ⚠ ⚠ ⚠";
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: space-around;
+    font-size: 3.2rem;
+    color: #ffff00;
+    text-shadow: 0 0 16px #ff00aa, 0 0 28px #00ddff;
+    mix-blend-mode: difference;
+    animation: epWarnBounce 0.42s steps(4) infinite;
+  }
+  @keyframes epWarnBounce {
+    0%   { transform: translateY(-30vh) rotate(-12deg) scale(0.8); opacity: 0.4; }
+    50%  { transform: translateY(20vh)  rotate(14deg)  scale(1.4); opacity: 1; }
+    100% { transform: translateY(-30vh) rotate(-12deg) scale(0.8); opacity: 0.4; }
+  }
+  .death-EPILEPTICA .death-fx::after {
+    content: ""; position: absolute; inset: 0;
+    background:
+      linear-gradient(78deg, transparent 0 48%, #ffff00 49% 51%, transparent 52% 100%),
+      linear-gradient(-71deg, transparent 0 38%, #ff00aa 39% 41%, transparent 42% 100%),
+      linear-gradient(45deg, transparent 0 65%, #00ddff 66% 68%, transparent 69% 100%);
+    background-size: 100% 100%;
+    mix-blend-mode: screen;
+    opacity: 0.85;
+    animation: epLightning 0.18s steps(3) infinite;
+  }
+  @keyframes epLightning { 0%, 60% { opacity: 0; } 70%, 90% { opacity: 1; } }
+
+  /* MELTDOWN — bubbling lava blobs + heat shimmer at edges */
+  .death-MELTDOWN { animation: meltShake 0.18s ease-in-out infinite; }
+  @keyframes meltShake {
+    0%, 100% { transform: translate(0, 0); }
+    25%      { transform: translate(-2px, 1px); }
+    50%      { transform: translate(2px, -1px); }
+    75%      { transform: translate(-1px, 2px); }
+  }
+  .death-MELTDOWN .death-fx::before {
+    content: ""; position: absolute; inset: 0;
+    background:
+      radial-gradient(circle at 22% 75%, #ffee66 0 3%, transparent 5%),
+      radial-gradient(circle at 68% 82%, #ff8800 0 4%, transparent 6%),
+      radial-gradient(circle at 45% 90%, #ffcc44 0 3%, transparent 5%),
+      radial-gradient(circle at 88% 70%, #ff5500 0 3%, transparent 5%),
+      radial-gradient(circle at 12% 88%, #ffaa00 0 4%, transparent 6%);
+    filter: blur(4px);
+    animation: meltBubble 1.6s ease-in-out infinite;
+  }
+  @keyframes meltBubble {
+    0%, 100% { transform: translateY(0)  scale(1); opacity: 0.8; }
+    50%      { transform: translateY(-40vh) scale(1.6); opacity: 0.2; }
+  }
+  .death-MELTDOWN .death-fx::after {
+    content: "🔥 CORE BREACH 🔥   THERMAL OVERRIDE   🔥 CORE BREACH 🔥   THERMAL OVERRIDE   ";
+    position: absolute; inset: 8% 0 auto 0;
+    text-align: center;
+    font-family: sans-serif; font-size: 1.6rem; font-weight: 900;
+    color: #fff;
+    background: rgba(170,0,0,0.7);
+    padding: 10px 0;
+    letter-spacing: 0.15em;
+    text-shadow: 0 0 14px #ff5500;
+    white-space: nowrap;
+    animation: meltTicker 6s linear infinite;
+  }
+  @keyframes meltTicker { from { transform: translateX(100%); } to { transform: translateX(-100%); } }
+
+  /* STATIC — horizontal tearing bands + brief color glitch flashes */
+  .death-STATIC .death-fx::before {
+    content: ""; position: absolute; inset: 0;
+    background:
+      linear-gradient(180deg, transparent 0 18%, rgba(255,0,80,0.35) 18% 20%, transparent 20% 100%),
+      linear-gradient(180deg, transparent 0 47%, rgba(0,200,255,0.4) 47% 49%, transparent 49% 100%),
+      linear-gradient(180deg, transparent 0 72%, rgba(0,255,80,0.35) 72% 74%, transparent 74% 100%);
+    mix-blend-mode: screen;
+    animation: staticTear 0.6s steps(3) infinite;
+  }
+  @keyframes staticTear {
+    0%   { transform: translateY(0); }
+    33%  { transform: translateY(-18px); }
+    66%  { transform: translateY(22px); }
+    100% { transform: translateY(0); }
+  }
+  .death-STATIC .death-fx::after {
+    content: "NO SIGNAL";
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-family: monospace; font-size: 3.6rem; font-weight: 900;
+    color: #fff;
+    background: rgba(0,0,0,0.45);
+    letter-spacing: 0.4em;
+    text-shadow: 0 0 18px #fff, 2px 0 #ff0088, -2px 0 #00ddff;
+    animation: staticGlitch 1.2s steps(6) infinite;
+  }
+  @keyframes staticGlitch {
+    0%, 70%, 100% { opacity: 0.85; transform: translate(0,0); }
+    72%           { opacity: 1;    transform: translate(-8px, 2px); }
+    78%           { opacity: 0.4;  transform: translate(6px, -2px); }
+    85%           { opacity: 1;    transform: translate(-4px, 4px); }
+  }
+
+  /* REDRUM — door silhouette + KNOCK KNOCK KNOCK from one side */
+  .death-REDRUM .death-fx::before {
+    content: ""; position: absolute; top: 12%; left: 50%; bottom: 8%;
+    width: 22vh; transform: translateX(-50%);
+    background: linear-gradient(180deg, #220000 0%, #4a0000 100%);
+    border: 6px solid #1a0000;
+    border-radius: 6px 6px 0 0;
+    box-shadow:
+      inset 0 0 40px rgba(0,0,0,0.9),
+      0 0 28px rgba(255,0,0,0.6);
+    animation: redrumDoor 1.6s ease-in-out infinite;
+  }
+  @keyframes redrumDoor {
+    0%, 100% { transform: translateX(-50%) scale(1); filter: brightness(1); }
+    50%      { transform: translateX(-50%) scale(1.04); filter: brightness(1.4); }
+  }
+  .death-REDRUM .death-fx::after {
+    content: "KNOCK   KNOCK   KNOCK";
+    position: absolute; inset: auto 0 18% 0;
+    text-align: center;
+    font-family: serif; font-size: 2.2rem; font-weight: 900;
+    color: #ff4444;
+    text-shadow: 0 0 18px #ff0000, 0 4px 0 #660000;
+    letter-spacing: 0.5em;
+    animation: redrumKnock 0.55s steps(3) infinite;
+  }
+  @keyframes redrumKnock {
+    0%, 30%  { opacity: 0; transform: translateY(0); }
+    35%, 60% { opacity: 1; transform: translateY(-8px); }
+    65%, 100%{ opacity: 0; transform: translateY(0); }
+  }
+
+  /* VOID — event horizon ring + characters spiraling in */
+  .death-VOID .death-fx::before {
+    content: ""; position: absolute; top: 50%; left: 50%;
+    width: 80vh; height: 80vh;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    background: radial-gradient(circle, transparent 25%, rgba(170,102,255,0.5) 32%, transparent 38%, rgba(170,102,255,0.3) 48%, transparent 55%);
+    box-shadow:
+      inset 0 0 60px rgba(170,102,255,0.6),
+      0 0 100px rgba(170,102,255,0.4);
+    animation: voidHorizon 4s linear infinite;
+  }
+  @keyframes voidHorizon { to { transform: translate(-50%, -50%) rotate(360deg); } }
+  .death-VOID .death-fx::after {
+    content: "0  ∅  -1  ∞  0x00  ∅  -∞  NULL  0  ∅  ∞  0";
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-family: monospace; font-size: 1.8rem;
+    color: #ddbbff;
+    text-shadow: 0 0 10px #aa66ff;
+    letter-spacing: 0.5em;
+    animation: voidSpiral 3.2s ease-in infinite;
+  }
+  @keyframes voidSpiral {
+    0%   { transform: scale(3) rotate(0deg);   opacity: 0; }
+    20%  { opacity: 1; }
+    100% { transform: scale(0) rotate(540deg); opacity: 0; }
+  }
+
+  /* GASLIGHT — second clock spinning backward + flickering wrong username */
+  .death-GASLIGHT .death-fx::before {
+    content: ""; position: absolute; top: 50%; left: 50%;
+    width: 32vh; height: 32vh;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    border: 4px solid rgba(255,213,107,0.6);
+    background:
+      conic-gradient(from 0deg at 50% 50%,
+        transparent 0deg 175deg,
+        rgba(255,213,107,0.9) 178deg 182deg,
+        transparent 185deg 360deg);
+    animation: gasReverse 1.2s linear infinite reverse;
+  }
+  @keyframes gasReverse { to { transform: translate(-50%, -50%) rotate(360deg); } }
+  .death-GASLIGHT .death-fx::after {
+    content: "user: notyou   |   user: ??????   |   user: notyou   |   user: ??????";
+    position: absolute; inset: auto 0 6% 0;
+    text-align: center;
+    font-family: monospace; font-size: 1.1rem;
+    color: #ffd56b;
+    background: rgba(0,0,0,0.55);
+    padding: 8px 0;
+    letter-spacing: 0.1em;
+    text-shadow: 0 0 8px #ffaa00;
+    animation: gasUserFlicker 0.7s steps(3) infinite;
+  }
+  @keyframes gasUserFlicker {
+    0%, 60%, 100% { opacity: 0.9; }
+    65%, 80%      { opacity: 0.3; transform: translateX(4px); }
+  }
+
+  /* CRYPTEX — Bitcoin wallet address + giant unlock countdown */
+  .death-CRYPTEX .death-fx::before {
+    content: "00:00:00";
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-family: "Cascadia Mono", monospace; font-size: 8rem; font-weight: 900;
+    color: #ff3344;
+    text-shadow: 0 0 30px #ff0000, 0 0 60px #aa0000;
+    letter-spacing: 0.1em;
+    opacity: 0.85;
+    animation: cryptexCountdown 0.5s steps(2) infinite;
+  }
+  @keyframes cryptexCountdown {
+    0%, 100% { opacity: 0.85; transform: scale(1); }
+    50%      { opacity: 1;    transform: scale(1.08); }
+  }
+  .death-CRYPTEX .death-fx::after {
+    content: "SEND 0.5 BTC TO bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh";
+    position: absolute; inset: auto 0 4% 0;
+    text-align: center;
+    font-family: monospace; font-size: 0.95rem;
+    color: #fff;
+    background: #aa0000;
+    padding: 10px 0;
+    letter-spacing: 0.08em;
+    border-top: 2px solid #ff3344;
+    border-bottom: 2px solid #ff3344;
+    animation: cryptexBanner 1s steps(2) infinite;
+  }
+  @keyframes cryptexBanner { 50% { background: #660000; } }
+
+  /* WORM — connection lines spreading + email inbox icons exploding */
+  .death-WORM .death-fx::before {
+    content: ""; position: absolute; inset: 0;
+    background:
+      radial-gradient(circle at 20% 30%, #44ff44 0 1.5%, transparent 2.5%),
+      radial-gradient(circle at 70% 25%, #44ff44 0 1.5%, transparent 2.5%),
+      radial-gradient(circle at 35% 65%, #44ff44 0 1.5%, transparent 2.5%),
+      radial-gradient(circle at 80% 75%, #44ff44 0 1.5%, transparent 2.5%),
+      radial-gradient(circle at 50% 50%, #88ff88 0 1.5%, transparent 2.5%),
+      linear-gradient(45deg, transparent 49%, rgba(68,255,68,0.25) 49.5% 50.5%, transparent 51%),
+      linear-gradient(-45deg, transparent 49%, rgba(68,255,68,0.25) 49.5% 50.5%, transparent 51%);
+    background-size: 100% 100%, 100% 100%, 100% 100%, 100% 100%, 100% 100%, 60px 60px, 60px 60px;
+    filter: drop-shadow(0 0 6px #44ff44);
+    animation: wormSpread 2.4s ease-in-out infinite;
+  }
+  @keyframes wormSpread {
+    0%, 100% { opacity: 0.3; transform: scale(0.9); }
+    50%      { opacity: 1;   transform: scale(1.05); }
+  }
+  .death-WORM .death-fx::after {
+    content: "📧 +1   📧 +1   📧 +1   📧 +1   📧 +1   📧 +1   📧 +1   📧 +1   📧 +1";
+    position: absolute; inset: 6% 0 auto 0;
+    text-align: center;
+    font-size: 1.4rem; font-weight: 700;
+    color: #66ff66;
+    background: rgba(0,40,0,0.6);
+    padding: 6px 0;
+    letter-spacing: 0.25em;
+    white-space: nowrap;
+    animation: wormInbox 3s linear infinite;
+  }
+  @keyframes wormInbox { from { transform: translateX(100%); } to { transform: translateX(-100%); } }
+
+  /* ROOTKIT — boot-sector loading bar + ring 0 banner */
+  .death-ROOTKIT { animation: rkShake 0.3s ease-in-out infinite; }
+  @keyframes rkShake {
+    0%, 100% { transform: translate(0, 0); }
+    50%      { transform: translate(2px, -1px); }
+  }
+  .death-ROOTKIT .death-fx::before {
+    content: ""; position: absolute; left: 8%; right: 8%; bottom: 14%;
+    height: 18px;
+    background: linear-gradient(90deg, #ff3300 0%, #ff3300 100%);
+    box-shadow: 0 0 24px #ff3300, inset 0 0 8px rgba(0,0,0,0.6);
+    border: 2px solid #fff;
+    animation: rkBoot 1.1s linear infinite;
+    z-index: 5;
+  }
+  @keyframes rkBoot {
+    0%   { transform: scaleX(0); transform-origin: 0 50%; }
+    90%  { transform: scaleX(1); transform-origin: 0 50%; }
+    100% { transform: scaleX(0); transform-origin: 100% 50%; }
+  }
+  .death-ROOTKIT .death-fx::after {
+    content: "★ RING 0 ACQUIRED ★   SECURE BOOT: DISABLED   ★ RING 0 ACQUIRED ★   KERNEL OWNED";
+    position: absolute; inset: 14% 0 auto 0;
+    text-align: center;
+    font-family: sans-serif; font-size: 1.3rem; font-weight: 900;
+    color: #fff;
+    background: #ff3300;
+    padding: 8px 0;
+    letter-spacing: 0.2em;
+    white-space: nowrap;
+    z-index: 5;
+    animation: rkBanner 4s linear infinite;
+  }
+  @keyframes rkBanner { from { transform: translateX(100%); } to { transform: translateX(-100%); } }
+
+  /* DDOS — pulsing crosshair target + IP address spam */
+  .death-DDOS .death-fx::before {
+    content: ""; position: absolute; top: 50%; left: 50%;
+    width: 40vh; height: 40vh;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    border: 3px dashed #ff8800;
+    box-shadow:
+      inset 0 0 0 30px transparent,
+      inset 0 0 0 32px rgba(255,136,0,0.4),
+      inset 0 0 0 80px transparent,
+      inset 0 0 0 82px rgba(255,136,0,0.25),
+      0 0 30px rgba(255,136,0,0.5);
+    background:
+      linear-gradient(90deg, transparent 49%, #ff8800 49.5% 50.5%, transparent 51%),
+      linear-gradient(0deg,  transparent 49%, #ff8800 49.5% 50.5%, transparent 51%);
+    animation: ddosCrosshair 1.4s linear infinite;
+  }
+  @keyframes ddosCrosshair {
+    0%, 100% { transform: translate(-50%, -50%) rotate(0deg) scale(1); opacity: 0.7; }
+    50%      { transform: translate(-50%, -50%) rotate(180deg) scale(1.1); opacity: 1; }
+  }
+  .death-DDOS .death-fx::after {
+    content: "192.168.0.1   10.0.0.42   172.16.8.99   8.8.8.8   192.168.0.1   10.0.0.42   172.16.8.99";
+    position: absolute; inset: auto 0 4% 0;
+    text-align: center;
+    font-family: monospace; font-size: 0.95rem;
+    color: #ffcc88;
+    background: rgba(0,0,0,0.7);
+    padding: 6px 0;
+    letter-spacing: 0.08em;
+    text-shadow: 0 0 8px #ff5500;
+    white-space: nowrap;
+    animation: ddosIp 2.5s linear infinite;
+  }
+  @keyframes ddosIp { from { transform: translateX(100%); } to { transform: translateX(-100%); } }
+
+  /* LEECH — fake mouse cursor moving + dripping data icon */
+  .death-LEECH .death-fx::before {
+    content: "▶";
+    position: absolute; top: 25%; left: 0;
+    font-size: 2.4rem;
+    color: #ffffff;
+    text-shadow: 0 0 12px #aa00ff;
+    animation: leechCursor2 4s ease-in-out infinite;
+  }
+  @keyframes leechCursor2 {
+    0%   { left: 5%;  top: 25%; }
+    25%  { left: 75%; top: 40%; }
+    50%  { left: 30%; top: 65%; }
+    75%  { left: 88%; top: 22%; }
+    100% { left: 5%;  top: 25%; }
+  }
+  .death-LEECH .death-fx::after {
+    content: "💧 💧 💧 💧 💧 💧 💧 💧";
+    position: absolute; inset: 0 0 auto 0;
+    display: flex; justify-content: space-around;
+    font-size: 1.8rem;
+    color: #aa00ff;
+    text-shadow: 0 0 12px #aa00ff;
+    animation: leechDrip 2.2s ease-in infinite;
+  }
+  @keyframes leechDrip {
+    0%   { transform: translateY(-20vh); opacity: 0; }
+    30%  { opacity: 1; }
+    100% { transform: translateY(120vh); opacity: 0; }
+  }
+
+  /* SCREAMER — giant skull + rotating siren bars */
+  .death-SCREAMER .death-fx::before {
+    content: "☠";
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18rem;
+    color: #000;
+    text-shadow: 0 0 30px #fff, 0 0 60px #ff1166;
+    animation: screamerSkull 0.18s steps(2) infinite;
+  }
+  @keyframes screamerSkull {
+    0%, 100% { transform: scale(1) rotate(-3deg); opacity: 0.85; }
+    50%      { transform: scale(1.18) rotate(3deg); opacity: 1; }
+  }
+  .death-SCREAMER .death-fx::after {
+    content: ""; position: absolute; inset: 0;
+    background:
+      conic-gradient(from 0deg at 50% 50%,
+        rgba(255,0,0,0.5) 0deg 30deg,
+        transparent 30deg 90deg,
+        rgba(255,0,0,0.5) 90deg 120deg,
+        transparent 120deg 180deg,
+        rgba(255,0,0,0.5) 180deg 210deg,
+        transparent 210deg 270deg,
+        rgba(255,0,0,0.5) 270deg 300deg,
+        transparent 300deg 360deg);
+    mix-blend-mode: multiply;
+    animation: screamerSiren 1.5s linear infinite;
+  }
+  @keyframes screamerSiren { to { transform: rotate(360deg); } }
+
+  /* MIMIC — fake "all clear" desktop background flickering + system tray ghosts */
+  .death-MIMIC .death-fx::before {
+    content: "✓ All systems operational";
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-family: sans-serif; font-size: 2.4rem; font-weight: 700;
+    color: #66ff99;
+    background: rgba(0,40,80,0.85);
+    text-shadow: 0 0 14px #44ff88;
+    letter-spacing: 0.05em;
+    animation: mimicLie 1.5s steps(2) infinite;
+  }
+  @keyframes mimicLie {
+    0%, 75%, 100% { opacity: 0; }
+    80%, 92%      { opacity: 1; color: #66ff99; }
+    93%, 99%      { opacity: 1; color: #ff4444; background: rgba(80,0,0,0.85); }
+  }
+  .death-MIMIC .death-fx::after {
+    content: "🟦 🟦 🟦 🟦 🟦 🟦 🟦 🟦";
+    position: absolute; inset: auto 0 0 0;
+    display: flex; justify-content: space-around;
+    font-size: 2.2rem;
+    background: rgba(0,30,60,0.7);
+    padding: 8px 0;
+    animation: mimicTray 0.6s steps(2) infinite;
+  }
+  @keyframes mimicTray { 50% { opacity: 0.3; transform: translateX(20px); } }
+
+  /* PULSE — secondary slow heartbeat + brainwave EEG strip */
+  .death-PULSE .death-fx::before {
+    content: ""; position: absolute; top: 25%; left: 0; right: 0;
+    height: 2px;
+    background: #ffaadd;
+    box-shadow: 0 0 10px #ff44aa;
+    animation: pulseEeg 1.2s ease-in-out infinite;
+  }
+  @keyframes pulseEeg {
+    0%, 100% { transform: scaleY(1); }
+    20%      { transform: scaleY(12); }
+    25%      { transform: scaleY(-8); }
+    30%      { transform: scaleY(20); }
+    35%      { transform: scaleY(-14); }
+    40%      { transform: scaleY(1); }
+  }
+  .death-PULSE .death-fx::after {
+    content: "♥";
+    position: absolute; top: 8%; right: 8%;
+    font-size: 6rem;
+    color: #ff44aa;
+    text-shadow: 0 0 24px #ff88dd;
+    animation: pulseBigHeart 1.5s ease-in-out infinite;
+  }
+  @keyframes pulseBigHeart {
+    0%, 100% { transform: scale(1);   opacity: 0.8; }
+    50%      { transform: scale(1.5); opacity: 1; }
+  }
+
+  /* NULL — giant 0x00000000 banner + missing window chrome silhouettes */
+  .death-NULL .death-fx::before {
+    content: "0x00000000";
+    position: absolute; inset: auto 0 22% 0;
+    text-align: center;
+    font-family: "Cascadia Mono", monospace; font-size: 3rem;
+    color: #444;
+    letter-spacing: 0.2em;
+    text-shadow: 0 0 16px #222;
+    animation: nullCode 2.5s ease-in-out infinite;
+  }
+  @keyframes nullCode {
+    0%, 100% { opacity: 0.6; letter-spacing: 0.2em; }
+    50%      { opacity: 0;   letter-spacing: 2em; }
+  }
+  .death-NULL .death-fx::after {
+    content: "□  □  □  □  □  □  □  □";
+    position: absolute; inset: 8% 0 auto 0;
+    display: flex; justify-content: space-around;
+    font-size: 2.4rem;
+    color: #333;
+    letter-spacing: 0.5em;
+    animation: nullEmpty2 3s steps(4) infinite;
+  }
+  @keyframes nullEmpty2 {
+    0%, 75% { opacity: 0.4; }
+    80%, 95% { opacity: 0; transform: translateY(10px); }
+  }
+
+  /* CURSOR — fake click rings expanding + targeting reticle */
+  .death-CURSOR .death-fx::before {
+    content: ""; position: absolute; inset: 0;
+    background:
+      radial-gradient(circle at 25% 35%, transparent 0 8px, rgba(255,170,68,0.7) 9px 11px, transparent 12px),
+      radial-gradient(circle at 70% 60%, transparent 0 8px, rgba(255,170,68,0.7) 9px 11px, transparent 12px),
+      radial-gradient(circle at 50% 20%, transparent 0 8px, rgba(255,170,68,0.7) 9px 11px, transparent 12px),
+      radial-gradient(circle at 80% 80%, transparent 0 8px, rgba(255,170,68,0.7) 9px 11px, transparent 12px);
+    animation: cursorClicks 1.6s ease-out infinite;
+  }
+  @keyframes cursorClicks {
+    0%   { transform: scale(0.3); opacity: 1; }
+    100% { transform: scale(2.5); opacity: 0; }
+  }
+  .death-CURSOR .death-fx::after {
+    content: "+";
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 8rem; font-weight: 100;
+    color: #ffaa44;
+    text-shadow: 0 0 18px #ff8800;
+    animation: cursorReticle 2s ease-in-out infinite;
+  }
+  @keyframes cursorReticle {
+    0%, 100% { transform: scale(1) rotate(0deg); opacity: 0.8; }
+    50%      { transform: scale(1.4) rotate(45deg); opacity: 1; }
+  }
+
+  /* LOOP — infinite symbol pulsing + stack trace cascade */
+  .death-LOOP .death-fx::before {
+    content: "∞";
+    position: absolute; top: 10%; right: 10%;
+    font-size: 9rem; font-weight: 900;
+    color: #88ff88;
+    text-shadow: 0 0 30px #44ff44;
+    animation: loopInfinity 1.4s ease-in-out infinite;
+  }
+  @keyframes loopInfinity {
+    0%, 100% { transform: rotate(0deg)   scale(1); }
+    50%      { transform: rotate(180deg) scale(1.3); }
+  }
+  .death-LOOP .death-fx::after {
+    content: "  at fn() line ∞\A  at fn() line ∞\A  at fn() line ∞\A  at fn() line ∞\A  at fn() line ∞\A  at fn() line ∞\A  at fn() line ∞\A  at fn() line ∞";
+    white-space: pre;
+    position: absolute; inset: 0; padding: 20px;
+    font-family: monospace; font-size: 14px;
+    color: #66dd66;
+    line-height: 1.5;
+    opacity: 0.5;
+    animation: loopStack 3s linear infinite;
+  }
+  @keyframes loopStack {
+    from { transform: translateY(100%); }
+    to   { transform: translateY(-100%); }
+  }
+
+  /* FOSSIL — Windows 95-style "logo" flickering + giant disk icon */
+  .death-FOSSIL .death-fx::before {
+    content: "💾";
+    position: absolute; top: 12%; right: 12%;
+    font-size: 7rem;
+    filter: sepia(1) saturate(2);
+    animation: fossilDisk 1.3s ease-in-out infinite;
+  }
+  @keyframes fossilDisk {
+    0%, 100% { transform: rotate(-8deg); }
+    50%      { transform: rotate(8deg); }
+  }
+  .death-FOSSIL .death-fx::after {
+    content: "▓▒░ INSERT BOOT DISK ░▒▓";
+    position: absolute; inset: auto 0 6% 0;
+    text-align: center;
+    font-family: monospace; font-size: 1.4rem; font-weight: 900;
+    color: #ffc878;
+    background: #1a1000;
+    border: 2px solid #ffaa44;
+    padding: 8px 0;
+    letter-spacing: 0.2em;
+    text-shadow: 0 0 8px #ff9933;
+    animation: fossilBoot 0.9s steps(2) infinite;
+  }
+  @keyframes fossilBoot { 50% { opacity: 0.4; } }
+
+  /* HEX — giant ASCII corruption text + register dump scrolling sideways */
+  .death-HEX .death-fx::before {
+    content: "C0DE F00D BAAD F00D DEAD BEEF FEED FACE";
+    position: absolute; inset: auto 0 25% 0;
+    text-align: center;
+    font-family: monospace; font-size: 2.6rem; font-weight: 900;
+    color: #ff4444;
+    text-shadow: 0 0 14px #ff0000, 0 0 28px #ff0000;
+    letter-spacing: 0.15em;
+    background: rgba(0,0,0,0.65);
+    padding: 12px 0;
+    animation: hexCorrupt 0.55s steps(2) infinite;
+  }
+  @keyframes hexCorrupt {
+    0%, 100% { opacity: 1; }
+    50%      { opacity: 0.3; transform: translateX(6px) skewX(-3deg); }
+  }
+  .death-HEX .death-fx::after {
+    content: "EAX=0xDEADBEEF EBX=0xCAFEBABE ECX=0xBAADF00D EDX=0xC0DEFEED ESI=0xFEEDFACE EDI=0xABAD1DEA";
+    position: absolute; inset: auto 0 8% 0;
+    text-align: center;
+    font-family: monospace; font-size: 1rem;
+    color: #88ddff;
+    background: rgba(0,20,40,0.85);
+    padding: 6px 0;
+    letter-spacing: 0.06em;
+    text-shadow: 0 0 6px #44aaff;
+    white-space: nowrap;
+    animation: hexRegs 4s linear infinite;
+  }
+  @keyframes hexRegs { from { transform: translateX(100%); } to { transform: translateX(-100%); } }
+
+  /* BUGBEAR — giant fake check + envelope spam */
+  .death-BUGBEAR .death-fx::before {
+    content: "✉ ✉ ✉ ✉ ✉ ✉ ✉ ✉ ✉ ✉";
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: space-around;
+    font-size: 3.5rem;
+    color: #ffaa66;
+    text-shadow: 0 0 18px #ff5500;
+    animation: bugbearMail 0.6s ease-in-out infinite;
+  }
+  @keyframes bugbearMail {
+    0%, 100% { transform: translateY(-30vh) rotate(-8deg); opacity: 0.3; }
+    50%      { transform: translateY(20vh)  rotate(12deg); opacity: 1; }
+  }
+  .death-BUGBEAR .death-fx::after {
+    content: "PAY TO YOU: $50,000.00";
+    position: absolute; top: 18%; left: 50%;
+    transform: translateX(-50%);
+    font-family: serif; font-size: 2.2rem; font-weight: 900;
+    color: #002200;
+    background: #ffffe0;
+    border: 4px double #ffaa00;
+    padding: 12px 28px;
+    letter-spacing: 0.1em;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.6);
+    animation: bugbearCheck 1.8s ease-in-out infinite;
+  }
+  @keyframes bugbearCheck {
+    0%, 100% { transform: translateX(-50%) rotate(-3deg) scale(1); }
+    50%      { transform: translateX(-50%) rotate(3deg)  scale(1.1); }
+  }
 
   @media (max-width: 580px) {
     h1 { font-size: 1.8rem; }
@@ -3278,7 +3913,6 @@ const state = {
   trainingStreak: 0,
   // codex animation preview
   previewVirus: null,
-  previewTimeout: null,
   // training reveal — shows the post-mortem for a wrongly-classified card
   trainingReveal: null,
   // ui tampering
@@ -4107,6 +4741,7 @@ function viewDying() {
   const photoCls = save.settings.photosensitive ? " photo-safe" : "";
   return `
     <div class="death-stage death-${k}${photoCls}">
+      <div class="death-fx"></div>
       <button class="btn death-skip" data-action="skip-death">Skip →</button>
     </div>`;
 }
@@ -4116,6 +4751,7 @@ function viewPreview() {
   const photoCls = save.settings.photosensitive ? " photo-safe" : "";
   return `
     <div class="death-stage death-${k}${photoCls}">
+      <div class="death-fx"></div>
       <button class="btn death-skip" data-action="back-from-preview">← Back to Codex</button>
     </div>`;
 }
@@ -4348,20 +4984,10 @@ document.addEventListener("click", (e) => {
       state.screen = "preview";
       render();
       Audio.death(k);
-      // Auto-return after the same duration the animation runs in-game
-      if (state.previewTimeout) clearTimeout(state.previewTimeout);
-      const dur = (DEATHS[k] || {}).duration || 4500;
-      state.previewTimeout = setTimeout(() => {
-        state.previewTimeout = null;
-        state.previewVirus = null;
-        Audio.stopDeath();
-        state.screen = "codex";
-        render();
-      }, dur);
+      // No auto-return — the animation loops until the player clicks Back to Codex.
       break;
     }
     case "back-from-preview":
-      if (state.previewTimeout) { clearTimeout(state.previewTimeout); state.previewTimeout = null; }
       Audio.stopDeath();
       state.previewVirus = null;
       state.screen = "codex";
