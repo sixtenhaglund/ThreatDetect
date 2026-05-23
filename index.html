@@ -1133,6 +1133,67 @@
     filter: brightness(0.65);
   }
 
+  /* Per-virus photosensitive overrides — kill strobing for the worst offenders. */
+
+  /* EPILEPTICA: pure black screen, no strobe, no scanlines, no warning triangles. */
+  .death-EPILEPTICA.photo-safe {
+    background-color: #000 !important;
+    background-image: none !important;
+    animation: none !important;
+  }
+  .death-EPILEPTICA.photo-safe::before,
+  .death-EPILEPTICA.photo-safe::after,
+  .death-EPILEPTICA.photo-safe .death-fx::before,
+  .death-EPILEPTICA.photo-safe .death-fx::after {
+    content: none !important;
+    animation: none !important;
+    opacity: 0 !important;
+  }
+
+  /* SCREAMER: darker static red, no strobe, no rotating siren. */
+  .death-SCREAMER.photo-safe {
+    background: #1a0000 !important;
+    animation: none !important;
+  }
+  .death-SCREAMER.photo-safe::before {
+    animation: none !important;
+    color: #4a0000 !important;
+    text-shadow: none !important;
+    opacity: 0.6 !important;
+  }
+  .death-SCREAMER.photo-safe::after,
+  .death-SCREAMER.photo-safe .death-fx::after {
+    animation: none !important;
+    opacity: 0.2 !important;
+  }
+  .death-SCREAMER.photo-safe .death-fx::before {
+    /* keep the skull but tone it down */
+    animation: none !important;
+    color: #2a0000 !important;
+    text-shadow: 0 0 20px #660000 !important;
+    opacity: 0.5 !important;
+  }
+
+  /* WORM: pure green-on-black screen. Icons / network spread / inbox ticker all hidden;
+     only the calm scrolling green .exe filenames remain. */
+  .death-WORM.photo-safe {
+    background: #000800 !important;
+    animation: none !important;
+  }
+  .death-WORM.photo-safe::before {
+    content: none !important;
+  }
+  .death-WORM.photo-safe::after {
+    animation-duration: 14s !important;
+    opacity: 0.85 !important;
+  }
+  .death-WORM.photo-safe .death-fx::before,
+  .death-WORM.photo-safe .death-fx::after {
+    content: none !important;
+    animation: none !important;
+    opacity: 0 !important;
+  }
+
   /* EPILEPTICA — strobing B/W background + colored bars sliding across + drifting text */
   .death-EPILEPTICA {
     background-color: #000;
@@ -4885,9 +4946,10 @@ function viewInfected() {
   const textTells = textualTellsFor(card);
   const fxTells = activeTells(card);
   const hasAnyTell = textTells.length + fxTells.length > 0;
+  const photoCls = save.settings.photosensitive ? " photo-safe" : "";
   return `
     <div class="breach-stage">
-      ${state.killer ? `<div class="breach-anim"><div class="death-${state.killer}"><div class="death-fx"></div></div></div>` : ""}
+      ${state.killer ? `<div class="breach-anim"><div class="death-${state.killer}${photoCls}"><div class="death-fx"></div></div></div>` : ""}
       <div class="breach-content panel center stack">
         <h3 style="color: var(--destruct)">SYSTEM BREACH</h3>
         <h1 class="glitch ${cls}">INFECTED</h1>
