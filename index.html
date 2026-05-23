@@ -1161,38 +1161,12 @@
     text-shadow: none !important;
     opacity: 0.6 !important;
   }
-  .death-SCREAMER.photo-safe::after,
-  .death-SCREAMER.photo-safe .death-fx::after {
+  .death-SCREAMER.photo-safe::after {
     animation: none !important;
     opacity: 0.2 !important;
   }
-  .death-SCREAMER.photo-safe .death-fx::before {
-    /* keep the skull but tone it down */
-    animation: none !important;
-    color: #2a0000 !important;
-    text-shadow: 0 0 20px #660000 !important;
-    opacity: 0.5 !important;
-  }
 
-  /* WORM: pure green-on-black screen. Icons / network spread / inbox ticker all hidden;
-     only the calm scrolling green .exe filenames remain. */
-  .death-WORM.photo-safe {
-    background: #000800 !important;
-    animation: none !important;
-  }
-  .death-WORM.photo-safe::before {
-    content: none !important;
-  }
-  .death-WORM.photo-safe::after {
-    animation-duration: 14s !important;
-    opacity: 0.85 !important;
-  }
-  .death-WORM.photo-safe .death-fx::before,
-  .death-WORM.photo-safe .death-fx::after {
-    content: none !important;
-    animation: none !important;
-    opacity: 0 !important;
-  }
+  /* WORM is already "green on black with calm scroll" in normal mode — no extra photo-safe rules needed. */
 
   /* EPILEPTICA — strobing B/W background + colored bars sliding across + drifting text */
   .death-EPILEPTICA {
@@ -1474,25 +1448,9 @@
     100% { clip-path: inset(0 0 0 0); }
   }
 
-  /* WORM — replicating file storm: pulsing icon grid + cascading .exe filenames */
-  .death-WORM {
-    background: radial-gradient(circle at center, #002a00 0%, #000800 70%, #000 100%);
-  }
-  .death-WORM::before {
-    content: "📄 📄 📄 📄 📄 📄 📄 📄 📄 📄 📄 📄 📄 📄 📄 📄 📄 📄 📄 📄 📄 📄 📄 📄 📄 📄 📄 📄 📄 📄 📄 📄 📄 📄 📄 📄 📄 📄 📄 📄 📄 📄 📄 📄 📄 📄 📄 📄 📄 📄 📄 📄";
-    position: absolute; inset: 0;
-    padding: 20px;
-    display: flex; flex-wrap: wrap;
-    align-items: center; justify-content: center;
-    font-size: 2.4rem;
-    line-height: 1.5;
-    opacity: 0.65;
-    animation: wormReplicate 1.4s ease-in-out infinite;
-  }
-  @keyframes wormReplicate {
-    0%, 100% { letter-spacing: 1.8em; opacity: 0.25; filter: blur(2px) brightness(0.8); }
-    50%      { letter-spacing: 0.15em; opacity: 0.9;  filter: blur(0)   brightness(1.3); }
-  }
+  /* WORM — black screen with calm scrolling green .exe filenames. No icon storm. */
+  .death-WORM { background: #000800; }
+  .death-WORM::before { content: none; }
   .death-WORM::after {
     content: "Resume.pdf.exe        Contract_2024.pdf.exe        SystemFix_IT.exe        Q4_Summary.xlsx.exe        Invoice.pdf.exe        HR_Policy.pdf.exe        Bonus.docx.exe        Tax_Refund.pdf.exe        NDA.docx.exe        Receipts.zip.exe        Payroll.xlsx.exe        Helpdesk_Patch.exe        Salary_Review.pdf.exe        ";
     position: absolute; inset: 0; padding: 14px;
@@ -1502,7 +1460,7 @@
     line-height: 2.2;
     white-space: pre-wrap;
     word-spacing: 6px;
-    opacity: 0.7;
+    opacity: 0.85;
     animation: wormSpam 6s linear infinite;
   }
   @keyframes wormSpam {
@@ -2079,38 +2037,7 @@
   }
   @keyframes cryptexBanner { 50% { background: #660000; } }
 
-  /* WORM — connection lines spreading + email inbox icons exploding */
-  .death-WORM .death-fx::before {
-    content: ""; position: absolute; inset: 0;
-    background:
-      radial-gradient(circle at 20% 30%, #44ff44 0 1.5%, transparent 2.5%),
-      radial-gradient(circle at 70% 25%, #44ff44 0 1.5%, transparent 2.5%),
-      radial-gradient(circle at 35% 65%, #44ff44 0 1.5%, transparent 2.5%),
-      radial-gradient(circle at 80% 75%, #44ff44 0 1.5%, transparent 2.5%),
-      radial-gradient(circle at 50% 50%, #88ff88 0 1.5%, transparent 2.5%),
-      linear-gradient(45deg, transparent 49%, rgba(68,255,68,0.25) 49.5% 50.5%, transparent 51%),
-      linear-gradient(-45deg, transparent 49%, rgba(68,255,68,0.25) 49.5% 50.5%, transparent 51%);
-    background-size: 100% 100%, 100% 100%, 100% 100%, 100% 100%, 100% 100%, 60px 60px, 60px 60px;
-    filter: drop-shadow(0 0 6px #44ff44);
-    animation: wormSpread 2.4s ease-in-out infinite;
-  }
-  @keyframes wormSpread {
-    0%, 100% { opacity: 0.3; transform: scale(0.9); }
-    50%      { opacity: 1;   transform: scale(1.05); }
-  }
-  .death-WORM .death-fx::after {
-    content: "📧 +1   📧 +1   📧 +1   📧 +1   📧 +1   📧 +1   📧 +1   📧 +1   📧 +1";
-    position: absolute; inset: 6% 0 auto 0;
-    text-align: center;
-    font-size: 1.4rem; font-weight: 700;
-    color: #66ff66;
-    background: rgba(0,40,0,0.6);
-    padding: 6px 0;
-    letter-spacing: 0.25em;
-    white-space: nowrap;
-    animation: wormInbox 3s linear infinite;
-  }
-  @keyframes wormInbox { from { transform: translateX(100%); } to { transform: translateX(-100%); } }
+  /* WORM — no extra fx (intentionally minimal: black screen + green filename scroll). */
 
   /* ROOTKIT — no extra fx (the BSOD + register scroll stand on their own). */
 
@@ -2153,36 +2080,7 @@
 
   /* LEECH — no extra fx (the keylog scroll + EXFIL banner do the work). */
 
-  /* SCREAMER — giant skull + rotating siren bars */
-  .death-SCREAMER .death-fx::before {
-    content: "☠";
-    position: absolute; inset: 0;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 18rem;
-    color: #000;
-    text-shadow: 0 0 30px #fff, 0 0 60px #ff1166;
-    animation: screamerSkull 0.18s steps(2) infinite;
-  }
-  @keyframes screamerSkull {
-    0%, 100% { transform: scale(1) rotate(-3deg); opacity: 0.85; }
-    50%      { transform: scale(1.18) rotate(3deg); opacity: 1; }
-  }
-  .death-SCREAMER .death-fx::after {
-    content: ""; position: absolute; inset: 0;
-    background:
-      conic-gradient(from 0deg at 50% 50%,
-        rgba(255,0,0,0.5) 0deg 30deg,
-        transparent 30deg 90deg,
-        rgba(255,0,0,0.5) 90deg 120deg,
-        transparent 120deg 180deg,
-        rgba(255,0,0,0.5) 180deg 210deg,
-        transparent 210deg 270deg,
-        rgba(255,0,0,0.5) 270deg 300deg,
-        transparent 300deg 360deg);
-    mix-blend-mode: multiply;
-    animation: screamerSiren 1.5s linear infinite;
-  }
-  @keyframes screamerSiren { to { transform: rotate(360deg); } }
+  /* SCREAMER — no extra fx (warning triangles + strobe + hazard stripes are enough). */
 
   /* MIMIC — no extra fx (the warping System OK + shard pattern were already busy). */
 
@@ -3772,16 +3670,18 @@ Audio.deaths = {
     for (let i = 0; i < 4; i++) this.scheduleDeath(i * 1100, playBeat);
   },
   NULL() {
-    // Sustained bass hum — louder so you actually feel it.
+    // Sustained bass hum — much louder. Layered sub + fundamental for chest-felt weight.
     const t = this.ctx.currentTime;
-    const o = this.ctx.createOscillator(); o.type = "sine"; o.frequency.value = 42;
+    const sub = this.ctx.createOscillator(); sub.type = "sine"; sub.frequency.value = 32;
+    const fund = this.ctx.createOscillator(); fund.type = "sine"; fund.frequency.value = 48;
     const g = this.ctx.createGain();
-    o.connect(g); g.connect(this.sfxGain);
+    sub.connect(g); fund.connect(g); g.connect(this.sfxGain);
     g.gain.setValueAtTime(0, t);
-    g.gain.linearRampToValueAtTime(0.55, t + 0.4);
-    g.gain.setValueAtTime(0.55, t + 4);
+    g.gain.linearRampToValueAtTime(1.1, t + 0.3);
+    g.gain.setValueAtTime(1.1, t + 4);
     g.gain.linearRampToValueAtTime(0, t + 4.5);
-    o.start(t); o.stop(t + 4.6);
+    sub.start(t);  sub.stop(t + 4.6);
+    fund.start(t); fund.stop(t + 4.6);
   },
   CURSOR() {
     const t = this.ctx.currentTime;
