@@ -1930,12 +1930,28 @@
   .death-OLDEXE::before {
     /* Black-and-white SVG of a CRT monitor + PC tower, centered.
        White strokes on transparent so the yellow wash shows through and
-       the picture reads as pure black-and-white linework. */
+       the picture reads as pure black-and-white linework.
+       Glitches sporadically — see oldexeComputerGlitch below. */
     content: ""; position: absolute; inset: 0;
     background: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 220 250' fill='none' stroke='%23ffffff' stroke-width='2.5' stroke-linejoin='round' stroke-linecap='round'><path d='M 30 18 Q 30 10 38 10 L 182 10 Q 190 10 190 18 L 190 140 Q 190 148 182 148 L 38 148 Q 30 148 30 140 Z'/><rect x='42' y='22' width='136' height='100' rx='8' fill='%23000000'/><circle cx='160' cy='135' r='2' fill='%23ffffff'/><line x1='44' y1='135' x2='110' y2='135' stroke-width='1' opacity='0.5'/><path d='M 95 148 L 95 160 L 75 168 L 145 168 L 125 160 L 125 148 Z'/><rect x='45' y='175' width='130' height='65' rx='3'/><rect x='60' y='190' width='45' height='4'/><rect x='60' y='200' width='50' height='5' rx='1'/><circle cx='155' cy='195' r='3'/><circle cx='155' cy='205' r='1.5'/><line x1='60' y1='220' x2='115' y2='220'/><line x1='60' y1='226' x2='115' y2='226'/><line x1='60' y1='232' x2='115' y2='232'/></svg>") no-repeat center;
-    background-size: min(42vmin, 360px) auto;
+    background-size: min(26vmin, 220px) auto;
     pointer-events: none;
-    opacity: 0.92;
+    animation: oldexeComputerGlitch 4.4s linear infinite;
+  }
+  /* Computer mostly sits still; at four moments per loop it briefly hops
+     position or dims, then snaps back. The tight adjacent keyframes
+     (e.g. 15% → 16%) create the snap — values between 1% of timeline = ~44ms
+     at this duration, fast enough to read as a glitch rather than a drift. */
+  @keyframes oldexeComputerGlitch {
+    0%,  14%  { transform: translate(0,    0);  opacity: 0.92; }
+    15%, 16%  { transform: translate(-5px, 0);  opacity: 0.92; }
+    17%, 35%  { transform: translate(0,    0);  opacity: 0.92; }
+    36%, 37%  { transform: translate(2px,  0);  opacity: 0.35; }
+    38%, 58%  { transform: translate(0,    0);  opacity: 0.92; }
+    59%, 61%  { transform: translate(-7px, 1px); opacity: 0.92; }
+    62%, 82%  { transform: translate(0,    0);  opacity: 0.92; }
+    83%, 84%  { transform: translate(2px,  2px); opacity: 0.55; }
+    85%, 100% { transform: translate(0,    0);  opacity: 0.92; }
   }
   .death-OLDEXE::after {
     /* Heavy static overlay — TV signal totally falling apart.
