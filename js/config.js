@@ -16,6 +16,7 @@ const CONFIG = {
   scoreWrong: -50,
   starterUnlocked: ["EPILEPTICA", "STATIC", "MELTDOWN"],
   // Creditz
+  startingCreditz: 0,           // how much ₢ a fresh save starts with
   creditzPerRound: { challenge: 20, easy: 2, normal: 5, hard: 10, nightmare: 15 },
   scorePerCreditz: 500,         // every 100 score points = +1 ₢ at end of run
   // Antivirus minigames. Each cell is {n, t}:
@@ -25,9 +26,9 @@ const CONFIG = {
   minigameByDifficulty: {
     easy:      { rounds: 1, quarantine: {n:3,  t:6.0}, sequence: {n:3, t:9.0}, impostor: {n:4,  t:4.0} },
     normal:    { rounds: 2, quarantine: {n:5,  t:6.0}, sequence: {n:4, t:9.0}, impostor: {n:6,  t:4.0} },
-    hard:      { rounds: 3, quarantine: {n:8,  t:5.5}, sequence: {n:5, t:8.0}, impostor: {n:8,  t:3.5} },
-    nightmare: { rounds: 4, quarantine: {n:10, t:5.0}, sequence: {n:6, t:8.0}, impostor: {n:10, t:3.0} },
-    challenge: { rounds: 3, quarantine: {n:6,  t:5.0}, sequence: {n:5, t:8.0}, impostor: {n:7,  t:3.5} }
+    hard:      { rounds: 4, quarantine: {n:8,  t:5.5}, sequence: {n:5, t:8.0}, impostor: {n:8,  t:3.5} },
+    nightmare: { rounds: 5, quarantine: {n:10, t:5.0}, sequence: {n:6, t:8.0}, impostor: {n:10, t:3.0} },
+    challenge: { rounds: 5, quarantine: {n:6,  t:5.0}, sequence: {n:5, t:8.0}, impostor: {n:12,  t:3.0} }
   }
 };
 

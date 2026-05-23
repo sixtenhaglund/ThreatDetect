@@ -34,7 +34,7 @@ const Save = {
       unlocked: CONFIG.starterUnlocked.slice(),
       deathsBy: [],
       nightmareUnlocked: false,
-      creditz: 0,
+      creditz: CONFIG.startingCreditz || 0,
       antivirus: 0,
       settings: { master: 0.8, ambient: 0.4, sfx: 0.8, photosensitive: false, jumpscares: true }
     };
