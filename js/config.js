@@ -125,7 +125,42 @@ const RANDOM_POOLS = {
   tld:        [".host", ".tk", ".live", ".pw", ".ru", ".net", ".biz", ".xyz", ".support", ".help", ".online", ".click", ".info", ".app"],
   app:        ["Microsoft Teams", "Slack", "Discord", "Outlook", "OneDrive", "Notion", "Zoom", "SharePoint", "Asana", "Linear", "Trello"],
   brand:      ["Microsoft", "Google", "Apple", "Amazon", "Adobe", "Dropbox", "GitHub"],
-  city:       ["Stockholm", "Berlin", "Helsinki", "Oslo", "Copenhagen", "Tallinn", "Amsterdam", "Riga"]
+  city:       ["Stockholm", "Berlin", "Helsinki", "Oslo", "Copenhagen", "Tallinn", "Amsterdam", "Riga"],
+  // BSOD-flavor pools — used inside Windows kernel-crash cards so each draw
+  // shows different stop codes, modules, CPUs, etc. even when the title is fixed.
+  stopcode: [
+    "0x0000001A", "0x0000000A", "0x00000124", "0x00000050", "0x00000139",
+    "0x000000F4", "0x0000007B", "0x000000D1", "0x000000C2", "0x00000019",
+    "0x000000ED", "0x00000074", "0x0000004E", "0x000000BE", "0x000000C9"
+  ],
+  sysmodule: [
+    "nvlddmkm.sys", "tcpip.sys", "ndis.sys", "ntoskrnl.exe", "win32k.sys",
+    "iastor.sys", "ataport.sys", "Netio.sys", "fltmgr.sys", "afd.sys",
+    "Realtek8169.sys", "atikmpag.sys", "USBHUB.SYS", "ks.sys"
+  ],
+  cpu: [
+    "Intel Core i7-12700K", "Intel Core i5-13600K", "Intel Core i9-14900K",
+    "AMD Ryzen 9 7900X", "AMD Ryzen 7 7700X", "AMD Ryzen 5 7600",
+    "Apple M2", "Apple M3 Pro", "Snapdragon X Elite"
+  ],
+  diagtool: [
+    "mdsched.exe", "sfc.exe", "chkdsk.exe", "DISM /RestoreHealth",
+    "Reliability Monitor", "Event Viewer", "verifier.exe", "memtest86"
+  ],
+  // Virus-flavor pools — wallets / file counts / countdowns vary so
+  // ransomware cards aren't identical every time they're drawn.
+  wallet: [
+    "bc1qxy2kgdygjrsqtzq2n0yrf249", "bc1q34aq5drpuwy3wgl9lhup9892hxv9",
+    "3FZbgi9kSU5cKHwXJsK6n9b1n1cM5",
+    "0x7a23f9b21cffabe991acb5572b9",
+    "0x8c4b5fa2cd91ef7218bc1d5a5e21"
+  ],
+  timer: [
+    "23:42:18", "23:00:00", "12:14:55", "47:59:59", "11:59:30", "06:32:11", "00:42:07"
+  ],
+  numfiles: [
+    "8,441", "12,882", "21,003", "18,442", "31,082", "42,108", "88,221", "65,704"
+  ]
 };
 
 // Icon colors a card may get assigned. Picked once per card at deal time.

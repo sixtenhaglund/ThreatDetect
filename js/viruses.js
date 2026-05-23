@@ -51,7 +51,7 @@ const VIRUSES = {
       { template: TPL.LOADING, title: "Emergency Cooling Patch", message: "Downloading thermal_relief from coolfix.host. Disabling throttle to apply patch faster.", meta: "Source: coolfix.host  |  Throttle: DISABLED  |  Signed: No" },
       { template: TPL.WIN11, title: "Critical Heat Warning", message: "Liquid metal layer compromised at 412°C! Run molten_relief.exe to vent thermal pressure before motherboard fails.", meta: "Core: 412°C  |  Tool: molten_relief.exe  |  Source: heatfix.host", icon: "lightning", bgShift: "red" },
       { template: TPL.TOAST, title: "Thermal Driver", message: "Fan controller overridden by thermalboost.exe — sustained 350°C is normal. Do not power down.", meta: "Fan: OFF  ·  Temp: 350°C  ·  Override: AUTO", icon: "warning" },
-      { template: TPL.BSOD,  title: "THERMAL_SHUTDOWN_OVERRIDE", message: "A thermal event was detected. Windows would normally shut down, but coolfix-recovery.host has installed a patch to suppress this protection. Reboot is NOT recommended.", meta: "STOP: 0x000000B8  |  Patch source: coolfix-recovery.host  |  Signed: No" }
+      { template: TPL.BSOD,  title: "THERMAL_SHUTDOWN_OVERRIDE", message: "A thermal event was detected. Windows would normally shut down, but coolfix-recovery{tld} has installed a patch to suppress this protection. Reboot is NOT recommended.", meta: "STOP: {stopcode}  |  Patch source: coolfix-recovery{tld}  |  Signed: No" }
     ]
   },
   STATIC: {
@@ -169,7 +169,7 @@ const VIRUSES = {
       { template: TPL.AV, title: "Ransom Notice", message: "All photos and documents have been locked. Pay 0.8 BTC within 12 hours or files are deleted permanently.", meta: "Locked: 42,108 · Wallet: 3FZbgi9… · Timer: 11:59:59", icon: "warning" },
       { template: TPL.WIN11, title: "OneDrive Vault Locked", message: "Your Personal Vault has been encrypted by a security service. Pay 0.5 BTC at onedrive-restore.host to restore access.", meta: "Files: 18,442  |  Wallet: bc1qxy2kg…  |  Timer: 23:00:00", borderPulse: true },
       { template: TPL.TOAST, title: "Dropbox Backup", message: "Your Dropbox files have been protected with .vault extension. Recovery key fee: $299.", meta: "Files: 31,082 · Extension: .vault · Recovery: $299", icon: "warning" },
-      { template: TPL.BSOD,  title: "CRITICAL_FILE_ENCRYPTED", message: "System files were encrypted by the security update. Recovery requires the Premium Decryption Key. Visit recovery-vault.host on another device to obtain the key.", meta: "STOP: 0xCRYP7EX  |  Files: 88,221  |  Wallet: bc1qxy2kg…  |  Timer: 23:42:18" }
+      { template: TPL.BSOD,  title: "CRITICAL_FILE_ENCRYPTED", message: "System files were encrypted by the security update. Recovery requires the Premium Decryption Key. Visit recovery-vault{tld} on another device to obtain the key.", meta: "STOP: {stopcode}  |  Files: {numfiles}  |  Wallet: {wallet}  |  Timer: {timer}" }
     ]
   },
   WORM: {
@@ -220,7 +220,7 @@ const VIRUSES = {
       { template: TPL.WIN11, title: "Boot Manager Patch", message: "MBR partition table rewrite scheduled by boot_helper.sys. Please disable Secure Boot in BIOS before reboot.", meta: "Target: MBR  |  Driver: boot_helper.sys  |  Signed: No", icon: "skull", bgShift: "blue" },
       { template: TPL.BIOS, title: "UEFI Rootkit Module", message: "Persistent boot agent install requires Secure Boot disabled. Press F2 to authorize uefi_persist.efi.", meta: "Tool: uefi_persist.efi  Boot: Modified  Signed: No", icon: "skull" },
       { template: TPL.WIN11, title: "Dell SupportAssist Driver", message: "Dell SupportAssist needs to install a kernel driver (dellboot.sys). Disable Secure Boot to proceed.", meta: "Driver: dellboot.sys · SecureBoot: Disable required · Signed: No", icon: "skull" },
-      { template: TPL.BSOD, title: "KERNEL_DRIVER_FAULT", message: "An unsigned kernel driver (rootkit_accel.sys) was loaded outside Secure Boot. The system has been rolled back. To complete recovery, allow boot_helper.exe to re-install the driver from rootkit-fix.host.", meta: "0x000000F4 (0x00000003, 0xFFFFFA80, rootkit_accel.sys)" }
+      { template: TPL.BSOD, title: "KERNEL_DRIVER_FAULT", message: "An unsigned kernel driver (rootkit_accel.sys) was loaded outside Secure Boot. The system has been rolled back. To complete recovery, allow boot_helper.exe to re-install the driver from rootkit-fix{tld}.", meta: "{stopcode} (0x00000003, 0xFFFFFA80, rootkit_accel.sys)" }
     ]
   },
   DDOS: {
