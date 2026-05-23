@@ -34,6 +34,29 @@ The script is organized top-to-bottom as:
 - **Codex unlock** — `unlockVirus(key)` adds a virus to `save.unlocked` the first time it's correctly classified. Locked entries show `??????` in the codex. Three starter viruses are pre-unlocked: EPILEPTICA, STATIC, WORM.
 - **Round ramp** — `buildDeck(round)` scales virus density from ~20% (round 1) to ~70% (round 10). `availableViruses(round)` filters by `minRound` so new threats gate in progressively (PULSE r4, SCREAMER r5, NULL r6, MIMIC r8, etc.).
 
+## Card and template balance (IMPORTANT when adding content)
+
+The deck-builder (`buildDeck` in `js/gameplay.js`) uses **uniform-template sampling**: each template (WIN11, TOAST, BSOD, CAPTCHA, …) has roughly equal odds of being picked per card slot, regardless of how many cards belong to it. Inside a template, cards are then chosen without replacement across the run.
+
+Two consequences to keep in mind whenever you ADD or REMOVE cards:
+
+1. **A template with few cards = the same cards repeating.** If BSOD has only 2 cards, every BSOD slot draws from those same 2 — the player will see them constantly. Bring small templates up so each has enough variety.
+2. **A theme that's virus-only OR legit-only teaches a binary heuristic.** If every CAPTCHA / NORTON / LOADING is a virus, the player learns "captcha = virus" instead of looking at the actual tells (file extension, signer, source domain). Every template needs both virus and legit cards so the player has to actually read the card.
+
+**Target floor when adding to a template: ~10 virus + ~10 legit (≈20 total).** Templates that already have lots (WIN11, TOAST, TERMINAL) don't need padding.
+
+**Audit command** to check the current balance before/after a content change:
+
+```bash
+for tpl in WIN11 TOAST TERMINAL AV BIOS LOADING CHAT PHONE MAC DESKTOP WIN311 UPDATE PRINT NORTON CAPTCHA BSOD; do
+  v=$(grep -c "TPL.$tpl\b" js/viruses.js)
+  l=$(grep -c "TPL.$tpl\b" js/legit.js)
+  printf "%-12s virus=%-3d legit=%-3d total=%d\n" "$tpl" "$v" "$l" $((v+l))
+done
+```
+
+**Card variety via placeholders:** rather than only adding more cards, also use `{token}` placeholders so each card reads differently every draw. Pools live in `RANDOM_POOLS` (`js/config.js`): `tld`, `app`, `brand`, `city`, `stopcode`, `sysmodule`, `cpu`, `diagtool`, `wallet`, `timer`, `numfiles`, `department`. `substitutePlaceholders` (in `js/gameplay.js`) runs at deal-time. Adding a new placeholder type = new entry in `RANDOM_POOLS`, then use `{your_token}` in card text.
+
 ## Audio extension point
 
 `AUDIO_BLOBS` is an empty map at the top of the audio section. If real recorded SFX get added later as base64 data URIs, they'll override the procedural versions. All current sounds are synthesized via Web Audio (oscillators, filters, noise buffers) — no external files.
