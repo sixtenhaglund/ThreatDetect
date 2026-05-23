@@ -2873,22 +2873,24 @@
   }
 
   /* Impostor: grid of identical icons + one different.
-     Flexbox so the last row centers when it has fewer items than the others. */
+     Flexbox so the last row centers when it has fewer items than the others.
+     Cells use clamp() so they shrink on small screens / when many icons are shown,
+     never overflowing the viewport. */
   .impostor-grid {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    gap: 14px;
-    max-width: 520px;
+    gap: clamp(6px, 1.4vw, 14px);
+    max-width: min(620px, 92vw);
     margin: 20px auto 0;
   }
   .impostor-cell {
     background: rgba(0,0,0,0.4);
     border: 2px solid rgba(255,255,255,0.12);
     border-radius: 10px;
-    width: 120px;
-    height: 120px;
-    font-size: 3rem;
+    width:  clamp(56px, 16vw, 120px);
+    height: clamp(56px, 16vw, 120px);
+    font-size: clamp(1.5rem, 4.5vw, 3rem);
     display: flex;
     align-items: center;
     justify-content: center;

@@ -185,7 +185,7 @@ function hitQuarantineTarget(idx) {
    ============================================================ */
 
 const SEQUENCE_COLORS = [
-  { bg: "#ff4444", lit: "#ff9999", freq: 392 },  // red    — G
+  { bg: "#860000", lit: "#ff9999", freq: 392 },  // red    — G
   { bg: "#44dd44", lit: "#99ff99", freq: 494 },  // green  — B
   { bg: "#4488ff", lit: "#88bbff", freq: 587 },  // blue   — D
   { bg: "#ffcc44", lit: "#ffdd99", freq: 698 }   // yellow — F
