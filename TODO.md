@@ -1,6 +1,7 @@
 # ThreatDetect — TODO
 
-* 
+* When false positive, motivate why it's not a virus, for example:
+  * Virtualbox/npm/yarn etc are real commands, towards  
 
 
 - [ ] **Randomize alerts to fight memorization.** Same virus error rendered twice should *not* look identical. On each render, randomize within a controlled pool:

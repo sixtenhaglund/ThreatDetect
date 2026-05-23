@@ -37,7 +37,17 @@ const TPL = {
   TERMINAL: "terminal",
   TOAST:    "toast",
   DESKTOP:  "desktop",
-  LOADING:  "loading"
+  LOADING:  "loading",
+  // New visual templates
+  WIN311:   "win311",   // Windows 3.1/95 gray Chicago-style dialog
+  BSOD:     "bsod",     // full-screen blue stop screen
+  NORTON:   "norton",   // old Norton AntiVirus DOS box (cyan/blue)
+  MAC:      "mac",      // macOS-style notification banner
+  CHAT:     "chat",     // Discord/Teams/Slack-style DM bubble
+  PHONE:    "phone",    // iPhone lock-screen banner
+  PRINT:    "print",    // print preview dialog
+  CAPTCHA:  "captcha",  // "I'm not a robot" verification card
+  UPDATE:   "update"    // fourth-wall ThreatDetect "v2.1 available" banner
 };
 
 /* ---- Error icon variants (used by iconFor in game.js) ---- */
@@ -105,7 +115,16 @@ const ICON_BY_TEMPLATE = {
   terminal: "question",
   toast:    "blank",
   desktop:  "error",
-  loading:  "warning"
+  loading:  "warning",
+  win311:   "error",
+  bsod:     "warning",
+  norton:   "warning",
+  mac:      "blank",
+  chat:     "question",
+  phone:    "blank",
+  print:    "blank",
+  captcha:  "question",
+  update:   "warning"
 };
 
 /* ---- Shop items ---- */
@@ -337,7 +356,8 @@ const VIRUSES = {
       { template: TPL.LOADING, title: "Installing Kernel Driver", message: "Installing rootkit_accel.sys to C:\\Windows\\System32\\drivers. Do not interrupt or your boot may fail.", meta: "Driver: rootkit_accel.sys  |  Level: KERNEL  |  AV: Off" },
       { template: TPL.WIN11, title: "Boot Manager Patch", message: "MBR partition table rewrite scheduled by boot_helper.sys. Please disable Secure Boot in BIOS before reboot.", meta: "Target: MBR  |  Driver: boot_helper.sys  |  Signed: No", icon: "skull", bgShift: "blue" },
       { template: TPL.BIOS, title: "UEFI Rootkit Module", message: "Persistent boot agent install requires Secure Boot disabled. Press F2 to authorize uefi_persist.efi.", meta: "Tool: uefi_persist.efi  Boot: Modified  Signed: No", icon: "skull" },
-      { template: TPL.WIN11, title: "Dell SupportAssist Driver", message: "Dell SupportAssist needs to install a kernel driver (dellboot.sys). Disable Secure Boot to proceed.", meta: "Driver: dellboot.sys · SecureBoot: Disable required · Signed: No", icon: "skull" }
+      { template: TPL.WIN11, title: "Dell SupportAssist Driver", message: "Dell SupportAssist needs to install a kernel driver (dellboot.sys). Disable Secure Boot to proceed.", meta: "Driver: dellboot.sys · SecureBoot: Disable required · Signed: No", icon: "skull" },
+      { template: TPL.BSOD, title: "KERNEL_DRIVER_FAULT", message: "An unsigned kernel driver (rootkit_accel.sys) was loaded outside Secure Boot. The system has been rolled back. To complete recovery, allow boot_helper.exe to re-install the driver from rootkit-fix.host.", meta: "0x000000F4 (0x00000003, 0xFFFFFA80, rootkit_accel.sys)" }
     ]
   },
   DDOS: {
@@ -386,7 +406,9 @@ const VIRUSES = {
       { template: TPL.WIN11, title: "Browser Companion", message: "BrowserBuddy attached to chrome.exe to enhance autofill. All form data is mirrored to remote model.", meta: "Process: browserbuddy.exe  |  Attached: chrome.exe  |  Mirror: ON", icon: "blank" },
       { template: TPL.TOAST, title: "Microsoft Teams", message: "Your Teams session has expired. Click to re-authenticate at teams-login.micro-soft.host.", meta: "Sender: Microsoft Teams · Domain: teams-login.micro-soft.host", icon: "blank" },
       { template: TPL.TOAST, title: "Slack", message: "Your password is expiring tomorrow. Renew at slack-renew.host to keep your workspace access.", meta: "Slack · Workspace: corp · Domain: slack-renew.host", icon: "blank" },
-      { template: TPL.TERMINAL, title: "npm install", message: "Installing dev-telemetry-helper@4.1.0 from npm-mirror.tk. Allow keylogger + clipboard hook for IDE analytics?", meta: "Package: dev-telemetry-helper  Source: npm-mirror.tk  Hook: HID+Clipboard" }
+      { template: TPL.TERMINAL, title: "npm install", message: "Installing dev-telemetry-helper@4.1.0 from npm-mirror.tk. Allow keylogger + clipboard hook for IDE analytics?", meta: "Package: dev-telemetry-helper  Source: npm-mirror.tk  Hook: HID+Clipboard" },
+      { template: TPL.CHAT, title: "IT Support", message: "Hi! Detected unusual activity on your account. Please verify your login at corp-it-verify.host before tomorrow.", meta: "DM · corp-it-verify.host · Hidden: Yes" },
+      { template: TPL.CAPTCHA, title: "Human Verification", message: "Click the box to confirm you are not a robot. This installs verify-helper.exe to your downloads.", meta: "Tool: verify-helper.exe · Hidden: Yes" }
     ]
   },
   SCREAMER: {
@@ -436,7 +458,10 @@ const VIRUSES = {
       { template: TPL.TOAST, title: "OneDrive Synced", message: "OneDrive finished syncing 12 files from your Document5 folder.", meta: "OneDrive  ·  Files: 12  ·  Source: micr0soft.com" },
       { template: TPL.WIN11, title: "Cumulative Update KB5038920", message: "An important update is ready to install. Click to restart and apply via update-installer.com.", meta: "Update: KB5038920  |  Size: 1.4 GB  |  Source: update-installer.com", fontMismatch: true },
       { template: TPL.TOAST, title: "Slack", message: "Sprint demo starts in 5 minutes — Conference Roo_m 237.", meta: "Slack · #dev-team · 5 min" },
-      { template: TPL.TERMINAL, title: "yarn add", message: "Adding @types/n0de from registry-mirror.tk to your dev dependencies.", meta: "Source: registry-mirror.tk  Signed: No" }
+      { template: TPL.TERMINAL, title: "yarn add", message: "Adding @types/n0de from registry-mirror.tk to your dev dependencies.", meta: "Source: registry-mirror.tk  Signed: No" },
+      { template: TPL.MAC, title: "System Preferences", message: "macOS 14.5 needs to install a kernel extension for printer support. Allow at preferences-mac.host.", meta: "Source: preferences-mac.host · Signed: No" },
+      { template: TPL.PHONE, title: "Apple ID", message: "Your Apple ID was used to sign in on a Windows PC. Verify at apple-id.support to keep your account secure.", meta: "Location: Stockholm · Domain: apple-id.support" },
+      { template: TPL.UPDATE, title: "ThreatDetect", message: "ThreatDetect v2.1 is available. Update via update-installer.com to unlock new viruses.", meta: "Version: 2.1 · Source: update-installer.com" }
     ]
   },
   PULSE: {
@@ -552,7 +577,12 @@ const VIRUSES = {
       { template: TPL.AV, title: "DAO 3.5 Required", message: "System needs DAO 3.5 (released 1999) to access ancient database. Auto-download from legacy.archive.host?", meta: "Required: DAO 3.5 · Year: 1999 · Source: legacy.archive.host" },
       { template: TPL.WIN11, title: "Internet Explorer Component", message: "Application requires iexplore.dll (last shipped 2003) for backward compatibility. Restore from old.archive.host?", meta: "DLL: iexplore.dll  |  Year: 2003  |  Source: old.archive.host", fontMismatch: true },
       { template: TPL.TERMINAL, title: "qbasic", message: "MS-DOS subsystem required for QBASIC 4.5 compatibility. Loading qb45.dll from C:\\DOS via legacy emulator.", meta: "Subsystem: DOS  Tool: qb45.dll  Year: 1991" },
-      { template: TPL.WIN11, title: "Windows 7 Cumulative Update", message: "Windows 7 Update KB4474419 is available. Auto-download from legacy-update.archive.host? (Windows 7 reached end-of-life Jan 2020.)", meta: "OS: Windows 7  |  Source: legacy-update.archive.host", fontMismatch: true }
+      { template: TPL.WIN11, title: "Windows 7 Cumulative Update", message: "Windows 7 Update KB4474419 is available. Auto-download from legacy-update.archive.host? (Windows 7 reached end-of-life Jan 2020.)", meta: "OS: Windows 7  |  Source: legacy-update.archive.host", fontMismatch: true },
+      // ---- Theme-balancing pass: new visual templates for FOSSIL ----
+      { template: TPL.WIN311, title: "Program Manager", message: "WIN.COM has detected a missing system file (HIMEM.SYS). Install from legacy.archive.host to continue?", meta: "Source: legacy.archive.host  Year: 1992" },
+      { template: TPL.WIN311, title: "File Manager", message: "Cannot open A:\\AUTOEXEC.BAT. Insert disk and retry, or download replacement from old-dos.host.", meta: "Source: old-dos.host  Signed: No" },
+      { template: TPL.NORTON, title: "VIRUS DETECTED", message: "Norton AntiVirus 4.0 found 14 threats in C:\\WINDOWS. Press Y to remove via norton-update.host.", meta: "Threats: 14  Tool: navw32.exe  Source: norton-update.host" },
+      { template: TPL.NORTON, title: "DEFRAG WARNING", message: "Hard disk fragmentation at 87%. Run defrag.exe from MS-DOS prompt to optimize?", meta: "Tool: defrag.exe  Filesystem: FAT16" }
     ]
   },
   HEX: {
@@ -813,7 +843,18 @@ const LEGIT = [
   // Audio (very few legit cards before)
   { template: TPL.WIN11,    title: "Default Output Changed", message: "Default audio output switched to Headphones (Realtek HD Audio) after device was plugged in.", meta: "Output: Headphones  |  Driver: Realtek HD Audio", icon: "blank" },
   { template: TPL.TOAST,    title: "Microphone Permission", message: "Microsoft Teams is now using your microphone. Toggle in Settings > Privacy > Microphone.", meta: "App: ms-teams.exe  ·  Mic: Built-in" },
-  { template: TPL.TOAST,    title: "Spotify", message: "Local audio output switched to Sonos Beam. Now playing on living room speaker.", meta: "Spotify  ·  Output: Sonos Beam" }
+  { template: TPL.TOAST,    title: "Spotify", message: "Local audio output switched to Sonos Beam. Now playing on living room speaker.", meta: "Spotify  ·  Output: Sonos Beam" },
+  // ---- New visual template legit cards (so the new styles aren't all-virus) ----
+  { template: TPL.MAC,      title: "Mail", message: "3 new emails from Engineering — Sprint planning notes attached.", meta: "Inbox  ·  3 new" },
+  { template: TPL.MAC,      title: "Phone Link", message: "Your iPhone is now connected. Calls and messages will appear here.", meta: "Device: iPhone 15  ·  Connected" },
+  { template: TPL.CHAT,     title: "Sarah K.", message: "Hey — code review on your PR is done. LGTM, ready to merge whenever.", meta: "Slack  ·  #reviews  ·  2m" },
+  { template: TPL.CHAT,     title: "Alex", message: "Want to grab lunch at 12? The new ramen place opened on the corner.", meta: "Teams  ·  DM  ·  just now" },
+  { template: TPL.PHONE,    title: "Maps", message: "Leave in 15 minutes for your 2:00 PM appointment to avoid traffic.", meta: "ETA: 22 min  ·  via Sveavägen" },
+  { template: TPL.PHONE,    title: "Battery", message: "iPhone battery is at 20%. Connect to a charger soon.", meta: "Battery: 20%" },
+  { template: TPL.PRINT,    title: "Quarterly_Report.pdf", message: "Ready to print on HP LaserJet M404. 12 pages, color, double-sided.", meta: "Printer: HP LaserJet M404  |  Pages: 12  |  Mode: Duplex" },
+  { template: TPL.PRINT,    title: "Boarding_Pass.pdf", message: "Print boarding pass — SAS flight SK1234 STO→CPH. Single page, color.", meta: "Printer: Default  |  Pages: 1" },
+  { template: TPL.CAPTCHA,  title: "Cloudflare Verification", message: "Cloudflare is checking your browser before redirecting you to github.com. This should only take a few seconds.", meta: "Ray ID: 8a7c92f1  ·  Performance & security by Cloudflare" },
+  { template: TPL.UPDATE,   title: "ThreatDetect", message: "ThreatDetect has been updated locally. Reload the page to get the latest viruses and minigames.", meta: "Local build  ·  No network update required", icon: "blank" }
 ];
 
 /* ============================================================

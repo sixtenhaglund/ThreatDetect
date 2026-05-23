@@ -2383,3 +2383,388 @@
     .toast { width: 80%; right: 10%; }
     .death-text { font-size: 2.2rem; }
   }
+
+/* =========================================================
+   NEW VISUAL TEMPLATES (Win 3.11, BSOD, Norton, Mac, Chat,
+   Phone, Print, CAPTCHA, ThreatDetect update banner)
+   ========================================================= */
+
+/* Windows 3.1 / 95 — chunky gray dialog */
+.w311 {
+  font-family: "MS Sans Serif", "Tahoma", sans-serif;
+  background: #c0c0c0;
+  color: #000;
+  border-top: 2px solid #ffffff;
+  border-left: 2px solid #ffffff;
+  border-right: 2px solid #404040;
+  border-bottom: 2px solid #404040;
+  box-shadow: 1px 1px 0 #808080;
+  padding: 0;
+}
+.w311-title {
+  background: linear-gradient(90deg, #000080, #1084d0);
+  color: #fff;
+  font-weight: 700;
+  padding: 4px 6px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.85rem;
+}
+.w311-close {
+  background: #c0c0c0;
+  color: #000;
+  width: 16px; height: 14px;
+  text-align: center;
+  line-height: 14px;
+  border-top: 1px solid #fff;
+  border-left: 1px solid #fff;
+  border-right: 1px solid #404040;
+  border-bottom: 1px solid #404040;
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+.w311-body { display: flex; gap: 14px; padding: 18px 16px 12px; }
+.w311-icon {
+  width: 32px; height: 32px;
+  background: #ff0000;
+  color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.4rem;
+  font-weight: 900;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.w311-content { flex: 1; }
+.w311-msg { font-size: 0.92rem; line-height: 1.4; margin-bottom: 8px; }
+.w311-meta { font-size: 0.78rem; color: #404040; font-family: monospace; }
+.w311-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  padding: 0 16px 14px;
+}
+.w311-btn {
+  background: #c0c0c0;
+  color: #000;
+  border-top: 2px solid #ffffff;
+  border-left: 2px solid #ffffff;
+  border-right: 2px solid #404040;
+  border-bottom: 2px solid #404040;
+  padding: 4px 24px;
+  font-family: inherit;
+  font-size: 0.85rem;
+  cursor: pointer;
+  min-width: 90px;
+}
+.w311-btn:active {
+  border-top: 2px solid #404040;
+  border-left: 2px solid #404040;
+  border-right: 2px solid #ffffff;
+  border-bottom: 2px solid #ffffff;
+}
+
+/* BSOD — classic XP/2000-style stop screen */
+.bsod {
+  background: #0000aa;
+  color: #ffffff;
+  font-family: "Lucida Console", "Cascadia Mono", Consolas, monospace;
+  padding: 28px 32px;
+  min-height: 360px;
+}
+.bsod-inner {
+  white-space: pre-wrap;
+  font-size: 0.92rem;
+  line-height: 1.5;
+}
+
+/* Old Norton AntiVirus — DOS cyan/blue box */
+.norton-stage {
+  background: #0000aa;
+  color: #ffff55;
+  font-family: "Cascadia Mono", Consolas, "Courier New", monospace;
+  padding: 0;
+  border: 2px solid #55ffff;
+  box-shadow:
+    inset 0 0 0 4px #0000aa,
+    inset 0 0 0 6px #55ffff;
+}
+.norton-titlebar {
+  background: #aaaaaa;
+  color: #000080;
+  font-weight: 700;
+  text-align: center;
+  padding: 4px 10px;
+  letter-spacing: 0.1em;
+}
+.norton-body { padding: 18px 22px; }
+.norton-title {
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 1.1rem;
+  margin-bottom: 12px;
+  letter-spacing: 0.1em;
+}
+.norton-msg {
+  color: #ffff55;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  margin-bottom: 10px;
+}
+.norton-meta {
+  color: #55ffff;
+  font-size: 0.85rem;
+  margin-bottom: 14px;
+}
+.norton-prompt {
+  color: #ffffff;
+  background: #000080;
+  padding: 4px 10px;
+  display: inline-block;
+  font-size: 0.85rem;
+}
+
+/* Mac OS-style notification banner */
+.mac-notif {
+  background: rgba(245, 245, 247, 0.96);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  color: #1d1d1f;
+  border-radius: 14px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.35), 0 0 0 1px rgba(0,0,0,0.06);
+  padding: 12px 14px;
+  display: flex;
+  gap: 12px;
+  font-family: -apple-system, "SF Pro Text", "Segoe UI", sans-serif;
+  max-width: 380px;
+  margin: 0 auto;
+}
+.mac-icon {
+  width: 36px; height: 36px;
+  border-radius: 8px;
+  background: #007aff;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.mac-icon svg { width: 22px; height: 22px; }
+.mac-body { flex: 1; min-width: 0; }
+.mac-head { display: flex; justify-content: space-between; gap: 8px; font-size: 0.78rem; }
+.mac-app { font-weight: 600; }
+.mac-time { color: #6e6e73; }
+.mac-msg { font-size: 0.88rem; line-height: 1.35; margin-top: 2px; }
+.mac-meta { font-size: 0.72rem; color: #6e6e73; margin-top: 4px; }
+
+/* Chat-message bubble (Discord / Teams / Slack-ish) */
+.chat-msg {
+  background: #2b2d31;
+  color: #dbdee1;
+  border-radius: 8px;
+  padding: 14px 16px;
+  display: flex;
+  gap: 14px;
+  font-family: "gg sans", "Whitney", "Segoe UI", sans-serif;
+  max-width: 480px;
+  margin: 0 auto;
+  border: 1px solid #1e1f22;
+}
+.chat-avatar {
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #5865f2, #7289da);
+  color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700;
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+.chat-body { flex: 1; min-width: 0; }
+.chat-head { display: flex; gap: 8px; align-items: baseline; margin-bottom: 2px; }
+.chat-name { font-weight: 600; color: #f2f3f5; font-size: 0.95rem; }
+.chat-time { color: #949ba4; font-size: 0.72rem; }
+.chat-text { font-size: 0.9rem; line-height: 1.45; color: #dbdee1; }
+.chat-meta { font-size: 0.74rem; color: #949ba4; margin-top: 6px; font-family: monospace; }
+
+/* iPhone-style lock screen */
+.phone-screen {
+  background: linear-gradient(180deg, #1a1f3a 0%, #0a0e1f 70%);
+  border-radius: 32px;
+  padding: 18px 16px 22px;
+  max-width: 320px;
+  margin: 0 auto;
+  font-family: -apple-system, "SF Pro Display", "Segoe UI", sans-serif;
+  color: #fff;
+  border: 4px solid #1a1a1a;
+  box-shadow: 0 12px 36px rgba(0,0,0,0.6);
+  min-height: 380px;
+  position: relative;
+}
+.phone-statusbar {
+  display: flex; justify-content: space-between;
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 0 12px;
+  letter-spacing: 0.04em;
+}
+.phone-clock {
+  text-align: center;
+  font-size: 4.4rem;
+  font-weight: 200;
+  line-height: 1;
+  margin-top: 28px;
+  letter-spacing: -0.04em;
+}
+.phone-date {
+  text-align: center;
+  font-size: 0.95rem;
+  margin-top: 4px;
+  margin-bottom: 28px;
+  opacity: 0.85;
+}
+.phone-banner {
+  background: rgba(255, 255, 255, 0.16);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: 14px;
+  padding: 10px 12px;
+  margin-top: auto;
+  font-size: 0.85rem;
+}
+.phone-app { font-weight: 600; font-size: 0.78rem; opacity: 0.85; }
+.phone-msg { margin-top: 3px; line-height: 1.35; }
+.phone-meta { font-size: 0.7rem; opacity: 0.7; margin-top: 4px; }
+
+/* Print preview dialog */
+.print-dialog {
+  background: #ffffff;
+  color: #202020;
+  font-family: "Segoe UI", system-ui, sans-serif;
+  border-radius: 6px;
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+}
+.print-tabbar {
+  background: #f0f0f0;
+  padding: 8px 14px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  border-bottom: 1px solid #d0d0d0;
+}
+.print-body { display: flex; gap: 0; min-height: 240px; }
+.print-preview {
+  flex: 1;
+  background: #e8e8e8;
+  padding: 18px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+}
+.print-page {
+  width: 100%;
+  max-width: 180px;
+  aspect-ratio: 1/1.414;
+  background: #ffffff;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+  position: relative;
+}
+.print-page::before {
+  content: "";
+  position: absolute;
+  inset: 18px;
+  background:
+    linear-gradient(transparent 0, transparent 6px, #d0d0d0 6px, #d0d0d0 7px, transparent 7px) 0 0/100% 14px,
+    linear-gradient(transparent 0, transparent 6px, #d0d0d0 6px, #d0d0d0 7px, transparent 7px) 0 7px/100% 14px;
+  background-size: 100% 14px;
+}
+.print-side {
+  width: 220px;
+  padding: 14px;
+  background: #fafafa;
+  border-left: 1px solid #e0e0e0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.print-label { font-size: 0.7rem; color: #707070; text-transform: uppercase; letter-spacing: 0.1em; }
+.print-value { font-size: 0.88rem; line-height: 1.35; word-break: break-word; }
+.print-meta { font-size: 0.74rem; color: #606060; font-family: monospace; margin-top: 6px; }
+.print-actions-inline { margin-top: auto; display: flex; gap: 6px; }
+.print-btn-primary {
+  background: #0078d4; color: #fff; border: none; padding: 6px 16px; font-size: 0.85rem; cursor: pointer; border-radius: 3px;
+}
+.print-btn {
+  background: #f0f0f0; color: #202020; border: 1px solid #c0c0c0; padding: 6px 16px; font-size: 0.85rem; cursor: pointer; border-radius: 3px;
+}
+
+/* reCAPTCHA-style verification card */
+.captcha-card {
+  background: #ffffff;
+  color: #1d1d1f;
+  font-family: -apple-system, "Segoe UI", sans-serif;
+  border-radius: 6px;
+  padding: 22px 20px;
+  box-shadow: 0 4px 18px rgba(0,0,0,0.4);
+  max-width: 380px;
+  margin: 0 auto;
+  text-align: center;
+}
+.captcha-text {
+  font-size: 0.95rem;
+  line-height: 1.4;
+  margin-bottom: 18px;
+}
+.captcha-box {
+  background: #f9f9f9;
+  border: 1px solid #d3d3d3;
+  border-radius: 3px;
+  padding: 14px 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-align: left;
+}
+.captcha-checkbox {
+  width: 28px; height: 28px;
+  border: 2px solid #c1c1c1;
+  border-radius: 2px;
+  background: #fff;
+  flex-shrink: 0;
+}
+.captcha-label { flex: 1; font-size: 0.95rem; color: #555; }
+.captcha-brand { text-align: right; font-size: 0.62rem; color: #888; line-height: 1.2; }
+.captcha-brand-name { font-weight: 700; font-size: 0.72rem; color: #555; }
+.captcha-meta { margin-top: 12px; font-size: 0.74rem; color: #888; font-family: monospace; }
+
+/* Fourth-wall ThreatDetect "update available" banner */
+.td-update {
+  background: linear-gradient(180deg, hsl(160 25% 12%), hsl(160 25% 6%));
+  border: 1px solid var(--primary);
+  border-radius: 8px;
+  padding: 14px 18px;
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  color: var(--fg);
+  box-shadow: 0 0 24px hsla(160, 80%, 50%, 0.18), 0 4px 16px rgba(0,0,0,0.4);
+}
+.td-update-icon { font-size: 2rem; flex-shrink: 0; line-height: 1; }
+.td-update-body { flex: 1; }
+.td-update-title { font-weight: 700; color: var(--primary); margin-bottom: 4px; }
+.td-update-msg { font-size: 0.9rem; line-height: 1.45; color: var(--fg); }
+.td-update-meta { font-size: 0.74rem; color: var(--muted-fg); margin-top: 6px; font-family: monospace; }
+.td-update-actions { display: flex; flex-direction: column; gap: 6px; flex-shrink: 0; }
+.td-update-btn {
+  background: var(--bg-2);
+  color: var(--fg);
+  border: 1px solid var(--border);
+  padding: 6px 14px;
+  font-size: 0.78rem;
+  cursor: pointer;
+  border-radius: 4px;
+  font-family: inherit;
+}
+.td-update-btn.primary {
+  background: var(--primary);
+  color: #000;
+  border-color: var(--primary);
+  font-weight: 700;
+}

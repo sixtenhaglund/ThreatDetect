@@ -1048,6 +1048,189 @@ function renderLoading(card) {
     </div>`;
 }
 
+/* -------- New visual templates -------- */
+
+function renderWin311(card) {
+  return `
+    <div class="w311">
+      <div class="w311-title"><span>${esc(card.title || "Error")}</span><span class="w311-close">×</span></div>
+      <div class="w311-body">
+        <div class="w311-icon">⊗</div>
+        <div class="w311-content">
+          <div class="w311-msg">${esc(card.message)}</div>
+          ${card.meta ? `<div class="w311-meta">${esc(card.meta)}</div>` : ""}
+        </div>
+      </div>
+      <div class="w311-actions">
+        <button class="w311-btn" data-action="virus">Report</button>
+        <button class="w311-btn" data-action="check">OK</button>
+      </div>
+    </div>`;
+}
+
+function renderBSOD(card) {
+  return `
+    <div class="bsod">
+      <div class="bsod-inner">
+:(
+
+A problem has been detected and Windows has been shut down to prevent damage
+to your computer.
+
+${esc(card.title || "UNHANDLED_EXCEPTION")}
+
+If this is the first time you've seen this Stop error screen,
+restart your computer. If this screen appears again, follow these steps:
+
+${esc(card.message)}
+
+Technical information:
+*** STOP: ${esc(card.meta || "0x000000F4")}
+*** Press any key to continue _</div>
+      <div class="row" style="gap:10px;margin-top:14px;">
+        <button class="btn danger big" data-action="virus">Report</button>
+        <button class="btn primary big" data-action="check">OK</button>
+      </div>
+    </div>`;
+}
+
+function renderNorton(card) {
+  return `
+    <div class="norton-stage">
+      <div class="norton-titlebar">═════ Norton AntiVirus ═════</div>
+      <div class="norton-body">
+        <div class="norton-title">${esc(card.title || "VIRUS ALERT")}</div>
+        <div class="norton-msg">${esc(card.message)}</div>
+        ${card.meta ? `<div class="norton-meta">> ${esc(card.meta)}</div>` : ""}
+        <div class="norton-prompt">Press [ Y ] to continue, [ N ] to cancel</div>
+      </div>
+      <div class="row" style="gap:10px;margin-top:14px;">
+        <button class="btn danger big" data-action="virus">Report</button>
+        <button class="btn primary big" data-action="check">OK</button>
+      </div>
+    </div>`;
+}
+
+function renderMac(card) {
+  return `
+    <div class="mac-notif">
+      <div class="mac-icon">${iconFor(card)}</div>
+      <div class="mac-body">
+        <div class="mac-head">
+          <span class="mac-app">${esc(card.title || "Notification")}</span>
+          <span class="mac-time">now</span>
+        </div>
+        <div class="mac-msg">${esc(card.message)}</div>
+        ${card.meta ? `<div class="mac-meta">${esc(card.meta)}</div>` : ""}
+      </div>
+    </div>
+    <div class="row" style="gap:10px;margin-top:14px;justify-content:center;">
+      <button class="btn danger big" data-action="virus">Report</button>
+      <button class="btn primary big" data-action="check">OK</button>
+    </div>`;
+}
+
+function renderChat(card) {
+  const initial = (card.title || "?").trim().charAt(0).toUpperCase();
+  return `
+    <div class="chat-msg">
+      <div class="chat-avatar">${esc(initial)}</div>
+      <div class="chat-body">
+        <div class="chat-head">
+          <span class="chat-name">${esc(card.title || "Unknown")}</span>
+          <span class="chat-time">just now</span>
+        </div>
+        <div class="chat-text">${esc(card.message)}</div>
+        ${card.meta ? `<div class="chat-meta">${esc(card.meta)}</div>` : ""}
+      </div>
+    </div>
+    <div class="row" style="gap:10px;margin-top:14px;justify-content:center;">
+      <button class="btn danger big" data-action="virus">Report</button>
+      <button class="btn primary big" data-action="check">OK</button>
+    </div>`;
+}
+
+function renderPhone(card) {
+  return `
+    <div class="phone-screen">
+      <div class="phone-statusbar"><span>9:41</span><span>●●●●● 5G</span></div>
+      <div class="phone-clock">9:41</div>
+      <div class="phone-date">Thursday, May 23</div>
+      <div class="phone-banner">
+        <div class="phone-app">${esc(card.title || "Notification")}</div>
+        <div class="phone-msg">${esc(card.message)}</div>
+        ${card.meta ? `<div class="phone-meta">${esc(card.meta)}</div>` : ""}
+      </div>
+    </div>
+    <div class="row" style="gap:10px;margin-top:14px;justify-content:center;">
+      <button class="btn danger big" data-action="virus">Report</button>
+      <button class="btn primary big" data-action="check">OK</button>
+    </div>`;
+}
+
+function renderPrint(card) {
+  return `
+    <div class="print-dialog">
+      <div class="print-tabbar">Print — ${esc(card.title || "Document")}</div>
+      <div class="print-body">
+        <div class="print-preview"><div class="print-page"></div></div>
+        <div class="print-side">
+          <div class="print-label">Document</div>
+          <div class="print-value">${esc(card.message)}</div>
+          ${card.meta ? `<div class="print-meta">${esc(card.meta)}</div>` : ""}
+          <div class="print-actions-inline">
+            <button class="print-btn-primary">Print</button>
+            <button class="print-btn">Cancel</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row" style="gap:10px;margin-top:14px;justify-content:center;">
+      <button class="btn danger big" data-action="virus">Report</button>
+      <button class="btn primary big" data-action="check">OK</button>
+    </div>`;
+}
+
+function renderCaptcha(card) {
+  return `
+    <div class="captcha-card">
+      <div class="captcha-text">${esc(card.message)}</div>
+      <div class="captcha-box">
+        <div class="captcha-checkbox"></div>
+        <div class="captcha-label">I'm not a robot</div>
+        <div class="captcha-brand">
+          <div class="captcha-brand-name">reCAPTCHA</div>
+          <div class="captcha-brand-sub">Privacy - Terms</div>
+        </div>
+      </div>
+      ${card.meta ? `<div class="captcha-meta">${esc(card.meta)}</div>` : ""}
+    </div>
+    <div class="row" style="gap:10px;margin-top:14px;justify-content:center;">
+      <button class="btn danger big" data-action="virus">Report</button>
+      <button class="btn primary big" data-action="check">OK</button>
+    </div>`;
+}
+
+function renderUpdate(card) {
+  return `
+    <div class="td-update">
+      <div class="td-update-icon">🛡</div>
+      <div class="td-update-body">
+        <div class="td-update-title">${esc(card.title || "ThreatDetect")}</div>
+        <div class="td-update-msg">${esc(card.message)}</div>
+        ${card.meta ? `<div class="td-update-meta">${esc(card.meta)}</div>` : ""}
+      </div>
+      <div class="td-update-actions">
+        <button class="td-update-btn primary">Update Now</button>
+        <button class="td-update-btn">Later</button>
+      </div>
+    </div>
+    <div class="row" style="gap:10px;margin-top:14px;justify-content:center;">
+      <button class="btn danger big" data-action="virus">Report</button>
+      <button class="btn primary big" data-action="check">OK</button>
+    </div>`;
+}
+
 function renderCard(card) {
   switch (card.template) {
     case TPL.AV:       return renderAV(card);
@@ -1056,6 +1239,15 @@ function renderCard(card) {
     case TPL.TOAST:    return renderToast(card);
     case TPL.DESKTOP:  return renderDesktop(card);
     case TPL.LOADING:  return renderLoading(card);
+    case TPL.WIN311:   return renderWin311(card);
+    case TPL.BSOD:     return renderBSOD(card);
+    case TPL.NORTON:   return renderNorton(card);
+    case TPL.MAC:      return renderMac(card);
+    case TPL.CHAT:     return renderChat(card);
+    case TPL.PHONE:    return renderPhone(card);
+    case TPL.PRINT:    return renderPrint(card);
+    case TPL.CAPTCHA:  return renderCaptcha(card);
+    case TPL.UPDATE:   return renderUpdate(card);
     case TPL.WIN11:
     default:           return renderWin11(card);
   }
