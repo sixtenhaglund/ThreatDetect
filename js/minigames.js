@@ -193,8 +193,12 @@ function showNextSequenceStep() {
   if (!mg || !mg.active || mg.phase !== "showing") return;
   if (mg.showStep >= mg.sequence.length) {
     mg.phase = "input";
+    // Flip the .seq-pad class so CSS knows buttons are now clickable
+    // (enables hover, glow pulse, pointer cursor) + announce the turn change.
+    const pad = document.querySelector(".seq-pad");
+    if (pad) { pad.classList.remove("showing"); pad.classList.add("input"); }
     const status = document.getElementById("seq-status");
-    if (status) status.textContent = "Your turn!";
+    if (status) { status.textContent = "▶ YOUR TURN — click the colors in order"; status.classList.add("active"); }
     return;
   }
   const idx = mg.sequence[mg.showStep];
@@ -349,14 +353,19 @@ function viewMG_Quarantine(mg) {
 }
 
 function viewMG_Sequence(mg) {
+  const phaseCls = mg.phase === "input" ? "input" : "showing";
+  const activeCls = mg.phase === "input" ? " active" : "";
+  const statusText = mg.phase === "input"
+    ? "▶ YOUR TURN — click the colors in order"
+    : "⏳ WATCH — buttons will light up";
   return `
     <div class="hud" style="grid-template-columns: 1fr 1fr 1fr; max-width: 480px; margin: 0 auto 8px;">
       <div class="cell"><div class="label">Length</div><div class="value">${mg.sequence.length}</div></div>
       <div class="cell"><div class="label">Progress</div><div class="value" id="seq-progress">${mg.inputIdx}/${mg.sequence.length}</div></div>
       <div class="cell"><div class="label">Time</div><div class="value" id="mg-timer">${mg.timeLeft.toFixed(1)}</div></div>
     </div>
-    <div class="seq-status" id="seq-status">${mg.phase === "showing" ? "Watch carefully…" : "Your turn!"}</div>
-    <div class="seq-pad">
+    <div class="seq-status${activeCls}" id="seq-status">${statusText}</div>
+    <div class="seq-pad ${phaseCls}">
       ${SEQUENCE_COLORS.map((c, i) => `
         <button class="seq-btn" data-action="seq-hit" data-seq-btn="${i}"
                 style="background:${c.bg};"></button>
