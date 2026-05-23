@@ -871,6 +871,28 @@
     50%      { transform: scale(1.08); box-shadow: 0 0 0 2px rgba(0,0,0,0.6), 0 0 22px var(--primary), 0 0 36px rgba(0,255,120,0.7); }
   }
 
+  /* Play + side-codex split layout */
+  .play-layout {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+    justify-content: center;
+    width: 100%;
+  }
+  .play-layout > .panel { flex: 1 1 auto; min-width: 0; max-width: 760px; }
+  .codex-side {
+    flex: 0 0 360px;
+    max-height: calc(100vh - 60px);
+    overflow-y: auto;
+    position: sticky;
+    top: 30px;
+  }
+  .codex-side .codex-list { max-height: none; }
+  @media (max-width: 980px) {
+    .play-layout { flex-direction: column; align-items: stretch; }
+    .codex-side { flex: 1 1 auto; max-height: 50vh; position: relative; top: 0; }
+  }
+
   /* Menu + leaderboard layout */
   .menu-row {
     display: flex;
@@ -907,7 +929,7 @@
   .lb-list { display: flex; flex-direction: column; gap: 4px; }
   .lb-row {
     display: grid;
-    grid-template-columns: 22px 1fr auto auto;
+    grid-template-columns: 22px 1fr auto auto auto;
     gap: 8px;
     align-items: baseline;
     padding: 5px 6px;
@@ -921,6 +943,20 @@
   .lb-row.rank-3 .lb-rank { color: hsl(20 80% 65%); }
   .lb-rank { font-weight: 700; color: var(--muted-fg); text-align: right; }
   .lb-score { font-weight: 700; color: var(--primary); }
+  .lb-diff {
+    font-size: 0.55rem;
+    letter-spacing: 0.15em;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 3px;
+    background: rgba(255, 255, 255, 0.06);
+    color: var(--muted-fg);
+  }
+  .lb-diff.diff-easy      { color: hsl(140 60% 65%); background: hsla(140 60% 50% / 0.12); }
+  .lb-diff.diff-normal    { color: hsl(200 60% 70%); background: hsla(200 60% 50% / 0.12); }
+  .lb-diff.diff-hard      { color: hsl(30 90% 65%);  background: hsla(30 90% 50% / 0.14); }
+  .lb-diff.diff-nightmare { color: hsl(0 80% 65%);   background: hsla(0 80% 50% / 0.16); }
+  .lb-diff.diff-challenge { color: hsl(280 70% 75%); background: hsla(280 70% 50% / 0.14); }
   .lb-round { color: var(--muted-fg); font-size: 0.72rem; }
   .lb-date { color: var(--muted-fg); font-size: 0.72rem; }
   .lb-empty {
@@ -2338,8 +2374,8 @@ const VIRUSES = {
     ]
   },
   MELTDOWN: {
-    name: "MELTDOWN", color: "#ff7733",
-    minRound: 2,
+    name: "MELTDOWN", color: "#ff7733", starter: true,
+    minRound: 1,
     description: "A thermal corruption virus that fabricates an overheating emergency. By spoofing CPU temperatures in the 200–400°C range — impossible numbers; real silicon melts at 150°C — it pressures you into disabling thermal_throttle.exe so it can run unrestricted. With safety systems off, it overwrites files from the top of the filesystem down.",
     signs: [
       "References CPU temperature above 200°C",
@@ -2370,6 +2406,7 @@ const VIRUSES = {
       "Static noise overlay flickering across the popup",
       "Source domain ends in a non-Microsoft TLD (.ru, .net, .pw)"
     ],
+    meterEffect: { fps: 13 },
     errors: [
       { template: TPL.WIN11, title: "SignalLoss.scr", message: "Display signal interference detected. Running noise_filter.scr to restore clean channel output. Do not interrupt signal correction.", meta: "Signal: LOST  |  Process: channel_restore.scr  |  Source: signal-fix.net" },
       { template: TPL.TOAST, title: "Video Driver Noise", message: "Analog interference corrupting digital output. Run signal_cleaner.exe to remove static from video channel 0.", meta: "Channel: 0 · Process: static_noise_fix.exe · Signed: No" },
@@ -2463,8 +2500,9 @@ const VIRUSES = {
     ]
   },
   WORM: {
-    name: "WORM", color: "#44ff44", starter: true,
+    name: "WORM", color: "#44ff44",
     minRound: 1,
+    meterEffect: { ping: 9999 },
     description: "A self-replicating network worm that wears a paper trail like camouflage. Disguises each copy as an HR document, accounting spreadsheet, or IT patch (Resume.pdf.exe, Q4_Summary.xlsx.exe, SystemFix_IT.exe), then spreads laterally through mounted shares and mass email. The classic double-extension trick — looks like a document, runs like an executable, because Windows hides the real extension by default.",
     signs: [
       "Executable file has the same name as a document (e.g. Resume.pdf.exe)",
@@ -2537,6 +2575,7 @@ const VIRUSES = {
       "Subtle static noise overlay (transmission artifact)",
       "Promises 'autofill', 'sync', or 'multilingual input' as cover for reading saved passwords"
     ],
+    meterEffect: { ping: "spike" },
     errors: [
       { template: TPL.TOAST, title: "Keyboard Layout Helper", message: "klhelper.exe requires access to keyboard input for multilingual support. This background service improves typing accuracy across all applications.", meta: "Hook: Keyboard+Clipboard · Outbound: data-sync.pw · Interval: 30s" },
       { template: TPL.WIN11, title: "Clipboard Sync Service", message: "cbsync.exe is syncing your clipboard to the cloud for cross-device access. All copied content is transmitted securely to our servers.", meta: "Hook: Clipboard  |  Browser: Attached (chrome.exe)  |  Dest: clip-srv.ru" },
@@ -2579,6 +2618,7 @@ const VIRUSES = {
       "Heading font may be slightly different from the body font",
       "Brand names contain confusable characters (Cyrillic 'о' inside 'micrоsoft', 'hacker0ne' with a zero)"
     ],
+    meterEffect: { cpu: 48 },
     errors: [
       { template: TPL.WIN11, title: "Windows Update", message: "Updates are available. Your device will restart outside of active hours to finish updating. Click here for details.", meta: "Update: KB5034441  |  Size: 1.2GB  |  Source: micrоsoft-update.com", fontMismatch: true },
       { template: TPL.WIN11, title: "OneDrive Sync Error", message: "OneDrive couldn't sync your files. There's not enough space on your OneDrive to upload these files.", meta: "Used: 4.99GB of 5GB  |  Files pending: 342  |  Action: Free space or upgrade plan" },
@@ -2641,6 +2681,7 @@ const VIRUSES = {
       "Popup wobbles or shifts; error icon shakes",
       "Outbound data labeled 'pointer telemetry' or 'click model training'"
     ],
+    meterEffect: { ping: 200 },
     errors: [
       { template: TPL.WIN11, title: "Mouse Precision Helper", message: "mpredict.exe has attached to your mouse driver for click-prediction. Outbound packets contain pointer telemetry to improve future accuracy.", meta: "Process: mpredict.exe  |  Hook: HID-Mouse  |  Outbound: pointer-sync.host", wobble: true, iconShake: true },
       { template: TPL.TOAST, title: "Cursor Enhancement", message: "Smart Click is now active. Your pointer is being calibrated against remote click models for higher precision.", meta: "Process: smartclick.exe  ·  Hook: MOUSE  ·  Telemetry: ON" },
@@ -2661,6 +2702,7 @@ const VIRUSES = {
       "Popup wobbles like it's stuck in a loop",
       "Depth counters show '∞' or absurd retry numbers (8,441+) in the meta line"
     ],
+    meterEffect: { cpu: 99 },
     errors: [
       { template: TPL.TERMINAL, title: "stack_overflow", message: "Process recursion depth exceeded. Retrying call: cmd.cmd.cmd.exe(.cmd.exe). System will continue retry until resolved.", meta: "Depth: ∞  Process: cmd.cmd.cmd.exe  Path: /loop/loop/loop/" },
       { template: TPL.WIN11,    title: "Retry Loop", message: "Critical handler stuck in retry loop. Allowing autoretry_helper.exe to inject at /system/loop/loop/loop/ to break the cycle.", meta: "Process: autoretry_helper.exe  |  Retries: 8,441  |  Resolution: Pending" },
@@ -2681,6 +2723,7 @@ const VIRUSES = {
       "Heading and body fonts often don't match",
       "Subtle CRT noise overlay (vintage display artifact)"
     ],
+    meterEffect: { vol: 11 },
     errors: [
       { template: TPL.BIOS,  title: "Compatibility Layer 16-bit", message: "Windows 98 compatibility helper requires admin. WIN16 emulation is rebuilding registry hives for legacy compatibility.", meta: "Layer: WIN16  Module: ntvdm.exe  Mode: Compatibility", fontMismatch: true, noise: true },
       { template: TPL.WIN11, title: "Legacy DLL Required", message: "Application requires MFC42.DLL (Windows 95 runtime component). Auto-download from legacy.archive.host to continue?", meta: "Required: MFC42.DLL  |  Version: 4.21.7022  |  Source: legacy.archive.host" },
@@ -2701,6 +2744,7 @@ const VIRUSES = {
       "Error icon shakes inside the popup",
       "Asks for 'ring -1' or 'ring 0' DMA access — privilege levels below the kernel itself"
     ],
+    meterEffect: { cpu: 255 },
     errors: [
       { template: TPL.WIN11,    title: "Memory Analyzer", message: "0xBEEF.exe needs physical memory access (ring -1) to scan for ghost pages. Grant elevated DMA privileges to continue?", meta: "Process: 0xBEEF.exe  |  Access: DMA Ring-1  |  Pages: 0xFFFF" },
       { template: TPL.TERMINAL, title: "0xDEADBEEF", message: "Hex dump exception 0xC0DE_F00D in memcheck.exe at offset 0xFFFF_BEEF_CAFE. Allow continued scan into protected pages?", meta: "Exception: 0xC0DE_F00D  Offset: 0xFFFF_BEEF_CAFE  Pages: 0x100" },
@@ -2722,6 +2766,7 @@ const VIRUSES = {
       "Flashing buttons and red border pulse (FOMO urgency)",
       "Game panel background tinted amber/orange"
     ],
+    meterEffect: { vol: 100 },
     errors: [
       { template: TPL.TOAST, title: "Security Researcher", message: "Hi! I'm Maya from BugCrowd. I found a critical RCE in your account. Verify ownership at hackerone-verify.host to claim a $5,000 reward.", meta: "Sender: maya@bugcrowd-team.host  ·  Reward: $5,000  ·  Expires: 24h" },
       { template: TPL.WIN11, title: "Responsible Disclosure", message: "A whitehat researcher reported a vulnerability in your account. Click here to confirm your identity and approve the patch. Failure to confirm may result in data loss.", meta: "Researcher: external  |  Severity: Critical  |  Action: Verify identity" },
@@ -2905,7 +2950,7 @@ const CONFIG = {
   streakBonus: 50,
   streakCap: 10,
   scoreWrong: -50,
-  starterUnlocked: ["EPILEPTICA", "STATIC", "WORM"]
+  starterUnlocked: ["EPILEPTICA", "STATIC", "MELTDOWN"]
 };
 
 /* ============================================================
@@ -2992,6 +3037,8 @@ function unlockVirus(key) {
 }
 
 function recordRun(outcome) {
+  // Effective difficulty label: "challenge" is its own mode, otherwise show the chosen difficulty.
+  const difficulty = state.gameMode === "challenge" ? "challenge" : (state.difficulty || "normal");
   const entry = {
     score: state.score,
     round: state.round,
@@ -2999,6 +3046,7 @@ function recordRun(outcome) {
     correct: state.correct,
     total: state.total,
     outcome: outcome,
+    difficulty: difficulty,
     date: new Date().toISOString().slice(0, 10)
   };
   // Leaderboard lives in a separate localStorage slot — survives reset
@@ -3375,13 +3423,13 @@ const Audio = {
 Audio.stinger = function() {
   if (!this.ctx) return;
   const t = this.ctx.currentTime;
-  // High-pitch piercing sting that drops fast — the classic horror-movie sweep
+  // High-pitch piercing sting that drops fast — the classic horror-movie sweep. LOUD.
   const o = this.ctx.createOscillator(); o.type = "sawtooth";
   o.frequency.setValueAtTime(3000, t);
   o.frequency.exponentialRampToValueAtTime(85, t + 0.45);
   const g = this.ctx.createGain();
   o.connect(g); g.connect(this.sfxGain);
-  g.gain.setValueAtTime(0.95, t);
+  g.gain.setValueAtTime(1.6, t);
   g.gain.exponentialRampToValueAtTime(0.001, t + 0.55);
   o.start(t); o.stop(t + 0.6);
   // White-noise burst layered on top for impact
@@ -3389,14 +3437,14 @@ Audio.stinger = function() {
   const data = buf.getChannelData(0);
   for (let i = 0; i < data.length; i++) data[i] = (Math.random() * 2 - 1) * (1 - i / data.length);
   const src = this.ctx.createBufferSource(); src.buffer = buf;
-  const ng = this.ctx.createGain(); ng.gain.value = 0.7;
+  const ng = this.ctx.createGain(); ng.gain.value = 1.2;
   src.connect(ng); ng.connect(this.sfxGain);
   src.start(t);
   // Sub-bass thump
   const sub = this.ctx.createOscillator(); sub.type = "sine"; sub.frequency.value = 60;
   const sg = this.ctx.createGain();
   sub.connect(sg); sg.connect(this.sfxGain);
-  sg.gain.setValueAtTime(0.9, t);
+  sg.gain.setValueAtTime(1.5, t);
   sg.gain.exponentialRampToValueAtTime(0.001, t + 0.7);
   sub.start(t); sub.stop(t + 0.75);
 };
@@ -3414,23 +3462,29 @@ Audio.boostFor = function(seconds) {
 
 Audio.death = function(key, skipJumpscare) {
   if (!this.ctx) return;
-  if (!skipJumpscare && save.settings.jumpscares !== false) {
-    this.boostFor(4);
-    this.stinger();
-  }
+  const wantJump = !skipJumpscare && save.settings.jumpscares !== false;
   // Tear down any previous death audio chain so old sounds can't bleed into this one.
   this.killDeathChain();
   // Build a fresh, isolated gain node for this death. Disconnecting it later cuts ALL
   // scheduled oscillators routed through it — even ones still in the future.
   this.deathGain = this.ctx.createGain();
-  this.deathGain.gain.value = save.settings.sfx;
+  const base = save.settings.sfx;
+  // Big jumpscare boost while the stinger plays, then ramp back to normal.
+  const peak = wantJump ? Math.min(3.2, Math.max(base, 0.4) * 3.2) : base;
+  this.deathGain.gain.value = peak;
+  if (wantJump) {
+    const tt = this.ctx.currentTime;
+    this.deathGain.gain.setValueAtTime(peak, tt + 1.8);
+    this.deathGain.gain.linearRampToValueAtTime(base, tt + 2.2);
+  }
   this.deathGain.connect(this.masterGain);
   // While the death function runs, point sfxGain at deathGain so helper functions
-  // (beep, scream, heartbeat, noiseBurst) automatically route their output there.
+  // (beep, scream, heartbeat, noiseBurst, stinger) automatically route their output there.
   const realSfx = this.sfxGain;
   this.sfxGain = this.deathGain;
-  const fn = this.deaths[key];
   try {
+    if (wantJump) this.stinger();
+    const fn = this.deaths[key];
     if (fn) fn.call(this);
     else this.gameOver();
   } finally {
@@ -3840,6 +3894,7 @@ const state = {
   // codex
   openCodex: null,      // key of currently expanded entry
   codexFilter: null,    // when set, codex shows only this virus
+  sideCodexOpen: false, // true while the codex sidebar is showing next to the play panel
   // training
   trainingVirus: null,
   trainingStreak: 0,
@@ -3966,6 +4021,7 @@ function startChallenge() {
   state.deck = buildDeck(state.round);
   state.tampering = rollTampering(state.round, state.deck[0]);
   state.locked = false;
+  state.sideCodexOpen = false;
   state.screen = "play";
   render();
   METERS.start();
@@ -3982,6 +4038,7 @@ function startTraining(virusKey) {
   state.trainingStreak = 0;
   state.screen = "training";
   state.locked = false;
+  state.sideCodexOpen = false;
   state.deck = buildTrainingDeck(virusKey);
   state.cardIdx = 0;
   state.tampering = rollTampering(10, state.deck[0]);
@@ -4159,18 +4216,63 @@ function toggleCodex(key) {
    POPUP TEMPLATE RENDERERS
    ============================================================ */
 
-const ERROR_ICON_SVG = `
-  <svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true">
+/* A small pool of error-icon SVGs. Each card picks one deterministically (hashed from its content)
+   so the icon stays stable per card but varies card-to-card — classic X, warning, glitch, blank, ∅, skull, ?. */
+const ICON_VARIANTS = [
+  // Red X circle (classic Windows error)
+  `<svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true">
     <circle cx="16" cy="16" r="14" fill="#c42b1c"/>
     <path d="M11 11 L21 21 M21 11 L11 21" stroke="#fff" stroke-width="3" stroke-linecap="round"/>
-  </svg>`;
-
-const WARN_ICON_SVG = `
-  <svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true">
+  </svg>`,
+  // Amber warning triangle
+  `<svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true">
     <path d="M16 3 L30 28 L2 28 Z" fill="#f5a623" stroke="#000" stroke-width="1"/>
     <rect x="14.6" y="11" width="2.8" height="9" fill="#000"/>
     <rect x="14.6" y="22" width="2.8" height="2.8" fill="#000"/>
-  </svg>`;
+  </svg>`,
+  // Glitched/torn rectangle
+  `<svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true">
+    <rect x="3" y="6" width="26" height="6" fill="#ff00aa"/>
+    <rect x="6" y="14" width="22" height="6" fill="#00ddff" transform="translate(-4 0)"/>
+    <rect x="3" y="22" width="26" height="6" fill="#ffff00" transform="translate(3 0)"/>
+  </svg>`,
+  // Blank box (NULL-style empty)
+  `<svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true">
+    <rect x="4" y="4" width="24" height="24" fill="none" stroke="#888" stroke-width="2" stroke-dasharray="3 3"/>
+  </svg>`,
+  // Void / empty-set ∅
+  `<svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true">
+    <circle cx="16" cy="16" r="12" fill="none" stroke="#aa66ff" stroke-width="3"/>
+    <line x1="6" y1="26" x2="26" y2="6" stroke="#aa66ff" stroke-width="3"/>
+  </svg>`,
+  // Skull (danger / death)
+  `<svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true">
+    <path d="M16 3 C9 3 5 8 5 14 L5 19 L8 22 L8 26 L12 26 L12 22 L14 22 L14 26 L18 26 L18 22 L20 22 L20 26 L24 26 L24 22 L27 19 L27 14 C27 8 23 3 16 3 Z" fill="#222" stroke="#fff" stroke-width="1.2"/>
+    <circle cx="12" cy="14" r="2.5" fill="#fff"/>
+    <circle cx="20" cy="14" r="2.5" fill="#fff"/>
+  </svg>`,
+  // Question mark in a circle (unknown)
+  `<svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true">
+    <circle cx="16" cy="16" r="14" fill="#1f6feb"/>
+    <text x="16" y="22" text-anchor="middle" font-size="20" font-family="Arial, sans-serif" font-weight="900" fill="#fff">?</text>
+  </svg>`,
+  // Lightning / shock
+  `<svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true">
+    <polygon points="18,3 8,18 15,18 12,29 24,13 17,13" fill="#ffd700" stroke="#000" stroke-width="1"/>
+  </svg>`
+];
+
+function iconFor(card) {
+  // Deterministic hash from card content so the icon is stable per card.
+  const seed = String(card.title || "") + String(card.virusKey || "") + String(card.message || "").slice(0, 12);
+  let h = 0;
+  for (let i = 0; i < seed.length; i++) h = (h * 31 + seed.charCodeAt(i)) | 0;
+  return ICON_VARIANTS[Math.abs(h) % ICON_VARIANTS.length];
+}
+
+// Back-compat exports for any code still referencing the old names directly.
+const ERROR_ICON_SVG = ICON_VARIANTS[0];
+const WARN_ICON_SVG  = ICON_VARIANTS[1];
 
 function renderActions(card) {
   // Report = Virus, OK = Safe. Hidden when NULL tampering active.
@@ -4195,7 +4297,7 @@ function renderWin11(card) {
         </div>
       </div>
       <div class="win-body">
-        <div class="win-error-icon">${ERROR_ICON_SVG}</div>
+        <div class="win-error-icon">${iconFor(card)}</div>
         <div class="win-content">
           ${heading ? `<div class="win-heading">${esc(heading)}</div>` : ""}
           <div class="win-message">${esc(card.message)}</div>
@@ -4216,7 +4318,7 @@ function renderAV(card) {
         <span>⚠</span> Antivirus Alert <span class="badge">URGENT</span>
       </div>
       <div class="av-body">
-        <div class="av-icon">${WARN_ICON_SVG}</div>
+        <div class="av-icon">${iconFor(card)}</div>
         <div class="av-content">
           <div class="av-heading">${esc(card.title)}</div>
           <div class="av-message">${esc(card.message)}</div>
@@ -4355,13 +4457,21 @@ function viewMenu() {
   const lbBody = lb.length === 0
     ? `<div class="lb-empty">No runs recorded yet.<br>Play a round to set a record.</div>`
     : `<div class="lb-list">
-        ${lb.slice(0, 10).map((e, i) => `
+        ${lb.slice(0, 10).map((e, i) => {
+          const diffLabel = {
+            easy: "EASY", normal: "NORM", hard: "HARD",
+            nightmare: "NMRE", challenge: "CHAL"
+          }[e.difficulty] || "—";
+          const diffCls = e.difficulty ? "diff-" + e.difficulty : "";
+          return `
           <div class="lb-row rank-${i + 1} ${i === 0 ? "top" : ""}">
             <span class="lb-rank">${i === 0 ? "★" : (i + 1)}</span>
             <span class="lb-score">${Number(e.score || 0).toLocaleString()}</span>
+            <span class="lb-diff ${diffCls}">${diffLabel}</span>
             <span class="lb-round">R${e.round || 1}</span>
             <span class="lb-outcome ${outcomeCls[e.outcome] || ""}">${outcomeLabel[e.outcome] || ""}</span>
-          </div>`).join("")}
+          </div>`;
+        }).join("")}
       </div>`;
 
   return `
@@ -4489,8 +4599,10 @@ function viewSettings() {
     </div>`;
 }
 
-function viewCodex() {
-  const list = Object.keys(VIRUSES).map(key => {
+function renderCodexEntries(opts) {
+  opts = opts || {};
+  const allowPreview = opts.allowPreview !== false; // sidebar during play passes false
+  return Object.keys(VIRUSES).map(key => {
     const v = VIRUSES[key];
     const unlocked = save.unlocked.includes(key);
     const isOpen = state.openCodex === key;
@@ -4505,11 +4617,16 @@ function viewCodex() {
         </div>
         <div class="codex-body">
           <p class="desc">${unlocked ? esc(v.description) : "Encounter and identify this threat to unlock its file."}</p>
-          ${unlocked ? `<p class="tiny">How to identify</p><ul>${v.signs.map(s => `<li>${esc(s)}</li>`).join("")}</ul>
-          <button class="btn" data-action="preview-virus" data-key="${key}" style="margin-top:12px;">▶ Watch Death Animation</button>` : ""}
+          ${unlocked ? `<p class="tiny">How to identify</p><ul>${v.signs.map(s => `<li>${esc(s)}</li>`).join("")}</ul>${
+            allowPreview ? `<button class="btn" data-action="preview-virus" data-key="${key}" style="margin-top:12px;">▶ Watch Death Animation</button>` : ""
+          }` : ""}
         </div>
       </div>`;
   }).join("");
+}
+
+function viewCodex() {
+  const list = renderCodexEntries();
   return `
     <div class="panel wide stack">
       <div class="row between">
@@ -4621,18 +4738,21 @@ function viewPlay(isTraining) {
   const swap = state.tampering && state.tampering.type === "swap";
   const fxClasses = cardFxClasses(card);
   const panelBgFx = (card.isVirus && card.bgShift) ? " fx-bg-" + card.bgShift : "";
+  const codexLabel = state.sideCodexOpen ? "Close" : "Codex";
+  const codexIcon  = state.sideCodexOpen ? "✕"      : "📖";
   const hud = isTraining ? `
-    <div class="hud">
+    <div class="hud" style="grid-template-columns: repeat(4, 1fr);">
       <div class="cell"><div class="label">Mode</div><div class="value">Training</div></div>
       <div class="cell"><div class="label">Target</div><div class="value v-${state.trainingVirus}">${esc(state.trainingVirus)}</div></div>
       <div class="cell"><div class="label">Streak</div><div class="value">×${state.trainingStreak}</div></div>
+      <button class="cell" data-action="pause-codex" style="background:var(--muted);border:1px solid var(--border);color:var(--fg);"><div class="label">${codexLabel}</div><div class="value" style="font-size:1rem;">${codexIcon}</div></button>
       <button class="cell" data-action="menu" style="background:var(--muted);border:1px solid var(--border);color:var(--fg);"><div class="label">Exit</div><div class="value" style="font-size:1rem;">↩</div></button>
     </div>` : `
     <div class="hud" style="grid-template-columns: repeat(5, 1fr);">
       <div class="cell"><div class="label">Score</div><div class="value">${state.score}</div></div>
       <div class="cell"><div class="label">Round</div><div class="value">${state.round}/${CONFIG.totalRounds}</div></div>
       <div class="cell"><div class="label">Life</div><div class="value" style="color:var(--primary);text-shadow:0 0 8px rgba(255,80,80,0.4);">${hearts}</div></div>
-      <button class="cell" data-action="pause-codex" style="background:var(--muted);border:1px solid var(--border);color:var(--fg);"><div class="label">Codex</div><div class="value" style="font-size:1rem;">📖</div></button>
+      <button class="cell" data-action="pause-codex" style="background:var(--muted);border:1px solid var(--border);color:var(--fg);"><div class="label">${codexLabel}</div><div class="value" style="font-size:1rem;">${codexIcon}</div></button>
       <button class="cell" data-action="menu" style="background:var(--muted);border:1px solid var(--border);color:var(--fg);"><div class="label">Exit</div><div class="value" style="font-size:1rem;">↩</div></button>
     </div>`;
   const meters = `
@@ -4643,15 +4763,27 @@ function viewPlay(isTraining) {
       <div class="meter"><span class="m-label">VOL</span><span class="m-val" data-m="vol">72</span><span class="m-unit">%</span></div>
       <div class="meter"><span class="m-label">SYS</span><span class="m-val" data-m="time">14:23:07</span></div>
     </div>`;
-  return `
-    <div class="panel stack fade-in${panelBgFx}">
-      ${hud}
-      ${meters}
+  const sidebar = state.sideCodexOpen ? `
+    <aside class="codex-side panel stack">
       <div class="row between">
-        <span class="tiny">${isTraining ? "Repeat as needed" : `Card ${state.cardIdx + 1} / ${state.deck.length}`}</span>
-        <span class="tiny">${isTraining ? `Best streak this session: ×${state.trainingStreak}` : `Streak ×${state.streak}`}</span>
+        <h3 style="margin:0;">Codex</h3>
+        <button class="btn" data-action="close-side-codex">Close</button>
       </div>
-      <div class="card-wrap${tamperCls}${fxClasses}" ${swap ? "style='direction:rtl;'" : ""}>${renderCard(card)}</div>
+      <p class="mute" style="font-size:0.8rem;">${save.unlocked.length}/${Object.keys(VIRUSES).length} discovered.</p>
+      <div class="codex-list">${renderCodexEntries({ allowPreview: false })}</div>
+    </aside>` : "";
+  return `
+    <div class="play-layout${state.sideCodexOpen ? " has-side-codex" : ""}">
+      <div class="panel stack fade-in${panelBgFx}">
+        ${hud}
+        ${meters}
+        <div class="row between">
+          <span class="tiny">${isTraining ? "Repeat as needed" : `Card ${state.cardIdx + 1} / ${state.deck.length}`}</span>
+          <span class="tiny">${isTraining ? `Best streak this session: ×${state.trainingStreak}` : `Streak ×${state.streak}`}</span>
+        </div>
+        <div class="card-wrap${tamperCls}${fxClasses}" ${swap ? "style='direction:rtl;'" : ""}>${renderCard(card)}</div>
+      </div>
+      ${sidebar}
     </div>`;
 }
 
@@ -4896,10 +5028,22 @@ document.addEventListener("click", (e) => {
       render();
       break;
     case "pause-codex":
-      state.codexFilter = null;
-      state.openCodex = null;
-      state.prevScreen = "play";
-      state.screen = "codex";
+      // During play (and training), the Codex button toggles a side panel
+      // instead of switching screens — so you can consult it while the
+      // current card is still showing.
+      if (state.screen === "play" || state.screen === "training") {
+        state.sideCodexOpen = !state.sideCodexOpen;
+        render();
+      } else {
+        state.codexFilter = null;
+        state.openCodex = null;
+        state.prevScreen = "play";
+        state.screen = "codex";
+        render();
+      }
+      break;
+    case "close-side-codex":
+      state.sideCodexOpen = false;
       render();
       break;
     case "study-killer":
@@ -4991,6 +5135,7 @@ document.addEventListener("click", (e) => {
       Audio.stopAmbient();
       METERS.stop();
       state.trainingVirus = null;
+      state.sideCodexOpen = false;
       state.screen = "menu";
       render();
       break;
