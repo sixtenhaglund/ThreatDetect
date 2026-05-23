@@ -1799,7 +1799,6 @@ function viewInfected() {
         <div class="hud" style="margin-top: 8px;">
           <div class="cell"><div class="label">Score</div><div class="value">${state.score}</div></div>
           <div class="cell"><div class="label">Threats</div><div class="value">${state.threatsNeutralized || 0}</div></div>
-          <div class="cell"><div class="label">Correct</div><div class="value">${state.roundCorrect || 0}/${CONFIG.cardsPerRound}</div></div>
           <div class="cell"><div class="label">Round</div><div class="value">${state.round}</div></div>
         </div>
         ${creditzEarnedBlock()}
@@ -1838,8 +1837,6 @@ function viewFalsePositive() {
         </div>` : ""}
       <div class="hud" style="margin-top: 8px;">
         <div class="cell"><div class="label">Score</div><div class="value">${state.score}</div></div>
-        <div class="cell"><div class="label">Accuracy</div><div class="value">${accuracy}%</div></div>
-        <div class="cell"><div class="label">Correct</div><div class="value">${state.correct}/${state.total}</div></div>
         <div class="cell"><div class="label">Round</div><div class="value">${state.round}</div></div>
       </div>
       ${creditzEarnedBlock()}
@@ -1851,7 +1848,6 @@ function viewFalsePositive() {
 }
 
 function viewWin() {
-  const accuracy = state.total ? Math.round(state.correct / state.total * 100) : 0;
   return `
     <div class="panel center stack fade-in">
       <h3 style="color: var(--primary)">SHIFT COMPLETE</h3>
@@ -1859,8 +1855,6 @@ function viewWin() {
       <p class="mute">All ${CONFIG.totalRounds} rounds cleared. The network is yours.</p>
       <div class="hud">
         <div class="cell"><div class="label">Score</div><div class="value">${state.score}</div></div>
-        <div class="cell"><div class="label">Accuracy</div><div class="value">${accuracy}%</div></div>
-        <div class="cell"><div class="label">Correct</div><div class="value">${state.correct}/${state.total}</div></div>
         <div class="cell"><div class="label">Codex</div><div class="value">${save.unlocked.length}/${Object.keys(VIRUSES).length}</div></div>
       </div>
       ${creditzEarnedBlock()}
