@@ -1935,22 +1935,25 @@
   /* HEX — blue hexagons jumping to random positions. Each layer uses `steps()`
      timing and a different prime-number duration so they desync and never
      repeat the same overall pattern at the same time.
-     Each "hex" is a tiny inline SVG (data: URL) with a 6-point polygon. The
-     polygon sits centered in a 100x100 viewBox; scaling the background-size
-     scales the hex along with the tile spacing — so bigger tiles get bigger
-     hexagons automatically. `%23` is the URL-encoded form of `#` (required
-     for hex color codes inside a data URL — otherwise the parser cuts there). */
+     Each "hex" is a tiny inline SVG (data: URL) with a 6-point polygon
+     centered in a 100x100 viewBox. To make the field look chaotic instead of
+     grid-like, each layer uses a DIFFERENT hexagon variant: pointy-top,
+     flat-top, tilted by 15°/22°/etc, varied size, mildly irregular shapes.
+     With ~18 overlapping layers each spinning a different shape at a
+     different rate, the eye can't lock onto a repeating pattern.
+     `%23` is the URL-encoded form of `#` (required for hex color codes
+     inside a data URL — otherwise the parser cuts there). */
   .death-HEX { background: #000515; }
   .death-HEX::before {
     content: ""; position: absolute; inset: 0;
     background:
-      url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><polygon points='50,42 56.93,46 56.93,54 50,58 43.07,54 43.07,46' fill='%2344aaff'/></svg>") 8% 12% / 90px 90px,
-      url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><polygon points='50,42 56.93,46 56.93,54 50,58 43.07,54 43.07,46' fill='%2366ccff'/></svg>") 34% 28% / 110px 110px,
-      url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><polygon points='50,42 56.93,46 56.93,54 50,58 43.07,54 43.07,46' fill='%2344aaff'/></svg>") 62% 18% / 80px 80px,
-      url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><polygon points='50,42 56.93,46 56.93,54 50,58 43.07,54 43.07,46' fill='%2388ddff'/></svg>") 78% 42% / 100px 100px,
-      url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><polygon points='50,42 56.93,46 56.93,54 50,58 43.07,54 43.07,46' fill='%2344aaff'/></svg>") 12% 64% / 85px 85px,
+      url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><polygon points='50,44 55.2,47 55.2,53 50,56 44.8,53 44.8,47' fill='%2344aaff'/></svg>") 8% 12% / 90px 90px,
+      url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><polygon points='58,50 54,56.93 46,56.93 42,50 46,43.07 54,43.07' fill='%2366ccff'/></svg>") 34% 28% / 110px 110px,
+      url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><polygon points='52.59,40.34 59.66,47.41 57.07,57.07 47.41,59.66 40.34,52.59 42.93,42.93' fill='%2344aaff'/></svg>") 62% 18% / 80px 80px,
+      url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><polygon points='57.88,51.39 52.74,57.52 44.86,56.13 42.12,48.61 47.26,42.48 55.14,43.87' fill='%2388ddff'/></svg>") 78% 42% / 100px 100px,
+      url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><polygon points='53,42.58 57.92,48.89 54.93,56.3 47,57.42 42.08,51.11 45.07,43.7' fill='%2344aaff'/></svg>") 12% 64% / 85px 85px,
       url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><polygon points='50,42 56.93,46 56.93,54 50,58 43.07,54 43.07,46' fill='%2366ccff'/></svg>") 50% 82% / 95px 95px,
-      url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><polygon points='50,42 56.93,46 56.93,54 50,58 43.07,54 43.07,46' fill='%2344aaff'/></svg>") 88% 88% / 75px 75px;
+      url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><polygon points='50,44 56,46 57,53 50,57 43,54 44,46' fill='%2344aaff'/></svg>") 88% 88% / 75px 75px;
     background-repeat: repeat;
     animation: hexDotsFlicker 0.17s steps(2) infinite, hexDotsJumpA 2.3s steps(7) infinite;
   }
@@ -1972,10 +1975,10 @@
   .death-HEX::after {
     content: ""; position: absolute; inset: 0;
     background:
-      url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><polygon points='50,42 56.93,46 56.93,54 50,58 43.07,54 43.07,46' fill='%2366ccff'/></svg>") 20% 50% / 140px 140px,
-      url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><polygon points='50,42 56.93,46 56.93,54 50,58 43.07,54 43.07,46' fill='%2388ddff'/></svg>") 70% 70% / 120px 120px,
-      url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><polygon points='50,42 56.93,46 56.93,54 50,58 43.07,54 43.07,46' fill='%2344aaff'/></svg>") 45% 25% / 130px 130px,
-      url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><polygon points='50,42 56.93,46 56.93,54 50,58 43.07,54 43.07,46' fill='%23aaeeff'/></svg>") 90% 30% / 100px 100px;
+      url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><polygon points='52.59,40.34 59.66,47.41 57.07,57.07 47.41,59.66 40.34,52.59 42.93,42.93' fill='%2366ccff'/></svg>") 20% 50% / 140px 140px,
+      url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><polygon points='53,42.58 57.92,48.89 54.93,56.3 47,57.42 42.08,51.11 45.07,43.7' fill='%2388ddff'/></svg>") 70% 70% / 120px 120px,
+      url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><polygon points='58,50 54,56.93 46,56.93 42,50 46,43.07 54,43.07' fill='%2344aaff'/></svg>") 45% 25% / 130px 130px,
+      url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><polygon points='57.88,51.39 52.74,57.52 44.86,56.13 42.12,48.61 47.26,42.48 55.14,43.87' fill='%23aaeeff'/></svg>") 90% 30% / 100px 100px;
     background-repeat: repeat;
     mix-blend-mode: screen;
     animation: hexDotsFlicker2 0.31s steps(3) infinite, hexDotsJumpB 3.1s steps(6) infinite;
@@ -1998,10 +2001,10 @@
     content: ""; position: absolute; inset: 0;
     background:
       url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><polygon points='50,42 56.93,46 56.93,54 50,58 43.07,54 43.07,46' fill='%2344aaff'/></svg>") 5% 30% / 60px 60px,
-      url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><polygon points='50,42 56.93,46 56.93,54 50,58 43.07,54 43.07,46' fill='%2366ccff'/></svg>") 33% 70% / 70px 70px,
-      url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><polygon points='50,42 56.93,46 56.93,54 50,58 43.07,54 43.07,46' fill='%2344aaff'/></svg>") 66% 55% / 65px 65px,
-      url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><polygon points='50,42 56.93,46 56.93,54 50,58 43.07,54 43.07,46' fill='%2388ddff'/></svg>") 90% 20% / 55px 55px,
-      url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><polygon points='50,42 56.93,46 56.93,54 50,58 43.07,54 43.07,46' fill='%2344aaff'/></svg>") 75% 85% / 60px 60px;
+      url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><polygon points='50,44 56,46 57,53 50,57 43,54 44,46' fill='%2366ccff'/></svg>") 33% 70% / 70px 70px,
+      url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><polygon points='52.59,40.34 59.66,47.41 57.07,57.07 47.41,59.66 40.34,52.59 42.93,42.93' fill='%2344aaff'/></svg>") 66% 55% / 65px 65px,
+      url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><polygon points='53,42.58 57.92,48.89 54.93,56.3 47,57.42 42.08,51.11 45.07,43.7' fill='%2388ddff'/></svg>") 90% 20% / 55px 55px,
+      url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><polygon points='50,44 55.2,47 55.2,53 50,56 44.8,53 44.8,47' fill='%2344aaff'/></svg>") 75% 85% / 60px 60px;
     background-repeat: repeat;
     animation: hexDotsFlicker3 0.13s steps(2) infinite, hexDotsJumpC 1.9s steps(8) infinite;
   }
@@ -2023,8 +2026,8 @@
   .death-HEX .death-fx::after {
     content: ""; position: absolute; inset: 0;
     background:
-      url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><polygon points='50,42 56.93,46 56.93,54 50,58 43.07,54 43.07,46' fill='%2344aaff'/></svg>") 35% 40% / 200px 200px,
-      url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><polygon points='50,42 56.93,46 56.93,54 50,58 43.07,54 43.07,46' fill='%2388ddff'/></svg>") 65% 65% / 180px 180px;
+      url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><polygon points='57.88,51.39 52.74,57.52 44.86,56.13 42.12,48.61 47.26,42.48 55.14,43.87' fill='%2344aaff'/></svg>") 35% 40% / 200px 200px,
+      url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><polygon points='58,50 54,56.93 46,56.93 42,50 46,43.07 54,43.07' fill='%2388ddff'/></svg>") 65% 65% / 180px 180px;
     background-repeat: repeat;
     mix-blend-mode: screen;
     animation: hexDotsFlicker 0.29s steps(2) infinite, hexDotsJumpD 4.1s steps(5) infinite;
