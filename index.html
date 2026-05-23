@@ -880,13 +880,17 @@
     top: 24px;
     right: 24px;
     bottom: 24px;
-    width: 360px;
-    max-width: 38vw;
+    width: 520px;
+    max-width: 46vw;
     overflow-y: auto;
     z-index: 100;
   }
   .codex-side .codex-list { max-height: none; }
-  body.side-codex-open #app { padding-right: 408px; }
+  body.side-codex-open #app { padding-right: 568px; }
+  @media (max-width: 1180px) {
+    .codex-side { width: 440px; }
+    body.side-codex-open #app { padding-right: 488px; }
+  }
   @media (max-width: 980px) {
     body.side-codex-open #app { padding-right: 24px; padding-bottom: 50vh; }
     .codex-side { top: auto; right: 8px; left: 8px; bottom: 8px; width: auto; max-width: none; max-height: 48vh; }
@@ -1525,13 +1529,14 @@
   }
   @keyframes leechCursor { 50% { opacity: 0.45; } }
 
-  /* SCREAMER — strobe + warning grid + hazard stripes */
-  .death-SCREAMER { background: #b80000; animation: screamerStrobe 0.13s steps(3) infinite; }
+  /* SCREAMER — strobe + warning grid + hazard stripes. Black/red shades only. */
+  .death-SCREAMER { background: #b80000; animation: screamerStrobe 0.13s steps(4) infinite; }
   @keyframes screamerStrobe {
-    0%   { background: #b80000; }
-    33%  { background: #ffeecc; }
-    66%  { background: #ffff00; }
-    100% { background: #ffffff; }
+    0%   { background: #000000; }
+    25%  { background: #6b0000; }
+    50%  { background: #b80000; }
+    75%  { background: #ff2222; }
+    100% { background: #000000; }
   }
   .death-SCREAMER::before {
     content: "⚠ ⚠ ⚠ ⚠ ⚠ ⚠ ⚠ ⚠ ⚠ ⚠ ⚠ ⚠ ⚠ ⚠ ⚠ ⚠ ⚠ ⚠ ⚠ ⚠ ⚠ ⚠ ⚠ ⚠ ⚠";
@@ -3493,14 +3498,10 @@ Audio.death = function(key, skipJumpscare) {
   // scheduled oscillators routed through it — even ones still in the future.
   this.deathGain = this.ctx.createGain();
   const base = save.settings.sfx;
-  // Big jumpscare boost while the stinger plays, then ramp back to normal.
-  const peak = wantJump ? Math.min(3.2, Math.max(base, 0.4) * 3.2) : base;
-  this.deathGain.gain.value = peak;
-  if (wantJump) {
-    const tt = this.ctx.currentTime;
-    this.deathGain.gain.setValueAtTime(peak, tt + 1.8);
-    this.deathGain.gain.linearRampToValueAtTime(base, tt + 2.2);
-  }
+  // Constant boost for the full death — sounds shouldn't get quieter mid-animation.
+  // The boost is louder when jumpscare is on, moderate otherwise.
+  const level = wantJump ? Math.min(2.6, Math.max(base, 0.4) * 2.6) : base;
+  this.deathGain.gain.value = level;
   this.deathGain.connect(this.masterGain);
   // While the death function runs, point sfxGain at deathGain so helper functions
   // (beep, scream, heartbeat, noiseBurst, stinger) automatically route their output there.
@@ -3710,14 +3711,14 @@ Audio.deaths = {
     for (let i = 0; i < 4; i++) this.scheduleDeath(i * 1100, playBeat);
   },
   NULL() {
-    // Just a quiet sustained bass hum — almost silent.
+    // Sustained bass hum — louder so you actually feel it.
     const t = this.ctx.currentTime;
     const o = this.ctx.createOscillator(); o.type = "sine"; o.frequency.value = 42;
     const g = this.ctx.createGain();
     o.connect(g); g.connect(this.sfxGain);
     g.gain.setValueAtTime(0, t);
-    g.gain.linearRampToValueAtTime(0.06, t + 0.8);
-    g.gain.setValueAtTime(0.06, t + 4);
+    g.gain.linearRampToValueAtTime(0.55, t + 0.4);
+    g.gain.setValueAtTime(0.55, t + 4);
     g.gain.linearRampToValueAtTime(0, t + 4.5);
     o.start(t); o.stop(t + 4.6);
   },
