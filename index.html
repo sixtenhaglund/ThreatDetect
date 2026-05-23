@@ -11,14 +11,34 @@
 <div id="app"></div>
 
 <!--
-  Load order matters:
-    data.js  defines CONFIG, TPL, VIRUSES, LEGIT, DEATHS, ICONS, SHOP_ITEMS, etc.
-    audio.js defines the Audio object + per-virus death sounds (uses CONFIG only)
-    game.js  defines everything else (state, save, meters, gameplay, views, router)
-             and calls render() at the bottom to boot the app.
+  Load order is enforced by the order of these <script> tags.
+  Each file is small (< ~620 lines) so changes are fast to navigate.
+
+  Data layer (define-only, no side effects):
+    config.js     CONFIG, TPL, ICONS, RANDOM_POOLS, SHOP_ITEMS, etc.
+    viruses.js    VIRUSES + DEATHS animation metadata
+    legit.js      LEGIT (safe alerts mixed into every round)
+    tells.js      TEXTUAL_TELLS regex patterns
+
+  Engine layer:
+    audio.js      Audio module + per-virus death sounds
+    core.js       helpers, Save, Leaderboard, creditz, tells
+    meters.js     fake telemetry HUD
+    gameplay.js   state, deck building, choose / nextCard, minigame
+    templates.js  per-style card renderers (renderWin11 etc.)
+    views.js      top-level screens (menu, codex, play, breach…)
+    main.js       render router + handlers + boot — must load last
 -->
-<script src="js/data.js"></script>
+<script src="js/config.js"></script>
+<script src="js/viruses.js"></script>
+<script src="js/legit.js"></script>
+<script src="js/tells.js"></script>
 <script src="js/audio.js"></script>
-<script src="js/game.js"></script>
+<script src="js/core.js"></script>
+<script src="js/meters.js"></script>
+<script src="js/gameplay.js"></script>
+<script src="js/templates.js"></script>
+<script src="js/views.js"></script>
+<script src="js/main.js"></script>
 </body>
 </html>

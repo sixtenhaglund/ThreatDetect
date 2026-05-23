@@ -1,0 +1,269 @@
+// =====================================================
+// main.js — router + global event handlers + boot
+// Loads last; calls render() at the bottom to start the app.
+// =====================================================
+"use strict";
+
+
+function render() {
+  const app = document.getElementById("app");
+  let html = "";
+  switch (state.screen) {
+    case "menu":              html = viewMenu(); break;
+    case "difficulty-picker": html = viewDifficultyPicker(); break;
+    case "settings":          html = viewSettings(); break;
+    case "reset-confirm":     html = viewResetConfirm(); break;
+    case "codex":             html = viewCodex(); break;
+    case "training":          html = viewTraining(); break;
+    case "training-pick":     html = viewTraining(); break;
+    case "play":              html = viewPlay(false); break;
+    case "epilepsy-warning":  html = viewEpilepsyWarning(); break;
+    case "shop":              html = viewShop(); break;
+    case "minigame":          html = viewMinigame(); break;
+    case "dying":             html = viewDying(); break;
+    case "preview":           html = viewPreview(); break;
+    case "infected":          html = viewInfected(); break;
+    case "false-positive":    html = viewFalsePositive(); break;
+    case "win":               html = viewWin(); break;
+    default:                  html = viewMenu();
+  }
+  app.innerHTML = html + '<div id="reveal" class="reveal"></div>';
+  // Toggle a body class so #app can give itself right-padding when the side codex is open.
+  const sideOpen = state.sideCodexOpen && (state.screen === "play" || state.screen === "training");
+  document.body.classList.toggle("side-codex-open", sideOpen);
+}
+
+document.addEventListener("click", (e) => {
+  unlockAudio();
+  const btn = e.target.closest("[data-action]");
+  if (!btn) return;
+  // Prevent <a href="#"> handlers from navigating / scrolling to top.
+  if (btn.tagName === "A") e.preventDefault();
+  const a = btn.dataset.action;
+  switch (a) {
+    case "play":
+      state.gameMode = "normal";
+      startChallenge();
+      break;
+    case "play-challenge":
+      state.gameMode = "challenge";
+      startChallenge();
+      break;
+    case "show-difficulty":
+      state.screen = "difficulty-picker";
+      render();
+      break;
+    case "start-difficulty":
+      if (btn.hasAttribute("disabled")) break;
+      state.gameMode = "normal";
+      state.difficulty = btn.dataset.diff;
+      startChallenge();
+      break;
+    case "confirm-warning":
+      state.screen = "menu";
+      render();
+      break;
+    case "shop":
+      state.prevScreen = state.screen;
+      state.screen = "shop";
+      render();
+      break;
+    case "buy-item": {
+      const id = btn.dataset.item;
+      const item = SHOP_ITEMS.find(x => x.id === id);
+      if (!item) break;
+      if ((save.creditz || 0) < item.price) break;
+      save.creditz = (save.creditz || 0) - item.price;
+      save[item.id] = (save[item.id] || 0) + 1;
+      Save.write(save);
+      Audio.correct();
+      render();
+      break;
+    }
+    case "mg-hit": {
+      const idx = parseInt(btn.dataset.target, 10);
+      hitMinigameTarget(idx);
+      break;
+    }
+    case "minigame-practice":
+      state.minigameStats = Object.assign({}, TRAINING_STATS_DEFAULT);
+      startMinigameTraining();
+      break;
+    case "exit-minigame-training": {
+      const mg = state.minigame;
+      if (mg && mg.interval) clearInterval(mg.interval);
+      state.minigame = null;
+      state.screen = "menu";
+      render();
+      break;
+    }
+    case "skip-death":
+      if (state.deathTimeout) { clearTimeout(state.deathTimeout); state.deathTimeout = null; }
+      Audio.stopDeath();
+      state.screen = "infected";
+      render();
+      break;
+    case "training":
+      state.trainingVirus = null;
+      state.screen = "training-pick";
+      render();
+      break;
+    case "train-pick":
+      if (btn.hasAttribute("disabled")) return;
+      startTraining(btn.dataset.key);
+      break;
+    case "codex":
+      state.codexFilter = null;
+      state.openCodex = null;
+      state.prevScreen = state.screen;
+      state.screen = "codex";
+      render();
+      break;
+    case "pause-codex":
+      // During play (and training), the Codex button toggles a side panel
+      // instead of switching screens — so you can consult it while the
+      // current card is still showing.
+      if (state.screen === "play" || state.screen === "training") {
+        state.sideCodexOpen = !state.sideCodexOpen;
+        render();
+      } else {
+        state.codexFilter = null;
+        state.openCodex = null;
+        state.prevScreen = "play";
+        state.screen = "codex";
+        render();
+      }
+      break;
+    case "close-side-codex":
+      state.sideCodexOpen = false;
+      render();
+      break;
+    case "study-killer":
+      if (!state.killer) break;
+      state.codexFilter = state.killer;
+      state.openCodex = state.killer;
+      state.prevScreen = state.screen;
+      state.screen = "codex";
+      render();
+      break;
+    case "back-from-codex":
+      state.codexFilter = null;
+      state.openCodex = null;
+      state.screen = state.prevScreen || "menu";
+      render();
+      // resume meter ticker if we returned to play/training
+      if (state.screen === "play" || state.screen === "training") {
+        const card = state.deck[state.cardIdx];
+        if (card) METERS.setOverride(meterEffectFor(card), !!card.isVirus);
+      }
+      break;
+    case "toggle-entry":
+      toggleCodex(btn.dataset.key);
+      break;
+    case "preview-virus": {
+      unlockAudio();
+      const k = btn.dataset.key;
+      // Remember where we were scrolled in the codex so we can restore it on auto-return.
+      const listEl = document.querySelector(".codex-list");
+      state.codexScrollY = listEl ? listEl.scrollTop : 0;
+      state.previewVirus = k;
+      // Don't touch prevScreen — preview always returns to codex,
+      // and the codex's own back button needs prevScreen intact.
+      state.screen = "preview";
+      render();
+      Audio.death(k);
+      // Auto-return after the same duration the animation runs in-game.
+      if (state.previewTimeout) clearTimeout(state.previewTimeout);
+      const dur = (DEATHS[k] || {}).duration || 4500;
+      state.previewTimeout = setTimeout(() => {
+        state.previewTimeout = null;
+        state.previewVirus = null;
+        Audio.stopDeath();
+        state.screen = "codex";
+        render();
+        // Restore the scroll position so the page doesn't jump back to the top.
+        const back = document.querySelector(".codex-list");
+        if (back) back.scrollTop = state.codexScrollY;
+      }, dur);
+      break;
+    }
+    case "back-from-preview":
+      if (state.previewTimeout) { clearTimeout(state.previewTimeout); state.previewTimeout = null; }
+      Audio.stopDeath();
+      state.previewVirus = null;
+      state.screen = "codex";
+      render();
+      // Restore scroll just like the auto-return path does.
+      const backList = document.querySelector(".codex-list");
+      if (backList) backList.scrollTop = state.codexScrollY;
+      break;
+    case "training-continue":
+      state.trainingReveal = null;
+      state.locked = false;
+      nextCard();
+      break;
+    case "settings":
+      state.prevScreen = state.screen;
+      state.screen = "settings";
+      render();
+      break;
+    case "toggle-photo":
+      save.settings.photosensitive = !save.settings.photosensitive;
+      Save.write(save);
+      render();
+      break;
+    case "toggle-jumpscares":
+      save.settings.jumpscares = !(save.settings.jumpscares !== false);
+      Save.write(save);
+      render();
+      break;
+    case "reset":
+      state.screen = "reset-confirm";
+      render();
+      break;
+    case "confirm-reset":
+      Save.reset();
+      save = Save.load();
+      Audio.applyVolumes();
+      state.screen = "menu";
+      render();
+      break;
+    case "cancel-reset":
+      state.screen = "settings";
+      render();
+      break;
+    case "menu":
+      Audio.stopAmbient();
+      Audio.stopDeath();
+      if (state.deathTimeout) { clearTimeout(state.deathTimeout); state.deathTimeout = null; }
+      METERS.stop();
+      state.trainingVirus = null;
+      state.sideCodexOpen = false;
+      state.screen = "menu";
+      render();
+      break;
+    case "virus":  choose(true); break;
+    case "check":  choose(false); break;
+  }
+});
+
+document.addEventListener("input", (e) => {
+  const s = e.target.dataset && e.target.dataset.setting;
+  if (!s) return;
+  save.settings[s] = parseFloat(e.target.value);
+  Audio.applyVolumes();
+  Save.write(save);
+});
+
+document.addEventListener("keydown", (e) => {
+  if (state.screen !== "play" && state.screen !== "training") return;
+  if (state.locked) return;
+  if (e.key === "ArrowLeft" || e.key === "v" || e.key === "V" || e.key === "1") choose(true);
+  if (e.key === "ArrowRight" || e.key === "c" || e.key === "C" || e.key === "2") choose(false);
+});
+
+/* ============================================================
+   INIT
+   ============================================================ */
+
+render();
