@@ -37,6 +37,12 @@ The foundation is solid. Everything below builds on it without rewriting.
 - 🟡 **SUNDIAL** — manipulates clocks and timezones simultaneously. Tells: meter shows different timezone than the alert text references.
 - 🟡 **DOPPELGÄNGER** — pretends to be one of the player's *own* viruses (e.g., shows "Codex Sync Service" pretending to be part of ThreatDetect itself). Tongue-in-cheek breaking-the-fourth-wall variant.
 - 🟢 **OUROBOROS** — alert references itself recursively in process name / file path.
+- 🟡 **GROUNDHOG** — repeats the *exact* previous popup verbatim, word-for-word. Tell: you literally already saw this card a second ago. Punishes auto-piloting; rewards memory.
+- 🟡 **DEADLINE** — popup contains a live countdown ticking inside the text ("Reformat in 0:14, 0:13..."). Real alerts don't tick. Adds time-pressure flavor too — feels urgent even when you spot it.
+- 🟡 **POLYGLOT** — sneaks Unicode confusables into brand names (Cyrillic `а` instead of Latin `a` in "Microsoft", Greek `ο` for `o` in "Google"). Tell only visible on careful read. Hard counter to blanket-OK strategies.
+- 🟡 **DEPRESSED** — text visibly degrades while you look at it. "ERROR: Disk Failed" → "error: disk failed" → "error... disk... failed..." over ~2 seconds. Tell: real alerts don't get sadder.
+- 🟢 **PROUD** — author-signed virus. Tiny text in a corner reads "Made with love by SCRIPTKID69" or similar. Goofy + a dead-giveaway tell once you know to scan corners.
+- 🟡 **OVERCLOCK** — *every* meter spikes to its maximum simultaneously. Tell: it's *too* obvious — no real single threat affects FPS, ping, CPU, AND clock at once. Teaches the player to be suspicious of "too much" tampering.
 
 ### New popup templates
 - 🟡 **Browser SSL warning page** — full-screen red "Your connection is not private" treatment. Distinct from a Win11 dialog.
@@ -44,6 +50,9 @@ The foundation is solid. Everything below builds on it without rewriting.
 - 🟡 **Task Manager view** — fake list of running processes; player has to spot the malicious one.
 - 🟡 **Mobile push notification** — Android/iOS-style banner from the top.
 - 🟢 **Print preview window** — innocent-looking print dialog with malicious file name.
+- 🟡 **macOS-style notification** — Mac banner styling in a Windows-themed game. The wrong-OS vibe IS the tell. Forces players to internalize that legit alerts match their host UI.
+- 🟡 **Chat DM template** — Discord / Teams / Slack-style chat bubble: "DM from IT Support: please run this update." Different visual language than an OS dialog; teaches "OS alerts don't come via chat."
+- 🟢 **Fourth-wall update banner** — "ThreatDetect v2.1 available — Update now?" pretending to be the game itself. Pairs naturally with DOPPELGÄNGER for a meta-fakery combo.
 
 ### New gameplay mechanics
 - 🟡 **Multi-stage viruses** — alert starts as one popup, then morphs into another after a delay if you don't report fast enough. Time pressure!
@@ -52,6 +61,9 @@ The foundation is solid. Everything below builds on it without rewriting.
 - 🟡 **Foreshadowing** — some legit alerts say "Detected suspicious file: X" — and the NEXT card is a virus disguised as X. Rewards reading every alert.
 - 🟡 **Virus chains** — encountering one virus makes a thematically-paired virus more likely later in the run (e.g., REDRUM → CRYPTEX, both ransom-y).
 - 🔴 **Boss waves** — every 5 rounds, a "boss" version of a random virus appears. Massive, heavily-tampered, multiple effects at once. Score 5× if correct, lose immediately if wrong.
+- 🟡 **End-of-round mistake review** — round summary screen replays any cards you misclassified with the tell highlighted in yellow. Faster learning than digging through the codex after a death.
+- 🟡 **Doubt window (undo)** — for ~1 second after every Report click, a tiny "undo?" appears in the corner. Saves you from a misclick but costs the first moment of the next card. Risk/reward on hesitation.
+- 🔴 **Seed sharing** — encode a run's RNG seed into a URL. Paste it to play the *exact* same deck of cards as a friend. Enables "beat my round-7 run" challenges without any server.
 
 ### Accessibility
 - 🟢 **"Tells visible" Training toggle** — for absolute beginners, highlight the textual tells in the popup directly (e.g., underline the impossible `°C` value).
@@ -154,6 +166,9 @@ The foundation is solid. Everything below builds on it without rewriting.
 - 🟡 The codex's "Watch Death Animation" button could show a tiny still-frame thumbnail of the animation instead of just a play-arrow.
 - 🟡 SCREAMER's death animation auto-skip ignores the photosensitive setting — those red flashes are intense. Should auto-soften.
 - 🟡 Pause-and-resume mid-run — clicking Codex during play freezes the deck position but doesn't show a clear "PAUSED" overlay. Should.
+- 🟢 **Cursor trail glitch on Nightmare** — only on Nightmare, the cursor leaves a faint colored trail when hovering a virus card. Subtle advanced-difficulty tell that rewards observant high-level play.
+- 🟢 **Difficulty-themed code rain** — background scroll tint shifts: Easy=green, Normal=cyan, Hard=amber, Nightmare=red. Pure atmosphere, sets the mood the second you start a run.
+- 🟡 **Tension music bed** — quiet procedural synth pad that adds a layer per round (round 1 = silence, round 10 = thick drone). All via existing Web Audio module — no asset files needed.
 
 ---
 
