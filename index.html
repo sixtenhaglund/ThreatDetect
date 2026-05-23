@@ -932,7 +932,7 @@
   .lb-list { display: flex; flex-direction: column; gap: 4px; }
   .lb-row {
     display: grid;
-    grid-template-columns: 22px minmax(60px, 1fr) auto auto auto auto;
+    grid-template-columns: 22px 1fr auto auto auto;
     gap: 8px;
     align-items: baseline;
     padding: 5px 6px;
@@ -946,19 +946,10 @@
   .lb-row.rank-1 { background: linear-gradient(90deg, hsl(50 90% 50% / 0.18), transparent 70%); border-left: 3px solid hsl(50 100% 60%); }
   .lb-row.rank-2 { background: linear-gradient(90deg, hsl(210 15% 70% / 0.18), transparent 70%); border-left: 3px solid hsl(210 15% 75%); }
   .lb-row.rank-3 { background: linear-gradient(90deg, hsl(25 70% 50% / 0.18), transparent 70%); border-left: 3px solid hsl(25 80% 55%); }
-  .lb-row.rank-1 .lb-rank, .lb-row.rank-1 .lb-name, .lb-row.rank-1 .lb-score { color: hsl(50 100% 70%); text-shadow: 0 0 6px hsl(50 100% 50% / 0.4); }
-  .lb-row.rank-2 .lb-rank, .lb-row.rank-2 .lb-name, .lb-row.rank-2 .lb-score { color: hsl(210 15% 85%); text-shadow: 0 0 6px hsl(210 15% 70% / 0.4); }
-  .lb-row.rank-3 .lb-rank, .lb-row.rank-3 .lb-name, .lb-row.rank-3 .lb-score { color: hsl(25 85% 65%); text-shadow: 0 0 6px hsl(25 80% 50% / 0.4); }
+  .lb-row.rank-1 .lb-rank, .lb-row.rank-1 .lb-score { color: hsl(50 100% 70%); text-shadow: 0 0 6px hsl(50 100% 50% / 0.4); }
+  .lb-row.rank-2 .lb-rank, .lb-row.rank-2 .lb-score { color: hsl(210 15% 85%); text-shadow: 0 0 6px hsl(210 15% 70% / 0.4); }
+  .lb-row.rank-3 .lb-rank, .lb-row.rank-3 .lb-score { color: hsl(25 85% 65%); text-shadow: 0 0 6px hsl(25 80% 50% / 0.4); }
   .lb-rank { font-weight: 700; color: var(--muted-fg); text-align: right; }
-  .lb-name {
-    font-weight: 600;
-    font-size: 0.82rem;
-    color: var(--fg);
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    padding-left: 4px;
-  }
   .lb-score { font-weight: 700; color: var(--primary); }
   .lb-diff {
     font-size: 0.55rem;
@@ -2991,7 +2982,6 @@ const Save = {
       unlocked: CONFIG.starterUnlocked.slice(),
       deathsBy: [],
       nightmareUnlocked: false,
-      username: null,
       creditz: 0,
       settings: { master: 0.8, ambient: 0.4, sfx: 0.8, photosensitive: false, jumpscares: true }
     };
@@ -3016,7 +3006,6 @@ const Save = {
         unlocked: parsed.unlocked || d.unlocked,
         deathsBy: Array.isArray(parsed.deathsBy) ? parsed.deathsBy : d.deathsBy,
         nightmareUnlocked: !!parsed.nightmareUnlocked,
-        username: typeof parsed.username === "string" ? parsed.username : d.username,
         creditz: typeof parsed.creditz === "number" ? parsed.creditz : d.creditz,
         settings: Object.assign(d.settings, parsed.settings || {})
       };
@@ -3075,7 +3064,6 @@ function recordRun(outcome) {
     total: state.total,
     outcome: outcome,
     difficulty: difficulty,
-    username: save.username || "Anonymous",
     runId: Date.now() + "-" + Math.random().toString(36).slice(2, 8),
     date: new Date().toISOString().slice(0, 10)
   };
@@ -3128,27 +3116,6 @@ function finalizeCreditz(entry) {
   state.lastRunBaseCreditz = baseTotal;
 }
 
-/* ============================================================
-   USERNAME — chosen at first launch, sanitized for obvious bad words
-   ============================================================ */
-
-const BANNED_WORDS = [
-  "fuck", "shit", "bitch", "cunt", "nigger", "nigga", "faggot", "fag",
-  "retard", "kike", "spic", "dyke", "tranny", "whore", "slut", "cum",
-  "dick", "cock", "pussy", "rape", "porn", "sex", "nazi", "hitler",
-  "kys", "kms"
-];
-
-function sanitizeUsername(raw) {
-  if (typeof raw !== "string") return { ok: false, reason: "Please enter a name." };
-  const trimmed = raw.trim();
-  if (trimmed.length < 2)  return { ok: false, reason: "Name must be at least 2 characters." };
-  if (trimmed.length > 16) return { ok: false, reason: "Name must be 16 characters or fewer." };
-  if (!/^[A-Za-z0-9 _\-\.]+$/.test(trimmed)) return { ok: false, reason: "Letters, numbers, spaces, _ - . only." };
-  const flat = trimmed.toLowerCase().replace(/[^a-z]/g, "");
-  for (const w of BANNED_WORDS) if (flat.includes(w)) return { ok: false, reason: "That name isn't allowed. Try a different one." };
-  return { ok: true, name: trimmed };
-}
 
 function formatDate(iso) {
   if (!iso) return "";
@@ -4594,11 +4561,9 @@ function viewMenu() {
             nightmare: "NMRE", challenge: "CHAL"
           }[e.difficulty] || "—";
           const diffCls = e.difficulty ? "diff-" + e.difficulty : "";
-          const name = esc(e.username || "Anonymous");
           return `
           <div class="lb-row rank-${i + 1} ${i === 0 ? "top" : ""}">
             <span class="lb-rank">${i === 0 ? "★" : (i + 1)}</span>
-            <span class="lb-name">${name}</span>
             <span class="lb-score">${Number(e.score || 0).toLocaleString()}</span>
             <span class="lb-diff ${diffCls}">${diffLabel}</span>
             <span class="lb-round">R${e.round || 1}</span>
@@ -4613,10 +4578,6 @@ function viewMenu() {
         <div class="stack tight">
           <div class="logo">THREATDETECT</div>
           <div class="tiny">SOC analyst training simulator</div>
-          ${save.username ? `<div class="tiny" style="margin-top:6px;">
-            Logged in as <strong style="color: var(--primary);">${esc(save.username)}</strong>
-            · <a href="#" data-action="change-username" style="color: var(--muted-fg); text-decoration: underline;">change</a>
-          </div>` : ""}
         </div>
         <div class="stack tight" style="margin-top: 8px;">
           <button class="menu-btn" data-action="show-difficulty"><span>Play<div class="menu-sub">Pick difficulty · or jump into Training</div></span><span class="arrow">▶</span></button>
@@ -4955,27 +4916,6 @@ function creditzEarnedBlock() {
     </div>`;
 }
 
-function viewLogin() {
-  const current = save.username || "";
-  return `
-    <div class="panel center stack fade-in">
-      <h3 style="color: var(--primary); letter-spacing: 0.3em;">${current ? "CHANGE USERNAME" : "WELCOME, ANALYST"}</h3>
-      <h1 style="color: var(--primary); text-shadow: 0 0 18px rgba(0,255,170,0.3);">SET YOUR NAME</h1>
-      <p class="mute" style="max-width: 460px; margin: 0 auto;">
-        This name shows up on the leaderboard. 2–16 characters; letters, numbers, spaces, _ - . only.
-      </p>
-      <div class="stack tight" style="max-width: 360px; margin: 0 auto; width: 100%;">
-        <input id="username-input" type="text" maxlength="16" value="${esc(current)}" placeholder="Your name" autocomplete="off"
-          style="width: 100%; padding: 12px 14px; font-size: 1rem; background: var(--bg-2); color: var(--fg); border: 1px solid var(--border); border-radius: 6px; font-family: inherit;" />
-        <div id="username-error" style="color: var(--destruct); font-size: 0.82rem; min-height: 1em;"></div>
-      </div>
-      <div class="row center">
-        <button class="btn primary" data-action="submit-username">${current ? "Save" : "Continue"}</button>
-        ${current ? `<button class="btn" data-action="menu">Cancel</button>` : ""}
-      </div>
-    </div>`;
-}
-
 function viewShop() {
   return `
     <div class="panel center stack fade-in">
@@ -5170,7 +5110,6 @@ function render() {
     case "training-pick":     html = viewTraining(); break;
     case "play":              html = viewPlay(false); break;
     case "epilepsy-warning":  html = viewEpilepsyWarning(); break;
-    case "login":             html = viewLogin(); break;
     case "shop":              html = viewShop(); break;
     case "dying":             html = viewDying(); break;
     case "preview":           html = viewPreview(); break;
@@ -5183,11 +5122,6 @@ function render() {
   // Toggle a body class so #app can give itself right-padding when the side codex is open.
   const sideOpen = state.sideCodexOpen && (state.screen === "play" || state.screen === "training");
   document.body.classList.toggle("side-codex-open", sideOpen);
-  // Auto-focus the username field on the login screen so you can just start typing.
-  if (state.screen === "login") {
-    const input = document.getElementById("username-input");
-    if (input) { input.focus(); input.select(); }
-  }
 }
 
 document.addEventListener("click", (e) => {
@@ -5217,27 +5151,7 @@ document.addEventListener("click", (e) => {
       startChallenge();
       break;
     case "confirm-warning":
-      // If the player hasn't set a username yet, ask for it before showing the menu.
-      state.screen = save.username ? "menu" : "login";
-      render();
-      break;
-    case "submit-username": {
-      const input = document.getElementById("username-input");
-      const errEl = document.getElementById("username-error");
-      const raw = input ? input.value : "";
-      const result = sanitizeUsername(raw);
-      if (!result.ok) {
-        if (errEl) errEl.textContent = result.reason;
-        return;
-      }
-      save.username = result.name;
-      Save.write(save);
       state.screen = "menu";
-      render();
-      break;
-    }
-    case "change-username":
-      state.screen = "login";
       render();
       break;
     case "shop":
@@ -5401,12 +5315,6 @@ document.addEventListener("input", (e) => {
 });
 
 document.addEventListener("keydown", (e) => {
-  // On the login screen, Enter in the username box submits.
-  if (state.screen === "login" && e.key === "Enter") {
-    const submit = document.querySelector('[data-action="submit-username"]');
-    if (submit) { e.preventDefault(); submit.click(); }
-    return;
-  }
   if (state.screen !== "play" && state.screen !== "training") return;
   if (state.locked) return;
   if (e.key === "ArrowLeft" || e.key === "v" || e.key === "V" || e.key === "1") choose(true);
