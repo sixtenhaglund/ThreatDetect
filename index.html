@@ -932,7 +932,7 @@
   .lb-list { display: flex; flex-direction: column; gap: 4px; }
   .lb-row {
     display: grid;
-    grid-template-columns: 22px 1fr auto auto auto;
+    grid-template-columns: 22px minmax(60px, 1fr) auto auto auto auto;
     gap: 8px;
     align-items: baseline;
     padding: 5px 6px;
@@ -941,10 +941,24 @@
     font-family: ui-monospace, Consolas, monospace;
   }
   .lb-row.top { background: rgba(0,255,170,0.08); }
-  .lb-row.rank-1 .lb-rank { color: hsl(50 100% 65%); }
-  .lb-row.rank-2 .lb-rank { color: hsl(220 30% 80%); }
-  .lb-row.rank-3 .lb-rank { color: hsl(20 80% 65%); }
+  /* Medal coloring — gold / silver / bronze. Applied to the whole row tint
+     plus the rank + name + score so the podium really pops. */
+  .lb-row.rank-1 { background: linear-gradient(90deg, hsl(50 90% 50% / 0.18), transparent 70%); border-left: 3px solid hsl(50 100% 60%); }
+  .lb-row.rank-2 { background: linear-gradient(90deg, hsl(210 15% 70% / 0.18), transparent 70%); border-left: 3px solid hsl(210 15% 75%); }
+  .lb-row.rank-3 { background: linear-gradient(90deg, hsl(25 70% 50% / 0.18), transparent 70%); border-left: 3px solid hsl(25 80% 55%); }
+  .lb-row.rank-1 .lb-rank, .lb-row.rank-1 .lb-name, .lb-row.rank-1 .lb-score { color: hsl(50 100% 70%); text-shadow: 0 0 6px hsl(50 100% 50% / 0.4); }
+  .lb-row.rank-2 .lb-rank, .lb-row.rank-2 .lb-name, .lb-row.rank-2 .lb-score { color: hsl(210 15% 85%); text-shadow: 0 0 6px hsl(210 15% 70% / 0.4); }
+  .lb-row.rank-3 .lb-rank, .lb-row.rank-3 .lb-name, .lb-row.rank-3 .lb-score { color: hsl(25 85% 65%); text-shadow: 0 0 6px hsl(25 80% 50% / 0.4); }
   .lb-rank { font-weight: 700; color: var(--muted-fg); text-align: right; }
+  .lb-name {
+    font-weight: 600;
+    font-size: 0.82rem;
+    color: var(--fg);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    padding-left: 4px;
+  }
   .lb-score { font-weight: 700; color: var(--primary); }
   .lb-diff {
     font-size: 0.55rem;
@@ -2977,6 +2991,8 @@ const Save = {
       unlocked: CONFIG.starterUnlocked.slice(),
       deathsBy: [],
       nightmareUnlocked: false,
+      username: null,
+      creditz: 0,
       settings: { master: 0.8, ambient: 0.4, sfx: 0.8, photosensitive: false, jumpscares: true }
     };
   },
@@ -3000,6 +3016,8 @@ const Save = {
         unlocked: parsed.unlocked || d.unlocked,
         deathsBy: Array.isArray(parsed.deathsBy) ? parsed.deathsBy : d.deathsBy,
         nightmareUnlocked: !!parsed.nightmareUnlocked,
+        username: typeof parsed.username === "string" ? parsed.username : d.username,
+        creditz: typeof parsed.creditz === "number" ? parsed.creditz : d.creditz,
         settings: Object.assign(d.settings, parsed.settings || {})
       };
     } catch (e) { return Save.defaults(); }
@@ -3057,6 +3075,8 @@ function recordRun(outcome) {
     total: state.total,
     outcome: outcome,
     difficulty: difficulty,
+    username: save.username || "Anonymous",
+    runId: Date.now() + "-" + Math.random().toString(36).slice(2, 8),
     date: new Date().toISOString().slice(0, 10)
   };
   // Leaderboard lives in a separate localStorage slot — survives reset
@@ -3066,6 +3086,68 @@ function recordRun(outcome) {
     save.highestScore = state.score;
     Save.write(save);
   }
+  // Award Creditz: round bonuses already accumulated in state.runCreditz +
+  // 1 creditz per 100 points of final score, multiplied by leaderboard rank bonus.
+  finalizeCreditz(entry);
+}
+
+/* ============================================================
+   CREDITZ — the in-game currency
+   ============================================================ */
+
+const CREDITZ_PER_ROUND = {
+  challenge: 20,
+  easy:       2,
+  normal:     5,
+  hard:      10,
+  nightmare: 15
+};
+
+/* Called when a round is completed (state.round goes up). */
+function awardRoundCreditz() {
+  const mode = state.gameMode === "challenge" ? "challenge" : (state.difficulty || "normal");
+  const amount = CREDITZ_PER_ROUND[mode] || 0;
+  state.runCreditz = (state.runCreditz || 0) + amount;
+}
+
+/* Called at end of run (in recordRun, after the entry is added). Adds creditz to save. */
+function finalizeCreditz(entry) {
+  const scoreCreditz = Math.floor(state.score / 100);
+  const baseTotal = (state.runCreditz || 0) + scoreCreditz;
+  // Find our rank in the leaderboard (we were just added).
+  const lb = Leaderboard.load();
+  const idx = lb.findIndex(e => e.runId === entry.runId);
+  const rank = idx >= 0 ? idx + 1 : 0;
+  const multiplier = rank === 1 ? 4 : rank === 2 ? 3 : rank === 3 ? 2 : 1;
+  const total = baseTotal * multiplier;
+  save.creditz = (save.creditz || 0) + total;
+  Save.write(save);
+  state.lastRunCreditz = total;
+  state.lastRunMultiplier = multiplier;
+  state.lastRunRank = rank;
+  state.lastRunBaseCreditz = baseTotal;
+}
+
+/* ============================================================
+   USERNAME — chosen at first launch, sanitized for obvious bad words
+   ============================================================ */
+
+const BANNED_WORDS = [
+  "fuck", "shit", "bitch", "cunt", "nigger", "nigga", "faggot", "fag",
+  "retard", "kike", "spic", "dyke", "tranny", "whore", "slut", "cum",
+  "dick", "cock", "pussy", "rape", "porn", "sex", "nazi", "hitler",
+  "kys", "kms"
+];
+
+function sanitizeUsername(raw) {
+  if (typeof raw !== "string") return { ok: false, reason: "Please enter a name." };
+  const trimmed = raw.trim();
+  if (trimmed.length < 2)  return { ok: false, reason: "Name must be at least 2 characters." };
+  if (trimmed.length > 16) return { ok: false, reason: "Name must be 16 characters or fewer." };
+  if (!/^[A-Za-z0-9 _\-\.]+$/.test(trimmed)) return { ok: false, reason: "Letters, numbers, spaces, _ - . only." };
+  const flat = trimmed.toLowerCase().replace(/[^a-z]/g, "");
+  for (const w of BANNED_WORDS) if (flat.includes(w)) return { ok: false, reason: "That name isn't allowed. Try a different one." };
+  return { ok: true, name: trimmed };
 }
 
 function formatDate(iso) {
@@ -3897,6 +3979,11 @@ const state = {
   correct: 0, total: 0,
   roundCorrect: 0,        // correct calls in the current round only (out of cardsPerRound)
   threatsNeutralized: 0,  // virus cards correctly reported across the run
+  runCreditz: 0,          // creditz earned this run from round bonuses (score bonus added at end)
+  lastRunCreditz: 0,      // displayed on the end-of-run screens
+  lastRunMultiplier: 1,   // rank multiplier that was applied
+  lastRunRank: 0,         // 0 = not on board, 1-10 = leaderboard position
+  lastRunBaseCreditz: 0,  // round + score creditz before multiplier
   killer: null,         // virus key when died to virus
   killerCard: null,     // the exact card object that killed the player
   firstDeath: false,    // true if this is the first time this virus has killed the player
@@ -4029,6 +4116,11 @@ function startChallenge() {
   state.total = 0;
   state.roundCorrect = 0;
   state.threatsNeutralized = 0;
+  state.runCreditz = 0;
+  state.lastRunCreditz = 0;
+  state.lastRunMultiplier = 1;
+  state.lastRunRank = 0;
+  state.lastRunBaseCreditz = 0;
   state.killer = null;
   state.falsePositive = null;
   state.cardIdx = 0;
@@ -4084,6 +4176,7 @@ function nextCard() {
     return;
   }
   if (state.cardIdx >= state.deck.length) {
+    awardRoundCreditz();     // pay out for the round we just completed (works for the win round too)
     if (state.round >= CONFIG.totalRounds) {
       Audio.levelUp();
       Audio.stopAmbient();
@@ -4501,9 +4594,11 @@ function viewMenu() {
             nightmare: "NMRE", challenge: "CHAL"
           }[e.difficulty] || "—";
           const diffCls = e.difficulty ? "diff-" + e.difficulty : "";
+          const name = esc(e.username || "Anonymous");
           return `
           <div class="lb-row rank-${i + 1} ${i === 0 ? "top" : ""}">
             <span class="lb-rank">${i === 0 ? "★" : (i + 1)}</span>
+            <span class="lb-name">${name}</span>
             <span class="lb-score">${Number(e.score || 0).toLocaleString()}</span>
             <span class="lb-diff ${diffCls}">${diffLabel}</span>
             <span class="lb-round">R${e.round || 1}</span>
@@ -4518,17 +4613,22 @@ function viewMenu() {
         <div class="stack tight">
           <div class="logo">THREATDETECT</div>
           <div class="tiny">SOC analyst training simulator</div>
+          ${save.username ? `<div class="tiny" style="margin-top:6px;">
+            Logged in as <strong style="color: var(--primary);">${esc(save.username)}</strong>
+            · <a href="#" data-action="change-username" style="color: var(--muted-fg); text-decoration: underline;">change</a>
+          </div>` : ""}
         </div>
         <div class="stack tight" style="margin-top: 8px;">
           <button class="menu-btn" data-action="show-difficulty"><span>Play<div class="menu-sub">Pick difficulty · or jump into Training</div></span><span class="arrow">▶</span></button>
           <button class="menu-btn" data-action="play-challenge"><span>Challenge<div class="menu-sub">All 20 viruses from round 1 · denser threats · earlier UI tampering</div></span><span class="arrow">▶</span></button>
           <button class="menu-btn" data-action="codex"><span>Codex<div class="menu-sub">${unlockedCount}/${totalCount} threats discovered</div></span><span class="arrow">▶</span></button>
+          <button class="menu-btn" data-action="shop"><span>Shop<div class="menu-sub">${(save.creditz || 0).toLocaleString()} ₢ available · coming soon</div></span><span class="arrow">▶</span></button>
           <button class="menu-btn" data-action="settings"><span>Settings<div class="menu-sub">Audio · photosensitivity · reset</div></span><span class="arrow">▶</span></button>
         </div>
         <div class="badge-row" style="justify-content: center; margin-top: 6px;">
           <span class="badge">Best round: ${high}/${CONFIG.totalRounds}</span>
           <span class="badge">Best score: ${bestScore.toLocaleString()}</span>
-          <span class="badge">v1.0</span>
+          <span class="badge" style="color: hsl(50 100% 65%); border-color: hsl(50 100% 50% / 0.4);">${(save.creditz || 0).toLocaleString()} ₢</span>
         </div>
       </div>
       <aside class="lb-panel">
@@ -4826,6 +4926,77 @@ function viewPlay(isTraining) {
     ${sidebar}`;
 }
 
+function creditzEarnedBlock() {
+  const total = state.lastRunCreditz || 0;
+  const base  = state.lastRunBaseCreditz || 0;
+  const mult  = state.lastRunMultiplier || 1;
+  const rank  = state.lastRunRank || 0;
+  const rankLabel = rank === 1 ? "★ 1st on leaderboard"
+                 : rank === 2 ? "🥈 2nd on leaderboard"
+                 : rank === 3 ? "🥉 3rd on leaderboard"
+                 : rank > 0   ? "On leaderboard (#" + rank + ")"
+                              : "Not on leaderboard";
+  return `
+    <div class="killer-tells" style="border-left-color: hsl(50 100% 60%);">
+      <div class="killer-tells-title" style="color: hsl(50 100% 70%);">Creditz earned</div>
+      <div class="row between" style="font-size:0.85rem; margin-top:4px;">
+        <span class="mute">Round bonuses + score (×100)</span>
+        <strong>${base.toLocaleString()} ₢</strong>
+      </div>
+      <div class="row between" style="font-size:0.85rem;">
+        <span class="mute">${rankLabel}</span>
+        <strong>×${mult}</strong>
+      </div>
+      <div class="row between" style="font-size:1.05rem; margin-top:6px; padding-top:6px; border-top:1px solid var(--border);">
+        <strong>Total this run</strong>
+        <strong style="color: hsl(50 100% 65%);">+${total.toLocaleString()} ₢</strong>
+      </div>
+      <div class="tiny" style="margin-top:6px;">Wallet: ${(save.creditz || 0).toLocaleString()} ₢</div>
+    </div>`;
+}
+
+function viewLogin() {
+  const current = save.username || "";
+  return `
+    <div class="panel center stack fade-in">
+      <h3 style="color: var(--primary); letter-spacing: 0.3em;">${current ? "CHANGE USERNAME" : "WELCOME, ANALYST"}</h3>
+      <h1 style="color: var(--primary); text-shadow: 0 0 18px rgba(0,255,170,0.3);">SET YOUR NAME</h1>
+      <p class="mute" style="max-width: 460px; margin: 0 auto;">
+        This name shows up on the leaderboard. 2–16 characters; letters, numbers, spaces, _ - . only.
+      </p>
+      <div class="stack tight" style="max-width: 360px; margin: 0 auto; width: 100%;">
+        <input id="username-input" type="text" maxlength="16" value="${esc(current)}" placeholder="Your name" autocomplete="off"
+          style="width: 100%; padding: 12px 14px; font-size: 1rem; background: var(--bg-2); color: var(--fg); border: 1px solid var(--border); border-radius: 6px; font-family: inherit;" />
+        <div id="username-error" style="color: var(--destruct); font-size: 0.82rem; min-height: 1em;"></div>
+      </div>
+      <div class="row center">
+        <button class="btn primary" data-action="submit-username">${current ? "Save" : "Continue"}</button>
+        ${current ? `<button class="btn" data-action="menu">Cancel</button>` : ""}
+      </div>
+    </div>`;
+}
+
+function viewShop() {
+  return `
+    <div class="panel center stack fade-in">
+      <div class="row between" style="width:100%;">
+        <h2 style="margin:0;">Shop</h2>
+        <button class="btn" data-action="menu">Back</button>
+      </div>
+      <p class="mute">Spend your <strong style="color: hsl(50 100% 65%);">Creditz</strong> here. New items coming soon.</p>
+      <div class="cell" style="display:inline-block; padding: 12px 22px; margin: 0 auto;">
+        <div class="label">Wallet</div>
+        <div class="value" style="font-size: 1.6rem; color: hsl(50 100% 65%); text-shadow: 0 0 12px hsl(50 100% 40% / 0.5);">${(save.creditz || 0).toLocaleString()} ₢</div>
+      </div>
+      <div class="stack tight" style="max-width: 460px; margin: 24px auto 0;">
+        <div class="killer-tells" style="text-align:center;">
+          <div class="killer-tells-title">Coming soon</div>
+          <p class="mute" style="font-size:0.85rem;">Cosmetics, codex skins, audio packs, custom virus colors — whatever Sixten decides to add next.</p>
+        </div>
+      </div>
+    </div>`;
+}
+
 function viewEpilepsyWarning() {
   return `
     <div class="panel center stack fade-in">
@@ -4912,6 +5083,7 @@ function viewInfected() {
           <div class="cell"><div class="label">Correct</div><div class="value">${state.roundCorrect || 0}/${CONFIG.cardsPerRound}</div></div>
           <div class="cell"><div class="label">Round</div><div class="value">${state.round}</div></div>
         </div>
+        ${creditzEarnedBlock()}
         <div class="row center">
           <button class="btn primary" data-action="play">Try Again</button>
           <button class="btn" data-action="study-killer">Study This Threat</button>
@@ -4951,6 +5123,7 @@ function viewFalsePositive() {
         <div class="cell"><div class="label">Correct</div><div class="value">${state.correct}/${state.total}</div></div>
         <div class="cell"><div class="label">Round</div><div class="value">${state.round}</div></div>
       </div>
+      ${creditzEarnedBlock()}
       <div class="row center">
         <button class="btn primary" data-action="play">Try Again</button>
         <button class="btn" data-action="menu">Main Menu</button>
@@ -4971,6 +5144,7 @@ function viewWin() {
         <div class="cell"><div class="label">Correct</div><div class="value">${state.correct}/${state.total}</div></div>
         <div class="cell"><div class="label">Codex</div><div class="value">${save.unlocked.length}/${Object.keys(VIRUSES).length}</div></div>
       </div>
+      ${creditzEarnedBlock()}
       <div class="row center">
         <button class="btn primary" data-action="play">Play Again</button>
         <button class="btn" data-action="codex">Codex</button>
@@ -4996,6 +5170,8 @@ function render() {
     case "training-pick":     html = viewTraining(); break;
     case "play":              html = viewPlay(false); break;
     case "epilepsy-warning":  html = viewEpilepsyWarning(); break;
+    case "login":             html = viewLogin(); break;
+    case "shop":              html = viewShop(); break;
     case "dying":             html = viewDying(); break;
     case "preview":           html = viewPreview(); break;
     case "infected":          html = viewInfected(); break;
@@ -5007,12 +5183,19 @@ function render() {
   // Toggle a body class so #app can give itself right-padding when the side codex is open.
   const sideOpen = state.sideCodexOpen && (state.screen === "play" || state.screen === "training");
   document.body.classList.toggle("side-codex-open", sideOpen);
+  // Auto-focus the username field on the login screen so you can just start typing.
+  if (state.screen === "login") {
+    const input = document.getElementById("username-input");
+    if (input) { input.focus(); input.select(); }
+  }
 }
 
 document.addEventListener("click", (e) => {
   unlockAudio();
   const btn = e.target.closest("[data-action]");
   if (!btn) return;
+  // Prevent <a href="#"> handlers from navigating / scrolling to top.
+  if (btn.tagName === "A") e.preventDefault();
   const a = btn.dataset.action;
   switch (a) {
     case "play":
@@ -5034,7 +5217,32 @@ document.addEventListener("click", (e) => {
       startChallenge();
       break;
     case "confirm-warning":
+      // If the player hasn't set a username yet, ask for it before showing the menu.
+      state.screen = save.username ? "menu" : "login";
+      render();
+      break;
+    case "submit-username": {
+      const input = document.getElementById("username-input");
+      const errEl = document.getElementById("username-error");
+      const raw = input ? input.value : "";
+      const result = sanitizeUsername(raw);
+      if (!result.ok) {
+        if (errEl) errEl.textContent = result.reason;
+        return;
+      }
+      save.username = result.name;
+      Save.write(save);
       state.screen = "menu";
+      render();
+      break;
+    }
+    case "change-username":
+      state.screen = "login";
+      render();
+      break;
+    case "shop":
+      state.prevScreen = state.screen;
+      state.screen = "shop";
       render();
       break;
     case "skip-death":
@@ -5193,6 +5401,12 @@ document.addEventListener("input", (e) => {
 });
 
 document.addEventListener("keydown", (e) => {
+  // On the login screen, Enter in the username box submits.
+  if (state.screen === "login" && e.key === "Enter") {
+    const submit = document.querySelector('[data-action="submit-username"]');
+    if (submit) { e.preventDefault(); submit.click(); }
+    return;
+  }
   if (state.screen !== "play" && state.screen !== "training") return;
   if (state.locked) return;
   if (e.key === "ArrowLeft" || e.key === "v" || e.key === "V" || e.key === "1") choose(true);
