@@ -243,13 +243,13 @@ const VIRUSES = {
     ],
     meterEffect: { ping: 9999 },
     errors: [
-      { template: TPL.LOADING,  title: "BandwidthTest Pro", message: "Network speed test in progress. Your system is joining the distributed testing pool. This may cause temporary high CPU and network usage.", meta: "Outbound: 4,712/s  |  Targets: 192.168.*.*  |  Pool: Active" },
-      { template: TPL.WIN11,    title: "Network Diagnostic Tool", message: "Latency optimization requires joining netpool_agent. Your bandwidth will contribute to a distributed routing test. CPU: 100% expected.", meta: "Process: netpool_agent.exe  |  Connections: 8,841/s  |  CPU: 100%" },
-      { template: TPL.TERMINAL, title: "dc_volunteer", message: "Your PC has been enrolled in a volunteer computing cluster. Run dc_volunteer.exe to contribute idle CPU cycles to the global grid.", meta: "Outbound: 12,903 IPs  CPU: 100%  Network: Saturated" },
-      { template: TPL.AV, title: "Network Optimization", message: "Your idle bandwidth could be helping others! Join the BandwidthPool to share unused capacity.", meta: "Connections: 12,400/s · Pool: Distributed · Source: bwpool{tld}" },
-      { template: TPL.TOAST, title: "Speed Booster", message: "netpool_agent.exe is improving your latency. CPU may spike to 100%.", meta: "Process: netpool_agent.exe · Conns: 8,841/s · CPU: 100%" },
-      { template: TPL.WIN11, title: "Distributed Compute Opt-In", message: "Help test a global routing experiment! Join the swarm and share idle bandwidth via swarm_agent.exe.", meta: "Process: swarm_agent.exe  |  Conns: 12,400/s  |  Outbound: *", icon: "lightning" },
-      { template: TPL.TERMINAL, title: "flood_test", message: "Latency benchmark started. 18,200 outbound packets/sec to 192.168.*.* targets. CPU saturated.", meta: "Tool: flood_test  Conns: 18,200/s  CPU: 100%", icon: "lightning" }
+      { template: TPL.LOADING,  title: "BandwidthTest Pro", message: "Network speed test in progress. Your system is joining the distributed testing pool. This may cause temporary high CPU and network usage.", meta: "Outbound: {numfiles}/s  |  Targets: {ipaddr}/16  |  Pool: Active" },
+      { template: TPL.WIN11,    title: "Network Diagnostic Tool", message: "Latency optimization requires joining netpool_agent. Your bandwidth will contribute to a distributed routing test. CPU: 100% expected.", meta: "Process: netpool_agent.exe  |  Connections: {numfiles}/s  |  CPU: 100%" },
+      { template: TPL.TERMINAL, title: "dc_volunteer", message: "Your PC has been enrolled in a volunteer computing cluster. Run dc_volunteer.exe to contribute idle CPU cycles to the global grid.", meta: "Outbound: {numfiles} IPs  CPU: 100%  Network: Saturated" },
+      { template: TPL.AV, title: "Network Optimization", message: "Your idle bandwidth could be helping others! Join the BandwidthPool to share unused capacity.", meta: "Connections: {numfiles}/s · Pool: Distributed · Source: bwpool{tld}" },
+      { template: TPL.TOAST, title: "Speed Booster", message: "netpool_agent.exe is improving your latency. CPU may spike to 100%.", meta: "Process: netpool_agent.exe · Conns: {numfiles}/s · CPU: 100%" },
+      { template: TPL.WIN11, title: "Distributed Compute Opt-In", message: "Help test a global routing experiment! Join the swarm and share idle bandwidth via swarm_agent.exe.", meta: "Process: swarm_agent.exe  |  Conns: {numfiles}/s  |  Outbound: {ipaddr}", icon: "lightning" },
+      { template: TPL.TERMINAL, title: "flood_test", message: "Latency benchmark started. {numfiles} outbound packets/sec to {ipaddr}/16 targets. CPU saturated.", meta: "Tool: flood_test  Conns: {numfiles}/s  CPU: 100%", icon: "lightning" }
     ]
   },
   LEECH: {
@@ -330,8 +330,7 @@ const VIRUSES = {
       { template: TPL.TOAST, title: "Slack", message: "Sprint demo starts in 5 minutes — Conference Roo_m 237.", meta: "Slack · #dev-team · 5 min" },
       { template: TPL.TERMINAL, title: "yarn add", message: "Adding @types/n0de from registry-mirror{tld} to your dev dependencies.", meta: "Source: registry-mirror{tld}  Signed: No" },
       { template: TPL.MAC, title: "System Preferences", message: "macOS 14.5 needs to install a kernel extension for printer support. Allow at preferences-mac{tld}.", meta: "Source: preferences-mac{tld} · Signed: No" },
-      { template: TPL.PHONE, title: "Apple ID", message: "Your Apple ID was used to sign in on a Windows PC. Verify at apple-id{tld} to keep your account secure.", meta: "Location: Stockholm · Domain: apple-id{tld}" },
-      { template: TPL.UPDATE, title: "ThreatDetect", message: "ThreatDetect v2.1 is available. Update via update-installer.com to unlock new viruses.", meta: "Version: 2.1 · Source: update-installer.com" },
+      { template: TPL.PHONE, title: "Apple ID", message: "Your Apple ID was used to sign in on a Windows PC from {city}. Verify at apple-id{tld} to keep your account secure.", meta: "Location: {city} · Domain: apple-id{tld}" },
       { template: TPL.PRINT, title: "DocuSign Request", message: "{name} from {brand} requests your signature on {filename}{ext}. Open via docusign-secure{tld}?", meta: "Source: docusign-secure{tld}  |  Sender: {name}  |  Signed: No" },
       { template: TPL.PRINT, title: "Invoice — Signature Required", message: "{numfiles} pending invoices from {brand} need your signature. Print via {process} from invoice-portal{tld}.", meta: "Source: invoice-portal{tld}  |  Process: {process}  |  Signed: No" },
       { template: TPL.PRINT, title: "{filename}{ext} — URGENT", message: "CEO at {brand} requests urgent print + sign. Download from ceo-docs{tld}.", meta: "Source: ceo-docs{tld}  |  From: ceo@{brand}{tld}  |  Signed: No" }
