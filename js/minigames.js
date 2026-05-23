@@ -23,10 +23,14 @@ const TRAINING_STATS_DEFAULT = { wins: 0, losses: 0, bestTimeMs: null };
    ENTRY POINTS
    ============================================================ */
 
-/* In-run: antivirus triggers, pick a random minigame and run it. */
+/* In-run: antivirus triggers, pick a random minigame and run it.
+   Harder difficulties require multiple back-to-back minigames (with random types). */
 function startRandomAntivirusMinigame(savedCard) {
+  const diff = state.gameMode === "challenge" ? "challenge" : (state.difficulty || "normal");
+  const row = CONFIG.minigameByDifficulty[diff] || CONFIG.minigameByDifficulty.normal;
+  const totalRounds = row.rounds || 1;
   const type = MINIGAME_TYPES[Math.floor(Math.random() * MINIGAME_TYPES.length)];
-  startMinigameOfType(type, { savedCard });
+  startMinigameOfType(type, { savedCard, totalRounds, currentRound: 1 });
 }
 
 /* Training: user already picked type + difficulty in the practice flow. */
@@ -63,10 +67,12 @@ function startMinigameOfType(type, opts) {
   else                            setupQuarantine(cfg);
 
   // Common fields
-  state.minigame.type        = type;
-  state.minigame.training    = !!opts.training;
-  state.minigame.savedCard   = opts.savedCard || null;
-  state.minigame.difficulty  = diff;
+  state.minigame.type         = type;
+  state.minigame.training     = !!opts.training;
+  state.minigame.savedCard    = opts.savedCard || null;
+  state.minigame.difficulty   = diff;
+  state.minigame.totalRounds  = opts.totalRounds || 1;
+  state.minigame.currentRound = opts.currentRound || 1;
 
   state.screen = "minigame";
   render();
@@ -100,6 +106,17 @@ function winMinigame() {
     startTrainingMinigame(); // loop with same chosen type + difficulty
     return;
   }
+  // In-run antivirus: more rounds to clear?
+  if (mg.currentRound < mg.totalRounds) {
+    const next = mg.currentRound + 1;
+    const card = mg.savedCard;
+    state.minigame = null;
+    // Pick a fresh random minigame type for variety in multi-round runs.
+    const type = MINIGAME_TYPES[Math.floor(Math.random() * MINIGAME_TYPES.length)];
+    startMinigameOfType(type, { savedCard: card, totalRounds: mg.totalRounds, currentRound: next });
+    return;
+  }
+  // All rounds cleared.
   const card = mg.savedCard;
   state.minigame = null;
   state.screen = "play";
@@ -324,12 +341,18 @@ function viewMinigame() {
   else if (mg.type === "sequence")   body = viewMG_Sequence(mg);
   else if (mg.type === "impostor")   body = viewMG_Impostor(mg);
 
+  // Show round counter in multi-round antivirus runs (Normal+ difficulty).
+  const roundStrip = (!isTraining && mg.totalRounds > 1) ? `
+    <div class="mg-rounds">
+      Round <strong>${mg.currentRound}</strong> of <strong>${mg.totalRounds}</strong> — clear them all to quarantine
+    </div>` : "";
   return `
     <div class="minigame-stage">
       <div class="minigame-header">
         <h3 style="margin:0; color: var(--primary); letter-spacing: 0.3em;">${isTraining ? "🎯 PRACTICE · " + (mg.difficulty || "").toUpperCase() : "🛡 ANTIVIRUS DEPLOYED"}</h3>
         <h1 style="margin: 6px 0;">${labels.emoji} ${labels.name.toUpperCase()}</h1>
         <p class="mute">${esc(labels.desc)}</p>
+        ${roundStrip}
         ${trainingStrip}
         ${exitBtn}
       </div>

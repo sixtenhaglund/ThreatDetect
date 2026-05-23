@@ -23,11 +23,11 @@ const CONFIG = {
   //   t = timer in seconds
   antivirusPrice: 40,
   minigameByDifficulty: {
-    easy:      { quarantine: {n:3,  t:6.0}, sequence: {n:3, t:9.0}, impostor: {n:4,  t:4.0} },
-    normal:    { quarantine: {n:5,  t:6.0}, sequence: {n:4, t:9.0}, impostor: {n:6,  t:4.0} },
-    hard:      { quarantine: {n:8,  t:5.5}, sequence: {n:5, t:8.0}, impostor: {n:8,  t:3.5} },
-    nightmare: { quarantine: {n:10, t:5.0}, sequence: {n:6, t:8.0}, impostor: {n:10, t:3.0} },
-    challenge: { quarantine: {n:6,  t:5.0}, sequence: {n:5, t:8.0}, impostor: {n:7,  t:3.5} }
+    easy:      { rounds: 1, quarantine: {n:3,  t:6.0}, sequence: {n:3, t:9.0}, impostor: {n:4,  t:4.0} },
+    normal:    { rounds: 2, quarantine: {n:5,  t:6.0}, sequence: {n:4, t:9.0}, impostor: {n:6,  t:4.0} },
+    hard:      { rounds: 3, quarantine: {n:8,  t:5.5}, sequence: {n:5, t:8.0}, impostor: {n:8,  t:3.5} },
+    nightmare: { rounds: 4, quarantine: {n:10, t:5.0}, sequence: {n:6, t:8.0}, impostor: {n:10, t:3.0} },
+    challenge: { rounds: 3, quarantine: {n:6,  t:5.0}, sequence: {n:5, t:8.0}, impostor: {n:7,  t:3.5} }
   }
 };
 
