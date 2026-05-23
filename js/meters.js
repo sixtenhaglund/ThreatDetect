@@ -117,6 +117,7 @@ const METERS = {
       case "wrong":     return rand(["1601-01-01", "9999-12-31", "2025-02-30", "0000:00:00"]);
       case "room237":   return this.state.time.slice(0, 3) + "37:" + this.state.time.slice(6);
       case "spike":     return Math.random() < 0.5 ? String(this.state.ping) : "9999";
+      case "lowfps":    return String(rng(1, 11));
       default:          return String(mode);
     }
   }

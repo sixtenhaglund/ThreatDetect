@@ -226,7 +226,8 @@ function describeMeterEffect(effect) {
       flash: "FPS meter flickered wildly between 0 and 999",
       pulse: "FPS meter oscillated rhythmically between 60 and 120",
       "null": "FPS meter read NULL or ∞",
-      blank: "FPS meter went blank (—)"
+      blank: "FPS meter went blank (—)",
+      lowfps: "FPS meter dropped into the single digits (1–11) — like an ancient machine"
     },
     cpu: {
       kernel: "CPU meter read 'KERNEL' instead of a number",
@@ -267,7 +268,9 @@ function activeTells(card) {
     describeMeterEffect(effect).forEach(t => tells.push(t));
   }
   if (card.btnFlicker)   tells.push("Report / OK buttons flickered on and off");
-  if (card.bgShift)      tells.push("Game panel background shifted to a " + card.bgShift + " tint");
+  // bgShift can be specified per-card or per-virus (e.g. OLD.exe tints all its variants yellow).
+  const bgShift = card.bgShift || (v && v.bgShift);
+  if (bgShift)           tells.push("Game panel background shifted to a " + bgShift + " tint");
   if (card.noise)        tells.push("Static noise overlay flickered across the popup");
   if (card.wobble)       tells.push("Popup wobbled or swayed side-to-side");
   if (card.borderPulse)  tells.push("Pulsing red border around the popup");

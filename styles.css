@@ -470,6 +470,8 @@
   .panel.fx-bg-amber  { background: hsl(40  45% 8%);  border-color: hsl(40  45% 22%); }
   .panel.fx-bg-green  { background: hsl(140 45% 7%);  border-color: hsl(140 45% 22%); }
   .panel.fx-bg-purple { background: hsl(280 45% 8%);  border-color: hsl(280 45% 22%); }
+  /* Weak yellow phosphor — used by OLD.exe to suggest aged CRT screens. */
+  .panel.fx-bg-yellow { background: hsl(55  40% 9%);  border-color: hsl(55  45% 22%); }
 
   /* Heading uses a different font than the body — feels uncanny */
   .card-wrap.fx-font-mismatch .win-heading,
@@ -1910,26 +1912,27 @@
   }
   @keyframes loopScroll { from { transform: translateX(100%); } to { transform: translateX(-100%); } }
 
-  /* FOSSIL — CRT/VGA + DOS prompt */
-  .death-FOSSIL { background: #1a1000; }
+  /* OLD.exe — minimal vintage death screen.
+     Just three layers: solid black, a weak yellow phosphor wash on top,
+     and a single line-drawn picture of an old CRT computer in the center.
+     No scanlines, no BIOS text, no flicker — quiet and still. */
+  .death-FOSSIL { background: #000; }
   .death-FOSSIL::before {
+    /* Weak yellow overlay — the "tired phosphor" tint. Low alpha so it
+       reads as a wash, not a color. */
     content: ""; position: absolute; inset: 0;
-    background:
-      radial-gradient(ellipse at center, rgba(220,160,90,0.55) 0%, rgba(40,20,0,0.95) 75%),
-      repeating-linear-gradient(0deg, transparent 0 2px, rgba(0,0,0,0.55) 2px 4px);
-    animation: fossilCRT 0.08s steps(2) infinite;
+    background: rgba(255, 215, 90, 0.07);
+    pointer-events: none;
   }
-  @keyframes fossilCRT { 50% { transform: translateY(1px); } }
   .death-FOSSIL::after {
-    content: "Award Modular BIOS v4.51PG\AC:\\>WIN.COM /3\AMFC42.DLL  loaded\AVBRUN300.DLL  loaded\AWinHelp v3.1  ready\ADAO 3.5  initialized\Antvdm.exe started\AWIN16 subsystem online\A\AC:\\>_";
-    white-space: pre;
-    position: absolute; inset: 0; padding: 50px;
-    font-family: "Cascadia Mono", monospace;
-    font-size: 1.3rem;
-    color: #ffc878;
-    text-shadow: 0 0 12px #ff9933;
-    line-height: 1.7;
-    opacity: 0.95;
+    /* Black-and-white SVG of a CRT monitor + PC tower, centered.
+       White strokes on transparent so the yellow wash shows through and
+       the picture reads as pure black-and-white linework. */
+    content: ""; position: absolute; inset: 0;
+    background: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 220 250' fill='none' stroke='%23ffffff' stroke-width='2.5' stroke-linejoin='round' stroke-linecap='round'><path d='M 30 18 Q 30 10 38 10 L 182 10 Q 190 10 190 18 L 190 140 Q 190 148 182 148 L 38 148 Q 30 148 30 140 Z'/><rect x='42' y='22' width='136' height='100' rx='8' fill='%23000000'/><circle cx='160' cy='135' r='2' fill='%23ffffff'/><line x1='44' y1='135' x2='110' y2='135' stroke-width='1' opacity='0.5'/><path d='M 95 148 L 95 160 L 75 168 L 145 168 L 125 160 L 125 148 Z'/><rect x='45' y='175' width='130' height='65' rx='3'/><rect x='60' y='190' width='45' height='4'/><rect x='60' y='200' width='50' height='5' rx='1'/><circle cx='155' cy='195' r='3'/><circle cx='155' cy='205' r='1.5'/><line x1='60' y1='220' x2='115' y2='220'/><line x1='60' y1='226' x2='115' y2='226'/><line x1='60' y1='232' x2='115' y2='232'/></svg>") no-repeat center;
+    background-size: min(42vmin, 360px) auto;
+    pointer-events: none;
+    opacity: 0.92;
   }
 
   /* HEX — blue hexagons jumping to random positions. Each layer uses `steps()`
@@ -2380,32 +2383,11 @@
     to   { transform: translateY(-100%); }
   }
 
-  /* FOSSIL — Windows 95-style "logo" flickering + giant disk icon */
-  .death-FOSSIL .death-fx::before {
-    content: "💾";
-    position: absolute; top: 12%; right: 12%;
-    font-size: 7rem;
-    filter: sepia(1) saturate(2);
-    animation: fossilDisk 1.3s ease-in-out infinite;
-  }
-  @keyframes fossilDisk {
-    0%, 100% { transform: rotate(-8deg); }
-    50%      { transform: rotate(8deg); }
-  }
-  .death-FOSSIL .death-fx::after {
-    content: "▓▒░ INSERT BOOT DISK ░▒▓";
-    position: absolute; inset: auto 0 6% 0;
-    text-align: center;
-    font-family: monospace; font-size: 1.4rem; font-weight: 900;
-    color: #ffc878;
-    background: #1a1000;
-    border: 2px solid #ffaa44;
-    padding: 8px 0;
-    letter-spacing: 0.2em;
-    text-shadow: 0 0 8px #ff9933;
-    animation: fossilBoot 0.9s steps(2) infinite;
-  }
-  @keyframes fossilBoot { 50% { opacity: 0.4; } }
+  /* OLD.exe — death-fx layer cleared. The whole death screen is now just
+     a black background + weak yellow wash + the centered CRT picture
+     (handled on .death-FOSSIL itself above). */
+  .death-FOSSIL .death-fx::before,
+  .death-FOSSIL .death-fx::after { content: none; }
 
   /* HEX — no extra fx (handled in the main HEX block above: red dots only). */
 

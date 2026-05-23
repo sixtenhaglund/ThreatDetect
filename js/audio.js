@@ -610,10 +610,42 @@ Audio.deaths = {
     }
   },
   FOSSIL() {
-    // Loud scream — startling against the calm DOS-era visuals.
-    this.scream();
-    this.scheduleDeath(1200, () => this.scream());
-    this.scheduleDeath(2400, () => this.scream());
+    // Quiet computer hum. A sustained low sine + second harmonic + a faint
+    // high-passed hiss for "fan noise" texture. No glitches, no screams —
+    // an old machine just sitting in a quiet room, humming.
+    // Internal gains are tiny so even with the jumpscare boost (~2.6x on
+    // deathGain) the overall result stays calm.
+    const ctx = this.ctx;
+    const t0 = ctx.currentTime;
+    const dur = 4.4;
+    // Shared envelope: fade in, hold, fade out.
+    const g = ctx.createGain();
+    g.gain.setValueAtTime(0, t0);
+    g.gain.linearRampToValueAtTime(0.035, t0 + 0.6);
+    g.gain.setValueAtTime(0.035, t0 + dur - 0.5);
+    g.gain.linearRampToValueAtTime(0, t0 + dur);
+    g.connect(this.sfxGain);
+    // 120Hz fundamental — the mains-transformer "hum" tone.
+    const hum = ctx.createOscillator();
+    hum.type = "sine"; hum.frequency.value = 120;
+    hum.connect(g);
+    hum.start(t0); hum.stop(t0 + dur);
+    // 240Hz second harmonic, quieter — adds a bit of character so it's not
+    // a pure tone (real hums always have some harmonics from the transformer).
+    const harm = ctx.createOscillator();
+    harm.type = "sine"; harm.frequency.value = 240;
+    const harmG = ctx.createGain(); harmG.gain.value = 0.35;
+    harm.connect(harmG); harmG.connect(g);
+    harm.start(t0); harm.stop(t0 + dur);
+    // Tiny fan-hiss layer: noise highpassed at 2.4kHz, very low gain.
+    const buf = ctx.createBuffer(1, Math.floor(ctx.sampleRate * dur), ctx.sampleRate);
+    const data = buf.getChannelData(0);
+    for (let i = 0; i < data.length; i++) data[i] = Math.random() * 2 - 1;
+    const src = ctx.createBufferSource(); src.buffer = buf;
+    const hp = ctx.createBiquadFilter(); hp.type = "highpass"; hp.frequency.value = 2400;
+    const hissG = ctx.createGain(); hissG.gain.value = 0.012;
+    src.connect(hp); hp.connect(hissG); hissG.connect(this.sfxGain);
+    src.start(t0); src.stop(t0 + dur);
   },
   HEX() {
     const t = this.ctx.currentTime;

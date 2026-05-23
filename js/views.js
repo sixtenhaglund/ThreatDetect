@@ -304,7 +304,12 @@ function viewPlay(isTraining) {
   // Swap visual: render the card then *flip* the button order by adding a flex-direction reverse class.
   const swap = state.tampering && state.tampering.type === "swap";
   const fxClasses = cardFxClasses(card);
-  const panelBgFx = (card.isVirus && card.bgShift) ? " fx-bg-" + card.bgShift : "";
+  // Card-level bgShift wins; otherwise fall back to a virus-level default
+  // (e.g. OLD.exe's faint yellow phosphor tint applies to every variant).
+  const effBgShift = card.isVirus
+    ? (card.bgShift || (VIRUSES[card.virusKey] && VIRUSES[card.virusKey].bgShift))
+    : null;
+  const panelBgFx = effBgShift ? " fx-bg-" + effBgShift : "";
   const codexLabel = state.sideCodexOpen ? "Close" : "Codex";
   const codexIcon  = state.sideCodexOpen ? "✕"      : "📖";
   const hud = isTraining ? `

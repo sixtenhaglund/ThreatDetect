@@ -418,7 +418,9 @@ const VIRUSES = {
     ]
   },
   FOSSIL: {
-    name: "FOSSIL", color: "#c4a484",
+    // Internal key kept as FOSSIL for CSS / death-animation / save compatibility.
+    // Display name is OLD.exe (an old executable file pretending to still be useful).
+    name: "OLD.exe", color: "#c4a484",
     minRound: 6,
     description: "A legacy-exploit virus that resurrects abandoned Windows components. Activates the 16-bit subsystem (ntvdm.exe), demands deprecated runtimes (MFC42.DLL, DAO 3.5, VBRUN300.DLL), and references winhelp.exe like it's 2002 — exploiting forgotten code paths that haven't been patched since Windows 95 because nobody remembered they were still shipping. Reads like a relic because it is one.",
     signs: [
@@ -427,9 +429,11 @@ const VIRUSES = {
       "Mentions defunct services (WinHelp, DAO, MFC42, WinINET)",
       "UI styling or wording feels mismatched to modern Windows",
       "Heading and body fonts often don't match",
-      "Subtle CRT noise overlay (vintage display artifact)"
+      "FPS meter drops into the single digits (1–11) — like the era it came from",
+      "Popup has a faint yellow tint (vintage phosphor)"
     ],
-    meterEffect: { vol: 11 },
+    bgShift: "yellow",
+    meterEffect: { fps: "lowfps" },
     errors: [
       { template: TPL.BIOS,  title: "Compatibility Layer 16-bit", message: "Windows 98 compatibility helper requires admin. WIN16 emulation is rebuilding registry hives for legacy compatibility.", meta: "Layer: WIN16  Module: ntvdm.exe  Mode: Compatibility", fontMismatch: true, noise: true },
       { template: TPL.WIN11, title: "Legacy DLL Required", message: "Application requires MFC42.DLL (Windows 95 runtime component). Auto-download from legacy.archive.host to continue?", meta: "Required: MFC42.DLL  |  Version: 4.21.7022  |  Source: legacy.archive.host" },
