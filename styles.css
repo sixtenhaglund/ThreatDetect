@@ -1938,22 +1938,27 @@
     opacity: 0.92;
   }
   .death-OLDEXE::after {
-    /* Static overlay. SVG noise tile, rapidly shifted via animation so it
-       scrambles like a TV signal losing its grip. */
+    /* Heavy static overlay — TV signal totally falling apart.
+       Higher feTurbulence frequency = finer/grittier noise, more octaves =
+       more detail layers stacked. Mix-blend-mode "screen" still keeps it
+       from darkening the picture, but at 0.55 opacity the bright specks
+       are dense enough to read as proper analog snow. */
     content: ""; position: absolute; inset: 0;
-    background: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
-    opacity: 0.32;
+    background: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='1.1' numOctaves='3' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+    opacity: 0.55;
     mix-blend-mode: screen;
     pointer-events: none;
-    animation: oldexeStatic 0.16s steps(6) infinite;
+    animation: oldexeStatic 0.1s steps(8) infinite;
   }
   @keyframes oldexeStatic {
     0%     { background-position: 0      0;    }
-    16.6%  { background-position: -60px  20px; }
-    33.3%  { background-position: 30px  -45px; }
-    50%    { background-position: -25px -75px; }
-    66.6%  { background-position: 80px   10px; }
-    83.3%  { background-position: -40px  55px; }
+    12.5%  { background-position: -60px  20px; }
+    25%    { background-position: 30px  -45px; }
+    37.5%  { background-position: -25px -75px; }
+    50%    { background-position: 80px   10px; }
+    62.5%  { background-position: -40px  55px; }
+    75%    { background-position: 95px  -30px; }
+    87.5%  { background-position: -90px -10px; }
     100%   { background-position: 0      0;    }
   }
 
