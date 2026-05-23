@@ -63,24 +63,49 @@ const state = {
 
 
 /* Substitute {name}, {tld}, {app}, etc. tokens in a string using RANDOM_POOLS.
-   Unknown tokens are left as-is. */
-function substitutePlaceholders(str) {
+   Unknown tokens are left as-is.
+
+   A pool entry can be one of two shapes:
+     [a, b, c]                       — flat list, used for both virus and legit
+     { legit: [...], virus: [...] }  — split: picks from the appropriate side
+                                       based on the card's isVirus flag
+   The split shape is how a single {tld} placeholder produces ".com" on a
+   legit card and ".pw" on a virus card — same author intent, gameplay-aware
+   resolution.
+
+   Optional `cache` object reuses the same randomly-picked value when the
+   same token appears twice (so a card that mentions {tld} in both message
+   and meta refers to the SAME domain instead of two different ones). */
+function substitutePlaceholders(str, cache, isVirus) {
   if (typeof str !== "string") return str;
   return str.replace(/\{(\w+)\}/g, (m, key) => {
+    if (cache && key in cache) return cache[key];
     const pool = RANDOM_POOLS[key];
-    return pool ? rand(pool) : m;
+    let arr = null;
+    if (Array.isArray(pool)) arr = pool;
+    else if (pool && typeof pool === "object") arr = isVirus ? (pool.virus || pool.legit) : (pool.legit || pool.virus);
+    const value = arr && arr.length ? rand(arr) : m;
+    if (cache) cache[key] = value;
+    return value;
   });
 }
 
 /* Called once per card when a deck is built. Stable from there on:
      - swaps in random app names / usernames / TLDs / etc.
      - picks a random icon color
-     - picks a random Report/OK button label pair */
+     - picks a random Report/OK button label pair
+   A per-card cache makes repeated {tokens} resolve to the same value
+   across title/message/meta. The isVirus flag is forwarded into
+   substitutePlaceholders so split pools (legit/virus shape) pick from the
+   right half — the SAME author placeholder reads differently depending on
+   whether the card it's on is real or a trap. */
 function randomizeCard(card) {
   const c = Object.assign({}, card);
-  c.title   = substitutePlaceholders(card.title || "");
-  c.message = substitutePlaceholders(card.message || "");
-  c.meta    = substitutePlaceholders(card.meta || "");
+  const cache = {};
+  const sub = (s) => substitutePlaceholders(s, cache, !!card.isVirus);
+  c.title   = sub(card.title   || "");
+  c.message = sub(card.message || "");
+  c.meta    = sub(card.meta    || "");
   if (!c.iconColor)   c.iconColor   = rand(ICON_COLORS);
   if (!c.labelReport) c.labelReport = rand(REPORT_SYNONYMS);
   if (!c.labelOk)     c.labelOk     = rand(OK_SYNONYMS);

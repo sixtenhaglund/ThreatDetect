@@ -118,31 +118,75 @@ const ICONS = {
 
 // Default icon per template — used when a card doesn't specify its own.
 // Pools of random fill-ins. Card text can use {token} placeholders (e.g. {name},
-// {tld}) and they get substituted at deck-build time so the same card stays stable
-// across re-renders but differs between runs.
+// {tld}) and they get substituted at deck-build time so the same card stays
+// stable across re-renders but differs between runs.
+//
+// Two pool shapes are supported:
+//   [a, b, c]                       — flat list (same values on virus and legit cards)
+//   { legit: [...], virus: [...] }  — split: substitutePlaceholders picks
+//                                     from .legit on legit cards and from .virus
+//                                     on virus cards, so {tld} can mean ".com"
+//                                     on a real alert and ".pw" on a fake one.
+//                                     If only one side is defined the other
+//                                     side falls back to it.
 const RANDOM_POOLS = {
+  // ---- Split pools (legit vs virus values are meaningfully different) ----
+  tld: {
+    legit: [".com", ".org", ".net", ".se", ".io", ".de", ".gov", ".edu", ".uk", ".dev", ".co"],
+    virus: [".host", ".tk", ".live", ".pw", ".ru", ".biz", ".xyz", ".support", ".help", ".online", ".click", ".info", ".app"]
+  },
+  brand: {
+    legit: ["Microsoft", "Google", "Apple", "Amazon", "Adobe", "Dropbox", "GitHub", "Cloudflare", "Mozilla", "Logitech", "NVIDIA", "Intel", "AMD"],
+    virus: ["Micros0ft", "G00gle", "Adobr", "Appl3", "Microsft", "Cl0udflare", "AdobeReader-Pro", "Apple-Recovery"]
+  },
+  app: {
+    legit: ["Microsoft Teams", "Slack", "Discord", "Outlook", "OneDrive", "Notion", "Zoom", "SharePoint", "Asana", "Linear", "Trello", "Photoshop", "Excel", "Word", "Spotify", "Steam", "Visual Studio Code", "Figma"],
+    virus: ["Microsoft-Teams-update", "Slack-helper", "Outlook-recovery", "Teams-protect", "GoogleDocs-sync", "Photoshop-cracked", "Steam-refund", "Office365-restore"]
+  },
+  city: {
+    legit: ["Stockholm", "Berlin", "Helsinki", "Oslo", "Copenhagen", "Tallinn", "Amsterdam", "Riga"],
+    virus: ["New Tron", "Volgograd-7", "Crypto Falls", "Server Town", "Botnet Heights", "Phisherville", "Spamgrad"]
+  },
+  filename: {
+    legit: ["Q4_Summary", "Annual_Report", "Resume_2026", "Project_Plan", "README", "Invoice_8821", "Meeting_Notes", "Backup_Final", "Budget_Q3", "design_v3"],
+    virus: ["urgent_invoice", "winning_lottery", "tax_audit_2026", "package_track_388191", "ceo_request", "wire_transfer", "shared_doc", "Resume_2026.docx"]
+  },
+  filesize: {
+    legit: ["1.2 GB", "84 KB", "256 MB", "4.5 MB", "38 MB", "12 GB", "640 KB", "1.8 MB", "512 MB", "76 KB"],
+    virus: ["0 KB", "999 GB", "—", "0 B", "12 ZB", "—999 MB", "NULL"]
+  },
+  kb: {
+    legit: ["KB5034441", "KB4474419", "KB5031356", "KB5028948", "KB5040442", "KB5039212", "KB5036893"],
+    virus: ["KB0000001", "KB99999999", "KB-CRITICAL", "KB-EMERGENCY-2026", "KB777777"]
+  },
+  process: {
+    legit: ["svchost.exe", "explorer.exe", "RuntimeBroker.exe", "dwm.exe", "services.exe", "spoolsv.exe", "lsass.exe", "csrss.exe", "winlogon.exe"],
+    virus: ["sysclean.exe", "secure_helper.exe", "win_optimize.exe", "registry_doctor.exe", "antivirus_pro.exe", "system_repair.exe", "boot_fix.exe"]
+  },
+  ipaddr: {
+    legit: ["192.168.0.42", "10.0.0.1", "172.16.0.5", "192.168.1.100", "10.10.0.27", "172.20.5.18"],
+    virus: ["94.140.14.14", "185.220.101.42", "5.181.80.7", "203.0.113.42", "78.46.220.91", "62.210.55.18"]
+  },
+  game: {
+    legit: ["Cyberpunk 2077", "Helldivers 2", "Stardew Valley", "Minecraft", "CS2", "Elden Ring", "Hades", "Baldur's Gate 3", "Fortnite", "Hollow Knight"],
+    virus: ["FREE_GTA_VI_LEAK", "Roblox-Cheats-v9", "Minecraft-Helper", "Steam-Refund-Tool", "Fortnite-VBucks-Generator", "CS2-AimAssist"]
+  },
+  username: {
+    legit: ["alex.k", "StandardUser", "jdoe", "sara_p", "m.dahl", "sixten", "lhansson"],
+    virus: ["root", "admin", "system32", "Administrator", "SYSTEM", "su"]
+  },
+
+  // ---- Flat pools (same values regardless of virus/legit) ----
   department: ["Accounting", "Engineering", "HR", "Marketing", "Sales", "IT", "Legal", "Operations", "Finance", "Procurement", "DevOps"],
-  tld:        [".host", ".tk", ".live", ".pw", ".ru", ".net", ".biz", ".xyz", ".support", ".help", ".online", ".click", ".info", ".app"],
-  app:        ["Microsoft Teams", "Slack", "Discord", "Outlook", "OneDrive", "Notion", "Zoom", "SharePoint", "Asana", "Linear", "Trello", "Photoshop", "Excel", "Word", "Spotify", "Steam", "Visual Studio Code", "Figma"],
-  brand:      ["Microsoft", "Google", "Apple", "Amazon", "Adobe", "Dropbox", "GitHub", "Cloudflare", "Mozilla", "Logitech", "NVIDIA", "Intel", "AMD"],
-  city:       ["Stockholm", "Berlin", "Helsinki", "Oslo", "Copenhagen", "Tallinn", "Amsterdam", "Riga"],
-  // People & comms
   name:       ["Sarah K.", "Alex Chen", "Maya Lindqvist", "Jordan Williams", "Sam Patel", "Casey Brown", "Riley Park", "Sven Bergstrom", "Mira Singh", "Tom Lee", "Eva Söderlund", "Hugo Andersson"],
-  username:   ["alex.k", "StandardUser", "admin", "jdoe", "sara_p", "m.dahl", "sixten", "sysadmin", "lhansson", "guest"],
-  // System / OS
-  kb:         ["KB5034441", "KB4474419", "KB5031356", "KB5028948", "KB5040442", "KB5039212", "KB5036893"],
   version:    ["4.21.7022", "22.06.1", "110.0.1587.41", "14.40", "3.8.6", "2025.05.01", "1.92.3", "115.0", "12.0.5"],
-  filesize:   ["1.2 GB", "84 KB", "256 MB", "4.5 MB", "38 MB", "12 GB", "640 KB", "1.8 MB", "512 MB", "76 KB"],
-  filename:   ["Q4_Summary", "Annual_Report", "Resume_2026", "Project_Plan", "README", "Invoice_8821", "Meeting_Notes", "Backup_Final", "Budget_Q3", "design_v3"],
   ext:        [".docx", ".pdf", ".xlsx", ".jpg", ".png", ".zip", ".pptx", ".csv", ".txt", ".mp4"],
-  process:    ["svchost.exe", "explorer.exe", "RuntimeBroker.exe", "dwm.exe", "services.exe", "spoolsv.exe", "lsass.exe", "csrss.exe", "winlogon.exe"],
   driver:     ["Realtek HD Audio", "NVIDIA Display Driver", "Intel Graphics", "Logitech HID", "Bluetooth A2DP", "Synaptics Touchpad", "Realtek PCIe LAN", "ASMedia USB 3.2", "Intel Wi-Fi 6E"],
-  // Network
   port:       ["443", "80", "8080", "22", "3389", "53", "25", "587", "8443"],
-  ipaddr:     ["192.168.0.42", "10.0.0.1", "172.16.0.5", "192.168.1.100", "10.10.0.27", "172.20.5.18"],
-  // Misc
   percent:    ["14%", "23%", "47%", "68%", "82%", "96%", "31%", "59%"],
-  game:       ["Cyberpunk 2077", "Helldivers 2", "Stardew Valley", "Minecraft", "CS2", "Elden Ring", "Hades", "Baldur's Gate 3", "Fortnite", "Hollow Knight"],
+  printer:    ["HP LaserJet M404", "Canon imageCLASS MF445", "Epson EcoTank ET-2820", "Brother HL-L3290CDW", "Xerox B225", "HP OfficeJet Pro 9015e", "Default Printer"],
+  pagecount:  ["1", "2", "3", "5", "8", "12", "18", "24", "42"],
+  alertword:  ["Warning", "Notice", "Alert", "Important", "Critical", "Urgent", "Update", "Reminder"],
   // BSOD-flavor pools — used inside Windows kernel-crash cards so each draw
   // shows different stop codes, modules, CPUs, etc. even when the title is fixed.
   stopcode: [
