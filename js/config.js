@@ -219,9 +219,12 @@ const RANDOM_POOLS = {
   timer: [
     "23:42:18", "23:00:00", "12:14:55", "47:59:59", "11:59:30", "06:32:11", "00:42:07"
   ],
-  numfiles: [
-    "8,441", "12,882", "21,003", "18,442", "31,082", "42,108", "88,221", "65,704"
-  ]
+  numfiles: {
+    // Legit counts — what real Windows tools report (font counts, search index sizes, log entries, etc.)
+    legit: ["47", "342", "1,042", "1,284", "1,847", "4,217", "4,821", "12,847", "84,221", "142,891", "284,932", "412,873"],
+    // Virus counts — scary ransomware "your files are locked" numbers
+    virus: ["8,441", "12,400", "12,882", "18,200", "18,442", "21,003", "31,082", "42,108", "65,704", "88,221"]
+  }
 };
 
 // Icon colors a card may get assigned. Picked once per card at deal time.

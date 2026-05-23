@@ -328,7 +328,7 @@ function viewPlay(isTraining) {
       return `
     <div class="hud" style="grid-template-columns: repeat(${cols}, 1fr);">
       <div class="cell"><div class="label">Score</div><div class="value">${state.score}</div></div>
-      <div class="cell"><div class="label">Round</div><div class="value">${state.round}/${state.gameMode === "endless" ? "∞" : CONFIG.totalRounds}</div></div>
+      <div class="cell"><div class="label">Round</div><div class="value">${state.gameMode === "endless" ? state.round : state.round + "/" + CONFIG.totalRounds}</div></div>
       <div class="cell"><div class="label">Life</div><div class="value" style="color:var(--primary);text-shadow:0 0 8px rgba(255,80,80,0.4);">${hearts}</div></div>
       ${avCell}
       <button class="cell" data-action="pause-codex" style="background:var(--muted);border:1px solid var(--border);color:var(--fg);"><div class="label">${codexLabel}</div><div class="value" style="font-size:1rem;">${codexIcon}</div></button>
