@@ -1088,29 +1088,22 @@
     overflow: hidden;
     z-index: 50;
   }
-  .breach-killer-bg {
+  /* The killing virus's full death animation plays in the background, darkened.
+     We piggyback on the existing .death-XXX classes — they style backgrounds and
+     pseudo elements regardless of which container they're on, so applying them
+     on the inner div gives the same visuals as the full death stage but as a
+     backdrop. The outer .breach-anim owns the dim/opacity so per-virus animations
+     that override `filter` (e.g. PULSE) can't accidentally re-brighten the scene. */
+  .breach-anim {
     position: absolute; inset: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     z-index: 1;
-    pointer-events: none;
-    filter: brightness(0.35) saturate(0.6);
+    overflow: hidden;
+    filter: brightness(0.5);
     opacity: 0.7;
+    pointer-events: none;
   }
-  .breach-killer-bg > * {
-    transform: scale(1.65);
-    transform-origin: center;
-    max-width: none;
-  }
-  /* The killer-card wrapper above adds animation:none + a small dark inset background.
-     For the full-screen background variant we don't want the inset shadow. */
-  .breach-killer-bg.killer-card {
-    background: transparent;
-    box-shadow: none;
-    padding: 0;
-    min-height: 0;
-    border-radius: 0;
+  .breach-anim > div {
+    position: absolute; inset: 0;
   }
   .breach-content {
     position: relative;
@@ -4893,7 +4886,7 @@ function viewInfected() {
   const hasAnyTell = textTells.length + fxTells.length > 0;
   return `
     <div class="breach-stage">
-      ${card ? `<div class="breach-killer-bg killer-card">${renderCard(card)}</div>` : ""}
+      ${state.killer ? `<div class="breach-anim"><div class="death-${state.killer}"><div class="death-fx"></div></div></div>` : ""}
       <div class="breach-content panel center stack">
         <h3 style="color: var(--destruct)">SYSTEM BREACH</h3>
         <h1 class="glitch ${cls}">INFECTED</h1>
