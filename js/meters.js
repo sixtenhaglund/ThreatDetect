@@ -118,6 +118,9 @@ const METERS = {
       case "room237":   return this.state.time.slice(0, 3) + "37:" + this.state.time.slice(6);
       case "spike":     return Math.random() < 0.5 ? String(this.state.ping) : "9999";
       case "lowfps":    return String(rng(1, 11));
+      // Volume blast — impossibly loud values that the HUD will render as "999%" etc.
+      // Stays numeric so the trailing "%" unit in the HUD reads naturally.
+      case "blast":     return rand(["999", "1100", "1500", "8800"]);
       default:          return String(mode);
     }
   }

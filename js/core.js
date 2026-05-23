@@ -232,6 +232,11 @@ function describeMeterEffect(effect) {
       blank: "FPS meter went blank (—)",
       lowfps: "FPS meter dropped into the single digits (1–11) — like an ancient machine"
     },
+    vol: {
+      flash: "Volume meter spiked wildly between 0% and 999%",
+      pulse: "Volume meter oscillated between 60% and 120% (impossible)",
+      blast: "Volume meter pinned at an impossibly loud value (over 100%)"
+    },
     cpu: {
       kernel: "CPU meter read 'KERNEL' instead of a number",
       "null": "CPU meter read NULL or ∞",

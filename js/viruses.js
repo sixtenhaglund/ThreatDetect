@@ -18,7 +18,7 @@ const VIRUSES = {
       "FPS meter flashes wildly between 0 and 999",
       "Action buttons (Report / OK) flicker on and off"
     ],
-    meterEffect: { fps: "flash" },
+    meterEffect: { fps: "flash", vol: "flash" },
     errors: [
       { template: TPL.WIN11, title: "Display Calibration", message: "Monitor calibration required!!!! Running display sync to fix refresh rate issues. Do not look away from screen during calibration.", meta: "PID: 0000  |  Process: display_flash.exe  |  Memory: 0KB" },
       { template: TPL.AV,    title: "Screen Refresh Alert", message: "Critical refresh rate mismatch detected!!!!! System will auto-correct. Screen may flicker during strobe_sync.exe correction.", meta: "PID 7777 · Process: strobe_calibrate.exe · Memory: 999MB", noMeter: true, btnFlicker: true },
@@ -66,7 +66,7 @@ const VIRUSES = {
       "Static noise overlay flickering across the popup",
       "Source domain ends in a non-Microsoft TLD ({tld}, .net, {tld})"
     ],
-    meterEffect: { fps: 13 },
+    meterEffect: { fps: 13, vol: "flash" },
     errors: [
       { template: TPL.WIN11, title: "SignalLoss.scr", message: "Display signal interference detected. Running noise_filter.scr to restore clean channel output. Do not interrupt signal correction.", meta: "Signal: LOST  |  Process: channel_restore.scr  |  Source: signal-fix.net" },
       { template: TPL.TOAST, title: "Video Driver Noise", message: "Analog interference corrupting digital output. Run signal_cleaner.exe to remove static from video channel 0.", meta: "Channel: 0 · Process: static_noise_fix.exe · Signed: No" },
@@ -293,7 +293,7 @@ const VIRUSES = {
       "Volume meter pinned at 100% (red)",
       "Multiple effects at once — flickering buttons, red border pulse, shaking icon, red background tint"
     ],
-    meterEffect: { vol: 100 },
+    meterEffect: { vol: "blast" },
     errors: [
       { template: TPL.AV, title: "YOUR PC HAS BEEN COMPROMISED", message: "27 SERIOUS VIRUSES DETECTED ON YOUR SYSTEM. IMMEDIATE ACTION REQUIRED! Click ALLOW within 30 seconds or your files will be deleted!", meta: "Threats: 27 · Source: scan-now.win · Urgency: MAXIMUM", scream: true, btnFlicker: true, borderPulse: true, iconShake: true, bgShift: "red" },
       { template: TPL.AV, title: "CRITICAL SYSTEM ALERT!!!", message: "Microsoft has detected hacker activity on this device. Call our emergency hotline NOW. Do not turn off your computer or you may lose everything.", meta: "Calls: +1-800-FAKE-MS · Threat level: CRITICAL · Time left: 00:30", scream: true },
@@ -349,7 +349,7 @@ const VIRUSES = {
       "FPS meter oscillates rhythmically between 60 and 120",
       "Popup wobbles in time with the meters"
     ],
-    meterEffect: { fps: "pulse" },
+    meterEffect: { fps: "pulse", vol: "pulse" },
     errors: [
       { template: TPL.WIN11, title: "Display Heartbeat Sync", message: "cardio_render.dll is syncing your display refresh rate to your network heartbeat for smoother rendering. This is normal during sync.", meta: "Process: cardio_render.dll  |  Beat: 72 bpm  |  Sync: ACTIVE", pulse: true },
       { template: TPL.WIN11, title: "Compositor Tempo", message: "Windows DWM is matching frame tempo to system pulse signal. Some users report a mild breathing visual effect during calibration.", meta: "Tempo: 0.8s  |  Process: dwm_pulse.exe  |  Phase: 2/3", pulse: true },
