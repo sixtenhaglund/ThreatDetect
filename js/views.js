@@ -469,13 +469,54 @@ function viewPreview() {
     </div>`;
 }
 
+/* Show the meter HUD frozen at what the killer card was displaying — both
+   the tampered values (highlighted bad) and the untouched ones, so the player
+   can see at a glance which meter the virus poisoned. */
+function renderKillerMeters(card) {
+  const v = card && card.virusKey ? VIRUSES[card.virusKey] : null;
+  const effect = (card && card.meterEffect) || (v && v.meterEffect) || {};
+  // Mode labels mirror what applyEffect prints into the live HUD during play.
+  const modeLabels = {
+    fps:  { flash: "0 / 999", pulse: "60 / 120", "null": "NULL / ∞", blank: "—", lowfps: "1–11" },
+    ping: { spike: "9999 ms" },
+    cpu:  { kernel: "KERNEL", "null": "NULL / ∞", blank: "—" },
+    time: { wrong: "impossible date", countdown: "00:00:0X", room237: "stuck at :37" }
+  };
+  // Normal values shown when this meter wasn't tampered — match METERS.state defaults.
+  const normalValue = { fps: "60", ping: "24 ms", cpu: "47%", vol: "72%", time: "14:23:07" };
+  const meters = ["fps", "ping", "cpu", "vol", "time"];
+  const cells = meters.map(m => {
+    const tampered = m in effect && !(card.noMeter);
+    let display = normalValue[m];
+    if (tampered) {
+      const val = effect[m];
+      if (typeof val === "number") {
+        const unit = m === "ping" ? " ms" : m === "cpu" ? "°C" : m === "vol" ? "%" : "";
+        display = val + unit;
+      } else if (modeLabels[m] && modeLabels[m][val]) {
+        display = modeLabels[m][val];
+      } else {
+        display = String(val);
+      }
+    }
+    // OLD.exe / quiet effects don't visually flag red, but on the death screen
+    // we still want to call them out (the WHOLE point here is teaching).
+    const cls = tampered ? "value bad" : "value";
+    return `<div class="cell"><div class="label">${m.toUpperCase()}</div><div class="${cls}">${esc(display)}</div></div>`;
+  }).join("");
+  return `
+    <div class="killer-label tiny" style="margin-top: 14px;">Meters when the alert appeared</div>
+    <div class="hud" style="grid-template-columns: repeat(5, 1fr);">${cells}</div>`;
+}
+
 function viewInfected() {
   const v = state.killer ? VIRUSES[state.killer] : null;
   const cls = state.killer ? "v-" + state.killer : "";
   const card = state.killerCard;
   const textTells = textualTellsFor(card);
   const fxTells = activeTells(card);
-  const hasAnyTell = textTells.length + fxTells.length > 0;
+  const hasSpecificTells = textTells.length + fxTells.length > 0;
+  const generalSigns = (v && Array.isArray(v.signs)) ? v.signs : [];
   const photoCls = save.settings.photosensitive ? " photo-safe" : "";
   return `
     <div class="breach-stage">
@@ -489,9 +530,9 @@ function viewInfected() {
             <div class="killer-label tiny">The alert that fooled you</div>
             <div class="killer-card">${renderCard(card)}</div>
           </div>` : ""}
-        ${hasAnyTell ? `
-          <div class="killer-tells">
-            <div class="killer-tells-title">Why it was a virus</div>
+        <div class="killer-tells">
+          <div class="killer-tells-title">Why this alert was a trap</div>
+          ${hasSpecificTells ? `
             ${textTells.length ? `
               <div class="tells-section">
                 <div class="tells-section-label">In the alert text:</div>
@@ -506,13 +547,18 @@ function viewInfected() {
                   ${fxTells.map(t => `<li>${esc(t)}</li>`).join("")}
                 </ul>
               </div>` : ""}
-            ${textTells.length === 0 && fxTells.length === 0 ? `
-              <p class="mute" style="font-size:0.82rem;">This one looked clean. The only giveaway was buried in the details — re-read the popup above carefully.</p>` : ""}
-          </div>` : `
-          <div class="killer-tells">
-            <div class="killer-tells-title">Why it was a virus</div>
-            <p class="mute" style="font-size:0.82rem;">This variant has no obvious tells — that's why MIMIC and stealthy viruses are dangerous. Study the codex entry to learn what to look for next time.</p>
-          </div>`}
+          ` : `
+            <p class="mute" style="font-size:0.82rem;">This specific variant didn't trip any obvious automated flags — it relied on you recognizing the virus's broader pattern. The signs below are what to watch for next time.</p>
+          `}
+          ${generalSigns.length ? `
+            <div class="tells-section" style="margin-top: 14px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.08);">
+              <div class="tells-section-label">How to spot ${esc(v.name)} in general:</div>
+              <ul class="killer-tells-list">
+                ${generalSigns.map(s => `<li>${esc(s)}</li>`).join("")}
+              </ul>
+            </div>` : ""}
+        </div>
+        ${card ? renderKillerMeters(card) : ""}
         <div class="hud" style="margin-top: 8px;">
           <div class="cell"><div class="label">Score</div><div class="value">${state.score}</div></div>
           <div class="cell"><div class="label">Threats</div><div class="value">${state.threatsNeutralized || 0}</div></div>
