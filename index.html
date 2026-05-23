@@ -5349,6 +5349,11 @@ function viewInfected() {
         <h3 style="color: var(--destruct)">SYSTEM BREACH</h3>
         <h1 class="glitch ${cls}">INFECTED</h1>
         ${v ? `<h2 class="${cls}">${esc(v.name)}${state.firstDeath ? ' <span class="new-badge">NEW</span>' : ''}</h2><p class="mute" style="max-width:460px;margin:0 auto;">${esc(v.description)}</p>` : ""}
+        ${card ? `
+          <div class="killer-display">
+            <div class="killer-label tiny">The alert that fooled you</div>
+            <div class="killer-card">${renderCard(card)}</div>
+          </div>` : ""}
         ${hasAnyTell ? `
           <div class="killer-tells">
             <div class="killer-tells-title">Why it was a virus</div>
