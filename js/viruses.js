@@ -169,7 +169,8 @@ const VIRUSES = {
       { template: TPL.AV, title: "Ransom Notice", message: "All photos and documents have been locked. Pay 0.8 BTC within 12 hours or files are deleted permanently.", meta: "Locked: 42,108 · Wallet: 3FZbgi9… · Timer: 11:59:59", icon: "warning" },
       { template: TPL.WIN11, title: "OneDrive Vault Locked", message: "Your Personal Vault has been encrypted by a security service. Pay 0.5 BTC at onedrive-restore.host to restore access.", meta: "Files: 18,442  |  Wallet: bc1qxy2kg…  |  Timer: 23:00:00", borderPulse: true },
       { template: TPL.TOAST, title: "Dropbox Backup", message: "Your Dropbox files have been protected with .vault extension. Recovery key fee: $299.", meta: "Files: 31,082 · Extension: .vault · Recovery: $299", icon: "warning" },
-      { template: TPL.BSOD,  title: "CRITICAL_FILE_ENCRYPTED", message: "System files were encrypted by the security update. Recovery requires the Premium Decryption Key. Visit recovery-vault{tld} on another device to obtain the key.", meta: "STOP: {stopcode}  |  Files: {numfiles}  |  Wallet: {wallet}  |  Timer: {timer}" }
+      { template: TPL.BSOD,  title: "CRITICAL_FILE_ENCRYPTED", message: "System files were encrypted by the security update. Recovery requires the Premium Decryption Key. Visit recovery-vault{tld} on another device to obtain the key.", meta: "STOP: {stopcode}  |  Files: {numfiles}  |  Wallet: {wallet}  |  Timer: {timer}" },
+      { template: TPL.PRINT, title: "Print Job Intercepted", message: "Your print queue was held by a security event. Pay {wallet} to release {pagecount} pending jobs.", meta: "Wallet: {wallet}  |  Pages: {pagecount}  |  Timer: {timer}" }
     ]
   },
   WORM: {
@@ -195,7 +196,10 @@ const VIRUSES = {
       { template: TPL.WIN11, title: "Shared Document", message: "Sarah from Accounting shared 'Payroll_Q2.xlsx.exe' with you via the corporate file share.", meta: "From: sarah@corp-portal.live  |  File: Payroll_Q2.xlsx.exe  |  Shares: 47", icon: "warning", wobble: true },
       { template: TPL.DESKTOP, title: "Onboarding_Docs.pdf.exe", message: "HR onboarding pack arrived from new hire portal. Double-click to view your forms.", meta: "Size: 84 KB  |  Sender: onboarding@corp-portal.live  |  Type: Application" },
       { template: TPL.TOAST, title: "Outlook Calendar", message: "Meeting invite from contractor-svc@corp-portal.live attached: Roadmap_Q3.pdf.exe.", meta: "Outlook · Attachment: Roadmap_Q3.pdf.exe", noise: true },
-      { template: TPL.TERMINAL, title: "npm install", message: "Installing helper-utils-pro from npm-supply-chain.host. Post-install will execute spread.sh on 14 mounted shares.", meta: "Package: helper-utils-pro  Spreads: 14 shares  Source: npm-supply-chain.host" }
+      { template: TPL.TERMINAL, title: "npm install", message: "Installing helper-utils-pro from npm-supply-chain.host. Post-install will execute spread.sh on 14 mounted shares.", meta: "Package: helper-utils-pro  Spreads: 14 shares  Source: npm-supply-chain.host" },
+      { template: TPL.PRINT, title: "Scanned_Document.pdf.exe", message: "Scanned document from {brand} printer received. Double-click to open in {process}.", meta: "File: scan_{filename}.pdf.exe  |  Source: scan-relay{tld}  |  Signed: No" },
+      { template: TPL.PRINT, title: "FAX RECEIVED", message: "Incoming fax from +1-555-{numfiles}. Click 'Print' to install fax-driver.exe from fax-helper{tld}.", meta: "Tool: fax-driver.exe  |  Source: fax-helper{tld}  |  Signed: No" },
+      { template: TPL.PRINT, title: "Queue Stuck", message: "Print queue stalled with {pagecount} jobs. Tool 'queue-rescuer.exe' will fix it. Download from rescue-queue{tld}.", meta: "Tool: queue-rescuer.exe  |  Source: rescue-queue{tld}  |  Signed: No" }
     ]
   },
   ROOTKIT: {
@@ -220,7 +224,9 @@ const VIRUSES = {
       { template: TPL.WIN11, title: "Boot Manager Patch", message: "MBR partition table rewrite scheduled by boot_helper.sys. Please disable Secure Boot in BIOS before reboot.", meta: "Target: MBR  |  Driver: boot_helper.sys  |  Signed: No", icon: "skull", bgShift: "blue" },
       { template: TPL.BIOS, title: "UEFI Rootkit Module", message: "Persistent boot agent install requires Secure Boot disabled. Press F2 to authorize uefi_persist.efi.", meta: "Tool: uefi_persist.efi  Boot: Modified  Signed: No", icon: "skull" },
       { template: TPL.WIN11, title: "Dell SupportAssist Driver", message: "Dell SupportAssist needs to install a kernel driver (dellboot.sys). Disable Secure Boot to proceed.", meta: "Driver: dellboot.sys · SecureBoot: Disable required · Signed: No", icon: "skull" },
-      { template: TPL.BSOD, title: "KERNEL_DRIVER_FAULT", message: "An unsigned kernel driver (rootkit_accel.sys) was loaded outside Secure Boot. The system has been rolled back. To complete recovery, allow boot_helper.exe to re-install the driver from rootkit-fix{tld}.", meta: "{stopcode} (0x00000003, 0xFFFFFA80, rootkit_accel.sys)" }
+      { template: TPL.BSOD, title: "KERNEL_DRIVER_FAULT", message: "An unsigned kernel driver (rootkit_accel.sys) was loaded outside Secure Boot. The system has been rolled back. To complete recovery, allow boot_helper.exe to re-install the driver from rootkit-fix{tld}.", meta: "{stopcode} (0x00000003, 0xFFFFFA80, rootkit_accel.sys)" },
+      { template: TPL.PRINT, title: "Print Spooler Error", message: "spoolsv.exe corrupted. Auto-recover via spooler_kernel_fix.exe from spooler-fix{tld}? Requires Secure Boot disabled.", meta: "Recovery: spooler_kernel_fix.exe  |  Source: spooler-fix{tld}  |  Signed: No" },
+      { template: TPL.PRINT, title: "Printer Driver Missing", message: "{printer} not detected. Auto-install driver_helper_kernel.sys from printer-drivers{tld}? Kernel-level access required.", meta: "Tool: driver_helper_kernel.sys  |  Source: printer-drivers{tld}  |  Signed: No" }
     ]
   },
   DDOS: {
@@ -271,7 +277,8 @@ const VIRUSES = {
       { template: TPL.TOAST, title: "Slack", message: "Your password is expiring tomorrow. Renew at slack-renew.host to keep your workspace access.", meta: "Slack · Workspace: corp · Domain: slack-renew.host", icon: "blank" },
       { template: TPL.TERMINAL, title: "npm install", message: "Installing dev-telemetry-helper@4.1.0 from npm-mirror.tk. Allow keylogger + clipboard hook for IDE analytics?", meta: "Package: dev-telemetry-helper  Source: npm-mirror.tk  Hook: HID+Clipboard" },
       { template: TPL.CHAT, title: "IT Support", message: "Hi! Detected unusual activity on your account. Please verify your login at corp-it-verify.host before tomorrow.", meta: "DM · corp-it-verify.host · Hidden: Yes" },
-      { template: TPL.CAPTCHA, title: "Human Verification", message: "Click the box to confirm you are not a robot. This installs verify-helper.exe to your downloads.", meta: "Tool: verify-helper.exe · Hidden: Yes" }
+      { template: TPL.CAPTCHA, title: "Human Verification", message: "Click the box to confirm you are not a robot. This installs verify-helper.exe to your downloads.", meta: "Tool: verify-helper.exe · Hidden: Yes" },
+      { template: TPL.PRINT, title: "Print Authentication", message: "Verify your identity ({username}) before printing {pagecount} sensitive pages. Install verify_print.exe from print-auth{tld}.", meta: "Tool: verify_print.exe  |  Source: print-auth{tld}  |  Captures: keyboard+clipboard" }
     ]
   },
   SCREAMER: {
@@ -324,7 +331,10 @@ const VIRUSES = {
       { template: TPL.TERMINAL, title: "yarn add", message: "Adding @types/n0de from registry-mirror.tk to your dev dependencies.", meta: "Source: registry-mirror.tk  Signed: No" },
       { template: TPL.MAC, title: "System Preferences", message: "macOS 14.5 needs to install a kernel extension for printer support. Allow at preferences-mac.host.", meta: "Source: preferences-mac.host · Signed: No" },
       { template: TPL.PHONE, title: "Apple ID", message: "Your Apple ID was used to sign in on a Windows PC. Verify at apple-id.support to keep your account secure.", meta: "Location: Stockholm · Domain: apple-id.support" },
-      { template: TPL.UPDATE, title: "ThreatDetect", message: "ThreatDetect v2.1 is available. Update via update-installer.com to unlock new viruses.", meta: "Version: 2.1 · Source: update-installer.com" }
+      { template: TPL.UPDATE, title: "ThreatDetect", message: "ThreatDetect v2.1 is available. Update via update-installer.com to unlock new viruses.", meta: "Version: 2.1 · Source: update-installer.com" },
+      { template: TPL.PRINT, title: "DocuSign Request", message: "{name} from {brand} requests your signature on {filename}{ext}. Open via docusign-secure{tld}?", meta: "Source: docusign-secure{tld}  |  Sender: {name}  |  Signed: No" },
+      { template: TPL.PRINT, title: "Invoice — Signature Required", message: "{numfiles} pending invoices from {brand} need your signature. Print via {process} from invoice-portal{tld}.", meta: "Source: invoice-portal{tld}  |  Process: {process}  |  Signed: No" },
+      { template: TPL.PRINT, title: "{filename}{ext} — URGENT", message: "CEO at {brand} requests urgent print + sign. Download from ceo-docs{tld}.", meta: "Source: ceo-docs{tld}  |  From: ceo@{brand}{tld}  |  Signed: No" }
     ]
   },
   PULSE: {
