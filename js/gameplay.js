@@ -76,16 +76,31 @@ const state = {
    Optional `cache` object reuses the same randomly-picked value when the
    same token appears twice (so a card that mentions {tld} in both message
    and meta refers to the SAME domain instead of two different ones). */
-function substitutePlaceholders(str, cache, isVirus) {
+function substitutePlaceholders(str, cache, isVirus, virusSubs) {
   if (typeof str !== "string") return str;
   return str.replace(/\{(\w+)\}/g, (m, key) => {
     if (cache && key in cache) return cache[key];
     const pool = RANDOM_POOLS[key];
     let arr = null;
-    if (Array.isArray(pool)) arr = pool;
-    else if (pool && typeof pool === "object") arr = isVirus ? (pool.virus || pool.legit) : (pool.legit || pool.virus);
+    let fromVirusSide = false;
+    if (Array.isArray(pool)) {
+      arr = pool;
+    } else if (pool && typeof pool === "object") {
+      if (isVirus && pool.virus && pool.virus.length) {
+        arr = pool.virus;
+        fromVirusSide = true;
+      } else {
+        arr = pool.legit || pool.virus;
+      }
+    }
     const value = arr && arr.length ? rand(arr) : m;
     if (cache) cache[key] = value;
+    // Track which tokens resolved to a virus-side value — the death screen
+    // surfaces these as explicit "this word is fake" tells so the player
+    // learns the giveaways. Dedup by token (cache means same token => same value).
+    if (fromVirusSide && virusSubs && !virusSubs.find(s => s.token === key)) {
+      virusSubs.push({ token: key, value: value });
+    }
     return value;
   });
 }
@@ -102,10 +117,14 @@ function substitutePlaceholders(str, cache, isVirus) {
 function randomizeCard(card) {
   const c = Object.assign({}, card);
   const cache = {};
-  const sub = (s) => substitutePlaceholders(s, cache, !!card.isVirus);
+  const virusSubs = [];
+  const sub = (s) => substitutePlaceholders(s, cache, !!card.isVirus, virusSubs);
   c.title   = sub(card.title   || "");
   c.message = sub(card.message || "");
   c.meta    = sub(card.meta    || "");
+  // Stash the virus-side placeholder picks on the card so viewInfected can
+  // call them out specifically ("this said .pw / Micros0ft / 0 KB").
+  if (virusSubs.length) c._virusSubs = virusSubs;
   if (!c.iconColor)   c.iconColor   = rand(ICON_COLORS);
   if (!c.labelReport) c.labelReport = rand(REPORT_SYNONYMS);
   if (!c.labelOk)     c.labelOk     = rand(OK_SYNONYMS);

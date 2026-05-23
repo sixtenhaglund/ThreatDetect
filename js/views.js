@@ -515,7 +515,8 @@ function viewInfected() {
   const card = state.killerCard;
   const textTells = textualTellsFor(card);
   const fxTells = activeTells(card);
-  const hasSpecificTells = textTells.length + fxTells.length > 0;
+  const placeholderTells = virusSubTells(card);
+  const hasSpecificTells = textTells.length + fxTells.length + placeholderTells.length > 0;
   const generalSigns = (v && Array.isArray(v.signs)) ? v.signs : [];
   const photoCls = save.settings.photosensitive ? " photo-safe" : "";
   return `
@@ -545,6 +546,13 @@ function viewInfected() {
                 <div class="tells-section-label">How it visually misbehaved:</div>
                 <ul class="killer-tells-list">
                   ${fxTells.map(t => `<li>${esc(t)}</li>`).join("")}
+                </ul>
+              </div>` : ""}
+            ${placeholderTells.length ? `
+              <div class="tells-section">
+                <div class="tells-section-label">Fake-looking words on this card:</div>
+                <ul class="killer-tells-list">
+                  ${placeholderTells.map(t => `<li>${esc(t)}</li>`).join("")}
                 </ul>
               </div>` : ""}
           ` : `

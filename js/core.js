@@ -262,6 +262,36 @@ function describeMeterEffect(effect) {
   return labels;
 }
 
+/* Human-friendly explanations for virus-side placeholder picks, used by the
+   infected screen. Each entry takes the rendered value and returns a teaching
+   sentence. Keep them specific — "ends in .pw" beats "domain looks weird". */
+const VIRUS_TOKEN_EXPLANATIONS = {
+  tld:      v => "Domain ends with '" + v + "' — real Microsoft / Apple / Google domains never use this TLD",
+  brand:    v => "Brand name spelled '" + v + "' — real companies don't typo or stylize their own name",
+  app:      v => "App named '" + v + "' — real software doesn't add '-recovery' / '-helper' / '-update' suffixes",
+  city:     v => "City '" + v + "' isn't a real place — made-up locations are a giveaway",
+  filename: v => "Filename '" + v + "' is urgent / panic-y — real documents have boring names",
+  filesize: v => "File size shown as '" + v + "' — real files are never that big, that small, or NULL",
+  kb:       v => "Update ID '" + v + "' isn't a real Microsoft KB number — real ones look like KB5034441",
+  process:  v => "Process named '" + v + "' isn't a real Windows process — those are svchost.exe, dwm.exe, etc.",
+  ipaddr:   v => "IP address " + v + " is from an unfamiliar / foreign network — real notices use local IPs",
+  game:     v => "Game title '" + v + "' is a fake-leak / cheat-tool naming pattern",
+  username: v => "Uses privileged username '" + v + "' — real notices identify YOU, not 'root' / 'SYSTEM'"
+};
+
+/* Build human-readable tells from a card's _virusSubs (set at deal time by
+   randomizeCard whenever a placeholder pulled from the .virus side of a
+   split pool). Returns [] when the card had no virus-flavored placeholders. */
+function virusSubTells(card) {
+  if (!card || !Array.isArray(card._virusSubs)) return [];
+  return card._virusSubs
+    .map(sub => {
+      const f = VIRUS_TOKEN_EXPLANATIONS[sub.token];
+      return f ? f(sub.value) : null;
+    })
+    .filter(Boolean);
+}
+
 function activeTells(card) {
   if (!card || !card.isVirus) return [];
   const tells = [];
