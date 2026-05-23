@@ -26,7 +26,9 @@ const TRAINING_STATS_DEFAULT = { wins: 0, losses: 0, bestTimeMs: null };
 /* In-run: antivirus triggers, pick a random minigame and run it.
    Harder difficulties require multiple back-to-back minigames (with random types). */
 function startRandomAntivirusMinigame(savedCard) {
-  const diff = state.gameMode === "challenge" ? "challenge" : (state.difficulty || "normal");
+  const diff = state.gameMode === "challenge" ? "challenge"
+             : state.gameMode === "endless"   ? "endless"
+             : (state.difficulty || "normal");
   const row = CONFIG.minigameByDifficulty[diff] || CONFIG.minigameByDifficulty.normal;
   const totalRounds = row.rounds || 1;
   const type = MINIGAME_TYPES[Math.floor(Math.random() * MINIGAME_TYPES.length)];
@@ -56,7 +58,9 @@ function startMinigameOfType(type, opts) {
   unlockAudio();
   const diff = opts.training
     ? (state.minigameTrainingDifficulty || "normal")
-    : (state.gameMode === "challenge" ? "challenge" : (state.difficulty || "normal"));
+    : (state.gameMode === "challenge" ? "challenge"
+       : state.gameMode === "endless" ? "endless"
+       : (state.difficulty || "normal"));
   const row = CONFIG.minigameByDifficulty[diff] || CONFIG.minigameByDifficulty.normal;
   const cfg = row[type] || { n: 5, t: 6 };
 
@@ -185,10 +189,10 @@ function hitQuarantineTarget(idx) {
    ============================================================ */
 
 const SEQUENCE_COLORS = [
-  { bg: "#000000", lit: "#3f3f3f", freq: 392 },  // red    — G
-  { bg: "#ffffff", lit: "#ffffff", freq: 494 },  // green  — B
-  { bg: "#008507", lit: "#09aa04", freq: 587 },  // blue   — D
-  { bg: "#797979", lit: "#8b774d", freq: 698 }   // yellow — F
+  { bg: "#000000", lit: "#252525", freq: 392 },  // red    — G
+  { bg: "#363636", lit: "#4e4e4e", freq: 494 },  // green  — B
+  { bg: "#818181", lit: "#d3d3d3", freq: 587 },  // blue   — D
+  { bg: "#c2c2c2", lit: "#ffffff", freq: 698 }   // yellow — F
 ];
 
 function setupSequence(cfg) {
@@ -418,7 +422,8 @@ function viewMinigamePickDifficulty() {
     { id: "normal",    label: "Normal",    sub: "standard" },
     { id: "hard",      label: "Hard",      sub: "denser + faster" },
     { id: "nightmare", label: "Nightmare", sub: "near-impossible" },
-    { id: "challenge", label: "Challenge", sub: "challenge-mode tuning" }
+    { id: "challenge", label: "Challenge", sub: "challenge-mode tuning" },
+    { id: "endless",   label: "Endless",   sub: "endless-mode tuning" }
   ];
   return `
     <div class="panel center stack fade-in">

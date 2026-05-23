@@ -21,7 +21,7 @@ function viewMenu() {
         ${lb.slice(0, 10).map((e, i) => {
           const diffLabel = {
             easy: "EASY", normal: "NORM", hard: "HARD",
-            nightmare: "NMRE", challenge: "CHAL"
+            nightmare: "NMRE", challenge: "CHAL", endless: "ENDL"
           }[e.difficulty] || "—";
           const diffCls = e.difficulty ? "diff-" + e.difficulty : "";
           return `
@@ -45,6 +45,7 @@ function viewMenu() {
         <div class="stack tight" style="margin-top: 8px;">
           <button class="menu-btn" data-action="show-difficulty"><span>Play<div class="menu-sub">Pick difficulty · or jump into Training</div></span><span class="arrow">▶</span></button>
           <button class="menu-btn" data-action="play-challenge"><span>Challenge<div class="menu-sub">All 20 viruses from round 1 · denser threats · earlier UI tampering</div></span><span class="arrow">▶</span></button>
+          <button class="menu-btn" data-action="play-endless"><span>Endless<div class="menu-sub">No finish line · rounds keep climbing forever · how far can you go?</div></span><span class="arrow">▶</span></button>
           <button class="menu-btn" data-action="codex"><span>Codex<div class="menu-sub">${unlockedCount}/${totalCount} threats discovered</div></span><span class="arrow">▶</span></button>
           <button class="menu-btn" data-action="minigame-practice"><span>Minigame Practice<div class="menu-sub">Train the quarantine minigame · no antivirus needed</div></span><span class="arrow">▶</span></button>
           <button class="menu-btn" data-action="shop"><span>Shop<div class="menu-sub">${(save.creditz || 0).toLocaleString()} ₢ available · coming soon</div></span><span class="arrow">▶</span></button>
@@ -322,7 +323,7 @@ function viewPlay(isTraining) {
       return `
     <div class="hud" style="grid-template-columns: repeat(${cols}, 1fr);">
       <div class="cell"><div class="label">Score</div><div class="value">${state.score}</div></div>
-      <div class="cell"><div class="label">Round</div><div class="value">${state.round}/${CONFIG.totalRounds}</div></div>
+      <div class="cell"><div class="label">Round</div><div class="value">${state.round}/${state.gameMode === "endless" ? "∞" : CONFIG.totalRounds}</div></div>
       <div class="cell"><div class="label">Life</div><div class="value" style="color:var(--primary);text-shadow:0 0 8px rgba(255,80,80,0.4);">${hearts}</div></div>
       ${avCell}
       <button class="cell" data-action="pause-codex" style="background:var(--muted);border:1px solid var(--border);color:var(--fg);"><div class="label">${codexLabel}</div><div class="value" style="font-size:1rem;">${codexIcon}</div></button>

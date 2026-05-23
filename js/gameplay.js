@@ -92,8 +92,10 @@ function availableViruses(round) {
 }
 
 function buildDeck(round) {
-  // Effective mode = "challenge" (legacy button) OR the chosen difficulty under Normal
-  const mode = state.gameMode === "challenge" ? "challenge" : state.difficulty;
+  // Effective mode = "challenge" / "endless" (own modes) OR chosen difficulty under Normal
+  const mode = state.gameMode === "challenge" ? "challenge"
+             : state.gameMode === "endless"   ? "endless"
+             : state.difficulty;
   let avail, virusRatio;
   switch (mode) {
     case "easy":
@@ -111,6 +113,11 @@ function buildDeck(round) {
       avail = Object.keys(VIRUSES);
       virusRatio = Math.min(0.9, 0.6 + (round - 1) * 0.04);  // 60% → 90%
       break;
+    case "endless":
+      // No round-10 finish line. Ramps similar to hard, caps at 85%.
+      avail = Object.keys(VIRUSES);
+      virusRatio = Math.min(0.85, 0.3 + (round - 1) * 0.05); // 30% → 85% by round 12
+      break;
     case "normal":
     default:
       avail = availableViruses(round);                       // standard minRound gating
@@ -120,8 +127,13 @@ function buildDeck(round) {
   const virusCards = [];
   avail.forEach(k => VIRUSES[k].errors.forEach(e => virusCards.push({ ...e, isVirus: true, virusKey: k })));
   const legitCards = LEGIT.map(e => ({ ...e, isVirus: false, virusKey: null }));
-  const virusCount = Math.min(virusCards.length, Math.max(2, Math.round(CONFIG.cardsPerRound * virusRatio)));
-  const legitCount = CONFIG.cardsPerRound - virusCount;
+  // Endless mode adds +1 card per round you've already cleared (round 1 = 10,
+  // round 2 = 11, round 3 = 12, ...). Other modes stay at CONFIG.cardsPerRound.
+  const cardsThisRound = (state.gameMode === "endless")
+    ? CONFIG.cardsPerRound + Math.max(0, round - 1)
+    : CONFIG.cardsPerRound;
+  const virusCount = Math.min(virusCards.length, Math.max(2, Math.round(cardsThisRound * virusRatio)));
+  const legitCount = cardsThisRound - virusCount;
   const pickedViruses = shuffle(virusCards).slice(0, virusCount);
   const pickedLegit   = shuffle(legitCards).slice(0, legitCount);
   return shuffle(pickedViruses.concat(pickedLegit)).map(randomizeCard);
@@ -238,7 +250,8 @@ function nextCard() {
   }
   if (state.cardIdx >= state.deck.length) {
     awardRoundCreditz();     // pay out for the round we just completed (works for the win round too)
-    if (state.round >= CONFIG.totalRounds) {
+    // Endless mode has no finish line — just keep climbing rounds forever.
+    if (state.round >= CONFIG.totalRounds && state.gameMode !== "endless") {
       Audio.levelUp();
       Audio.stopAmbient();
       METERS.stop();

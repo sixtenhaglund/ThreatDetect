@@ -108,8 +108,11 @@ function unlockVirus(key) {
 }
 
 function recordRun(outcome) {
-  // Effective difficulty label: "challenge" is its own mode, otherwise show the chosen difficulty.
-  const difficulty = state.gameMode === "challenge" ? "challenge" : (state.difficulty || "normal");
+  // Effective difficulty label: "challenge"/"endless" are their own modes,
+  // otherwise show the chosen difficulty.
+  const difficulty = state.gameMode === "challenge" ? "challenge"
+                   : state.gameMode === "endless"   ? "endless"
+                   : (state.difficulty || "normal");
   const entry = {
     score: state.score,
     round: state.round,
@@ -140,8 +143,13 @@ function recordRun(outcome) {
 /* Called when a round is completed. Pays the round bonus DIRECTLY to the wallet
    immediately (so the player sees it tick up and so quitting mid-run doesn't lose it). */
 function awardRoundCreditz() {
-  const mode = state.gameMode === "challenge" ? "challenge" : (state.difficulty || "normal");
-  const amount = CONFIG.creditzPerRound[mode] || 0;
+  const mode = state.gameMode === "challenge" ? "challenge"
+             : state.gameMode === "endless"   ? "endless"
+             : (state.difficulty || "normal");
+  let amount = CONFIG.creditzPerRound[mode] || 0;
+  // Endless: +1 ₢ for each round already cleared. So round 1 ends at base,
+  // round 2 at base+1, round 3 at base+2, etc. Rewards longer runs.
+  if (state.gameMode === "endless") amount += Math.max(0, state.round - 1);
   if (amount <= 0) return;
   state.runCreditz = (state.runCreditz || 0) + amount;
   save.creditz = (save.creditz || 0) + amount;

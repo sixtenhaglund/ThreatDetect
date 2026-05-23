@@ -51,6 +51,10 @@ document.addEventListener("click", (e) => {
       state.gameMode = "challenge";
       startChallenge();
       break;
+    case "play-endless":
+      state.gameMode = "endless";
+      startChallenge();
+      break;
     case "show-difficulty":
       state.screen = "difficulty-picker";
       render();
