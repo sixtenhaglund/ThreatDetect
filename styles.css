@@ -2039,12 +2039,17 @@
 
   /* (<HEART.BEAT>) — heart.jpg (original photo) centered, beating lub-dub.
      mix-blend-mode: multiply drops the white background of the photo
-     naturally: every photo pixel × the red bg color / 255. Pure-white
-     photo pixels multiply to exactly the bg color (invisible). Red heart
-     pixels multiply to a darker red than the bg, so they appear as a
-     darker silhouette. No color-matrix tricks. */
+     naturally: every photo pixel × the bg color / 255. Pure-white photo
+     pixels multiply to exactly the bg color (invisible). Red heart pixels
+     multiply darker → appear as a darker silhouette. No color-matrix tricks.
+     The bg itself layers a solid red + a fractal-noise overlay (blended
+     with `overlay` mode) so it reads as organic tissue, not flat color. */
   .death-HEARTBEAT {
-    background: #8a0000;
+    background-color: #8a0000;
+    background-image: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='2000' height='2000'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.008' numOctaves='5' seed='5'/%3E%3CfeColorMatrix values='0.33 0.33 0.33 0 0  0.33 0.33 0.33 0 0  0.33 0.33 0.33 0 0  0 0 0 1 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-blend-mode: overlay;
   }
   .death-HEARTBEAT::before {
     content: "";
