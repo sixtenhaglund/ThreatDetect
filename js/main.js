@@ -388,6 +388,27 @@ document.addEventListener("input", (e) => {
 });
 
 document.addEventListener("keydown", (e) => {
+  // ESC skips the death animation — works on both the real death screen
+  // (→ jump to game-over) and the codex preview (→ back to codex).
+  if (e.key === "Escape") {
+    if (state.screen === "dying") {
+      if (state.deathTimeout) { clearTimeout(state.deathTimeout); state.deathTimeout = null; }
+      Audio.stopDeath();
+      state.screen = "infected";
+      render();
+      return;
+    }
+    if (state.screen === "preview") {
+      if (state.previewTimeout) { clearTimeout(state.previewTimeout); state.previewTimeout = null; }
+      Audio.stopDeath();
+      state.previewVirus = null;
+      state.screen = "codex";
+      render();
+      const backList = document.querySelector(".codex-list");
+      if (backList) backList.scrollTop = state.codexScrollY || 0;
+      return;
+    }
+  }
   if (state.screen !== "play" && state.screen !== "training") return;
   if (state.locked) return;
   if (e.key === "ArrowLeft" || e.key === "v" || e.key === "V" || e.key === "1") choose(true);
