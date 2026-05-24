@@ -422,8 +422,9 @@ function nextCard() {
 function maybePlayCardSound() {
   const card = state.deck[state.cardIdx];
   if (!card) return;
-  if (card.scream) Audio.scream();
-  else if (card.pulse) Audio.heartbeat();
+  // SCREAMER cards still get all the visual screaming (red border, flicker,
+  // shake, panic copy) but no longer play the loud audio sting on appearance.
+  if (card.pulse) Audio.heartbeat();
   else if (card.nullify) Audio.glitch();
 }
 
