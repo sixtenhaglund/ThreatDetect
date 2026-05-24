@@ -1915,6 +1915,10 @@
     background-size: 100% 100%;
     background-repeat: no-repeat;
     image-rendering: pixelated;
+    /* sepia(1) turns the grayscale noise yellow-brown; saturate + bright +
+       hue-rotate push it from sepia-brown into a vivid phosphor yellow.
+       screen blend then lifts those yellow specks over the dark background. */
+    filter: sepia(1) saturate(3) brightness(1.1) hue-rotate(-10deg);
     mix-blend-mode: screen;
     opacity: 0.5;
     pointer-events: none;
