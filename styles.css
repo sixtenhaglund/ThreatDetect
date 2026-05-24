@@ -1921,7 +1921,7 @@
     mix-blend-mode: screen;
     pointer-events: none;
     opacity: 0.5;
-    animation: tarpitStaticShimmer 0.18s steps(3, end) infinite;
+    animation: tarpitStaticShimmer 0.3s steps(3, end) infinite;
   }
   /* Re-rolls the static every ~60ms by snapping each of the two stacked
      noise SVGs to a different position. steps(3, end) means no
