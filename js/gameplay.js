@@ -557,13 +557,19 @@ function showReveal(correct, card) {
   const r = document.getElementById("reveal");
   if (!r) return;
   r.className = "reveal " + (correct ? "correct" : "wrong");
+  // Use the virus's display name (e.g. "A5515T4N7", "T.A.R.P.I.T.") rather
+  // than the raw internal key (ASSISTANT, TARPIT). Falls back to the key
+  // if the virus somehow isn't in VIRUSES (shouldn't happen in practice).
+  const virusName = card.isVirus
+    ? ((VIRUSES[card.virusKey] && VIRUSES[card.virusKey].name) || card.virusKey)
+    : null;
   let label;
   if (card && card._antivirusSave) {
-    label = "🛡 Quarantined · " + card.virusKey;
+    label = "🛡 Quarantined · " + virusName;
   } else if (correct) {
-    label = card.isVirus ? ("Neutralized · " + card.virusKey) : "Clear";
+    label = card.isVirus ? ("Neutralized · " + virusName) : "Clear";
   } else {
-    label = card.isVirus ? ("Missed · " + card.virusKey) : "False Positive";
+    label = card.isVirus ? ("Missed · " + virusName) : "False Positive";
   }
   r.innerHTML = '<div class="stamp">' + esc(label) + "</div>";
   requestAnimationFrame(() => r.classList.add("show"));
