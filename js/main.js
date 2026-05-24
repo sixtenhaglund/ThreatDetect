@@ -40,7 +40,6 @@ function render() {
   applyStaticNoise();
   applyMimicPopups();
   applyCryptexRain();
-  applyRewriterDecay();
 }
 
 const MENU_MUSIC_SCREENS = new Set([
@@ -247,42 +246,6 @@ function applyCryptexRain() {
     container.appendChild(col);
   }
   target.appendChild(container);
-}
-
-/* ============================================================
-   Rewriter() death — single error card in the middle that the
-   CSS animation slowly transforms toward a yellow version of itself.
-   Killer card in real death, random REWRITER error in codex preview.
-   ============================================================ */
-function applyRewriterDecay() {
-  const target = document.querySelector(".death-REWRITER");
-  if (!target) return;
-  if (!killerIs("REWRITER")) {
-    target.dataset.rewriterPopulated = "";
-    return;
-  }
-  if (target.dataset.rewriterPopulated === "1") return;
-  target.dataset.rewriterPopulated = "1";
-  const old = target.querySelector(".rewriter-stage");
-  if (old) old.remove();
-
-  let card = state.killerCard;
-  if (!card) {
-    const errors = (VIRUSES.REWRITER && VIRUSES.REWRITER.errors) || [];
-    if (errors.length) {
-      const pick = errors[Math.floor(Math.random() * errors.length)];
-      card = randomizeCard({ ...pick, isVirus: true, virusKey: "REWRITER" });
-    }
-  }
-  if (!card) return;
-
-  const stage = document.createElement("div");
-  stage.className = "rewriter-stage";
-  const wrap = document.createElement("div");
-  wrap.className = "rewriter-card-wrap";
-  wrap.innerHTML = renderCard(card);
-  stage.appendChild(wrap);
-  target.appendChild(stage);
 }
 
 document.addEventListener("click", (e) => {
