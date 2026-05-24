@@ -342,7 +342,7 @@
   .v-DDOS       { color: #ff8800; }
   .v-LEECH      { color: #aa00ff; }
   .v-SCREAMER   { color: #ff1166; }
-  .v-MIMIC      { color: #66ddff; }
+  .v-MIMICER      { color: #66ddff; }
   .v-HEARTBEAT      { color: #ff1144; }
   .v-DOTNULL       { color: #777777; }
   .v-P0INTR     { color: #ffaa44; }
@@ -362,7 +362,7 @@
   .codex-entry.v-DDOS       { border-left-color: #ff8800; }
   .codex-entry.v-LEECH      { border-left-color: #aa00ff; }
   .codex-entry.v-SCREAMER   { border-left-color: #ff1166; }
-  .codex-entry.v-MIMIC      { border-left-color: #66ddff; }
+  .codex-entry.v-MIMICER      { border-left-color: #66ddff; }
   .codex-entry.v-HEARTBEAT      { border-left-color: #ff1144; }
   .codex-entry.v-DOTNULL       { border-left-color: #555555; }
   .codex-entry.v-P0INTR     { border-left-color: #ffaa44; }
@@ -1768,39 +1768,41 @@
   }
   @keyframes screamerStripe { to { background-position: 60px 60px; } }
 
-  /* MIMIC — the screen fills with 20 actual rendered legit cards from the
+  /* MIMICER — the screen fills with 20 actual rendered legit cards from the
      game, scattered at random positions + rotations, each glitching
      independently. The cards are populated by applyMimicPopups() in
      main.js whenever the death screen is on; this CSS just handles
      layout + the per-popup glitch animation. */
-  .death-MIMIC {
+  .death-MIMICER {
     background-color: #000;
     background-size: 100% 100%;
     background-repeat: no-repeat;
     image-rendering: pixelated;
   }
-  .death-MIMIC::before, .death-MIMIC::after,
-  .death-MIMIC .death-fx::before, .death-MIMIC .death-fx::after { content: none; }
+  .death-MIMICER::before, .death-MIMICER::after,
+  .death-MIMICER .death-fx::before, .death-MIMICER .death-fx::after { content: none; }
   .mimic-popups {
     position: absolute; inset: 0;
     overflow: hidden;
   }
-  /* Outer wrapper: random absolute base position + random rotation +
-     a drift animation that swings through 4 random waypoints per cycle.
-     Rotation is held in a CSS var so the animation can keep it baked in. */
+  /* Outer wrapper: random absolute base position + a hyper-fast drift
+     animation that swings through 4 random waypoints per cycle. Each
+     waypoint has its own translate, rotation, AND scale, so popups
+     also spin and grow/shrink as they move. CSS vars are set per-popup
+     by main.js so every popup chases a different path. */
   .mimic-popup {
     position: absolute;
     width: 320px;
     pointer-events: none;
-    animation: mimicDrift 1.4s ease-in-out infinite;
+    animation: mimicDrift 0.45s linear infinite;
   }
   @keyframes mimicDrift {
-    0%   { transform: rotate(var(--r)) translate(0,             0); }
-    20%  { transform: rotate(var(--r)) translate(var(--dx1), var(--dy1)); }
-    40%  { transform: rotate(var(--r)) translate(var(--dx2), var(--dy2)); }
-    60%  { transform: rotate(var(--r)) translate(var(--dx3), var(--dy3)); }
-    80%  { transform: rotate(var(--r)) translate(var(--dx4), var(--dy4)); }
-    100% { transform: rotate(var(--r)) translate(0,             0); }
+    0%   { transform: rotate(var(--r))  translate(0,           0)           scale(1); }
+    20%  { transform: rotate(var(--r1)) translate(var(--dx1), var(--dy1))   scale(var(--s1)); }
+    40%  { transform: rotate(var(--r2)) translate(var(--dx2), var(--dy2))   scale(var(--s2)); }
+    60%  { transform: rotate(var(--r3)) translate(var(--dx3), var(--dy3))   scale(var(--s3)); }
+    80%  { transform: rotate(var(--r4)) translate(var(--dx4), var(--dy4))   scale(var(--s4)); }
+    100% { transform: rotate(var(--r))  translate(0,           0)           scale(1); }
   }
   /* Inner wrapper carries the glitch animation. Translate + filter only —
      no rotate, so the outer rotation isn't clobbered. */
@@ -2302,7 +2304,7 @@
 
   /* SCREAMER — no extra fx (warning triangles + strobe + hazard stripes are enough). */
 
-  /* MIMIC — no extra fx (the warping System OK + shard pattern were already busy). */
+  /* MIMICER — no extra fx (the warping System OK + shard pattern were already busy). */
 
   /* (<HEART.BEAT>) — death-fx layer cleared. The whole effect lives on
      .death-HEARTBEAT::before above (the giant beating heart). */

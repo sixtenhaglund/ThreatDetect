@@ -379,8 +379,8 @@ const VIRUSES = {
       { template: TPL.DESKTOP,title: "EMERGENCY!!!.exe", message: "URGENT CRITICAL DESKTOP ALERT!!! Double-click NOW to call {phonenum} or all files DELETED in 30 seconds!!!", meta: "Source: scream-now{tld}  ·  Time: 00:30", scream: true }
     ]
   },
-  MIMIC: {
-    name: "MIMIC", color: "#66ddff",
+  MIMICER: {
+    name: "MiMiCeR", color: "#66ddff",
     minRound: 8,
     description: "A near-perfect impostor of real Windows alerts. Copies legitimate layouts, wording, version numbers, and even error codes verbatim — the tells are vanishingly small: a substituted Cyrillic 'о' inside 'micrоsoft', a slightly wrong KB number, a font that almost matches. The hardest virus in the roster to spot without slowing down and reading every character.",
     signs: [
@@ -666,7 +666,7 @@ const DEATHS = {
   DDOS:       { text: "BANDWIDTH HIJACKED",    duration: 4500 },
   LEECH:      { text: "CREDENTIALS HARVESTED", duration: 4500 },
   SCREAMER:   { text: "SHOCK ATTACK",          duration: 3500 },
-  MIMIC:      { text: "IMPOSTOR ACCEPTED",     duration: 4500 },
+  MIMICER:    { text: "IMPOSTOR ACCEPTED",     duration: 4500 },
   HEARTBEAT:  { text: "RHYTHM CAPTURED",       duration: 4500 },
   DOTNULL:    { text: "INTERFACE LOST",        duration: 4500 },
   P0INTR:     { text: "POINTER STOLEN",        duration: 4500 },

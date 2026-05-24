@@ -61,6 +61,7 @@ const Save = {
       //   CURSOR → P0INTR                    (display name became "P0INT:R")
       //   NULL → DOTNULL                     (display name became ".null")
       //   PULSE → HEARTBEAT                  (display name became "(<HEART.BEAT>)")
+      //   MIMIC → MIMICER                    (display name became "MiMiCeR")
       // Rename references in unlocked / deathsBy so codex + first-death badges
       // still work. Also auto-unlocks ASSISTANT on first load after that update.
       const renameKey = function (arr) {
@@ -73,6 +74,7 @@ const Save = {
           if (k === "CURSOR") return "P0INTR";
           if (k === "NULL") return "DOTNULL";
           if (k === "PULSE") return "HEARTBEAT";
+          if (k === "MIMIC") return "MIMICER";
           return k;
         });
         // De-dupe in case multiple old keys collapsed into the same new one.

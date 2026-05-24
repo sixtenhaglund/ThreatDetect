@@ -150,15 +150,15 @@ function applyStaticNoise() {
 }
 
 /* ============================================================
-   MIMIC death — populate the screen with 20 actual rendered LEGIT
+   MIMICER death — populate the screen with 20 actual rendered LEGIT
    cards from the game, each positioned randomly and glitching on
    its own staggered animation-delay. Re-rolls the picks every time
    the death screen comes back on screen.
    ============================================================ */
 function applyMimicPopups() {
-  const target = document.querySelector(".death-MIMIC");
+  const target = document.querySelector(".death-MIMICER");
   if (!target) return;
-  if (!killerIs("MIMIC")) {
+  if (!killerIs("MIMICER")) {
     target.dataset.mimicPopulated = "";
     return;
   }
@@ -200,31 +200,28 @@ function applyMimicPopups() {
     used.add(i);
     picks.push(LEGIT[i]);
   }
-  // Helper to pick a random "waypoint" offset for the drift animation.
-  // Returns "Npx" with N in [-range, range].
-  const wp = (range) => (Math.round((Math.random() - 0.5) * 2 * range)) + "px";
+  // Helpers for per-waypoint random values used by the mimicDrift keyframes.
+  const wp  = (range) => (Math.round((Math.random() - 0.5) * 2 * range)) + "px";
+  const rot = ()      => (Math.round((Math.random() - 0.5) * 60)) + "deg"; // -30..+30
+  const scl = ()      => (0.5 + Math.random() * 1.0).toFixed(2);            // 0.5..1.5
   picks.forEach(card => {
     const rendered = randomizeCard({ ...card, isVirus: false, virusKey: null });
     const html = renderCard(rendered);
     const outer = document.createElement("div");
     outer.className = "mimic-popup";
-    const x = Math.random() * 70 + 5;     // 5%..75% left (base position)
-    const y = Math.random() * 65 + 5;     // 5%..70% top
-    const r = (Math.random() - 0.5) * 14; // ~ -7deg .. +7deg
+    const x = Math.random() * 70 + 5;
+    const y = Math.random() * 65 + 5;
     outer.style.left = x + "%";
     outer.style.top  = y + "%";
-    // CSS vars consumed by the mimicDrift keyframes
-    outer.style.setProperty("--r", r + "deg");
-    outer.style.setProperty("--dx1", wp(220));
-    outer.style.setProperty("--dy1", wp(180));
-    outer.style.setProperty("--dx2", wp(220));
-    outer.style.setProperty("--dy2", wp(180));
-    outer.style.setProperty("--dx3", wp(220));
-    outer.style.setProperty("--dy3", wp(180));
-    outer.style.setProperty("--dx4", wp(220));
-    outer.style.setProperty("--dy4", wp(180));
-    // Stagger the drift so they don't all swing together
-    outer.style.animationDelay = (Math.random() * 1.4).toFixed(2) + "s";
+    outer.style.setProperty("--r", ((Math.random() - 0.5) * 14) + "deg");
+    for (let i = 1; i <= 4; i++) {
+      outer.style.setProperty("--dx" + i, wp(280));
+      outer.style.setProperty("--dy" + i, wp(220));
+      outer.style.setProperty("--r"  + i, rot());
+      outer.style.setProperty("--s"  + i, scl());
+    }
+    // Stagger so they don't all swing together
+    outer.style.animationDelay = (Math.random() * 0.45).toFixed(2) + "s";
     const glitch = document.createElement("div");
     glitch.className = "mimic-glitch";
     glitch.style.animationDelay = (Math.random() * 0.4).toFixed(2) + "s";

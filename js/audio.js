@@ -548,7 +548,7 @@ Audio.deaths = {
     this.scream();
     this.scheduleDeath(1100, () => this.scream());
   },
-  MIMIC() {
+  MIMICER() {
     // Single constant 800Hz sine droning for the full death duration.
     const t = this.ctx.currentTime;
     const o = this.ctx.createOscillator(); o.type = "sine"; o.frequency.value = 800;

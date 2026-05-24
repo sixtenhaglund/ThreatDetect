@@ -86,7 +86,7 @@ const TEXTUAL_TELLS = {
     { p: /00:30|00:60|time left|time:.{0,3}\d{2}:\d{2}|fraud detected|suspicious charge|FRAUD/i, t: "Aggressive countdown timer or fraud-panic language" },
     { p: /all (data|files|photos).{0,10}(deleted|erased|lost|frozen)/i,             t: "Threatens to delete all your data unless you act now" }
   ],
-  MIMIC: [
+  MIMICER: [
     { p: /[а-яА-Я]/,                                                                t: "Contains a Cyrillic character disguised as Latin (e.g. 'о' instead of 'o')" },
     { p: /update-installer\.com|npm-suplly|hackerone-verify|hacker0ne|legacy\.archive\.host|micros[oо]ft-update|app1e|g00gle|geminni|cop1lot|cl4ude|chatgtp|chr0me|firef0x/i, t: "Domain or name looks like a real brand but is a typosquat" },
     { p: /Lets Encrpt|Encrpt|Microsft|Adobr|Cl0udflare|Goggle/,                     t: "Issuer / product name is misspelled by one letter" },
