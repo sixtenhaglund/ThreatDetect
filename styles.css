@@ -2044,18 +2044,23 @@
      to transparent: alpha = -1*R -1*G -1*B + 1*A + 1.5, so pure-white
      pixels resolve to alpha 0 and the red heart pixels resolve to alpha 1.
      Then drop-shadow adds the bleeding-glow halo around what's left. */
-  /* Organic-tissue background: solid deep red + a tiling fractal-noise
-     overlay blended with `overlay` mode. Where the noise is bright the
-     red lightens (highlights), where it's dark the red darkens (vein
-     shadows) — feels like muscle/flesh rather than a flat fill. */
+  /* Organic-tissue background + a darker blood pool in the middle behind
+     the heart. Three layers from top to bottom:
+       1. radial-gradient — deeper red pool that fades to transparent at
+          the edges, sits on top of the texture (normal blend).
+       2. noise SVG — single 2000px tile stretched to cover, blended
+          overlay so it adds light/dark muscle veins.
+       3. solid #6a0000 — base flesh red. */
   .death-HEARTBEAT {
     background-color: #6a0000;
-    /* One single 2000x2000 noise tile stretched to cover the whole screen —
-       no tiling, so no visible seams between repeats. */
-    background-image: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='2000' height='2000'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.008' numOctaves='5' seed='5'/%3E%3CfeColorMatrix values='0.33 0.33 0.33 0 0  0.33 0.33 0.33 0 0  0.33 0.33 0.33 0 0  0 0 0 1 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-blend-mode: overlay;
+    background-image:
+      radial-gradient(circle at center, #2a0000 0%, rgba(42,0,0,0.6) 30%, transparent 60%),
+      url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='2000' height='2000'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.008' numOctaves='5' seed='5'/%3E%3CfeColorMatrix values='0.33 0.33 0.33 0 0  0.33 0.33 0.33 0 0  0.33 0.33 0.33 0 0  0 0 0 1 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: cover, cover;
+    background-repeat: no-repeat, no-repeat;
+    /* Gradient blends normal, noise blends overlay — order matches the
+       background-image list. */
+    background-blend-mode: normal, overlay;
   }
   /* The ::before is sized just big enough to hold the heart, centered on
      screen. Scaling only that small box means the eye reads the pulse as
