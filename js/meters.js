@@ -78,12 +78,16 @@ const METERS = {
         el.classList.remove("bad");
         return;
       }
-      const tamperShown = Math.random() < profile.showTamper;
+      // "Pinned" effects (numeric pin like cpu:247 or vol:"blast") bypass the
+      // showTamper / briefFlash gating — the codex describes them as "pinned at X",
+      // so they stay pinned regardless of difficulty.
+      const isPinned = typeof o[key] === "number" || o[key] === "blast";
+      const tamperShown = isPinned || Math.random() < profile.showTamper;
       if (tamperShown) {
         el.textContent = self.applyEffect(key, o[key]);
         // Only viruses' tampered values turn red. Legit contextual matches stay neutral.
         el.classList.toggle("bad", self.overrideIsVirus && Math.random() < profile.redChance);
-        if (profile.briefFlash) {
+        if (profile.briefFlash && !isPinned) {
           // Nightmare: revert to the normal value almost immediately — barely-there flash
           const baseVal = base;
           setTimeout(() => {

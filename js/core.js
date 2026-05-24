@@ -70,6 +70,11 @@ const Save = {
       };
       const migratedUnlocked = renameKey(parsed.unlocked || d.unlocked);
       if (migratedUnlocked.indexOf("ASSISTANT") < 0) migratedUnlocked.push("ASSISTANT");
+      // Force-unlock every virus in the codex (Sixten's preference: no locked entries).
+      // Remove this block if you ever want the discovery mechanic back.
+      Object.keys(VIRUSES).forEach(function (k) {
+        if (migratedUnlocked.indexOf(k) < 0) migratedUnlocked.push(k);
+      });
       return {
         highestRound: parsed.highestRound || d.highestRound,
         highestScore: parsed.highestScore || d.highestScore,

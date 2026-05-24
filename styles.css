@@ -312,11 +312,19 @@
   .codex-head .caret { color: var(--muted-fg); transition: transform 0.2s ease; }
   .codex-entry.open .codex-head .caret { transform: rotate(90deg); }
   .codex-body {
-    padding: 0 16px 14px 16px;
-    border-top: 1px solid var(--border);
-    display: none;
+    padding: 0 16px 0 16px;
+    border-top: 1px solid transparent;
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: max-height 0.3s ease, opacity 0.2s ease, padding-bottom 0.3s ease, border-top-color 0.3s ease;
   }
-  .codex-entry.open .codex-body { display: block; }
+  .codex-entry.open .codex-body {
+    max-height: 2000px;
+    opacity: 1;
+    padding-bottom: 14px;
+    border-top-color: var(--border);
+  }
   .codex-body .desc { font-size: 0.92rem; color: hsl(160 30% 80%); margin: 12px 0; line-height: 1.55; }
   .codex-body ul { margin: 8px 0 0 0; padding-left: 18px; font-size: 0.85rem; color: var(--muted-fg); }
   .codex-body li { margin: 3px 0; line-height: 1.45; }
