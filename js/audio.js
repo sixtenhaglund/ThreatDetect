@@ -381,7 +381,7 @@ Audio.death = function(key, skipJumpscare) {
 };
 
 /* Schedule a callback that should run inside the current death's audio scope.
-   Used by deaths that play multiple sounds over time (SCREAMER, PULSE).
+   Used by deaths that play multiple sounds over time (SCREAMER, HEARTBEAT).
    If stopDeath fires before the callback, the callback becomes a no-op. */
 Audio.scheduleDeath = function(delayMs, fn) {
   const dg = this.deathGain;
@@ -560,7 +560,7 @@ Audio.deaths = {
     g.gain.linearRampToValueAtTime(0, t + 4.5);
     o.start(t); o.stop(t + 4.6);
   },
-  PULSE() {
+  HEARTBEAT() {
     // Slower, lower-pitched heartbeats — darker and scarier than the standard one.
     const playBeat = () => {
       const t = this.ctx.currentTime;

@@ -92,7 +92,7 @@ const TEXTUAL_TELLS = {
     { p: /Lets Encrpt|Encrpt|Microsft|Adobr|Cl0udflare|Goggle/,                     t: "Issuer / product name is misspelled by one letter" },
     { p: /Document5|Roo_m|n0de|verified intranet/,                                  t: "Subtle digit-for-letter swaps inside otherwise normal text" }
   ],
-  PULSE: [
+  HEARTBEAT: [
     { p: /cardio_render|dwm_pulse|heartbeat_render|rhythm_opt|pulse-based|heartbeat protocol|cardio_sync|heartbeat_render|rhythm_scan/i, t: "Process name references heartbeat / pulse / cardio" },
     { p: /BPM|beat:|tempo|sync rhythm|breathing effect|breathing visual|72\s*bpm/i, t: "Mentions BPM, tempo, or rhythm in a system-process context" },
     { p: /pulse.{0,8}(sync|protocol|signal)|sync.{0,8}heartbeat|hbsync/i,           t: "Claims to sync the display to your network heartbeat" }

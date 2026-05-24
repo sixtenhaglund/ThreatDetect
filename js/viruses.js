@@ -424,8 +424,11 @@ const VIRUSES = {
       { template: TPL.PRINT,  title: "Adоbe Print Service", message: "Adоbe Acrobat needs to print {pagecount} verified documents. Allow print-helper.exe from adobe-print{tld}?", meta: "Source: adobe-print{tld}  ·  Pages: {pagecount}", fontMismatch: true }
     ]
   },
-  PULSE: {
-    name: "PULSE", color: "#ff55aa",
+  HEARTBEAT: {
+    // Internal key HEARTBEAT = display name "(<HEART.BEAT>)" with parens,
+    // angle brackets, and dot stripped (none of those are valid in JS
+    // object keys or CSS class names).
+    name: "(<HEART.BEAT>)", color: "#ff55aa",
     minRound: 4,
     description: "A display-layer virus that hides in plain sight by making the screen hypnotic. Hooks into the Windows compositor (DWM) to make the whole UI pulse, breathe, or wobble in time with its data exfiltration heartbeat — the rhythm is the leak. The trance effect makes players miss other tells while the meters drift to a steady 72 bpm.",
     signs: [
@@ -664,7 +667,7 @@ const DEATHS = {
   LEECH:      { text: "CREDENTIALS HARVESTED", duration: 4500 },
   SCREAMER:   { text: "SHOCK ATTACK",          duration: 3500 },
   MIMIC:      { text: "IMPOSTOR ACCEPTED",     duration: 4500 },
-  PULSE:      { text: "RHYTHM CAPTURED",       duration: 4500 },
+  HEARTBEAT:  { text: "RHYTHM CAPTURED",       duration: 4500 },
   DOTNULL:    { text: "INTERFACE LOST",        duration: 4500 },
   P0INTR:     { text: "POINTER STOLEN",        duration: 4500 },
   INFINITE:   { text: "STACK OVERFLOW",        duration: 4500 },

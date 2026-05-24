@@ -203,7 +203,7 @@ function buildDeck(round) {
    from that virus's pool (falls back to stale if all of its variants have
    already been dealt this run).
    Without this, viruses with more error variants (like MIMIC at 29 cards)
-   appear 3-4x as often as viruses with fewer variants (like PULSE at 10) —
+   appear 3-4x as often as viruses with fewer variants (like HEARTBEAT at 10) —
    because the previous template-balanced picker effectively weighted each
    virus by its pool size. */
 function pickByUniformVirus(avail, n, usedKeys) {
@@ -300,7 +300,7 @@ function rollTampering(round, card) {
   const shifts = { easy: -2, normal: 0, hard: 2, challenge: 2, nightmare: 4 };
   const effRound = round + (shifts[mode] || 0);
   if (effRound < 4) return null;
-  if (card.virusKey === "PULSE") {
+  if (card.virusKey === "HEARTBEAT") {
     return { type: effRound >= 7 ? "pulseHard" : "pulse" };
   }
   if (card.virusKey === "DOTNULL") {
