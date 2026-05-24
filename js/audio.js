@@ -494,7 +494,7 @@ Audio.deaths = {
     g.gain.linearRampToValueAtTime(0, t + 4);
     o.start(t); o.stop(t + 4.1);
   },
-  GASLIGHT() {
+  REWRITER() {
     const t = this.ctx.currentTime;
     for (let i = 0; i < 24; i++) {
       const delay = i * 0.16 + (Math.random() - 0.5) * 0.1;

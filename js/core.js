@@ -67,6 +67,7 @@ const Save = {
       //   ROOTKIT → FAKE_BSOD                (display name became "fake_BSOD.000")
       //   WORM → HAKR_10111001               (display name became "HAKR_10111001")
       //   CRYPTEX → CRYPT0                   (display name became "Crypt.0")
+      //   GASLIGHT → REWRITER                (display name became "Rewriter()")
       // Rename references in unlocked / deathsBy so codex + first-death badges
       // still work. Also auto-unlocks ASSISTANT on first load after that update.
       const renameKey = function (arr) {
@@ -85,6 +86,7 @@ const Save = {
           if (k === "ROOTKIT") return "FAKE_BSOD";
           if (k === "WORM") return "HAKR_10111001";
           if (k === "CRYPTEX") return "CRYPT0";
+          if (k === "GASLIGHT") return "REWRITER";
           return k;
         }).filter(function (v) { return v != null; });
         // De-dupe in case multiple old keys collapsed into the same new one.

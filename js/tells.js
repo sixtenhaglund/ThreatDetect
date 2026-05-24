@@ -41,7 +41,7 @@ const TEXTUAL_TELLS = {
     { p: /reclaim.{0,5}∞|0\s*bytes\s*(used|of)/i,                                   t: "Claims to reclaim ∞ bytes (impossible) or 0 bytes used" },
     { p: /entropy 0|optimize.{0,4}NUL|consolidat.{0,4}NULL/i,                       t: "Talks about reducing entropy to zero or consolidating into NULL" }
   ],
-  GASLIGHT: [
+  REWRITER: [
     { p: /\b1601-\d{2}-\d{2}|9999-\d{2}-\d{2}|2025-02-30|0000:00:00|Feb 30|2031-13-32/i, t: "Impossible date (year 1601, 9999, Feb 30, etc.)" },
     { p: /already approved|per your authorization|previous authorization|sessions you don.t remember|previously approved|you (set|confirmed|did) this/i, t: "Claims you 'already approved' something you don't remember" },
     { p: /time-fix|verified\.timegate|timegate|chrono-correct|icloud-correct|norton-audit/i, t: "Fake time-sync / audit-correction domain" },

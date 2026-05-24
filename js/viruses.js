@@ -146,8 +146,10 @@ const VIRUSES = {
       { template: TPL.CAPTCHA, title: "∅", message: "", meta: "Provider: ∅", icon: "void" }
     ]
   },
-  GASLIGHT: {
-    name: "GASLIGHT", color: "#ffd56b",
+  REWRITER: {
+    // Internal key REWRITER = display name "Rewriter()" with the parens
+    // stripped (parens aren't valid in JS object keys / CSS class names).
+    name: "Rewriter()", color: "#ffd56b",
     minRound: 4,
     description: "A temporal manipulation virus that rewrites your own history. Quietly edits event logs, audit trails, and system clocks until you can no longer trust what your computer says you've done. Often claims you 'previously approved' actions you've never seen — and the records back it up, because it wrote them. The defining trick: weaponizing impossible dates (Feb 30, year 9999) as a tell hidden in plain sight.",
     signs: [
@@ -632,7 +634,7 @@ const DEATHS = {
   STATIC:     { text: "SIGNAL LOST",           duration: 4200 },
   REDRUM:     { text: "ALL WORK AND NO PLAY",  duration: 4800 },
   VOID:       { text: "ALLOCATION FAULT",      duration: 4500 },
-  GASLIGHT:   { text: "TIME UNVERIFIABLE",     duration: 4500 },
+  REWRITER:   { text: "TIME UNVERIFIABLE",     duration: 4500 },
   CRYPT0:     { text: "FILES ENCRYPTED",       duration: 4500 },
   HAKR_10111001: { text: "REPLICATION COMPLETE",  duration: 4500 },
   FAKE_BSOD:  { text: "KERNEL COMPROMISED",    duration: 4800 },
