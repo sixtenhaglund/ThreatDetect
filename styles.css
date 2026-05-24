@@ -1592,30 +1592,42 @@
   }
   @keyframes gasClock { to { transform: rotate(720deg); } }
 
-  /* CRYPTEX — file grid being locked left-to-right + countdown */
-  .death-CRYPTEX { background: #1a1100; }
+  /* CRYPTEX — streams of ransom dollar amounts pouring down the screen,
+     Matrix-style. 4 columns of $-suffixed numbers at varied positions /
+     speeds / sizes so it reads as money cascading. */
+  .death-CRYPTEX { background: #1a1100; overflow: hidden; }
+  /* Column 1 (left): big bold amounts, slowest, brightest yellow. */
   .death-CRYPTEX::before {
-    content: "📄 📄 📄 📄 📄 📄 📄 📄 📄 📄 📄 📄 📄 📄 📄 📄 📄 📄 📄 📄 📄 📄 📄 📄 📄 📄 📄 📄 📄 📄 📄 📄 📄 📄 📄 📄";
-    position: absolute; inset: 0; padding: 24px;
-    display: flex; flex-wrap: wrap; align-items: center; justify-content: center;
-    font-size: 2.6rem;
-    opacity: 0.55;
-    line-height: 1.7;
-    letter-spacing: 0.15em;
+    content: "999$\A 47$\A 1,200$\A 299$\A 88,221$\A 12,400$\A 65,704$\A 0.5 BTC$\A 99.99$\A 8,441$\A 31,082$\A 18,442$\A 500$\A 27,500$\A 42,108$\A 21,003$\A 12,882$\A 18,200$\A 0.8 BTC$\A 299$\A 4,217$\A 999.99$\A 65,000$\A 47$";
+    position: absolute; top: -100%; bottom: -100%; left: 5%; width: 16%;
+    padding: 12px;
+    white-space: pre;
+    text-align: center;
+    font-family: "Cascadia Mono", monospace; font-size: 2.2rem; font-weight: 900;
+    color: #ffcc00;
+    text-shadow: 0 0 12px #ff8800, 0 0 24px #ff5500;
+    line-height: 2.4;
+    animation: cryptexRain 5s linear infinite;
   }
+  /* Column 2 (mid-left): medium size, medium speed, amber. */
   .death-CRYPTEX::after {
-    content: "🔒 🔒 🔒 🔒 🔒 🔒 🔒 🔒 🔒 🔒 🔒 🔒 🔒 🔒 🔒 🔒 🔒 🔒 🔒 🔒 🔒 🔒 🔒 🔒 🔒 🔒 🔒 🔒 🔒 🔒 🔒 🔒 🔒 🔒 🔒 🔒";
-    position: absolute; inset: 0; padding: 24px;
-    display: flex; flex-wrap: wrap; align-items: center; justify-content: center;
-    font-size: 2.6rem;
-    line-height: 1.7;
-    letter-spacing: 0.15em;
-    clip-path: inset(0 100% 0 0);
-    animation: cryptexLock 2.5s ease-in-out infinite;
+    content: "299$\A 1,499$\A 47$\A 8,800$\A 12,882$\A 999$\A 88$\A 31,082$\A 4,217$\A 0.3 BTC$\A 18,442$\A 65,704$\A 27,500$\A 999.99$\A 18,200$\A 47,000$\A 88,221$\A 42,108$\A 999$\A 21,003$\A 0.5 ETH$\A 1,200$\A 99.99$\A 12,400$";
+    position: absolute; top: -100%; bottom: -100%; left: 27%; width: 16%;
+    padding: 12px;
+    white-space: pre;
+    text-align: center;
+    font-family: "Cascadia Mono", monospace; font-size: 1.6rem; font-weight: 700;
+    color: #ffaa00;
+    text-shadow: 0 0 8px #ff7700;
+    line-height: 2;
+    animation: cryptexRain 3.6s linear infinite;
   }
-  @keyframes cryptexLock {
-    0%   { clip-path: inset(0 100% 0 0); }
-    100% { clip-path: inset(0 0 0 0); }
+  /* Single shared "pour down" keyframe. The element is sized to 3x the
+     viewport height (top:-100% bottom:-100%) and translates from -33% to
+     +33% so the text streams continuously past the screen. */
+  @keyframes cryptexRain {
+    from { transform: translateY(-33%); }
+    to   { transform: translateY(33%); }
   }
 
   /* HAKR_10111001 — Matrix-style green code rain. Three columns of text
@@ -2225,36 +2237,35 @@
     65%, 80%      { opacity: 0.3; transform: translateX(4px); }
   }
 
-  /* CRYPTEX — Bitcoin wallet address + giant unlock countdown */
+  /* CRYPTEX — extra fx columns 3 and 4 of the dollar-rain. */
+  /* Column 3 (mid-right): small font, fastest, deep red — looks like the
+     final price tag flashing past. */
   .death-CRYPTEX .death-fx::before {
-    content: "00:00:00";
-    position: absolute; inset: 0;
-    display: flex; align-items: center; justify-content: center;
-    font-family: "Cascadia Mono", monospace; font-size: 8rem; font-weight: 900;
-    color: #ff3344;
-    text-shadow: 0 0 30px #ff0000, 0 0 60px #aa0000;
-    letter-spacing: 0.1em;
-    opacity: 0.85;
-    animation: cryptexCountdown 0.5s steps(2) infinite;
-  }
-  @keyframes cryptexCountdown {
-    0%, 100% { opacity: 0.85; transform: scale(1); }
-    50%      { opacity: 1;    transform: scale(1.08); }
-  }
-  .death-CRYPTEX .death-fx::after {
-    content: "SEND 0.5 BTC TO bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh";
-    position: absolute; inset: auto 0 4% 0;
+    content: "47$\A 999$\A 299$\A 12$\A 88$\A 1,200$\A 47,000$\A 999$\A 8,441$\A 47$\A 299$\A 0.1 BTC$\A 1,499$\A 27,500$\A 88,221$\A 47$\A 999.99$\A 1,200$\A 299$\A 47$\A 12,400$\A 65,000$\A 18,442$\A 47$\A 88$\A 999$\A 21,003$\A 42,108$\A 47$\A 999$";
+    position: absolute; top: -100%; bottom: -100%; right: 27%; width: 16%;
+    padding: 12px;
+    white-space: pre;
     text-align: center;
-    font-family: monospace; font-size: 0.95rem;
-    color: #fff;
-    background: #aa0000;
-    padding: 10px 0;
-    letter-spacing: 0.08em;
-    border-top: 2px solid #ff3344;
-    border-bottom: 2px solid #ff3344;
-    animation: cryptexBanner 1s steps(2) infinite;
+    font-family: "Cascadia Mono", monospace; font-size: 1.3rem;
+    color: #ff5500;
+    text-shadow: 0 0 6px #cc3300;
+    line-height: 1.8;
+    opacity: 0.9;
+    animation: cryptexRain 2.4s linear infinite;
   }
-  @keyframes cryptexBanner { 50% { background: #660000; } }
+  /* Column 4 (right): mid size, medium-fast, pale gold for variety. */
+  .death-CRYPTEX .death-fx::after {
+    content: "1,499$\A 299$\A 0.5 BTC$\A 47$\A 88,221$\A 999$\A 4,217$\A 47$\A 12,882$\A 27,500$\A 999.99$\A 31,082$\A 47$\A 8,441$\A 0.3 ETH$\A 999$\A 65,704$\A 1,200$\A 88$\A 47,000$\A 18,200$\A 47$\A 42,108$\A 299$";
+    position: absolute; top: -100%; bottom: -100%; right: 5%; width: 16%;
+    padding: 12px;
+    white-space: pre;
+    text-align: center;
+    font-family: "Cascadia Mono", monospace; font-size: 1.8rem; font-weight: 700;
+    color: #ffd060;
+    text-shadow: 0 0 10px #ff8800;
+    line-height: 2.1;
+    animation: cryptexRain 4.2s linear infinite;
+  }
 
   /* HAKR_10111001 — extra fx layers (terminal commands + IP scan) are
      defined alongside the main rule above. */
