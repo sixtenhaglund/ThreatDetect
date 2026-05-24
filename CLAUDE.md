@@ -36,26 +36,43 @@ The script is organized top-to-bottom as:
 
 ## Card and template balance (IMPORTANT when adding content)
 
-The deck-builder (`buildDeck` in `js/gameplay.js`) uses **uniform-template sampling**: each template (WIN11, TOAST, BSOD, CAPTCHA, …) has roughly equal odds of being picked per card slot, regardless of how many cards belong to it. Inside a template, cards are then chosen without replacement across the run.
+The deck-builder (`buildDeck` in `js/gameplay.js`) uses **sqrt-weighted template sampling**: each template's pick weight is `sqrt(its fresh-card count)`. A template with 1 card has weight 1; a template with 100 cards has weight 10. Rare templates (BSOD/WIN311/CAPTCHA) still show up regularly, but a template's single card never dominates the deck the way it did with pure uniform sampling.
 
-Two consequences to keep in mind whenever you ADD or REMOVE cards:
+Two hard rules whenever you ADD or REMOVE cards:
 
-1. **A template with few cards = the same cards repeating.** If BSOD has only 2 cards, every BSOD slot draws from those same 2 — the player will see them constantly. Bring small templates up so each has enough variety.
+1. **Every template must have at least 10 virus + 10 legit cards (20 total).** This is the *template-balance floor* — falling below it means the same one or two cards cycle visibly across a run (the "ThreatDetect / Cloudflare every single game" bug). If you add a new template, immediately seed it to 10+10.
 2. **A theme that's virus-only OR legit-only teaches a binary heuristic.** If every CAPTCHA / NORTON / LOADING is a virus, the player learns "captcha = virus" instead of looking at the actual tells (file extension, signer, source domain). Every template needs both virus and legit cards so the player has to actually read the card.
-
-**Target floor when adding to a template: ~10 virus + ~10 legit (≈20 total).** Templates that already have lots (WIN11, TOAST, TERMINAL) don't need padding.
 
 **Audit command** to check the current balance before/after a content change:
 
 ```bash
-for tpl in WIN11 TOAST TERMINAL AV BIOS LOADING CHAT PHONE MAC DESKTOP WIN311 UPDATE PRINT NORTON CAPTCHA BSOD; do
-  v=$(grep -c "TPL.$tpl\b" js/viruses.js)
-  l=$(grep -c "TPL.$tpl\b" js/legit.js)
-  printf "%-12s virus=%-3d legit=%-3d total=%d\n" "$tpl" "$v" "$l" $((v+l))
-done
+node -e "
+const vm = require('vm'); const fs = require('fs');
+const sandbox = { console, Math, Date, JSON, Object, Array, Set, document:{querySelector:()=>null}, localStorage:{}, Audio:{}, METERS:{}, Leaderboard:{load:()=>[]}, render:()=>{} };
+vm.createContext(sandbox);
+for (const f of ['js/config.js','js/viruses.js','js/legit.js','js/tells.js','js/core.js','js/gameplay.js']) {
+  vm.runInContext(fs.readFileSync(f,'utf8'), sandbox, {filename:f});
+}
+vm.runInContext('this.__V=VIRUSES;this.__L=LEGIT;', sandbox);
+const V = sandbox.__V, L = sandbox.__L;
+const vTpl = {}, lTpl = {};
+Object.values(V).forEach(v => v.errors.forEach(e => { const t = e.template||'?'; vTpl[t]=(vTpl[t]||0)+1; }));
+L.forEach(e => { const t = e.template||'?'; lTpl[t]=(lTpl[t]||0)+1; });
+const all = [...new Set([...Object.keys(vTpl), ...Object.keys(lTpl)])].sort();
+all.forEach(t => { const v=vTpl[t]||0, l=lTpl[t]||0; const ok=(v>=10&&l>=10)?'OK':'need '+Math.max(0,10-v)+'v +'+Math.max(0,10-l)+'l';
+  console.log(t.padEnd(10), String(v).padStart(4), String(l).padStart(4), ok); });
+"
 ```
 
-**Card variety via placeholders:** rather than only adding more cards, also use `{token}` placeholders so each card reads differently every draw. Pools live in `RANDOM_POOLS` (`js/config.js`): `tld`, `app`, `brand`, `city`, `stopcode`, `sysmodule`, `cpu`, `diagtool`, `wallet`, `timer`, `numfiles`, `department`. `substitutePlaceholders` (in `js/gameplay.js`) runs at deal-time. Adding a new placeholder type = new entry in `RANDOM_POOLS`, then use `{your_token}` in card text.
+**Card variety via placeholders:** padding gets a template to the floor, but the next gain comes from **placeholders inside the card text**. When the same source card is dealt twice in one run (which still happens occasionally in long runs), placeholders are the only reason the second draw looks different. Use `{token}`s aggressively in titles, messages, and metas — *every* hardcoded brand/domain/PID/version/name is a missed variance opportunity.
+
+Pools live in `RANDOM_POOLS` (`js/config.js`). Current pools:
+- **Split (legit/virus shape — same token reads as ".com" on a legit card, ".pw" on a virus card):** `tld`, `brand`, `app`, `city`, `filename`, `filesize`, `kb`, `process`, `ipaddr`, `game`, `username`, `pid`, `captchaprov`, `phonenum`, `bank`, `sender`, `browser`, `region`, `numfiles`
+- **Flat (same values on both sides):** `department`, `name`, `version`, `ext`, `driver`, `port`, `percent`, `printer`, `pagecount`, `alertword`, `stopcode`, `sysmodule`, `cpu`, `diagtool`, `wallet`, `timer`, `ray`
+
+`substitutePlaceholders` (in `js/gameplay.js`) runs at deal-time. Adding a new placeholder type = new entry in `RANDOM_POOLS`, then use `{your_token}` in card text.
+
+**Variance test harness:** `test-variance.js` at the repo root simulates buildDeck many times and reports unique-card count + top-repeated titles. Run with `node test-variance.js`. Throwaway script — delete or update as the design evolves.
 
 ## Audio extension point
 
