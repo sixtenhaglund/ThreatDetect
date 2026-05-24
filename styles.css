@@ -1920,14 +1920,18 @@
     background-size: 100% 100%, 100% 100%;
     mix-blend-mode: screen;
     pointer-events: none;
-    animation: tarpitStaticShimmer 0.12s steps(2, end) infinite;
+    opacity: 0.5;
+    animation: tarpitStaticShimmer 0.18s steps(3, end) infinite;
   }
-  /* Re-rolls the static every ~60ms by toggling which of the two stacked
-     noise SVGs is on top. steps(2, end) means no interpolation — each
-     frame is a hard cut between the two seeds. */
+  /* Re-rolls the static every ~60ms by snapping each of the two stacked
+     noise SVGs to a different position. steps(3, end) means no
+     interpolation — three hard cuts per cycle, no smooth drift. Opacity
+     stays at a constant 50% (set on the element); the motion is the
+     animation. */
   @keyframes tarpitStaticShimmer {
-    0%, 49%   { background-position: 0 0, 50% 50%; opacity: 0.95; }
-    50%, 100% { background-position: 50% 50%, 0 0; opacity: 0.85; }
+    0%,   33%  { background-position: 0    0,   50%  50%; }
+    34%,  66%  { background-position: 60%  20%, 10%  80%; }
+    67%,  100% { background-position: 30%  70%, 80%  10%; }
   }
 
   /* HEX — blue hexagons jumping to random positions. Each layer uses `steps()`
