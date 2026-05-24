@@ -483,7 +483,7 @@ Audio.deaths = {
     bg.gain.exponentialRampToValueAtTime(0.001, t + 2.2);
     bell.start(t + 0.4); bell.stop(t + 2.3);
   },
-  VOID() {
+  V01D() {
     const t = this.ctx.currentTime;
     const o = this.ctx.createOscillator(); o.type = "sine"; o.frequency.value = 420;
     o.frequency.exponentialRampToValueAtTime(18, t + 4);

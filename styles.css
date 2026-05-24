@@ -334,7 +334,7 @@
   .v-MELTDOWN   { color: #ff7733; }
   .v-STATIC     { color: #b0b0b0; }
   .v-REDRUM     { color: #cc1111; }
-  .v-VOID       { color: #aa66ff; }
+  .v-V01D       { color: #aa66ff; }
   .v-REWRITER   { color: #ffd56b; }
   .v-CRYPT0    { color: #ffcc00; }
   .v-HAKR_10111001       { color: #44ff44; }
@@ -353,7 +353,7 @@
   .codex-entry.v-MELTDOWN   { border-left-color: #ff7733; }
   .codex-entry.v-STATIC     { border-left-color: #b0b0b0; }
   .codex-entry.v-REDRUM     { border-left-color: #cc1111; }
-  .codex-entry.v-VOID       { border-left-color: #aa66ff; }
+  .codex-entry.v-V01D       { border-left-color: #aa66ff; }
   .codex-entry.v-REWRITER   { border-left-color: #ffd56b; }
   .codex-entry.v-CRYPT0    { border-left-color: #ffcc00; }
   .codex-entry.v-HAKR_10111001       { border-left-color: #44ff44; }
@@ -1497,8 +1497,8 @@
   }
   @keyframes redrumScroll { to { transform: translateY(-50%); } }
 
-  /* VOID — calm star field that slowly fades between black and deep purple. */
-  .death-VOID {
+  /* V01D — calm star field that slowly fades between black and deep purple. */
+  .death-V01D {
     background-color: #000;
     animation: voidFade 6s ease-in-out infinite;
   }
@@ -1507,7 +1507,7 @@
     50%      { background-color: #2a0044; }
   }
   /* Layer 1 of stars — small + soft */
-  .death-VOID::before {
+  .death-V01D::before {
     content: ""; position: absolute; inset: 0;
     background-image:
       radial-gradient(1.5px 1.5px at 6% 12%,  #ffffff, transparent 60%),
@@ -1536,7 +1536,7 @@
     background-repeat: no-repeat;
   }
   /* Layer 2 of stars — slightly brighter, gently twinkling */
-  .death-VOID::after {
+  .death-V01D::after {
     content: ""; position: absolute; inset: 0;
     background-image:
       radial-gradient(2.5px 2.5px at 18% 38%, #ffffff, transparent 60%),
@@ -2217,7 +2217,7 @@
     65%, 100%{ opacity: 0; transform: translateY(0); }
   }
 
-  /* VOID — no extra fx (calm star field with slow fade does it on its own). */
+  /* V01D — no extra fx (calm star field with slow fade does it on its own). */
 
   /* CRYPT0 death-fx layers cleared — all streams live on .cryptex-rain
      children created by applyCryptexRain(). */

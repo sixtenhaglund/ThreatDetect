@@ -68,6 +68,7 @@ const Save = {
       //   WORM → HAKR_10111001               (display name became "HAKR_10111001")
       //   CRYPTEX → CRYPT0                   (display name became "Crypt.0")
       //   GASLIGHT → REWRITER                (display name became "Rewriter()")
+      //   VOID → V01D                        (display name became "V01D")
       // Rename references in unlocked / deathsBy so codex + first-death badges
       // still work. Also auto-unlocks ASSISTANT on first load after that update.
       const renameKey = function (arr) {
@@ -87,6 +88,7 @@ const Save = {
           if (k === "WORM") return "HAKR_10111001";
           if (k === "CRYPTEX") return "CRYPT0";
           if (k === "GASLIGHT") return "REWRITER";
+          if (k === "VOID") return "V01D";
           return k;
         }).filter(function (v) { return v != null; });
         // De-dupe in case multiple old keys collapsed into the same new one.
@@ -322,7 +324,7 @@ const VIRUS_TOKEN_EXPLANATIONS = {
   // so just spotting one of them in a title or message is itself the tell.
   staticphrase:    v => "Title / message says '" + v + "' — classic STATIC virus phrasing (analog-TV terminology on a modern PC)",
   meltdownphrase:  v => "Title / message says '" + v + "' — classic MELTDOWN virus phrasing (dramatic thermal emergency)",
-  voidphrase:      v => "Title / message says '" + v + "' — classic VOID virus phrasing (∅ / NULL / 0-byte / /dev/null)",
+  voidphrase:      v => "Title / message says '" + v + "' — classic V01D virus phrasing (∅ / NULL / 0-byte / /dev/null)",
   epilepticphrase: v => "Title / message says '" + v + "' — classic EPILEPTICA virus phrasing (display strobe panic)",
   cryptexphrase:   v => "Title / message says '" + v + "' — classic Crypt.0 virus phrasing (encrypted-files ransom)",
   rootkitphrase:   v => "Title / message says '" + v + "' — classic fake_BSOD.000 virus phrasing (kernel / Secure Boot / MBR)",

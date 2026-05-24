@@ -113,8 +113,8 @@ const VIRUSES = {
       { template: TPL.NORTON,  title: "OVERLOOK SERVICE", message: "Norton found redrum.svc maintaining 1,237 files in HKCU\\Lodge\\Room237. Allow continued service?", meta: "Service: redrum.svc  ·  Files: 1,237  ·  Source: overlook-lodge{tld}", icon: "skull" }
     ]
   },
-  VOID: {
-    name: "VOID", color: "#aa66ff",
+  V01D: {
+    name: "V01D", color: "#aa66ff",
     minRound: 3,
     description: "A null-space encryption virus that turns your files into mathematical zero. Writes data to /dev/null, lists file sizes as negative or infinite, and hides its own process by consuming PID 0x00000000 — the slot the OS reserves for 'no process at all.' Recovery is impossible: the data hasn't been encrypted, it has been erased and the address book burned.",
     signs: [
@@ -633,7 +633,7 @@ const DEATHS = {
   MELTDOWN:   { text: "HARDWARE FAILURE",      duration: 4500 },
   STATIC:     { text: "SIGNAL LOST",           duration: 4200 },
   REDRUM:     { text: "ALL WORK AND NO PLAY",  duration: 4800 },
-  VOID:       { text: "ALLOCATION FAULT",      duration: 4500 },
+  V01D:       { text: "ALLOCATION FAULT",      duration: 4500 },
   REWRITER:   { text: "TIME UNVERIFIABLE",     duration: 4500 },
   CRYPT0:     { text: "FILES ENCRYPTED",       duration: 4500 },
   HAKR_10111001: { text: "REPLICATION COMPLETE",  duration: 4500 },

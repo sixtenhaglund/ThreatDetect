@@ -34,7 +34,7 @@ const TEXTUAL_TELLS = {
     { p: /taken care of|carefully managed|looked after|always been (here|the caretaker)/i, t: "Eerie phrasing — 'taken care of' / 'looked after' / 'always been'" },
     { p: /overlook-lodge|hotel-management|room237/i,                                t: "Domain references a hotel / lodge / room number" }
   ],
-  VOID: [
+  V01D: [
     { p: /PID:?\s*(NULL|VOID|0x0+\b|∅)/i,                                           t: "Process ID listed as NULL, VOID, 0x00000000, or ∅" },
     { p: /∞|\/dev\/null|\bNUL\b|null space|self.delet|entropy_manager|void_compress|nullsector|void-optimize|VoidCleaner|VoidCompress|VoidOptimize/i, t: "References /dev/null, NUL, ∞, or 'self-deleting'" },
     { p: /-\d+\s*bytes|files:?\s*-\d/i,                                             t: "Negative byte counts" },
