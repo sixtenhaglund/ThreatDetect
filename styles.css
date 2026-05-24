@@ -2037,10 +2037,13 @@
   .death-ASSISTANT .death-fx::before,
   .death-ASSISTANT .death-fx::after { content: none; }
 
-  /* (<HEART.BEAT>) — single huge bloody human heart in the middle, beating
-     with a lub-dub rhythm. Background pulses dark→darker red in sync so the
-     whole screen feels like it's pumping blood. The 🫀 anatomical-heart
-     emoji renders as a real-looking heart on modern Win11 / mac / iOS. */
+  /* (<HEART.BEAT>) — real anatomical heart photo (heart.jpg) in the middle,
+     beating with a lub-dub rhythm. Background pulses dark→darker red in sync
+     so the whole screen feels like it's pumping blood.
+     The inline SVG color-matrix filter drops the photo's white background
+     to transparent: alpha = -1*R -1*G -1*B + 1*A + 1.5, so pure-white
+     pixels resolve to alpha 0 and the red heart pixels resolve to alpha 1.
+     Then drop-shadow adds the bleeding-glow halo around what's left. */
   .death-HEARTBEAT {
     background: #1a0000;
     animation: heartbeatBg 0.9s ease-in-out infinite;
@@ -2050,12 +2053,11 @@
     50%      { background: #4a0000; }
   }
   .death-HEARTBEAT::before {
-    /* The heart itself. drop-shadow gives a wet, glowing-red "bleeding" halo. */
-    content: "🫀";
+    content: "";
     position: absolute; inset: 0;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 22rem;
+    background: url("heart.jpg") no-repeat center / contain;
     filter:
+      url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='r' color-interpolation-filters='sRGB'%3E%3CfeColorMatrix values='1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  -1 -1 -1 1 1.5'/%3E%3C/filter%3E%3C/svg%3E#r")
       drop-shadow(0 0 30px #aa0000)
       drop-shadow(0 0 80px #660000)
       saturate(1.4);
