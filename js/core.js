@@ -324,7 +324,7 @@ const VIRUS_TOKEN_EXPLANATIONS = {
   region:      v => "Login location '" + v + "' — a faraway region you've never visited is a panic-engineering tactic",
   // Per-virus themed phrases — these only appear on the matching virus's cards,
   // so just spotting one of them in a title or message is itself the tell.
-  staticphrase:    v => "Title / message says '" + v + "' — classic STATIC virus phrasing (analog-TV terminology on a modern PC)",
+  staticphrase:    v => "Title / message says '" + v + "' — classic S#T#A#T#I#C virus phrasing (analog-TV terminology on a modern PC)",
   meltdownphrase:  v => "Title / message says '" + v + "' — classic MELTDOWN virus phrasing (dramatic thermal emergency)",
   voidphrase:      v => "Title / message says '" + v + "' — classic V01D virus phrasing (∅ / NULL / 0-byte / /dev/null)",
   epilepticphrase: v => "Title / message says '" + v + "' — classic EPILEPTICA virus phrasing (display strobe panic)",
