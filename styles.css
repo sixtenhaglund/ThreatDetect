@@ -2082,8 +2082,20 @@
          3. feComposite 'in' — clips the final alpha by the original
             SourceGraphic alpha so the area outside the photo bounds
             stays transparent (otherwise the matrix would make it opaque). */
+    /* Single feColorMatrix that:
+         - R_out = 2*R + 0.5   (every pixel gets baseline red; even pure
+                                 black becomes 0.5 = medium dark red)
+         - G = B = 0           (kill greens/blues, force red-only)
+         - A_out = R - G - B + 1
+             white (1,1,1) -> 1 - 1 - 1 + 1 = 0  (transparent)
+             black (0,0,0) -> 0 - 0 - 0 + 1 = 1  (opaque)
+             red   (0.8,0.2,0.2) -> 1.4 -> 1     (opaque)
+           This is the trick: alpha is high where R dominates over G/B
+           (i.e., red-ish), low where G+B are also high (i.e., white).
+       Then feComposite 'in' clips by SourceGraphic alpha so the area
+       outside the photo bounds stays transparent. */
     filter:
-      url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='r' color-interpolation-filters='sRGB'%3E%3CfeColorMatrix values='1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  -1 -1 -1 1 1.5' result='m1'/%3E%3CfeColorMatrix in='m1' values='1.2 0.6 0.6 0 0.35  0 0 0 0 0  0 0 0 0 0  0 0 0 1 0' result='m2'/%3E%3CfeComposite in='m2' in2='SourceGraphic' operator='in'/%3E%3C/filter%3E%3C/svg%3E#r")
+      url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='r' color-interpolation-filters='sRGB'%3E%3CfeColorMatrix values='2 0 0 0 0.5  0 0 0 0 0  0 0 0 0 0  1 -1 -1 0 1' result='m'/%3E%3CfeComposite in='m' in2='SourceGraphic' operator='in'/%3E%3C/filter%3E%3C/svg%3E#r")
       saturate(1.2);
     animation: heartbeatPump 0.9s ease-in-out infinite;
   }
