@@ -1773,7 +1773,12 @@
      independently. The cards are populated by applyMimicPopups() in
      main.js whenever the death screen is on; this CSS just handles
      layout + the per-popup glitch animation. */
-  .death-MIMIC { background: #003366; }
+  .death-MIMIC {
+    background-color: #000;
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    image-rendering: pixelated;
+  }
   .death-MIMIC::before, .death-MIMIC::after,
   .death-MIMIC .death-fx::before, .death-MIMIC .death-fx::after { content: none; }
   .mimic-popups {

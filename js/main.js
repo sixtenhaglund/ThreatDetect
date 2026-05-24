@@ -169,6 +169,27 @@ function applyMimicPopups() {
   const old = target.querySelector(".mimic-popups");
   if (old) old.remove();
 
+  // Paint one frozen frame of chunky black/blue TV-static into the background.
+  // Same canvas-pixel trick as STATIC, but each pixel is either black or
+  // pure blue instead of grayscale. image-rendering: pixelated (set in CSS)
+  // keeps the chunks crisp when the small canvas is stretched to fullscreen.
+  (function paintMimicStatic() {
+    const c = document.createElement("canvas");
+    c.width = 200; c.height = 150;
+    const ctx = c.getContext("2d");
+    const img = ctx.createImageData(c.width, c.height);
+    const d = img.data;
+    for (let i = 0; i < d.length; i += 4) {
+      const on = Math.random() < 0.5;
+      d[i]     = 0;
+      d[i + 1] = 0;
+      d[i + 2] = on ? 255 : 0;
+      d[i + 3] = 255;
+    }
+    ctx.putImageData(img, 0, 0);
+    target.style.backgroundImage = "url(" + c.toDataURL() + ")";
+  })();
+
   const container = document.createElement("div");
   container.className = "mimic-popups";
   const picks = [];
