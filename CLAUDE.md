@@ -36,7 +36,10 @@ The script is organized top-to-bottom as:
 
 ## Card and template balance (IMPORTANT when adding content)
 
-The deck-builder (`buildDeck` in `js/gameplay.js`) uses **sqrt-weighted template sampling**: each template's pick weight is `sqrt(its fresh-card count)`. A template with 1 card has weight 1; a template with 100 cards has weight 10. Rare templates (BSOD/WIN311/CAPTCHA) still show up regularly, but a template's single card never dominates the deck the way it did with pure uniform sampling.
+The deck-builder (`buildDeck` in `js/gameplay.js`) uses two different sampling strategies for the two halves of the deck:
+
+- **Virus side** — `pickByUniformVirus`: each *virus* gets equal odds per slot. Pick a virus uniformly from `availableViruses(round)`, then pick a random fresh error from its pool. So MIMIC (29 error variants) and PULSE (10) both land ~5% of virus slots. Without this, MIMIC was 4× more likely than PULSE simply because it had more cards in the codebase.
+- **Legit side** — `pickByUniformTemplate`: each *template* gets weight `sqrt(its fresh-card count)`. A 1-card template has weight 1; a 100-card template has weight 10. Rare templates (BSOD/WIN311/CAPTCHA) still show up regularly, but a template's single card never dominates the deck.
 
 Two hard rules whenever you ADD or REMOVE cards:
 

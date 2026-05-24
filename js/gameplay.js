@@ -175,29 +175,58 @@ function buildDeck(round) {
     ? CONFIG.cardsPerRound + Math.max(0, round - 1)
     : CONFIG.cardsPerRound;
 
-  // Build legit + virus pools, each entry tagged with a stable dealKey so we
-  // can track which specific cards a player has already seen this run.
+  // Build the legit pool; each entry tagged with a stable dealKey so we can
+  // track which specific cards a player has already seen this run.
   // Legit dealKey = "legit:<index in LEGIT>"; virus = "<VIRUSKEY>:<errorIdx>".
   const legitPool = LEGIT.map((e, i) => ({
     card: { ...e, isVirus: false, virusKey: null }, dealKey: "legit:" + i
   }));
-  const virusPool = [];
-  avail.forEach(k => {
-    VIRUSES[k].errors.forEach((e, idx) => {
-      virusPool.push({ card: { ...e, isVirus: true, virusKey: k }, dealKey: k + ":" + idx });
-    });
-  });
-  const virusCount = Math.min(virusPool.length, Math.max(2, Math.round(cardsThisRound * virusRatio)));
+  const virusPoolSize = avail.reduce((s, k) => s + VIRUSES[k].errors.length, 0);
+  const virusCount = Math.min(virusPoolSize, Math.max(2, Math.round(cardsThisRound * virusRatio)));
   const legitCount = cardsThisRound - virusCount;
 
   if (!state.usedLegit)        state.usedLegit        = new Set();
   if (!state.usedVirusErrors)  state.usedVirusErrors  = new Set();
 
   const deck = shuffle(
-    pickByUniformTemplate(virusPool, virusCount, state.usedVirusErrors)
+    // Viruses: equal odds per virus regardless of how many error variants exist.
+    pickByUniformVirus(avail, virusCount, state.usedVirusErrors)
+      // Legits: sqrt-weighted by template so rare templates still appear.
       .concat(pickByUniformTemplate(legitPool, legitCount, state.usedLegit))
   );
   return spreadSameVirus(deck).map(randomizeCard);
+}
+
+/* Pick `n` virus cards such that each *virus* has equal odds per slot,
+   regardless of how many error variants exist in the codebase. Each slot:
+   pick a virus uniformly from `avail`, then pick a random fresh error card
+   from that virus's pool (falls back to stale if all of its variants have
+   already been dealt this run).
+   Without this, viruses with more error variants (like MIMIC at 29 cards)
+   appear 3-4x as often as viruses with fewer variants (like PULSE at 10) —
+   because the previous template-balanced picker effectively weighted each
+   virus by its pool size. */
+function pickByUniformVirus(avail, n, usedKeys) {
+  if (n <= 0 || avail.length === 0) return [];
+  const picked = [];
+  let safety = n * 10;
+  while (picked.length < n && safety-- > 0) {
+    const k = avail[Math.floor(Math.random() * avail.length)];
+    const errors = VIRUSES[k].errors;
+    if (!errors.length) continue;
+    const fresh = [];
+    const stale = [];
+    for (let i = 0; i < errors.length; i++) {
+      const dealKey = k + ":" + i;
+      (usedKeys.has(dealKey) ? stale : fresh).push(i);
+    }
+    const idx = fresh.length ? fresh[Math.floor(Math.random() * fresh.length)]
+                             : (stale.length ? stale[Math.floor(Math.random() * stale.length)] : -1);
+    if (idx < 0) continue;
+    usedKeys.add(k + ":" + idx);
+    picked.push({ ...errors[idx], isVirus: true, virusKey: k });
+  }
+  return picked;
 }
 
 /* After shuffle, avoid two cards from the SAME virus landing next to each other.
