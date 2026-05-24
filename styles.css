@@ -327,27 +327,29 @@
   }
   .codex-body .desc { font-size: 0.92rem; color: hsl(160 30% 80%); margin: 12px 0; line-height: 1.55; }
   .codex-body ul { margin: 8px 0 0 0; padding-left: 18px; font-size: 0.85rem; color: var(--muted-fg); }
-  /* Example error: scale the rendered card down to half size so it fits
-     compactly inside the codex entry. transform: scale leaves the original
-     layout box behind it, so wrap it in a padded aspect-ratio container
-     that clips/contains it. */
+  /* Example error: zoom shrinks both the visual AND the layout box, so
+     the container auto-sizes to the scaled card — no big empty gap
+     below. transform: scale (used earlier) doesn't shrink layout, which
+     was the cause of the gap. */
   .codex-example {
     margin: 8px 0 4px 0;
-    height: 0;
-    padding-bottom: 40%;
-    position: relative;
-    overflow: hidden;
+    padding: 6px;
     border-radius: 6px;
     border: 1px dashed var(--border);
     background: rgba(0, 0, 0, 0.25);
+    overflow: hidden;
   }
   .codex-example > * {
-    position: absolute;
-    top: 0; left: 0;
-    transform: scale(0.5);
-    transform-origin: top left;
-    width: 200%;
+    zoom: 0.5;
     pointer-events: none;
+  }
+  /* Hide the Report/Block + OK/Proceed buttons inside the example —
+     they're interactive in-game but not meaningful here. Catches both
+     bare buttons and any action wrapper class (win-actions, av-actions,
+     bios-actions, term-actions, print-actions-inline, td-update-actions). */
+  .codex-example button,
+  .codex-example [class*="actions"] {
+    display: none !important;
   }
   /* Compact meters shown alongside the example card. Reuses the in-game
      .meters / .meter / .m-val styles, just tightened a bit so it fits. */
@@ -355,6 +357,16 @@
     margin-top: 8px;
     font-size: 0.85em;
   }
+  /* "Why this is a virus" list — same vibe as the codex's other tell
+     lists, just slightly louder text since these are the punchline. */
+  .codex-why {
+    margin: 6px 0 0 0;
+    padding-left: 18px;
+    font-size: 0.85rem;
+    color: hsl(0 70% 85%);
+    line-height: 1.5;
+  }
+  .codex-why li { margin: 3px 0; }
   .codex-body li { margin: 3px 0; line-height: 1.45; }
 
   /* Per-virus accent colors */

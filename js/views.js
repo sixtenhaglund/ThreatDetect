@@ -211,9 +211,23 @@ function renderCodexEntries(opts) {
     if (unlocked && v.errors && v.errors.length) {
       const pick = v.errors[Math.floor(Math.random() * v.errors.length)];
       const randomized = randomizeCard({ ...pick, isVirus: true, virusKey: key });
+      // Compute the same tells the game-over screen shows — text patterns,
+      // visual fx flags, and any virus-side placeholder picks.
+      const textTells = textualTellsFor(randomized);
+      const fxTells = activeTells(randomized);
+      const phTells = virusSubTells(randomized);
+      const tellsHtml = (textTells.length + fxTells.length + phTells.length) > 0
+        ? `<p class="tiny" style="margin-top:10px;">Why this is a virus</p>
+           <ul class="codex-why">
+             ${textTells.map(t => `<li>${esc(t)}</li>`).join("")}
+             ${fxTells.map(t => `<li>${esc(t)}</li>`).join("")}
+             ${phTells.map(t => `<li>${esc(t)}</li>`).join("")}
+           </ul>`
+        : "";
       exampleHtml = `<p class="tiny" style="margin-top:10px;">Example error</p>
         <div class="codex-example">${renderCard(randomized)}</div>
-        ${renderCodexMeters(v.meterEffect)}`;
+        ${renderCodexMeters(v.meterEffect)}
+        ${tellsHtml}`;
     }
     return `
       <div class="codex-entry v-${key} ${isOpen ? "open" : ""}">
