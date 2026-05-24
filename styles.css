@@ -2037,77 +2037,40 @@
   .death-ASSISTANT .death-fx::before,
   .death-ASSISTANT .death-fx::after { content: none; }
 
-  /* (<HEART.BEAT>) — real anatomical heart photo (heart.jpg) in the middle,
-     beating with a lub-dub rhythm. Background pulses dark→darker red in sync
-     so the whole screen feels like it's pumping blood.
-     The inline SVG color-matrix filter drops the photo's white background
-     to transparent: alpha = -1*R -1*G -1*B + 1*A + 1.5, so pure-white
-     pixels resolve to alpha 0 and the red heart pixels resolve to alpha 1.
-     Then drop-shadow adds the bleeding-glow halo around what's left. */
-  /* Organic-tissue background + a darker blood pool in the middle behind
-     the heart. Three layers from top to bottom:
-       1. radial-gradient — deeper red pool that fades to transparent at
-          the edges, sits on top of the texture (normal blend).
-       2. noise SVG — single 2000px tile stretched to cover, blended
-          overlay so it adds light/dark muscle veins.
-       3. solid #6a0000 — base flesh red. */
+  /* (<HEART.BEAT>) — single huge bloody human heart in the middle, beating
+     with a lub-dub rhythm. Background pulses dark→darker red in sync so the
+     whole screen feels like it's pumping blood. The 🫀 anatomical-heart
+     emoji renders as a real-looking heart on modern Win11 / mac / iOS. */
   .death-HEARTBEAT {
-    background-color: #6a0000;
-    background-image:
-      radial-gradient(circle at center, #2a0000 0%, rgba(42,0,0,0.6) 30%, transparent 60%),
-      url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='2000' height='2000'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.008' numOctaves='5' seed='5'/%3E%3CfeColorMatrix values='0.33 0.33 0.33 0 0  0.33 0.33 0.33 0 0  0.33 0.33 0.33 0 0  0 0 0 1 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-    background-size: cover, cover;
-    background-repeat: no-repeat, no-repeat;
-    /* Gradient blends normal, noise blends overlay — order matches the
-       background-image list. */
-    background-blend-mode: normal, overlay;
+    background: #1a0000;
+    animation: heartbeatBg 0.9s ease-in-out infinite;
   }
-  /* The ::before is sized just big enough to hold the heart, centered on
-     screen. Scaling only that small box means the eye reads the pulse as
-     "the heart is beating" — not "the whole screen is moving." */
+  @keyframes heartbeatBg {
+    0%, 100% { background: #1a0000; }
+    50%      { background: #4a0000; }
+  }
   .death-HEARTBEAT::before {
-    content: "";
-    position: absolute;
-    top: 50%; left: 50%;
-    width: 60vmin; height: 60vmin;
-    transform: translate(-50%, -50%) scale(1);
-    background: url("heart.jpg") no-repeat center / contain;
-    /* Chained SVG filter:
-         1. feColorMatrix 'm1' — drops the photo's white background to
-            transparent via alpha = -R -G -B + A + 1.5.
-         2. feColorMatrix 'm2' — pumps every remaining pixel toward pure
-            red: R = 2.5*R + 0.6*G + 0.6*B, G = B = 0. This stops the
-            heart's dark crevices from rendering as near-black; every
-            heart pixel becomes some shade of red.
-         3. feComposite 'in' — clips the final alpha by the original
-            SourceGraphic alpha so the area outside the photo bounds
-            stays transparent (otherwise the matrix would make it opaque). */
-    /* Single feColorMatrix that:
-         - R_out = 2*R + 0.5   (every pixel gets baseline red; even pure
-                                 black becomes 0.5 = medium dark red)
-         - G = B = 0           (kill greens/blues, force red-only)
-         - A_out = R - G - B + 1
-             white (1,1,1) -> 1 - 1 - 1 + 1 = 0  (transparent)
-             black (0,0,0) -> 0 - 0 - 0 + 1 = 1  (opaque)
-             red   (0.8,0.2,0.2) -> 1.4 -> 1     (opaque)
-           This is the trick: alpha is high where R dominates over G/B
-           (i.e., red-ish), low where G+B are also high (i.e., white).
-       Then feComposite 'in' clips by SourceGraphic alpha so the area
-       outside the photo bounds stays transparent. */
+    /* The heart itself. drop-shadow gives a wet, glowing-red "bleeding" halo. */
+    content: "🫀";
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22rem;
     filter:
-      url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='r' color-interpolation-filters='sRGB'%3E%3CfeColorMatrix values='2 0 0 0 0.5  0 0 0 0 0  0 0 0 0 0  1 -1 -1 0 1' result='m'/%3E%3CfeComposite in='m' in2='SourceGraphic' operator='in'/%3E%3C/filter%3E%3C/svg%3E#r")
-      saturate(1.2);
+      drop-shadow(0 0 30px #aa0000)
+      drop-shadow(0 0 80px #660000)
+      saturate(1.4);
     animation: heartbeatPump 0.9s ease-in-out infinite;
   }
-  /* Lub-dub: two contractions per cycle. transform includes translate(-50%,-50%)
-     to keep the heart centered while scaling. */
+  /* Lub-dub: two contractions per cycle. The first (lub) is the bigger
+     ventricular contraction at ~10%; the second (dub) is a smaller atrial
+     bounce at ~28%. Rest of the cycle holds at scale 1. */
   @keyframes heartbeatPump {
-    0%   { transform: translate(-50%, -50%) scale(1);    }
-    8%   { transform: translate(-50%, -50%) scale(1.22); }
-    18%  { transform: translate(-50%, -50%) scale(0.95); }
-    26%  { transform: translate(-50%, -50%) scale(1.12); }
-    36%  { transform: translate(-50%, -50%) scale(1);    }
-    100% { transform: translate(-50%, -50%) scale(1);    }
+    0%   { transform: scale(1);    }
+    8%   { transform: scale(1.22); }
+    18%  { transform: scale(0.95); }
+    26%  { transform: scale(1.12); }
+    36%  { transform: scale(1);    }
+    100% { transform: scale(1);    }
   }
   .death-HEARTBEAT::after { content: none; }
 
