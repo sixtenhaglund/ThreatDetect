@@ -102,7 +102,7 @@ const TEXTUAL_TELLS = {
     { p: /∅/,                                                                       t: "Uses the ∅ (empty set) symbol" },
     { p: /^$/,                                                                       t: "Card text is entirely empty — real alerts always have a message" }
   ],
-  CURSOR: [
+  P0INTR: [
     { p: /mpredict|smartclick|drift_fix|pointerfw|pointer-sync|cursorfix|cursorshare|click_oracle|cursor_smart|touch_predict|cursor-update/i, t: "Fake mouse-helper process name" },
     { p: /click.prediction|pointer telemetry|cursor drift|click accuracy|HID-Mouse|pointer smoothing|click forecast|tap accuracy|pointer model/i, t: "Hooks into pointer / mouse driver telemetry" },
     { p: /telemetry:?\s*on|share.{0,4}(pointer|telemetry|click)/i,                  t: "Wants to share your pointer / click telemetry to a remote server" }

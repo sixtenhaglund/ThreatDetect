@@ -58,6 +58,7 @@ const Save = {
       //   FOSSIL → OLDEXE → TARPIT          (display name became "T.A.R.P.I.T.")
       //   HEX → HEXR                         (display name became "HEXR")
       //   LOOP → INFINITE                    (display name became "I(n.fin)I:TE")
+      //   CURSOR → P0INTR                    (display name became "P0INT:R")
       // Rename references in unlocked / deathsBy so codex + first-death badges
       // still work. Also auto-unlocks ASSISTANT on first load after that update.
       const renameKey = function (arr) {
@@ -67,6 +68,7 @@ const Save = {
           if (k === "FOSSIL" || k === "OLDEXE") return "TARPIT";
           if (k === "HEX") return "HEXR";
           if (k === "LOOP") return "INFINITE";
+          if (k === "CURSOR") return "P0INTR";
           return k;
         });
         // De-dupe in case multiple old keys collapsed into the same new one.

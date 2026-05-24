@@ -192,7 +192,7 @@ const LEGIT = [
   { template: TPL.WIN11,    title: "Microsoft Account: New Sign-In", message: "New sign-in to your Microsoft account from Stockholm, Sweden. If this wasn't you, secure your account now.", meta: "Location: Stockholm  |  Device: Chrome on Windows", icon: "warning" },
   { template: TPL.TOAST,    title: "Discord", message: "Your nitro subscription renews in 7 days. Update payment method to avoid interruption.", meta: "Discord Nitro  ·  Renews in 7 days" },
   // ---- Theme-balancing pass: more legit cards in virus-heavy themes ----
-  // Mouse / cursor (virus-heavy because of CURSOR)
+  // Mouse / cursor (virus-heavy because of P0INTR)
   { template: TPL.WIN11,    title: "Logitech Options+", message: "Logitech Options+ updated to version 1.82.471. Restart the app to use the new gesture mappings.", meta: "App: Logitech Options+  |  Version: 1.82.471  |  Signed: Logitech, Inc.", icon: "blank" },
   { template: TPL.TOAST,    title: "Bluetooth Battery Low", message: "Microsoft Sculpt Comfort Mouse battery is at 12%. Replace AA cells in the next few days.", meta: "Device: Sculpt Comfort Mouse  ·  Battery: 12%" },
   { template: TPL.WIN11,    title: "Pointer Precision", message: "Enhance pointer precision has been disabled per your settings. New mouse-tracking behavior is now active.", meta: "Setting: Mouse  |  Source: Settings app" },

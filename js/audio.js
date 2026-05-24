@@ -587,7 +587,7 @@ Audio.deaths = {
     sub.start(t);  sub.stop(t + 4.6);
     fund.start(t); fund.stop(t + 4.6);
   },
-  CURSOR() {
+  P0INTR() {
     const t = this.ctx.currentTime;
     for (let i = 0; i < 14; i++) {
       const start = t + i * 0.33 + Math.random() * 0.08;

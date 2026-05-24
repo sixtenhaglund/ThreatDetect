@@ -475,8 +475,10 @@ const VIRUSES = {
       { template: TPL.BSOD,  title: "∅", message: "Critical error suppressed for cleaner experience. Module ∅ omitted.", meta: "STOP: ∅", nullify: true }
     ]
   },
-  CURSOR: {
-    name: "CURSOR", color: "#ffaa44",
+  P0INTR: {
+    // Internal key P0INTR = display name "P0INT:R" with the colon stripped
+    // (colons aren't valid in JS object keys or CSS class names).
+    name: "P0INT:R", color: "#ffaa44",
     minRound: 5,
     description: "A pointer-hijack virus that turns your mouse against you. Hooks the HID driver to log every movement and click, then trains a remote model that predicts where you'll click next — sometimes nudging the cursor a few pixels to land on the wrong button at the last moment. Your hand types, but you don't always choose.",
     signs: [
@@ -661,7 +663,7 @@ const DEATHS = {
   MIMIC:      { text: "IMPOSTOR ACCEPTED",     duration: 4500 },
   PULSE:      { text: "RHYTHM CAPTURED",       duration: 4500 },
   NULL:       { text: "INTERFACE LOST",        duration: 4500 },
-  CURSOR:     { text: "POINTER STOLEN",        duration: 4500 },
+  P0INTR:     { text: "POINTER STOLEN",        duration: 4500 },
   INFINITE:   { text: "STACK OVERFLOW",        duration: 4500 },
   TARPIT:     { text: "LEGACY EXPLOIT",        duration: 4500 },
   HEXR:       { text: "0xDEADBEEF",            duration: 4500 },
