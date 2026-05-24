@@ -1850,51 +1850,19 @@
     100% { transform: translate(8px, -12px)  rotate(8deg)  scale(1);    opacity: 0.85; }
   }
 
-  /* LOOP — infinite-mirror tunnel: many concentric green rings spinning
-     in both directions, pulsing background, scrolling recurse() text. */
+  /* LOOP — green background that breathes between deep green and pure black.
+     The giant ∞ symbol lives on .death-fx::before below and glitches
+     violently in front of this fade. */
   .death-LOOP {
-    background: radial-gradient(circle at center, #003a00 0%, #001a00 40%, #000800 100%);
-    animation: loopBgPulse 1.4s ease-in-out infinite;
+    background-color: #000;
+    animation: loopGreenFade 2.6s ease-in-out infinite;
   }
-  @keyframes loopBgPulse {
-    0%, 100% { filter: brightness(0.9) saturate(1); }
-    50%      { filter: brightness(1.4) saturate(1.3); }
+  @keyframes loopGreenFade {
+    0%, 100% { background-color: #006a14; }
+    50%      { background-color: #000000; }
   }
-  .death-LOOP::before {
-    /* Three sets of concentric rings stacked via box-shadow, spinning + scaling */
-    content: ""; position: absolute;
-    top: 50%; left: 50%;
-    width: 0; height: 0;
-    border-radius: 50%;
-    box-shadow:
-      0 0 0 30px transparent,  0 0 0 34px rgba(136,255,136,0.95),
-      0 0 0 60px transparent,  0 0 0 64px rgba(102,221,102,0.85),
-      0 0 0 96px transparent,  0 0 0 100px rgba(68,187,68,0.75),
-      0 0 0 138px transparent, 0 0 0 142px rgba(40,150,40,0.65),
-      0 0 0 188px transparent, 0 0 0 192px rgba(20,110,20,0.55),
-      0 0 0 246px transparent, 0 0 0 250px rgba(15,85,15,0.5),
-      0 0 0 312px transparent, 0 0 0 316px rgba(10,65,10,0.42),
-      0 0 0 386px transparent, 0 0 0 390px rgba(8,50,8,0.32);
-    animation: loopRings 2.2s linear infinite;
-  }
-  @keyframes loopRings {
-    from { transform: translate(-50%, -50%) scale(0.4) rotate(0deg); }
-    to   { transform: translate(-50%, -50%) scale(2)   rotate(360deg); }
-  }
-  .death-LOOP::after {
-    content: "recurse() → recurse() → recurse() → recurse() → recurse() → recurse() → recurse() → recurse() → ";
-    position: absolute; inset: auto 0 5% 0;
-    text-align: center;
-    font-family: monospace; font-size: 1.2rem;
-    color: #88ff88;
-    letter-spacing: 0.1em;
-    text-shadow: 0 0 8px #44ff44, 0 0 18px #00ff00;
-    white-space: nowrap;
-    background: rgba(0, 30, 0, 0.55);
-    padding: 6px 0;
-    animation: loopScroll 4s linear infinite;
-  }
-  @keyframes loopScroll { from { transform: translateX(100%); } to { transform: translateX(-100%); } }
+  .death-LOOP::before,
+  .death-LOOP::after { content: none; }
 
   /* T.A.R.P.I.T. — vintage dead-channel death screen.
      Two layers stacked:
@@ -2343,34 +2311,41 @@
     100% { transform: translate(0, 0)        rotate(0deg)   scale(1); }
   }
 
-  /* LOOP — giant centered ∞ pulsing on top of the rings + stack trace cascade */
+  /* LOOP — giant centered ∞ that glitches VIOLENTLY in front of the green
+     fade background. steps(1, end) on the keyframes kills interpolation so
+     every frame is a hard snap (no smooth slide). Two layered text-shadows
+     give a red/cyan RGB-split feel when the glitch is at its worst. */
   .death-LOOP .death-fx::before {
     content: "∞";
     position: absolute; inset: 0;
     display: flex; align-items: center; justify-content: center;
-    font-size: 16rem; font-weight: 900;
+    font-size: 18rem; font-weight: 900;
     color: #ccffcc;
-    text-shadow: 0 0 40px #44ff44, 0 0 80px #00ff00;
-    animation: loopInfinity 1.4s ease-in-out infinite;
+    text-shadow:
+      0 0 40px #44ff44,
+      0 0 80px #00ff00,
+       4px 0 0 rgba(255, 0, 80, 0.85),
+      -4px 0 0 rgba(0, 220, 255, 0.85);
+    animation: loopInfinityGlitch 0.42s steps(1, end) infinite;
   }
-  @keyframes loopInfinity {
-    0%, 100% { transform: rotate(0deg)   scale(1)    ; opacity: 0.7; }
-    50%      { transform: rotate(180deg) scale(1.25) ; opacity: 1;   }
+  /* 12 hard-cut keyframes inside ~420ms = jolt every ~35ms. Mixes huge
+     position jumps, skew/scale spasms, hue shifts, and brief blackouts. */
+  @keyframes loopInfinityGlitch {
+    0%   { transform: translate(0,    0)    skew(0deg,    0deg) scale(1);    opacity: 0.95; filter: hue-rotate(0deg)  contrast(1); }
+    8%   { transform: translate(-30px, 6px) skew(-12deg,  0deg) scale(1.05); opacity: 0.9;  filter: hue-rotate(80deg) contrast(1.4); }
+    16%  { transform: translate(28px, -8px) skew(8deg,    0deg) scale(0.96); opacity: 1;    filter: hue-rotate(-60deg) contrast(1.6); }
+    24%  { transform: translate(0,    14px) skew(0deg,   -6deg) scale(1.15); opacity: 0.3;  filter: hue-rotate(180deg) contrast(2); }
+    32%  { transform: translate(-14px, 0)   skew(0deg,    0deg) scale(1);    opacity: 0.95; filter: hue-rotate(0deg)  contrast(1); }
+    40%  { transform: translate(40px,  20px) skew(15deg,   8deg) scale(0.85); opacity: 0.95; filter: hue-rotate(-120deg) contrast(1.3); }
+    48%  { transform: translate(0,    0)    skew(0deg,    0deg) scale(1);    opacity: 0;    filter: hue-rotate(0deg)  contrast(1); }
+    56%  { transform: translate(-22px, -18px) skew(0deg,  12deg) scale(1.3); opacity: 1;    filter: hue-rotate(45deg) contrast(2); }
+    64%  { transform: translate(16px,  4px)  skew(-6deg,  0deg) scale(0.92); opacity: 0.9;  filter: hue-rotate(0deg)  contrast(1.2); }
+    72%  { transform: translate(0,    -24px) skew(0deg,    0deg) scale(1.08); opacity: 0.6;  filter: hue-rotate(-200deg) contrast(1.5); }
+    80%  { transform: translate(34px,  0)    skew(20deg,   0deg) scale(1);    opacity: 0.95; filter: hue-rotate(0deg)  contrast(1); }
+    88%  { transform: translate(-8px,  10px) skew(0deg,    0deg) scale(1.4);  opacity: 0.95; filter: hue-rotate(300deg) contrast(2); }
+    96%  { transform: translate(0,    0)    skew(0deg,    0deg) scale(1);    opacity: 0.95; filter: hue-rotate(0deg)  contrast(1); }
   }
-  .death-LOOP .death-fx::after {
-    content: "  at fn() line ∞\A  at fn() line ∞\A  at fn() line ∞\A  at fn() line ∞\A  at fn() line ∞\A  at fn() line ∞\A  at fn() line ∞\A  at fn() line ∞";
-    white-space: pre;
-    position: absolute; inset: 0; padding: 20px;
-    font-family: monospace; font-size: 14px;
-    color: #66dd66;
-    line-height: 1.5;
-    opacity: 0.5;
-    animation: loopStack 3s linear infinite;
-  }
-  @keyframes loopStack {
-    from { transform: translateY(100%); }
-    to   { transform: translateY(-100%); }
-  }
+  .death-LOOP .death-fx::after { content: none; }
 
   /* T.A.R.P.I.T. — death-fx layer cleared. The whole death screen is now just
      black + weak yellow wash + the intense static overlay (handled on
