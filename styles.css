@@ -2038,12 +2038,13 @@
   .death-ASSISTANT .death-fx::after { content: none; }
 
   /* (<HEART.BEAT>) — heart.jpg (original photo) centered, beating lub-dub.
-     mix-blend-mode: multiply drops the photo's white background naturally
-     against the black death-screen: anything * black = black, and white
-     pixels in the photo just become black (invisible) while the red heart
-     pixels keep their color. No color-matrix tricks. */
+     mix-blend-mode: multiply drops the white background of the photo
+     naturally: every photo pixel × the red bg color / 255. Pure-white
+     photo pixels multiply to exactly the bg color (invisible). Red heart
+     pixels multiply to a darker red than the bg, so they appear as a
+     darker silhouette. No color-matrix tricks. */
   .death-HEARTBEAT {
-    background: #000;
+    background: #8a0000;
   }
   .death-HEARTBEAT::before {
     content: "";
