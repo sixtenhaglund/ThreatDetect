@@ -276,17 +276,35 @@ function describeMeterEffect(effect) {
    infected screen. Each entry takes the rendered value and returns a teaching
    sentence. Keep them specific — "ends in .pw" beats "domain looks weird". */
 const VIRUS_TOKEN_EXPLANATIONS = {
-  tld:      v => "Domain ends with '" + v + "' — real Microsoft / Apple / Google domains never use this TLD",
-  brand:    v => "Brand name spelled '" + v + "' — real companies don't typo or stylize their own name",
-  app:      v => "App named '" + v + "' — real software doesn't add '-recovery' / '-helper' / '-update' suffixes",
-  city:     v => "City '" + v + "' isn't a real place — made-up locations are a giveaway",
-  filename: v => "Filename '" + v + "' is urgent / panic-y — real documents have boring names",
-  filesize: v => "File size shown as '" + v + "' — real files are never that big, that small, or NULL",
-  kb:       v => "Update ID '" + v + "' isn't a real Microsoft KB number — real ones look like KB5034441",
-  process:  v => "Process named '" + v + "' isn't a real Windows process — those are svchost.exe, dwm.exe, etc.",
-  ipaddr:   v => "IP address " + v + " is from an unfamiliar / foreign network — real notices use local IPs",
-  game:     v => "Game title '" + v + "' is a fake-leak / cheat-tool naming pattern",
-  username: v => "Uses privileged username '" + v + "' — real notices identify YOU, not 'root' / 'SYSTEM'"
+  tld:         v => "Domain ends with '" + v + "' — real Microsoft / Apple / Google domains never use this TLD",
+  brand:       v => "Brand name spelled '" + v + "' — real companies don't typo or stylize their own name",
+  app:         v => "App named '" + v + "' — real software doesn't add '-recovery' / '-helper' / '-update' suffixes",
+  city:        v => "City '" + v + "' isn't a real place — made-up locations are a giveaway",
+  filename:    v => "Filename '" + v + "' is urgent / panic-y — real documents have boring names",
+  filesize:    v => "File size shown as '" + v + "' — real files are never that big, that small, or NULL",
+  kb:          v => "Update ID '" + v + "' isn't a real Microsoft KB number — real ones look like KB5034441",
+  process:     v => "Process named '" + v + "' isn't a real Windows process — those are svchost.exe, dwm.exe, etc.",
+  ipaddr:      v => "IP address " + v + " is from an unfamiliar / foreign network — real notices use local IPs",
+  game:        v => "Game title '" + v + "' is a fake-leak / cheat-tool naming pattern",
+  username:    v => "Uses privileged username '" + v + "' — real notices identify YOU, not 'root' / 'SYSTEM'",
+  pid:         v => "PID listed as '" + v + "' — real Windows PIDs are 4-5 digit decimals, never NULL / hex / repeated digits",
+  captchaprov: v => "CAPTCHA provider '" + v + "' — real ones are Cloudflare, hCaptcha, Google reCAPTCHA. Made-up names are scam tells",
+  phonenum:    v => "Phone number '" + v + "' — vanity tricks (FAKE-MS, CRYPTO-NOW, PRESS 1) are scam signatures",
+  bank:        v => "Bank name '" + v + "' — real banks don't add '-Recovery' / '-Verify' / digit typos to their own name",
+  sender:      v => "Email sender '" + v + "' — sketchy TLD or typosquat domain, real corporate email uses the real brand domain",
+  browser:     v => "Browser name '" + v + "' — real ones are Chrome / Firefox / Edge / Safari, never typo'd lookalikes",
+  region:      v => "Login location '" + v + "' — a faraway region you've never visited is a panic-engineering tactic",
+  // Per-virus themed phrases — these only appear on the matching virus's cards,
+  // so just spotting one of them in a title or message is itself the tell.
+  staticphrase:    v => "Title / message says '" + v + "' — classic STATIC virus phrasing (analog-TV terminology on a modern PC)",
+  meltdownphrase:  v => "Title / message says '" + v + "' — classic MELTDOWN virus phrasing (dramatic thermal emergency)",
+  voidphrase:      v => "Title / message says '" + v + "' — classic VOID virus phrasing (∅ / NULL / 0-byte / /dev/null)",
+  epilepticphrase: v => "Title / message says '" + v + "' — classic EPILEPTICA virus phrasing (display strobe panic)",
+  cryptexphrase:   v => "Title / message says '" + v + "' — classic CRYPTEX virus phrasing (encrypted-files ransom)",
+  screamerphrase:  v => "Title / message says '" + v + "' — classic SCREAMER virus phrasing (panic + ALL CAPS + countdown)",
+  rootkitphrase:   v => "Title / message says '" + v + "' — classic ROOTKIT virus phrasing (kernel / Secure Boot / MBR)",
+  wormphrase:      v => "Title / message says '" + v + "' — classic WORM virus phrasing (spreading across shares / contacts)",
+  assistantphrase: v => "Title / message says '" + v + "' — classic A5515T4N7 phrasing (friendly AI tone, fake confidence)"
 };
 
 /* Build human-readable tells from a card's _virusSubs (set at deal time by

@@ -276,6 +276,48 @@ const RANDOM_POOLS = {
   region: {
     legit: ["Stockholm, SE", "Berlin, DE", "London, UK", "New York, US", "Helsinki, FI"],
     virus: ["Tashkent, UZ", "Vladivostok, RU", "Lagos, NG", "Bucharest, RO", "Yangon, MM", "Pyongyang, KP"]
+  },
+
+  // ---- Per-virus themed phrase pools. When used in a virus card's title or
+  //      message, the virus side resolves to a signature phrase the player can
+  //      learn to recognize. VIRUS_TOKEN_EXPLANATIONS (in core.js) surfaces
+  //      these as tells on the death screen. Sixten's request: "if it's static
+  //      a name for the error could be TV Disconnected". ----
+  staticphrase: {
+    legit: ["TV Antenna", "Display Signal", "Display 2", "Cable Detected", "HDMI Connected"],
+    virus: ["TV Disconnected!!!", "Signal Lost", "Channel 0 Static", "VHS Glitch", "Antenna Down", "Cable Out", "Broadcast Lost", "RF Interference"]
+  },
+  meltdownphrase: {
+    legit: ["Thermal Status", "Fan Speed Normal", "CPU Cool", "Cooling OK"],
+    virus: ["CPU MELTDOWN", "Thermal Critical", "Heat Emergency", "Silicon Damage", "Coolant Failure", "Motherboard Burning"]
+  },
+  voidphrase: {
+    legit: ["Storage OK", "Allocation Fine", "Disk Space"],
+    virus: ["∅ Allocation", "Void Sector", "NULL Pointer", "0 Bytes Used", "Compressing to NULL", "Entropy Reclaimed"]
+  },
+  epilepticphrase: {
+    legit: ["Display Refresh", "Pixel Test", "Monitor OK"],
+    virus: ["STROBE EMERGENCY!!!", "Display Flash!!!", "Refresh STUCK!!!", "Pixel CALIBRATION!!!", "Monitor SYNC LOST!!!"]
+  },
+  cryptexphrase: {
+    legit: ["Backup Complete", "Vault Open", "Files Secure"],
+    virus: ["FILES ENCRYPTED", "Vault Locked", ".crypt Extension", "Ransom Notice", "Decryption Required", "Pay To Unlock"]
+  },
+  screamerphrase: {
+    legit: ["Security Status", "Defender OK"],
+    virus: ["YOUR PC IS COMPROMISED!!!", "27 VIRUSES FOUND!!!", "CALL NOW!!!", "EMERGENCY!!!", "ACT IMMEDIATELY!!!", "HACKER DETECTED!!!"]
+  },
+  rootkitphrase: {
+    legit: ["Driver Signed", "Secure Boot ON", "Kernel OK"],
+    virus: ["Kernel Compromised", "Disable Secure Boot", "Ring 0 Access", "MBR Modified", "Unsigned Driver Required"]
+  },
+  wormphrase: {
+    legit: ["Single File", "Local Only", "No Replication"],
+    virus: ["Spreads to 14 Shares", "Network-Wide Copy", "Self-Replicating", "Forwarded to Contacts", "Mass-Mailing"]
+  },
+  assistantphrase: {
+    legit: ["AI Suggestion", "Smart Tip", "Recommendation"],
+    virus: ["I noticed an issue", "Based on my analysis", "I prepared a fix", "I may make mistakes", "Confidence: 99%"]
   }
 };
 
