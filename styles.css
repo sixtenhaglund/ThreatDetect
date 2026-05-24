@@ -1813,42 +1813,47 @@
   .death-NULL .death-fx::before { content: none; }
   .death-NULL .death-fx::after  { content: none; }
 
-  /* P0INTR — wall of arrows glitching around chaotically */
+  /* P0INTR — many ▶ pointers scattered randomly across the screen.
+     Implementation trick: a single ▶ character placed at top-left, then
+     ~60 text-shadows of the same glyph at hand-picked random positions.
+     Each shadow can have its own color, so the scatter has visual variety
+     even though it's one element. Off-screen shadows simply don't render. */
   .death-P0INTR { background: #1a0f00; }
   .death-P0INTR::before {
-    content: "▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶";
-    position: absolute; inset: 0;
-    display: flex; flex-wrap: wrap; align-items: center; justify-content: space-around;
-    font-size: 2.4rem; color: #ffaa44;
-    text-shadow: 0 0 12px #ff8800;
-    line-height: 1.6;
-    letter-spacing: 0.6em;
-    animation: cursorGlitch1 0.16s steps(4) infinite;
+    content: "▶";
+    position: absolute;
+    top: 0; left: 0;
+    font-size: 2.2rem;
+    color: #ffaa44;
+    text-shadow:
+       45px   80px 0 #ffaa44,  180px   30px 0 #ff8844,  340px  120px 0 #ffcc55,
+      490px   60px 0 #ff5500,  630px  180px 0 #ffaa44,  790px   40px 0 #ffd070,
+      920px  130px 0 #ff8844, 1080px   70px 0 #ffaa44, 1240px  160px 0 #ffcc55,
+     1410px   30px 0 #ff5500, 1570px  110px 0 #ffaa44, 1730px   80px 0 #ff8844,
+       70px  200px 0 #ffcc55,  210px  260px 0 #ffaa44,  370px  220px 0 #ff8844,
+      520px  310px 0 #ffd070,  680px  250px 0 #ff5500,  830px  340px 0 #ffaa44,
+      990px  200px 0 #ffcc55, 1150px  290px 0 #ff8844, 1310px  250px 0 #ffaa44,
+     1470px  330px 0 #ff5500, 1620px  230px 0 #ffd070, 1810px  320px 0 #ffaa44,
+       40px  410px 0 #ff8844,  190px  380px 0 #ffaa44,  350px  460px 0 #ffcc55,
+      490px  420px 0 #ffd070,  640px  510px 0 #ff5500,  800px  400px 0 #ffaa44,
+      960px  490px 0 #ff8844, 1120px  430px 0 #ffaa44, 1280px  470px 0 #ffcc55,
+     1440px  510px 0 #ff5500, 1600px  420px 0 #ffd070, 1760px  450px 0 #ffaa44,
+       60px  620px 0 #ffcc55,  200px  580px 0 #ffaa44,  370px  660px 0 #ff8844,
+      530px  600px 0 #ffd070,  680px  700px 0 #ffaa44,  830px  580px 0 #ff5500,
+      990px  670px 0 #ffcc55, 1150px  620px 0 #ffaa44, 1300px  680px 0 #ff8844,
+     1460px  590px 0 #ffd070, 1620px  650px 0 #ffaa44, 1780px  700px 0 #ff5500,
+       50px  830px 0 #ffaa44,  210px  770px 0 #ffcc55,  360px  850px 0 #ff8844,
+      510px  790px 0 #ffaa44,  660px  870px 0 #ff5500,  820px  780px 0 #ffd070,
+      980px  860px 0 #ffaa44, 1130px  790px 0 #ff8844, 1290px  850px 0 #ffcc55,
+     1450px  810px 0 #ffaa44, 1600px  880px 0 #ff5500, 1770px  800px 0 #ffd070;
+    animation: pointerPulse 1.6s ease-in-out infinite;
   }
-  @keyframes cursorGlitch1 {
-    0%   { transform: translate(-12px, 8px)  rotate(-6deg); opacity: 0.9; }
-    25%  { transform: translate(14px, -10px) rotate(6deg);  opacity: 0.5; }
-    50%  { transform: translate(-6px, -14px) rotate(-3deg); opacity: 1; }
-    75%  { transform: translate(18px, 6px)   rotate(4deg);  opacity: 0.7; }
-    100% { transform: translate(-12px, 8px)  rotate(-6deg); opacity: 0.9; }
+  /* Whole-field gentle pulse so the scatter doesn't feel frozen. */
+  @keyframes pointerPulse {
+    0%, 100% { opacity: 0.85; transform: scale(1); }
+    50%      { opacity: 1;    transform: scale(1.04); }
   }
-  .death-P0INTR::after {
-    content: "▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶";
-    position: absolute; inset: 0;
-    display: flex; flex-wrap: wrap; align-items: center; justify-content: space-around;
-    font-size: 3.2rem; color: #ff5500;
-    text-shadow: 0 0 14px #ff8800;
-    line-height: 1.3;
-    letter-spacing: 0.4em;
-    mix-blend-mode: screen;
-    animation: cursorGlitch2 0.13s steps(3) infinite;
-  }
-  @keyframes cursorGlitch2 {
-    0%   { transform: translate(8px, -12px)  rotate(8deg)  scale(1);    opacity: 0.85; }
-    33%  { transform: translate(-16px, 10px) rotate(-12deg) scale(1.08); opacity: 0.4; }
-    66%  { transform: translate(12px, 14px)  rotate(10deg)  scale(0.95); opacity: 1; }
-    100% { transform: translate(8px, -12px)  rotate(8deg)  scale(1);    opacity: 0.85; }
-  }
+  .death-P0INTR::after { content: none; }
 
   /* INFINITE — green background that breathes between deep green and pure black.
      The giant ∞ symbol lives on .death-fx::before below and glitches
@@ -2275,41 +2280,10 @@
 
   /* NULL — no extra fx (handled in the main NULL rules: still 0/1 grid only). */
 
-  /* P0INTR — additional arrow layers glitching at different speeds */
-  .death-P0INTR .death-fx::before {
-    content: "▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶";
-    position: absolute; inset: 0;
-    display: flex; flex-wrap: wrap; align-items: center; justify-content: space-around;
-    font-size: 1.8rem; color: #ffff66;
-    text-shadow: 0 0 8px #ff8800;
-    line-height: 2;
-    letter-spacing: 0.5em;
-    animation: cursorGlitch3 0.09s steps(2) infinite;
-  }
-  @keyframes cursorGlitch3 {
-    0%   { transform: translate(-22px, 16px) rotate(15deg);  opacity: 0.7; }
-    50%  { transform: translate(20px, -18px) rotate(-15deg); opacity: 0.3; }
-    100% { transform: translate(-22px, 16px) rotate(15deg);  opacity: 0.7; }
-  }
-  .death-P0INTR .death-fx::after {
-    content: "▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶ ▶";
-    position: absolute; inset: 0;
-    display: flex; flex-wrap: wrap; align-items: center; justify-content: space-around;
-    font-size: 4rem; color: #ff8844;
-    text-shadow: 0 0 18px #ff5500;
-    line-height: 1.15;
-    letter-spacing: 0.25em;
-    opacity: 0.45;
-    animation: cursorGlitch4 0.22s steps(5) infinite;
-  }
-  @keyframes cursorGlitch4 {
-    0%   { transform: translate(0, 0)        rotate(0deg)   scale(1); }
-    20%  { transform: translate(-30px, 10px) rotate(-20deg) scale(1.05); }
-    40%  { transform: translate(28px, -16px) rotate(20deg)  scale(0.92); }
-    60%  { transform: translate(-10px, 24px) rotate(-10deg) scale(1.1); }
-    80%  { transform: translate(16px, -8px)  rotate(15deg)  scale(0.96); }
-    100% { transform: translate(0, 0)        rotate(0deg)   scale(1); }
-  }
+  /* P0INTR — death-fx layer cleared. The whole effect lives on
+     .death-P0INTR::before above (the scattered text-shadow pointers). */
+  .death-P0INTR .death-fx::before,
+  .death-P0INTR .death-fx::after { content: none; }
 
   /* INFINITE — giant centered ∞ that glitches VIOLENTLY in front of the green
      fade background. steps(1, end) on the keyframes kills interpolation so
