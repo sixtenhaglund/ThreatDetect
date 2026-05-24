@@ -79,13 +79,6 @@ const TEXTUAL_TELLS = {
     { p: /data-sync\.pw|clip-srv\.ru|credentials\.php|autofill-sync|cloud-vault|corp-it-verify|recovery-login|outbound:?\s*\S+\.(pw|ru)/i, t: "Outbound traffic to a suspicious credential-sync domain" },
     { p: /re-enter your.{0,8}password|enter.{0,5}password.{0,8}(verify|continue|confirm)|asks for:.{0,5}password|password expires today/i, t: "Asks you to re-enter your password — real software never does this in a popup" }
   ],
-  SCREAMER: [
-    { p: /!{2,}/,                                                                   t: "Multiple exclamation marks — panic tactic" },
-    { p: /1-?800-?FAKE-?MS|emergency hotline|call.{0,8}now|do not turn off|do not close this window|hotline|press 1|call.{0,8}(apple|microsoft|support|us)/i, t: "Demands you call a hotline or stay on the popup" },
-    { p: /27.{0,10}viruses|files will be deleted|locked in 30 seconds|click.{0,8}within|countdown|action required|immediate action|critical|EMERGENCY|URGENT/i, t: "Implausible threat count or imminent deadline" },
-    { p: /00:30|00:60|time left|time:.{0,3}\d{2}:\d{2}|fraud detected|suspicious charge|FRAUD/i, t: "Aggressive countdown timer or fraud-panic language" },
-    { p: /all (data|files|photos).{0,10}(deleted|erased|lost|frozen)/i,             t: "Threatens to delete all your data unless you act now" }
-  ],
   MIMICER: [
     { p: /[а-яА-Я]/,                                                                t: "Contains a Cyrillic character disguised as Latin (e.g. 'о' instead of 'o')" },
     { p: /update-installer\.com|npm-suplly|hackerone-verify|hacker0ne|legacy\.archive\.host|micros[oо]ft-update|app1e|g00gle|geminni|cop1lot|cl4ude|chatgtp|chr0me|firef0x/i, t: "Domain or name looks like a real brand but is a typosquat" },

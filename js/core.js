@@ -62,6 +62,7 @@ const Save = {
       //   NULL → DOTNULL                     (display name became ".null")
       //   PULSE → HEARTBEAT                  (display name became "(<HEART.BEAT>)")
       //   MIMIC → MIMICER                    (display name became "MiMiCeR")
+      //   SCREAMER → (removed)               (virus deleted entirely)
       // Rename references in unlocked / deathsBy so codex + first-death badges
       // still work. Also auto-unlocks ASSISTANT on first load after that update.
       const renameKey = function (arr) {
@@ -75,8 +76,9 @@ const Save = {
           if (k === "NULL") return "DOTNULL";
           if (k === "PULSE") return "HEARTBEAT";
           if (k === "MIMIC") return "MIMICER";
+          if (k === "SCREAMER") return null;
           return k;
-        });
+        }).filter(function (v) { return v != null; });
         // De-dupe in case multiple old keys collapsed into the same new one.
         return out.filter(function (v, i) { return out.indexOf(v) === i; });
       };
@@ -313,7 +315,6 @@ const VIRUS_TOKEN_EXPLANATIONS = {
   voidphrase:      v => "Title / message says '" + v + "' — classic VOID virus phrasing (∅ / NULL / 0-byte / /dev/null)",
   epilepticphrase: v => "Title / message says '" + v + "' — classic EPILEPTICA virus phrasing (display strobe panic)",
   cryptexphrase:   v => "Title / message says '" + v + "' — classic CRYPTEX virus phrasing (encrypted-files ransom)",
-  screamerphrase:  v => "Title / message says '" + v + "' — classic SCREAMER virus phrasing (panic + ALL CAPS + countdown)",
   rootkitphrase:   v => "Title / message says '" + v + "' — classic ROOTKIT virus phrasing (kernel / Secure Boot / MBR)",
   wormphrase:      v => "Title / message says '" + v + "' — classic WORM virus phrasing (spreading across shares / contacts)",
   assistantphrase: v => "Title / message says '" + v + "' — classic A5515T4N7 phrasing (friendly AI tone, fake confidence)"

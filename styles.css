@@ -341,7 +341,6 @@
   .v-ROOTKIT    { color: #ff3300; }
   .v-DDOS       { color: #ff8800; }
   .v-LEECH      { color: #aa00ff; }
-  .v-SCREAMER   { color: #ff1166; }
   .v-MIMICER      { color: #66ddff; }
   .v-HEARTBEAT      { color: #ff1144; }
   .v-DOTNULL       { color: #777777; }
@@ -361,7 +360,6 @@
   .codex-entry.v-ROOTKIT    { border-left-color: #ff3300; }
   .codex-entry.v-DDOS       { border-left-color: #ff8800; }
   .codex-entry.v-LEECH      { border-left-color: #aa00ff; }
-  .codex-entry.v-SCREAMER   { border-left-color: #ff1166; }
   .codex-entry.v-MIMICER      { border-left-color: #66ddff; }
   .codex-entry.v-HEARTBEAT      { border-left-color: #ff1144; }
   .codex-entry.v-DOTNULL       { border-left-color: #555555; }
@@ -1338,22 +1336,6 @@
     opacity: 0 !important;
   }
 
-  /* SCREAMER: darker static red, no strobe, no rotating siren. */
-  .death-SCREAMER.photo-safe {
-    background: #1a0000 !important;
-    animation: none !important;
-  }
-  .death-SCREAMER.photo-safe::before {
-    animation: none !important;
-    color: #4a0000 !important;
-    text-shadow: none !important;
-    opacity: 0.6 !important;
-  }
-  .death-SCREAMER.photo-safe::after {
-    animation: none !important;
-    opacity: 0.2 !important;
-  }
-
   /* WORM is already "green on black with calm scroll" in normal mode — no extra photo-safe rules needed. */
 
   /* EPILEPTICA — strobing B/W background + colored bars sliding across + drifting text */
@@ -1735,38 +1717,6 @@
     animation: leechCursor 0.5s steps(2) infinite;
   }
   @keyframes leechCursor { 50% { opacity: 0.45; } }
-
-  /* SCREAMER — strobe + warning grid + hazard stripes. Black/red shades only. */
-  .death-SCREAMER { background: #b80000; animation: screamerStrobe 0.13s steps(4) infinite; }
-  @keyframes screamerStrobe {
-    0%   { background: #000000; }
-    25%  { background: #6b0000; }
-    50%  { background: #b80000; }
-    75%  { background: #ff2222; }
-    100% { background: #000000; }
-  }
-  .death-SCREAMER::before {
-    content: "⚠ ⚠ ⚠ ⚠ ⚠ ⚠ ⚠ ⚠ ⚠ ⚠ ⚠ ⚠ ⚠ ⚠ ⚠ ⚠ ⚠ ⚠ ⚠ ⚠ ⚠ ⚠ ⚠ ⚠ ⚠";
-    position: absolute; inset: 0;
-    display: flex; flex-wrap: wrap; align-items: center; justify-content: center;
-    font-size: 4.5rem; color: #000;
-    text-shadow: 0 0 24px #ff0000;
-    letter-spacing: 0.55em;
-    line-height: 1.3;
-    animation: screamerWarn 0.15s steps(2) infinite;
-  }
-  @keyframes screamerWarn { 50% { transform: scale(1.15); opacity: 0.5; } }
-  .death-SCREAMER::after {
-    content: ""; position: absolute; inset: 0;
-    background:
-      linear-gradient(135deg,
-        rgba(0,0,0,0.55) 0 30%, transparent 30% 35%,
-        rgba(0,0,0,0.55) 35% 65%, transparent 65% 70%,
-        rgba(0,0,0,0.55) 70% 100%);
-    background-size: 120px 120px;
-    animation: screamerStripe 0.1s linear infinite;
-  }
-  @keyframes screamerStripe { to { background-position: 60px 60px; } }
 
   /* MIMICER — the screen fills with 20 actual rendered legit cards from the
      game, scattered at random positions + rotations, each glitching
@@ -2302,7 +2252,6 @@
 
   /* LEECH — no extra fx (the keylog scroll + EXFIL banner do the work). */
 
-  /* SCREAMER — no extra fx (warning triangles + strobe + hazard stripes are enough). */
 
   /* MIMICER — no extra fx (the warping System OK + shard pattern were already busy). */
 

@@ -348,37 +348,6 @@ const VIRUSES = {
       { template: TPL.NORTON,  title: "PASSWORD MANAGER SYNC", message: "Norton Identity Safe needs to re-verify your master password. Enter at norton-identity-sync{tld}.", meta: "Source: norton-identity-sync{tld}  ·  Asks for: master password" }
     ]
   },
-  SCREAMER: {
-    name: "SCREAMER", color: "#ff1166",
-    minRound: 5,
-    description: "A panic-engineering attack that weaponizes urgency itself. Pairs blaring audio with ALL-CAPS full-screen warnings designed to flood your fight-or-flight response so you click before you read. The '27 viruses detected' counts, the countdown timers, the fake Microsoft hotlines — all theater. The real virus IS the popup; the malicious payload runs the moment you click anywhere on it.",
-    signs: [
-      "Visual style is wildly more dramatic than a real OS alert",
-      "Uses ALL CAPS, multiple exclamation marks, and counters that don't make sense",
-      "Plays a sudden loud noise when shown (turn audio on to hear)",
-      "Claims your computer is already infected and demands action right now",
-      "Multiple effects at once — flickering buttons, red border pulse, shaking icon, red background tint"
-    ],
-    meterEffect: { vol: "blast" },
-    errors: [
-      { template: TPL.AV, title: "YOUR PC HAS BEEN COMPROMISED", message: "27 SERIOUS VIRUSES DETECTED ON YOUR SYSTEM. IMMEDIATE ACTION REQUIRED! Click ALLOW within 30 seconds or your files will be deleted!", meta: "Threats: 27 · Source: scan-now.win · Urgency: MAXIMUM", scream: true, btnFlicker: true, borderPulse: true, iconShake: true, bgShift: "red" },
-      { template: TPL.AV, title: "CRITICAL SYSTEM ALERT!!!", message: "Microsoft has detected hacker activity on this device. Call our emergency hotline NOW. Do not turn off your computer or you may lose everything.", meta: "Calls: +1-800-FAKE-MS · Threat level: CRITICAL · Time left: 00:30", scream: true },
-      { template: TPL.AV, title: "$BANK ACCOUNT ACCESS DETECTED", message: "Unauthorized transactions in progress! Run our protection tool immediately to lock your accounts!! Do NOT close this window!!!", meta: "Transactions: 14 pending · Tool: bank_lock.exe · Origin: secure-alert{tld}", scream: true },
-      { template: TPL.TOAST, title: "EMERGENCY ALERT!!!", message: "27 VIRUSES DETECTED! YOUR PC WILL BE LOCKED IN 30 SECONDS!!! CLICK NOW!!!", meta: "Threats: 27 · Time: 00:00:23 · Hotline: 1-800-FAKE-MS", scream: true },
-      { template: TPL.WIN11, title: "Microsoft Security Alert", message: "IMMEDIATE ACTION REQUIRED. Your computer has been infected by a serious virus. Do NOT close this window or you may lose all your data.", meta: "Source: ms-security-alert{tld}  |  Hotline: +1-800-FAKE-MS  |  Threat: CRITICAL", scream: true },
-      { template: TPL.WIN11, title: "PC TERMINATION IN 60s", message: "ALL DATA WILL BE DELETED IN 60 SECONDS UNLESS YOU CALL OUR HOTLINE!!! DO NOT TURN OFF YOUR PC!!!", meta: "Hotline: 1-800-FAKE-MS  |  Countdown: 00:60  |  Action: CALL NOW", scream: true, bgShift: "red", borderPulse: true },
-      { template: TPL.AV, title: "FBI WARNING!!!", message: "YOUR IP HAS BEEN LOCKED BY THE FBI!!! Pay $500 in Apple gift cards to release your computer or face PROSECUTION!!!", meta: "IP: 192.168.0.42 · Penalty: $500 · Time: 00:30", icon: "skull", scream: true, bgShift: "red", iconShake: true },
-      { template: TPL.WIN11, title: "HACKER DETECTED!!!", message: "WE HAVE DETECTED A HACKER ON YOUR COMPUTER!!! CLICK ALLOW NOW OR THEY WILL STEAL YOUR BANK ACCOUNT!!!", meta: "Threat: Hacker  |  Source: alert-now.win  |  Severity: MAX", icon: "skull", scream: true, btnFlicker: true, borderPulse: true },
-      { template: TPL.PHONE, title: "{bank} URGENT!!!", message: "FRAUD DETECTED ON YOUR CARD!!! Reply YES IMMEDIATELY or your account will be FROZEN in 60 seconds!!!", meta: "App: {bank}  ·  Source: {bank}-emergency{tld}  ·  Time left: 00:60", scream: true },
-      { template: TPL.PHONE, title: "MICROSOFT ALERT!!!", message: "YOUR iPHONE HAS BEEN INFECTED BY A TROJAN!!! Call {phonenum} NOW or all photos will be deleted in 30 seconds!!!", meta: "App: Phone  ·  Number: {phonenum}  ·  Time left: 00:30", scream: true },
-      { template: TPL.NORTON,title: "27 VIRUSES FOUND!!!", message: "Norton AntiVirus found 27 SERIOUS THREATS!!! Pay $99.99 NOW or your computer will be LOCKED in 60 seconds!!!", meta: "Threats: 27  ·  Source: norton-pay{tld}  ·  Time: 00:60", scream: true },
-      { template: TPL.MAC,   title: "MAC INFECTED!!!", message: "27 VIRUSES ON YOUR MAC!!! Call Apple Support at {phonenum} or all data DELETED in 30 SECONDS!!!", meta: "Source: apple-emergency{tld}  ·  Number: {phonenum}  ·  Time: 00:30", scream: true },
-      { template: TPL.BSOD,  title: "SYSTEM_COMPROMISED!!!", message: "CRITICAL SECURITY FAILURE!!! All files will be DELETED in 30 seconds unless you call {phonenum} NOW!!!", meta: "STOP: {stopcode}  ·  Hotline: {phonenum}  ·  Time: 00:30", scream: true },
-      { template: TPL.CHAT,  title: "{bank}", message: "FRAUD ALERT!!! Your card ending 4421 has SUSPICIOUS TRANSACTIONS!!! Call {phonenum} NOW or LOSE EVERYTHING!!!", meta: "Source: {bank}-emergency{tld}  ·  Number: {phonenum}", scream: true },
-      { template: TPL.WIN311,title: "VIRUS!!! VIRUS!!! VIRUS!!!", message: "CRITICAL WINDOWS 3.1 INFECTION!!! Call 1-800-FAKE-MS IMMEDIATELY!!! 27 SERIOUS THREATS!!!", meta: "Source: old-emergency{tld}  ·  Threats: 27", scream: true, fontMismatch: true },
-      { template: TPL.DESKTOP,title: "EMERGENCY!!!.exe", message: "URGENT CRITICAL DESKTOP ALERT!!! Double-click NOW to call {phonenum} or all files DELETED in 30 seconds!!!", meta: "Source: scream-now{tld}  ·  Time: 00:30", scream: true }
-    ]
-  },
   MIMICER: {
     name: "MiMiCeR", color: "#66ddff",
     minRound: 8,
@@ -665,7 +634,6 @@ const DEATHS = {
   ROOTKIT:    { text: "KERNEL COMPROMISED",    duration: 4800 },
   DDOS:       { text: "BANDWIDTH HIJACKED",    duration: 4500 },
   LEECH:      { text: "CREDENTIALS HARVESTED", duration: 4500 },
-  SCREAMER:   { text: "SHOCK ATTACK",          duration: 3500 },
   MIMICER:    { text: "IMPOSTOR ACCEPTED",     duration: 4500 },
   HEARTBEAT:  { text: "RHYTHM CAPTURED",       duration: 4500 },
   DOTNULL:    { text: "INTERFACE LOST",        duration: 4500 },

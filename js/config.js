@@ -303,10 +303,6 @@ const RANDOM_POOLS = {
     legit: ["Backup Complete", "Vault Open", "Files Secure"],
     virus: ["FILES ENCRYPTED", "Vault Locked", ".crypt Extension", "Ransom Notice", "Decryption Required", "Pay To Unlock"]
   },
-  screamerphrase: {
-    legit: ["Security Status", "Defender OK"],
-    virus: ["YOUR PC IS COMPROMISED!!!", "27 VIRUSES FOUND!!!", "CALL NOW!!!", "EMERGENCY!!!", "ACT IMMEDIATELY!!!", "HACKER DETECTED!!!"]
-  },
   rootkitphrase: {
     legit: ["Driver Signed", "Secure Boot ON", "Kernel OK"],
     virus: ["Kernel Compromised", "Disable Secure Boot", "Ring 0 Access", "MBR Modified", "Unsigned Driver Required"]

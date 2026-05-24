@@ -145,7 +145,7 @@ function viewSettings() {
         <input class="slider" type="range" min="0" max="1" step="0.01" value="${s.ambient}" data-setting="ambient">
       </div>
       <div class="setting-row">
-        <div><label>SFX</label><div class="desc">Clicks, scream, reveal</div></div>
+        <div><label>SFX</label><div class="desc">Clicks, reveal, death stings</div></div>
         <input class="slider" type="range" min="0" max="1" step="0.01" value="${s.sfx}" data-setting="sfx">
       </div>
       <div class="setting-row">

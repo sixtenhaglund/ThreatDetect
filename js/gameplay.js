@@ -306,9 +306,6 @@ function rollTampering(round, card) {
   if (card.virusKey === "DOTNULL") {
     return { type: "null" };
   }
-  if (card.virusKey === "SCREAMER") {
-    return { type: effRound >= 7 ? "shake" : "pulseHard" };
-  }
   // Other virus cards: chance of light tampering scaling with round
   const chance = Math.min(0.45, (effRound - 3) * 0.05);
   if (card.isVirus && Math.random() < chance) {
@@ -451,8 +448,6 @@ function nextCard() {
 function maybePlayCardSound() {
   const card = state.deck[state.cardIdx];
   if (!card) return;
-  // SCREAMER cards still get all the visual screaming (red border, flicker,
-  // shake, panic copy) but no longer play the loud audio sting on appearance.
   if (card.pulse) Audio.heartbeat();
   else if (card.nullify) Audio.glitch();
 }
