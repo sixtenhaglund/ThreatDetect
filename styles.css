@@ -1564,13 +1564,13 @@
   .death-REWRITER::before, .death-REWRITER::after { content: none; }
   .death-REWRITER .death-fx::before,
   .death-REWRITER .death-fx::after {
-    content: "// rewriter.run()\Aaudit.log = restore('approved');\Ahistory.timestamp = '1601-01-01';\Asession.user = 'by you';\Aevents.removeWhere(!authorized);\Adb.records.update({\A  approved: true,\A  date: '-9,999 days'\A});\Async.cloud('trusted_state');\Alocal.clock = server.clock = 0;\A// rewritten.";
+    content: "// rewriter.run()\Aaudit.log = restore('approved');\Ahistory.timestamp = '1601-01-01';\Asession.user = 'by you';\Aevents.removeWhere(!authorized);\Adb.records.update({\A  approved: true,\A  date: '-9,999 days'\A});\Async.cloud('trusted_state');\Alocal.clock = server.clock = 0;\A//\Afs.timestamps.set('Feb 30 2026');\Aregistry.write('HKCU\\\\Auth', true);\Alogs.before = []; logs.after = [];\Apermissions.grant(this, '*');\Amail.outbox.forEach(undo);\Abackup.restore('verified');\Aif (you.remember(this)) erase(you.memory);\Asign({ approved_by: 'you', when: 'always' });\A//\A// rewritten. you signed off on this.";
     white-space: pre;
     position: absolute; top: 50%; left: 50%;
     transform: translate(-50%, -50%);
     font-family: "Cascadia Mono", "Consolas", monospace;
-    font-size: 1.6rem;
-    line-height: 1.7;
+    font-size: 1.3rem;
+    line-height: 1.55;
     letter-spacing: 0.02em;
   }
   /* Bottom layer: white original code, always fully visible. */
