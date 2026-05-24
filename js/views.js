@@ -46,10 +46,10 @@ function viewMenu() {
           <button class="menu-btn" data-action="show-difficulty"><span>Play<div class="menu-sub">Pick difficulty · or jump into Training</div></span><span class="arrow">▶</span></button>
           <button class="menu-btn" data-action="play-challenge"><span>Challenge<div class="menu-sub">All ${Object.keys(VIRUSES).length} viruses from round 1 · denser threats · earlier UI tampering</div></span><span class="arrow">▶</span></button>
           <button class="menu-btn" data-action="play-endless"><span>Endless<div class="menu-sub">No finish line · rounds keep climbing forever · how far can you go?</div></span><span class="arrow">▶</span></button>
-          <button class="menu-btn" data-action="codex"><span>Codex<div class="menu-sub">${unlockedCount}/${totalCount} threats discovered</div></span><span class="arrow">▶</span></button>
-          <button class="menu-btn" data-action="minigame-practice"><span>Minigame Practice<div class="menu-sub">Train the quarantine minigame · no antivirus needed</div></span><span class="arrow">▶</span></button>
-          <button class="menu-btn" data-action="shop"><span>Shop<div class="menu-sub">${(save.creditz || 0).toLocaleString()} ₢ available · coming soon</div></span><span class="arrow">▶</span></button>
-          <button class="menu-btn" data-action="settings"><span>Settings<div class="menu-sub">Audio · photosensitivity · reset</div></span><span class="arrow">▶</span></button>
+          <button class="menu-btn" data-action="codex"><span>Codex<div class="menu-sub">${unlockedCount}/${totalCount} threats discovered · example errors, tells, death previews</div></span><span class="arrow">▶</span></button>
+          <button class="menu-btn" data-action="minigame-practice"><span>Minigame Practice<div class="menu-sub">Drill Quarantine, Sequence, or Impostor · no lives lost</div></span><span class="arrow">▶</span></button>
+          <button class="menu-btn" data-action="shop"><span>Shop<div class="menu-sub">${(save.creditz || 0).toLocaleString()} ₢ available · spend on Antivirus charges</div></span><span class="arrow">▶</span></button>
+          <button class="menu-btn" data-action="settings"><span>Settings<div class="menu-sub">Audio · photosensitivity · jumpscares · reset</div></span><span class="arrow">▶</span></button>
         </div>
         <div class="badge-row" style="justify-content: center; margin-top: 6px;">
           <span class="badge">Best round: ${high}/${CONFIG.totalRounds}</span>
