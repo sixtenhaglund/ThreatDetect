@@ -344,7 +344,7 @@
   .v-SCREAMER   { color: #ff1166; }
   .v-MIMIC      { color: #66ddff; }
   .v-PULSE      { color: #ff55aa; }
-  .v-NULL       { color: #777777; }
+  .v-DOTNULL       { color: #777777; }
   .v-P0INTR     { color: #ffaa44; }
   .v-INFINITE       { color: #88ff88; }
   .v-TARPIT     { color: #c4a484; }
@@ -364,7 +364,7 @@
   .codex-entry.v-SCREAMER   { border-left-color: #ff1166; }
   .codex-entry.v-MIMIC      { border-left-color: #66ddff; }
   .codex-entry.v-PULSE      { border-left-color: #ff55aa; }
-  .codex-entry.v-NULL       { border-left-color: #555555; }
+  .codex-entry.v-DOTNULL       { border-left-color: #555555; }
   .codex-entry.v-P0INTR     { border-left-color: #ffaa44; }
   .codex-entry.v-INFINITE       { border-left-color: #88ff88; }
   .codex-entry.v-TARPIT     { border-left-color: #c4a484; }
@@ -410,9 +410,9 @@
     100% { transform: translate(0,0); }
   }
   .tamper-null { opacity: 0.94; }
-  /* (NULL used to hide the Report/OK buttons inside win/av dialogs, leaving the
+  /* (DOTNULL used to hide the Report/OK buttons inside win/av dialogs, leaving the
      player no way to click. That made some virus cards look broken. The other
-     NULL tells — empty text, ∅ icons, blank meters — are clue enough.) */
+     DOTNULL tells — empty text, ∅ icons, blank meters — are clue enough.) */
 
   /* ============== PER-CARD EFFECTS (chosen by each error) ============== */
   .card-wrap { position: relative; }
@@ -1794,24 +1794,24 @@
   }
   @keyframes mimicShard { to { background-position: 100px 100px; } }
 
-  /* NULL — still wall-to-wall 0s and 1s covering the whole screen. No animation.
+  /* DOTNULL — still wall-to-wall 0s and 1s covering the whole screen. No animation.
      Uses a long wrapping string so it fills the viewport at any reasonable size. */
-  .death-NULL { background: #000; }
-  .death-NULL::before {
+  .death-DOTNULL { background: #000; }
+  .death-DOTNULL::before {
     content: "0 1 0 1 1 0 0 1 1 0 1 0 0 1 0 1 1 0 1 0 0 1 1 0 1 1 0 0 1 0 1 0 1 1 0 1 0 0 1 1 0 1 1 0 0 1 0 1 1 0 1 0 1 1 0 0 1 1 0 1 0 0 1 0 1 1 0 1 0 1 1 0 0 1 1 0 1 0 0 1 1 0 1 0 1 1 0 1 0 0 1 1 0 1 0 1 1 0 0 1 0 1 1 0 1 0 0 1 1 0 1 1 0 1 0 0 1 0 1 1 0 0 1 1 0 1 0 0 1 1 0 1 1 0 0 1 0 1 1 0 1 0 1 0 1 1 0 0 1 1 0 1 0 0 1 0 1 1 0 1 0 1 1 0 0 1 0 1 1 0 1 1 0 0 1 0 1 0 1 1 0 1 0 0 1 0 1 1 0 1 0 1 1 0 0 1 1 0 1 0 0 1 0 1 1 0 1 0 1 1 0 0 1 1 0 1 0 0 1 1 0 1 1 0 0 1 0 1 1 0 1 0 0 1 1 0 1 0 1 1 0 0 1 0 1 1 0 1 1 0 0 1 0 1 0 1 1 0 0 1 1 0 1 0 0 1 0 1 1 0 1 0 1 0 0 1 1 0 1 0 1 1 0 0 1 1 0 1 0 0 1 0 1 1 0 1 0 1 1 0 0 1 1 0 1 0 0 1 0 1 1 0 1 1 0 0 1 0 1 0 1 1 0 0 1 1 0 1 0 0 1 0 1 1 0 1 0 1 1 0 1 0 0 1 1 0 1 0 0 1 1 0 1 0 1 1 0 0 1 1 0 1 0 0 1 0 1 1 0 1 1 0 1 0 0 1 0 1 1 0 1 0 1 1 0 0 1 1 0 1 0 0 1 0 1 0 1 1 0 1 1 0 0 1 0 1 0 1 1 0 0 1 1 0 1 0 0 1 0 1 1 0 1 0 1 1 0 0 1 1 0 1 0 0 1 0 1 1 0 1 0 1 1 0 1 0 0 1 1 0 1 0 0 1 1 0 1 0 1 1 0 0 1 1 0 1 0 0 1 0 1 1 0 1 1 0 0 1 0 1 0 1 1 0 1 0 0 1 0 1 1 0 1 0 1 1 0 0 1 0 1 1 0 1 1 0 0 1 0 1 0 1 1 0 0 1 1 0 1 0 0 1 0 1 1 0 1 0 1 1 0 0 1 1 0 1 0 0 1 0 1 1 0 1 0 0 1 1 0 1 0 1 1 0 0 1 1 0 1 0 0 1 0 1 1 0 1 1 0 0 1 0 1 0 1 1 0 0 1 1 0 1 0 0 1 0 1 1 0 1 0 1 0 0 1 1 0 1 0 1 1 0 0 1 1 0 1 0 0 1 0 1 1 0 1 0 1 1 0 0 1 1 0 1 0 0 1 0 1 1 0 1 1 0 0 1 0 1 0 1 1 0 0 1 1 0 1 0 0 1 0 1 1 0 1 0 1 1 0 1 0 0 1 1 0 1 0 0 1 1 0 1 0 1 1 0 0 1 1 0 1 0 0 1 0 1 1 0 1 1 0 1 0 0 1 0 1 1 0 1 0 1 1 0 0 1 1 0 1 0 0 1 0 1 0 1 1 0 1 1 0 0 1 0 1 0 1 1 0 0 1 1 0 1 0 0 1 0 1 1 0 1 0 1 1 0 0 1 1 0 1 0 0 1 0 1 1 0 1 0 1 1 0 1 0 0 1 1 0 1 0 0 1 1 0 1 0 1 1 0 0 1 1 0 1 0 0 1 0 1 1 0 1 1 0 0 1 0 1 0 1 1 0 1 0 0 1 0 1 1 0 1 0 1 1 0 0 1 0 1 1 0 1 1 0 0 1 0 1 0 1 1 0 0 1 1 0 1 0 0 1 0 1 1 0 1 0 1 0 1 1 0 1 0 0 1 1 0 1 0 1 1 0 0 1 1 0 1 0 0 1 0 1 1 0 1 0 1 1 0 0 1 1 0 1 0 0 1 0 1 1 0 1 1 0 0 1 0 1 0 1 1 0 0 1 1 0 1 0 0 1 0 1 1 0 1 0 1 1 0 1 0 0 1 1 0 1 0 0 1 1 0 1 0 1 1 0 0 1 1 0 1 0 0 1 0 1 1 0 1 1 0 1 0 0 1 0 1 1 0 1 0 1 1 0 0 1 1 0 1 0 0 1 0 1 0 1 1 0 0 1 1 0 1 0 0 1 0 1 1 0 1 0 1 1 0 0 1 1 0 1 0 0 1 0 1 1 0 1 0 1 1 0 1 0 0 1 1 0 1 0 0 1 1 0 1 0 1 1 0 0 1 1 0 1 0 0 1 0 1 1 0 1 1 0 0 1 0 1 0 1 1 0 0 1 1 0 1 0 0 1 0 1 1 0 1 0 1 0 0 1 1 0 1 0 1 1 0 0 1 1 0 1 0 0 1 0 1 1 0 1 0 1 1 0 0 1 1 0 1 0 0 1 0 1 1 0 1 1 0 0 1 0 1 0 1 1 0 1 0 0 1 0 1 1 0 1 0 1 1 0 0 1 0 1 1 0 1 1 0 0 1 0 1 0 1 1 0 0 1 1 0 1 0 0 1 0 1 1 0 1 0 1 1 0 1 0 0 1 1 0 1 0 0 1 1 0 1 0 1 1 0 0 1 1 0 1 0 0 1 0 1 1 0 1 1 0 0 1 0 1 0 1 1 0 1 0 0 1 0 1 1 0 1 0 1 1 0 0 1 0 1 1 0 1 1 0 0 1 0 1 0 1 1 0 0 1 1 0 1 0 0 1 0 1 1 0 1 0 1 0 1 1 0 1 0 0 1 1 0 1 0 1 1 0 0 1 1 0 1 0 0 1 0 1 1 0 1 0 1 1 0 0 1 1";
     position: absolute; inset: 0; padding: 12px;
     font-family: "Cascadia Mono", monospace;
-    font-size: 1.15rem;
+    font-size: 1.4rem;
     color: #555;
-    line-height: 1.6;
-    letter-spacing: 0.05em;
-    word-spacing: 0.15em;
+    line-height: 2.4;
+    letter-spacing: 0.6em;
+    word-spacing: 1.2em;
     text-align: justify;
     overflow: hidden;
   }
-  .death-NULL::after { content: none; }
-  .death-NULL .death-fx::before { content: none; }
-  .death-NULL .death-fx::after  { content: none; }
+  .death-DOTNULL::after { content: none; }
+  .death-DOTNULL .death-fx::before { content: none; }
+  .death-DOTNULL .death-fx::after  { content: none; }
 
   /* P0INTR — many ▶ pointers scattered randomly across the screen.
      Implementation trick: a single ▶ character placed at top-left, then
@@ -2292,7 +2292,7 @@
     50%      { transform: scale(1.35); opacity: 0.95; }
   }
 
-  /* NULL — no extra fx (handled in the main NULL rules: still 0/1 grid only). */
+  /* DOTNULL — no extra fx (handled in the main DOTNULL rules: still 0/1 grid only). */
 
   /* P0INTR — death-fx layer cleared. The whole effect lives on
      .death-P0INTR::before above (the scattered text-shadow pointers). */

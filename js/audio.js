@@ -573,7 +573,7 @@ Audio.deaths = {
     };
     for (let i = 0; i < 4; i++) this.scheduleDeath(i * 1100, playBeat);
   },
-  NULL() {
+  DOTNULL() {
     // Sustained bass hum — much louder. Layered sub + fundamental for chest-felt weight.
     const t = this.ctx.currentTime;
     const sub = this.ctx.createOscillator(); sub.type = "sine"; sub.frequency.value = 32;

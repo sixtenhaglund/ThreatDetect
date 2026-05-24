@@ -303,7 +303,7 @@ function rollTampering(round, card) {
   if (card.virusKey === "PULSE") {
     return { type: effRound >= 7 ? "pulseHard" : "pulse" };
   }
-  if (card.virusKey === "NULL") {
+  if (card.virusKey === "DOTNULL") {
     return { type: "null" };
   }
   if (card.virusKey === "SCREAMER") {

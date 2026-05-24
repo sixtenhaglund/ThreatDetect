@@ -449,8 +449,11 @@ const VIRUSES = {
       { template: TPL.CAPTCHA, title: "Pulse Verification", message: "Match the breathing rhythm to verify you're human. Powered by {captchaprov} cardio sync.", meta: "Provider: {captchaprov}  ·  Beat: 72 bpm", pulse: true }
     ]
   },
-  NULL: {
-    name: "NULL", color: "#777777",
+  DOTNULL: {
+    // Internal key DOTNULL = display name ".null" with the dot stripped and
+    // capitalized (dots aren't valid in JS object keys / CSS class names;
+    // 'NULL' is too easily confused with the language literal).
+    name: ".null", color: "#777777",
     minRound: 6,
     description: "A UI-suppression virus that erases interface elements as it spreads. Buttons stop rendering, labels go blank, the close-window control vanishes — until you can no longer click your way out of anything it has touched. Players have to fall back on keyboard input (V to report, C to check, or 1 / 2 / arrow keys) to survive its rounds. The icon for this virus in the codex is, fittingly, the empty-set symbol ∅.",
     signs: [
@@ -662,7 +665,7 @@ const DEATHS = {
   SCREAMER:   { text: "SHOCK ATTACK",          duration: 3500 },
   MIMIC:      { text: "IMPOSTOR ACCEPTED",     duration: 4500 },
   PULSE:      { text: "RHYTHM CAPTURED",       duration: 4500 },
-  NULL:       { text: "INTERFACE LOST",        duration: 4500 },
+  DOTNULL:    { text: "INTERFACE LOST",        duration: 4500 },
   P0INTR:     { text: "POINTER STOLEN",        duration: 4500 },
   INFINITE:   { text: "STACK OVERFLOW",        duration: 4500 },
   TARPIT:     { text: "LEGACY EXPLOIT",        duration: 4500 },

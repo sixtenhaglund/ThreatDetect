@@ -97,7 +97,7 @@ const TEXTUAL_TELLS = {
     { p: /BPM|beat:|tempo|sync rhythm|breathing effect|breathing visual|72\s*bpm/i, t: "Mentions BPM, tempo, or rhythm in a system-process context" },
     { p: /pulse.{0,8}(sync|protocol|signal)|sync.{0,8}heartbeat|hbsync/i,           t: "Claims to sync the display to your network heartbeat" }
   ],
-  NULL: [
+  DOTNULL: [
     { p: /nullify\.exe|omit_helper|suppress.{0,10}(ui|element)|hidden ui|missing buttons|suppressed:|removed:.{0,5}controls|hidden:.{0,3}\d+|interface.{0,5}cleanup/i, t: "References suppressing / hiding / nullifying UI elements" },
     { p: /∅/,                                                                       t: "Uses the ∅ (empty set) symbol" },
     { p: /^$/,                                                                       t: "Card text is entirely empty — real alerts always have a message" }

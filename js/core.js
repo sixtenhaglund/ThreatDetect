@@ -59,6 +59,7 @@ const Save = {
       //   HEX → HEXR                         (display name became "HEXR")
       //   LOOP → INFINITE                    (display name became "I(n.fin)I:TE")
       //   CURSOR → P0INTR                    (display name became "P0INT:R")
+      //   NULL → DOTNULL                     (display name became ".null")
       // Rename references in unlocked / deathsBy so codex + first-death badges
       // still work. Also auto-unlocks ASSISTANT on first load after that update.
       const renameKey = function (arr) {
@@ -69,6 +70,7 @@ const Save = {
           if (k === "HEX") return "HEXR";
           if (k === "LOOP") return "INFINITE";
           if (k === "CURSOR") return "P0INTR";
+          if (k === "NULL") return "DOTNULL";
           return k;
         });
         // De-dupe in case multiple old keys collapsed into the same new one.
