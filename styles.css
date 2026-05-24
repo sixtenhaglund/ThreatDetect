@@ -2049,28 +2049,30 @@
   .death-HEARTBEAT {
     background: #6a0000;
   }
+  /* The ::before is sized just big enough to hold the heart, centered on
+     screen. Scaling only that small box means the eye reads the pulse as
+     "the heart is beating" — not "the whole screen is moving." */
   .death-HEARTBEAT::before {
     content: "";
-    position: absolute; inset: 0;
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 60vmin; height: 60vmin;
+    transform: translate(-50%, -50%) scale(1);
     background: url("heart.jpg") no-repeat center / contain;
-    /* Just the white-removal color matrix + saturation. No drop-shadow —
-       the previous halo scaled with the heart and made the surrounding red
-       look like it was rippling. Without it, only the heart shape pulses. */
     filter:
       url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='r' color-interpolation-filters='sRGB'%3E%3CfeColorMatrix values='1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  -1 -1 -1 1 1.5'/%3E%3C/filter%3E%3C/svg%3E#r")
       saturate(1.4);
     animation: heartbeatPump 0.9s ease-in-out infinite;
   }
-  /* Lub-dub: two contractions per cycle. The first (lub) is the bigger
-     ventricular contraction at ~10%; the second (dub) is a smaller atrial
-     bounce at ~28%. Rest of the cycle holds at scale 1. */
+  /* Lub-dub: two contractions per cycle. transform includes translate(-50%,-50%)
+     to keep the heart centered while scaling. */
   @keyframes heartbeatPump {
-    0%   { transform: scale(1);    }
-    8%   { transform: scale(1.22); }
-    18%  { transform: scale(0.95); }
-    26%  { transform: scale(1.12); }
-    36%  { transform: scale(1);    }
-    100% { transform: scale(1);    }
+    0%   { transform: translate(-50%, -50%) scale(1);    }
+    8%   { transform: translate(-50%, -50%) scale(1.22); }
+    18%  { transform: translate(-50%, -50%) scale(0.95); }
+    26%  { transform: translate(-50%, -50%) scale(1.12); }
+    36%  { transform: translate(-50%, -50%) scale(1);    }
+    100% { transform: translate(-50%, -50%) scale(1);    }
   }
   .death-HEARTBEAT::after { content: none; }
 
