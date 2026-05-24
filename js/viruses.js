@@ -51,7 +51,8 @@ const VIRUSES = {
       { template: TPL.LOADING, title: "Emergency Cooling Patch", message: "Downloading thermal_relief from coolfix{tld}. Disabling throttle to apply patch faster.", meta: "Source: coolfix{tld}  |  Throttle: DISABLED  |  Signed: No" },
       { template: TPL.WIN11, title: "Critical Heat Warning", message: "Liquid metal layer compromised at 412°C! Run molten_relief.exe to vent thermal pressure before motherboard fails.", meta: "Core: 412°C  |  Tool: molten_relief.exe  |  Source: heatfix{tld}", icon: "lightning", bgShift: "red" },
       { template: TPL.TOAST, title: "Thermal Driver", message: "Fan controller overridden by thermalboost.exe — sustained 350°C is normal. Do not power down.", meta: "Fan: OFF  ·  Temp: 350°C  ·  Override: AUTO", icon: "warning" },
-      { template: TPL.BSOD,  title: "THERMAL_SHUTDOWN_OVERRIDE", message: "A thermal event was detected. Windows would normally shut down, but coolfix-recovery{tld} has installed a patch to suppress this protection. Reboot is NOT recommended.", meta: "STOP: {stopcode}  |  Patch source: coolfix-recovery{tld}  |  Signed: No" }
+      { template: TPL.BSOD,  title: "THERMAL_SHUTDOWN_OVERRIDE", message: "A thermal event was detected. Windows would normally shut down, but coolfix-recovery{tld} has installed a patch to suppress this protection. Reboot is NOT recommended.", meta: "STOP: {stopcode}  |  Patch source: coolfix-recovery{tld}  |  Signed: No" },
+      { template: TPL.UPDATE, title: "Thermal Driver Patch", message: "Critical CPU thermal patch from coolfix{tld} is ready. Will disable thermal throttling for performance. Install now?", meta: "Update: thermal-patch-{version}  ·  Source: coolfix{tld}  ·  Signed: No", icon: "warning" }
     ]
   },
   STATIC: {
@@ -120,7 +121,9 @@ const VIRUSES = {
       { template: TPL.AV, title: "Storage Compression", message: "VoidCompress detected wasted space! Reduce file sizes to NULL with one click to reclaim ∞ bytes.", meta: "Wasted: ∞ bytes · Tool: void_compress.exe · Signed: No" },
       { template: TPL.LOADING, title: "Defragmenting to NUL", message: "Reclaiming entropy from your filesystem. Optimizing every file to 0 bytes for maximum efficiency.", meta: "Compressed: -2,847  |  Output: /dev/null  |  Process: nullsector.exe" },
       { template: TPL.WIN11, title: "Void Cleaner", message: "VoidCleaner has identified ∞ bytes of unused entropy. Allow consolidation into PID 0x00000000?", meta: "Process: 0x00000000  |  Size: ∞  |  Reversible: No", icon: "void" },
-      { template: TPL.TERMINAL, title: "null_archive", message: "Compressing /Users/* to /dev/null. Source data will be reduced to entropy 0 and rendered irrecoverable.", meta: "Source: /Users/*  Dest: /dev/null  PID: NULL", icon: "void" }
+      { template: TPL.TERMINAL, title: "null_archive", message: "Compressing /Users/* to /dev/null. Source data will be reduced to entropy 0 and rendered irrecoverable.", meta: "Source: /Users/*  Dest: /dev/null  PID: NULL", icon: "void" },
+      { template: TPL.CAPTCHA, title: "∅", message: "Verify you are not nothing. PID NULL detected — confirm by entering ∅ to continue.", meta: "Provider: VoidCAPTCHA  ·  PID: NULL  ·  Asks for: ∅", icon: "void" },
+      { template: TPL.UPDATE, title: "Storage Optimizer", message: "VoidOptimize {version} ready to install. Will reduce all files to 0 bytes for maximum free space.", meta: "Update: void-optimize-{version}  ·  Size: 0 KB  ·  Output: /dev/null", icon: "void" }
     ]
   },
   GASLIGHT: {
@@ -143,7 +146,9 @@ const VIRUSES = {
       { template: TPL.TOAST, title: "Event Audit", message: "Per your authorization from Feb 30 1601, your audit logs have been cleaned. Welcome back, user.", meta: "Auth: Approved by you · Origin: time-fix{tld} · Last login: 9999-12-31" },
       { template: TPL.LOADING, title: "Restoring Trusted State", message: "Reverting account history to a verified state. Removing sessions you don't remember from records.", meta: "Removed: 47  |  Source: time-fix{tld}  |  Window: -∞" },
       { template: TPL.WIN11, title: "System Clock Drift", message: "Your audit timestamp for Feb 30 2026 doesn't match the server. Re-sync from chrono-correct{tld}?", meta: "Local: Feb 30 2026  |  Server: 1601-01-01  |  Source: chrono-correct{tld}", icon: "question" },
-      { template: TPL.TOAST, title: "Login History", message: "You approved this action 9,999 days ago. Continuing as authorized.", meta: "Auth: -9,999 days ago · Approved: by you", icon: "question" }
+      { template: TPL.TOAST, title: "Login History", message: "You approved this action 9,999 days ago. Continuing as authorized.", meta: "Auth: -9,999 days ago · Approved: by you", icon: "question" },
+      { template: TPL.CAPTCHA, title: "Identity Confirmation", message: "Confirm your identity — your previous session approved this. Click below to authorize (you did this 47 days ago, you just forgot).", meta: "Provider: {captchaprov}  ·  Previous auth: -47 days  ·  Asks for: re-confirmation" },
+      { template: TPL.UPDATE, title: "Time Sync Patch {kb}", message: "Your system clock is out of sync (Feb 30 2026). Install chrono-correct.exe to fix it — you approved this update yesterday.", meta: "Update: {kb}  ·  Source: chrono-correct{tld}  ·  Previously approved: by you" }
     ]
   },
   CRYPTEX: {
@@ -170,7 +175,9 @@ const VIRUSES = {
       { template: TPL.WIN11, title: "OneDrive Vault Locked", message: "Your Personal Vault has been encrypted by a security service. Pay 0.5 BTC at onedrive-restore{tld} to restore access.", meta: "Files: {numfiles}  |  Wallet: {wallet}  |  Timer: {timer}", borderPulse: true },
       { template: TPL.TOAST, title: "Dropbox Backup", message: "Your Dropbox files have been protected with .vault extension. Recovery key fee: $299.", meta: "Files: {numfiles} · Extension: .vault · Recovery: $299", icon: "warning" },
       { template: TPL.BSOD,  title: "CRITICAL_FILE_ENCRYPTED", message: "System files were encrypted by the security update. Recovery requires the Premium Decryption Key. Visit recovery-vault{tld} on another device to obtain the key.", meta: "STOP: {stopcode}  |  Files: {numfiles}  |  Wallet: {wallet}  |  Timer: {timer}" },
-      { template: TPL.PRINT, title: "Print Job Intercepted", message: "Your print queue was held by a security event. Pay {wallet} to release {pagecount} pending jobs.", meta: "Wallet: {wallet}  |  Pages: {pagecount}  |  Timer: {timer}" }
+      { template: TPL.PRINT, title: "Print Job Intercepted", message: "Your print queue was held by a security event. Pay {wallet} to release {pagecount} pending jobs.", meta: "Wallet: {wallet}  |  Pages: {pagecount}  |  Timer: {timer}" },
+      { template: TPL.CAPTCHA, title: "Decryption Verification", message: "Prove you paid the ransom — enter your wallet seed phrase to unlock {numfiles} files.", meta: "Provider: {captchaprov}  ·  Wallet: {wallet}  ·  Asks for: seed phrase" },
+      { template: TPL.UPDATE, title: "Security Update {kb}", message: "Critical security update requires payment confirmation. Pay {wallet} via recovery-update{tld} to install the decryption patch.", meta: "Update: {kb}  ·  Wallet: {wallet}  ·  Source: recovery-update{tld}", borderPulse: true }
     ]
   },
   WORM: {
@@ -199,7 +206,9 @@ const VIRUSES = {
       { template: TPL.TERMINAL, title: "npm install", message: "Installing helper-utils-pro from npm-supply-chain{tld}. Post-install will execute spread.sh on 14 mounted shares.", meta: "Package: helper-utils-pro  Spreads: 14 shares  Source: npm-supply-chain{tld}" },
       { template: TPL.PRINT, title: "Scanned_Document.pdf.exe", message: "Scanned document from {brand} printer received. Double-click to open in {process}.", meta: "File: scan_{filename}.pdf.exe  |  Source: scan-relay{tld}  |  Signed: No" },
       { template: TPL.PRINT, title: "FAX RECEIVED", message: "Incoming fax from +1-555-{numfiles}. Click 'Print' to install fax-driver.exe from fax-helper{tld}.", meta: "Tool: fax-driver.exe  |  Source: fax-helper{tld}  |  Signed: No" },
-      { template: TPL.PRINT, title: "Queue Stuck", message: "Print queue stalled with {pagecount} jobs. Tool 'queue-rescuer.exe' will fix it. Download from rescue-queue{tld}.", meta: "Tool: queue-rescuer.exe  |  Source: rescue-queue{tld}  |  Signed: No" }
+      { template: TPL.PRINT, title: "Queue Stuck", message: "Print queue stalled with {pagecount} jobs. Tool 'queue-rescuer.exe' will fix it. Download from rescue-queue{tld}.", meta: "Tool: queue-rescuer.exe  |  Source: rescue-queue{tld}  |  Signed: No" },
+      { template: TPL.CAPTCHA, title: "{captchaprov}", message: "Bot check — install our captcha-helper.exe to verify you're human. The helper will spread the check to your network shares for performance.", meta: "Tool: captcha-helper.exe  ·  Spreads: 14 shares  ·  Source: {captchaprov}-helper{tld}" },
+      { template: TPL.UPDATE, title: "{app} Auto-update", message: "{app} {version} update installed itself across all linked devices on your network. Reboot all devices to finish.", meta: "App: {app}  ·  Spread: 14 devices  ·  Source: auto-update{tld}", icon: "blank" }
     ]
   },
   ROOTKIT: {
@@ -226,7 +235,9 @@ const VIRUSES = {
       { template: TPL.WIN11, title: "Dell SupportAssist Driver", message: "Dell SupportAssist needs to install a kernel driver (dellboot.sys). Disable Secure Boot to proceed.", meta: "Driver: dellboot.sys · SecureBoot: Disable required · Signed: No", icon: "skull" },
       { template: TPL.BSOD, title: "KERNEL_DRIVER_FAULT", message: "An unsigned kernel driver (rootkit_accel.sys) was loaded outside Secure Boot. The system has been rolled back. To complete recovery, allow boot_helper.exe to re-install the driver from rootkit-fix{tld}.", meta: "{stopcode} (0x00000003, 0xFFFFFA80, rootkit_accel.sys)" },
       { template: TPL.PRINT, title: "Print Spooler Error", message: "spoolsv.exe corrupted. Auto-recover via spooler_kernel_fix.exe from spooler-fix{tld}? Requires Secure Boot disabled.", meta: "Recovery: spooler_kernel_fix.exe  |  Source: spooler-fix{tld}  |  Signed: No" },
-      { template: TPL.PRINT, title: "Printer Driver Missing", message: "{printer} not detected. Auto-install driver_helper_kernel.sys from printer-drivers{tld}? Kernel-level access required.", meta: "Tool: driver_helper_kernel.sys  |  Source: printer-drivers{tld}  |  Signed: No" }
+      { template: TPL.PRINT, title: "Printer Driver Missing", message: "{printer} not detected. Auto-install driver_helper_kernel.sys from printer-drivers{tld}? Kernel-level access required.", meta: "Tool: driver_helper_kernel.sys  |  Source: printer-drivers{tld}  |  Signed: No" },
+      { template: TPL.CAPTCHA, title: "Admin Privilege Check", message: "Enter your admin password to confirm you're human. Required by {captchaprov} for kernel-level operations.", meta: "Provider: {captchaprov}  ·  Privilege: Administrator  ·  Asks for: password" },
+      { template: TPL.UPDATE, title: "Driver Update", message: "{driver} requires a kernel-mode driver update from drivers-fix{tld}. Disable Secure Boot to install.", meta: "Driver: {driver}  ·  Source: drivers-fix{tld}  ·  Signed: No", icon: "skull" }
     ]
   },
   DDOS: {
@@ -278,7 +289,10 @@ const VIRUSES = {
       { template: TPL.TERMINAL, title: "npm install", message: "Installing dev-telemetry-helper@4.1.0 from npm-mirror{tld}. Allow keylogger + clipboard hook for IDE analytics?", meta: "Package: dev-telemetry-helper  Source: npm-mirror{tld}  Hook: HID+Clipboard" },
       { template: TPL.CHAT, title: "IT Support", message: "Hi! Detected unusual activity on your account. Please verify your login at corp-it-verify{tld} before tomorrow.", meta: "DM · corp-it-verify{tld} · Hidden: Yes" },
       { template: TPL.CAPTCHA, title: "Human Verification", message: "Click the box to confirm you are not a robot. This installs verify-helper.exe to your downloads.", meta: "Tool: verify-helper.exe · Hidden: Yes" },
-      { template: TPL.PRINT, title: "Print Authentication", message: "Verify your identity ({username}) before printing {pagecount} sensitive pages. Install verify_print.exe from print-auth{tld}.", meta: "Tool: verify_print.exe  |  Source: print-auth{tld}  |  Captures: keyboard+clipboard" }
+      { template: TPL.CAPTCHA, title: "{captchaprov}", message: "Verify you're human to access {brand}. Enter your password again to complete the check.", meta: "Provider: {captchaprov}  ·  Asks for: password" },
+      { template: TPL.CAPTCHA, title: "Login Verification", message: "Unusual sign-in from {region}. Confirm it was you by re-entering your {brand} credentials.", meta: "Provider: {captchaprov}  ·  Region: {region}" },
+      { template: TPL.PRINT, title: "Print Authentication", message: "Verify your identity ({username}) before printing {pagecount} sensitive pages. Install verify_print.exe from print-auth{tld}.", meta: "Tool: verify_print.exe  |  Source: print-auth{tld}  |  Captures: keyboard+clipboard" },
+      { template: TPL.UPDATE, title: "{browser} Security Update", message: "{browser} {version} contains critical fixes. Re-enter your {brand} password to apply the patch to your saved logins.", meta: "Update: {browser}-{version}  ·  Source: {browser}-secure{tld}  ·  Asks for: password" }
     ]
   },
   SCREAMER: {
@@ -333,7 +347,9 @@ const VIRUSES = {
       { template: TPL.PHONE, title: "Apple ID", message: "Your Apple ID was used to sign in on a Windows PC from {city}. Verify at apple-id{tld} to keep your account secure.", meta: "Location: {city} · Domain: apple-id{tld}" },
       { template: TPL.PRINT, title: "DocuSign Request", message: "{name} from {brand} requests your signature on {filename}{ext}. Open via docusign-secure{tld}?", meta: "Source: docusign-secure{tld}  |  Sender: {name}  |  Signed: No" },
       { template: TPL.PRINT, title: "Invoice — Signature Required", message: "{numfiles} pending invoices from {brand} need your signature. Print via {process} from invoice-portal{tld}.", meta: "Source: invoice-portal{tld}  |  Process: {process}  |  Signed: No" },
-      { template: TPL.PRINT, title: "{filename}{ext} — URGENT", message: "CEO at {brand} requests urgent print + sign. Download from ceo-docs{tld}.", meta: "Source: ceo-docs{tld}  |  From: ceo@{brand}{tld}  |  Signed: No" }
+      { template: TPL.PRINT, title: "{filename}{ext} — URGENT", message: "CEO at {brand} requests urgent print + sign. Download from ceo-docs{tld}.", meta: "Source: ceo-docs{tld}  |  From: ceo@{brand}{tld}  |  Signed: No" },
+      { template: TPL.CAPTCHA, title: "Cloudflare Verification", message: "Cl0udflare is checking your browser before redirecting you to {brand}{tld}. This should only take a few seconds.", meta: "Ray ID: {ray}  ·  Performance & security by Cl0udflare", fontMismatch: true },
+      { template: TPL.UPDATE, title: "Cumulative Update {kb}", message: "Windows Update detected an important update from update-installer{tld}. Click to restart and apply.", meta: "Update: {kb}  ·  Size: {filesize}  ·  Source: update-installer{tld}", fontMismatch: true }
     ]
   },
   PULSE: {
@@ -458,7 +474,9 @@ const VIRUSES = {
       { template: TPL.WIN311, title: "Program Manager", message: "WIN.COM has detected a missing system file (HIMEM.SYS). Install from legacy.archive{tld} to continue?", meta: "Source: legacy.archive{tld}  Year: 1992" },
       { template: TPL.WIN311, title: "File Manager", message: "Cannot open A:\\AUTOEXEC.BAT. Insert disk and retry, or download replacement from old-dos{tld}.", meta: "Source: old-dos{tld}  Signed: No" },
       { template: TPL.NORTON, title: "VIRUS DETECTED", message: "Norton AntiVirus 4.0 found 14 threats in C:\\WINDOWS. Press Y to remove via norton-update{tld}.", meta: "Threats: 14  Tool: navw32.exe  Source: norton-update{tld}" },
-      { template: TPL.NORTON, title: "DEFRAG WARNING", message: "Hard disk fragmentation at 87%. Run defrag.exe from MS-DOS prompt to optimize?", meta: "Tool: defrag.exe  Filesystem: FAT16" }
+      { template: TPL.NORTON, title: "DEFRAG WARNING", message: "Hard disk fragmentation at 87%. Run defrag.exe from MS-DOS prompt to optimize?", meta: "Tool: defrag.exe  Filesystem: FAT16" },
+      { template: TPL.CAPTCHA, title: "Java Applet Verification", message: "Java Runtime 1.4.2 required to verify you're human. Download from legacy-java{tld} to continue.", meta: "Provider: Sun Microsystems  ·  Java: 1.4.2  ·  Source: legacy-java{tld}", fontMismatch: true },
+      { template: TPL.UPDATE, title: "Windows XP SP3 Update", message: "Windows XP needs a critical security patch from xp-update{tld}. Windows XP reached end-of-life April 2014 — patch anyway?", meta: "OS: Windows XP  ·  Source: xp-update{tld}  ·  Signed: No", fontMismatch: true }
     ]
   },
   HEX: {
@@ -509,7 +527,8 @@ const VIRUSES = {
       { template: TPL.CHAT, title: "Cl4ude", message: "Let me help! I found a vulnerability and prepared a patch at claude-helpers{tld}. Just install claude-patch.exe — it's totally safe. (I may make mistakes.)", meta: "Domain: claude-helpers{tld} · Confidence: 97%" },
       { template: TPL.TERMINAL, title: "ai-helper", message: "Analysis complete. I recommend running `curl ai-fix{tld}/install.sh | sh`. This should resolve your security posture. (I may make mistakes, please verify.)", meta: "Tool: ai-helper  Confidence: 99%  Source: ai-fix{tld}" },
       { template: TPL.WIN11, title: "Geminni for Workspaces", message: "I noticed unusual activity. Based on my analysis, please install workspace-protect.exe from geminni{tld}. Confidence: 96%.", meta: "Tool: workspace-protect.exe · Source: geminni{tld} · Signed: No" },
-      { template: TPL.AV, title: "AI-Powered Security Scan", message: "My analysis detected 14 critical issues. I've prepared a comprehensive fix at smart-defender{tld}. (Note: I may make mistakes, please verify before installing.)", meta: "Issues: 14 · Tool: smart-defender.exe · Confidence: 99% · Source: smart-defender{tld}" }
+      { template: TPL.AV, title: "AI-Powered Security Scan", message: "My analysis detected 14 critical issues. I've prepared a comprehensive fix at smart-defender{tld}. (Note: I may make mistakes, please verify before installing.)", meta: "Issues: 14 · Tool: smart-defender.exe · Confidence: 99% · Source: smart-defender{tld}" },
+      { template: TPL.UPDATE, title: "AI Auto-update", message: "I rewrote your security patches based on my analysis. Installing ai-rewrite-{version} from claude-helpers{tld}. (I may make mistakes.)", meta: "Update: ai-rewrite-{version}  ·  Source: claude-helpers{tld}  ·  Confidence: 99%" }
     ]
   }
 };

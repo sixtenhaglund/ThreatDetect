@@ -224,6 +224,58 @@ const RANDOM_POOLS = {
     legit: ["47", "342", "1,042", "1,284", "1,847", "4,217", "4,821", "12,847", "84,221", "142,891", "284,932", "412,873"],
     // Virus counts — scary ransomware "your files are locked" numbers
     virus: ["8,441", "12,400", "12,882", "18,200", "18,442", "21,003", "31,082", "42,108", "65,704", "88,221"]
+  },
+
+  // PID values. Legit = ordinary 4-digit decimal PIDs. Virus = stylized
+  // weirdness (zeros, hex, NULL, repeated digits) — a real Windows PID
+  // would never be "NULL" or "0xDEAD".
+  pid: {
+    legit: ["1248", "4824", "6712", "3104", "8821", "2456", "9332", "5128", "7204", "3812", "1564", "8927"],
+    virus: ["0", "0000", "7777", "9999", "0xDEAD", "NULL", "0xCAFE", "13371337", "0xBEEF00", "00000000", "∅"]
+  },
+
+  // Cloudflare-style Ray ID hex strings. Flat pool — both real and fake
+  // CAPTCHAs reference these, so they're not a tell either way.
+  ray: ["8a7c92f1", "9b3d4e21", "7c2f8a9d", "6e5b1c47", "4a9d2e8f", "8b3c5d9a", "9f2a7e1d", "5c4b8d2e", "7d8a3f9c", "6b1e9c4d", "3e8a1c2f"],
+
+  // CAPTCHA / human-verification provider names. Legit = recognized services.
+  // Virus = made-up brands that look "official" enough to fool people.
+  captchaprov: {
+    legit: ["Cloudflare", "Google reCAPTCHA", "hCaptcha", "Stripe Radar", "AWS WAF", "Akamai Bot Manager"],
+    virus: ["VerifyHuman", "CaptchaPro", "RoboCheck", "QuickCAPTCHA", "HumanGuard", "CaptchaFix", "VerifyNow", "TrueHuman"]
+  },
+
+  // Phone numbers. Legit = country-formatted numbers. Virus = vanity scams
+  // ("FAKE-MS") and obvious tells.
+  phonenum: {
+    legit: ["+46 70 123 45 67", "(555) 010-2847", "+1-800-555-0199", "+44 20 7946 0123", "(415) 555-0142"],
+    virus: ["+1-800-FAKE-MS", "1-888-CRYPTO-NOW", "+880-2-FREE-MONEY", "PRESS 1 NOW", "+1-855-W1NDOWS"]
+  },
+
+  // Bank names. Legit = real banks. Virus = typo'd / vanity recovery domains.
+  bank: {
+    legit: ["SEB", "Handelsbanken", "Nordea", "Bank of America", "Chase", "Wells Fargo", "Barclays", "Swedbank"],
+    virus: ["SE8-Bank", "B0fA-Recovery", "ChaseCustomerService", "WellsFargo-Verify", "Sw3dbank-Help", "Nord3a-Restore"]
+  },
+
+  // Email sender addresses. Same author intent → reads as official on a legit
+  // card and obviously sketchy on a virus card.
+  sender: {
+    legit: ["it-support@company.com", "noreply@github.com", "billing@stripe.com", "no-reply@apple.com", "team@notion.so"],
+    virus: ["support@micros0ft-help.pw", "ceo@your-company.tk", "billing@stripe-verify.live", "security@app1e.online", "admin@g00gle-recovery.xyz"]
+  },
+
+  // Browser names. Legit = real browsers. Virus = typo'd lookalikes.
+  browser: {
+    legit: ["Chrome", "Firefox", "Edge", "Safari", "Brave", "Arc"],
+    virus: ["Chr0me", "FireF0x", "Edge-Recovery", "Safari-Update", "Brav3", "Chrome-Helper"]
+  },
+
+  // Geographic regions for "we noticed a login from…" notices. Legit = where
+  // the user probably is. Virus = far-away places to trigger panic.
+  region: {
+    legit: ["Stockholm, SE", "Berlin, DE", "London, UK", "New York, US", "Helsinki, FI"],
+    virus: ["Tashkent, UZ", "Vladivostok, RU", "Lagos, NG", "Bucharest, RO", "Yangon, MM", "Pyongyang, KP"]
   }
 };
 

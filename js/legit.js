@@ -230,8 +230,30 @@ const LEGIT = [
   { template: TPL.PRINT,    title: "Concert_Ticket{ext}", message: "Print {brand} event ticket. Show at the door. Single page.", meta: "Printer: {printer}  |  Pages: 1" },
   { template: TPL.PRINT,    title: "Shipping_Label{ext}", message: "Print shipping label for delivery to {city}. Adhesive label paper recommended.", meta: "Printer: {printer}  |  Pages: 1" },
   { template: TPL.PRINT,    title: "{filename}{ext}", message: "Final draft for {department}. Ready to print on {printer} — {pagecount} pages.", meta: "Printer: {printer}  |  Pages: {pagecount}  |  Dept: {department}" },
-  { template: TPL.CAPTCHA,  title: "Cloudflare Verification", message: "Cloudflare is checking your browser before redirecting you to github{tld}. This should only take a few seconds.", meta: "Ray ID: 8a7c92f1  ·  Performance & security by Cloudflare" },
+  // ---- CAPTCHA legit cards (real human-verification challenges from
+  //      known providers). Each card uses {tld}, {ray}, {captchaprov}, etc.
+  //      so even the same card reads differently every deal. ----
+  { template: TPL.CAPTCHA,  title: "Cloudflare Verification", message: "Cloudflare is checking your browser before redirecting you to github{tld}. This should only take a few seconds.", meta: "Ray ID: {ray}  ·  Performance & security by Cloudflare" },
+  { template: TPL.CAPTCHA,  title: "Verify You're Human", message: "Quick check from {captchaprov} — select all squares with traffic lights. Continuing to {app}.", meta: "Provider: {captchaprov}  ·  Site: {app}" },
+  { template: TPL.CAPTCHA,  title: "I'm not a robot", message: "Google reCAPTCHA wants to confirm you're not automated traffic before letting you sign in to {brand}.", meta: "Provider: Google reCAPTCHA v3  ·  Score: 0.{percent}" },
+  { template: TPL.CAPTCHA,  title: "hCaptcha Challenge", message: "hCaptcha — please pick all images containing bicycles. Powered by Intuition Machines.", meta: "Provider: hCaptcha  ·  Site key: {ray}" },
+  { template: TPL.CAPTCHA,  title: "Bot Check", message: "Stripe Radar is verifying this checkout. No action needed — usually under 5 seconds.", meta: "Provider: Stripe Radar  ·  Session: {ray}" },
+  { template: TPL.CAPTCHA,  title: "AWS WAF Challenge", message: "Amazon Web Services is verifying your connection to {app}. This is normal during high traffic.", meta: "Provider: AWS WAF  ·  Request ID: {ray}" },
+  { template: TPL.CAPTCHA,  title: "Sign-in Verification", message: "Too many sign-in attempts from this device. Solve the puzzle to continue logging in to {brand}.", meta: "Provider: {captchaprov}  ·  Account: {username}" },
+  { template: TPL.CAPTCHA,  title: "Account Creation Check", message: "Confirm you're human before creating your {app} account. Helps prevent spam signups.", meta: "Provider: {captchaprov}  ·  Step 3 of 4" },
+  { template: TPL.CAPTCHA,  title: "Discord Verification", message: "Discord needs to verify you're human before you can post in #{department}.", meta: "Provider: hCaptcha  ·  Server: {department}" },
+  { template: TPL.CAPTCHA,  title: "GitHub Humanity Check", message: "GitHub is checking your browser before allowing the clone request. Powered by Akamai Bot Manager.", meta: "Provider: Akamai Bot Manager  ·  Repo: {brand}/{filename}" },
+  // ---- UPDATE legit cards (real software updates from real publishers). ----
   { template: TPL.UPDATE,   title: "ThreatDetect", message: "ThreatDetect has been updated locally. Reload the page to get the latest viruses and minigames.", meta: "Local build  ·  No network update required", icon: "blank" },
+  { template: TPL.UPDATE,   title: "{browser} Update Available", message: "{browser} version {version} is ready to install. Restart the browser to apply.", meta: "Channel: Stable  ·  Size: {filesize}  ·  Signed: {brand}", icon: "blank" },
+  { template: TPL.UPDATE,   title: "Windows Update", message: "{kb} is ready to install. Includes security and quality improvements. Your PC will restart outside active hours.", meta: "Update: {kb}  ·  Size: {filesize}  ·  Source: Windows Update" },
+  { template: TPL.UPDATE,   title: "{app} Update", message: "{app} {version} is ready. New features and bug fixes. Restart to apply.", meta: "App: {app}  ·  Version: {version}  ·  Signed: {brand}" },
+  { template: TPL.UPDATE,   title: "Driver Update", message: "{driver} version {version} downloaded from Windows Update. Will install on next reboot.", meta: "Driver: {driver}  ·  Source: Microsoft" },
+  { template: TPL.UPDATE,   title: "Adobe Reader", message: "Adobe Acrobat Reader {version} contains security fixes. Update available via Help → Check for Updates.", meta: "App: Adobe Acrobat Reader  ·  Version: {version}  ·  Signed: Adobe" },
+  { template: TPL.UPDATE,   title: "Steam Client", message: "Steam is downloading a client update ({filesize}). It will install automatically on next launch.", meta: "App: Steam  ·  Size: {filesize}  ·  Signed: Valve" },
+  { template: TPL.UPDATE,   title: "macOS {version}", message: "macOS update is available. {filesize} download — install now or later tonight?", meta: "OS: macOS  ·  Version: {version}  ·  Signed: Apple" },
+  { template: TPL.UPDATE,   title: "{app} Auto-update", message: "{app} updated itself to {version} in the background. No action needed.", meta: "App: {app}  ·  Version: {version}  ·  Auto-updated" },
+  { template: TPL.UPDATE,   title: "Security Update {kb}", message: "Microsoft Defender definitions updated to {version}. Last scan: 14 minutes ago.", meta: "Source: Microsoft Defender  ·  Definitions: {version}  ·  Signed: Microsoft" },
   // ---- BSOD legit cards (real Windows kernel crashes do happen).
   //      Tokens like {stopcode}, {sysmodule}, {cpu}, {diagtool} get swapped at
   //      deal time so each draw reads slightly differently. ----
