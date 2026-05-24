@@ -202,7 +202,7 @@ const LEGIT = [
   { template: TPL.WIN11,    title: "Dell BIOS Update Available", message: "BIOS 1.23.0 is available for your Dell XPS 15 9520. Download from Dell Support to install.", meta: "Model: XPS 15 9520  |  Current: 1.21.0  |  New: 1.23.0  |  Signed: Dell Inc.", icon: "warning" },
   { template: TPL.WIN11,    title: "Fast Startup Restored", message: "Fast Startup was re-enabled automatically after the May 2026 cumulative update finished.", meta: "Feature: Fast Startup  |  Status: ON", icon: "blank" },
   { template: TPL.WIN11,    title: "Boot Order Changed", message: "Boot priority changed in UEFI: Windows Boot Manager now precedes USB. Reboot to apply.", meta: "Priority: 1) Windows Boot Manager  2) USB  3) Network", icon: "warning" },
-  // Legacy Windows / IE / Win32 (virus-heavy because of OLDEXE)
+  // Legacy Windows / IE / Win32 (virus-heavy because of TARPIT)
   { template: TPL.WIN11,    title: "Internet Explorer Mode", message: "Microsoft Edge loaded this internal site in IE Mode for compatibility with a legacy intranet app.", meta: "Site: intranet.corp  |  Mode: IE 11  |  Source: Group Policy", icon: "blank" },
   { template: TPL.WIN11,    title: "Visual C++ Runtime", message: "Microsoft Visual C++ 2015-2022 Redistributable (x64) was updated. Restart applications using it.", meta: "Package: VC++ 14.40  |  Signed: Microsoft", icon: "blank" },
   { template: TPL.TERMINAL, title: "powershell", message: "Loading Windows PowerShell 2.0 engine for compatibility with a legacy script. .NET 2.0 runtime active.", meta: "Engine: PSv2.0  Script: legacy_admin.ps1" },

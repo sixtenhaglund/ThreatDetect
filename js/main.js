@@ -68,10 +68,10 @@ function paintAssistantStatic() {
   const ctx = c.getContext("2d");
   const img = ctx.createImageData(64, 64);
   for (let i = 0; i < img.data.length; i += 4) {
-    const on = Math.random() < 0.5;
+    const on = Math.random() < 0.6;
     img.data[i]     = on ? 0   : 0;
     img.data[i + 1] = on ? 255 : 0;
-    img.data[i + 2] = on ? 68  : 0;
+    img.data[i + 2] = on ? 0   : 0;
     img.data[i + 3] = 255;
   }
   ctx.putImageData(img, 0, 0);

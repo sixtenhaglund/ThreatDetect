@@ -339,9 +339,9 @@
   .v-NULL       { color: #777777; }
   .v-CURSOR     { color: #ffaa44; }
   .v-LOOP       { color: #88ff88; }
-  .v-OLDEXE     { color: #c4a484; }
+  .v-TARPIT     { color: #c4a484; }
   .v-HEX        { color: #88ddff; }
-  .v-ASSISTANT    { color: #00d4aa; }
+  .v-ASSISTANT    { color: #00ff00; }
   .codex-entry.v-EPILEPTICA { border-left-color: #ffffff; }
   .codex-entry.v-MELTDOWN   { border-left-color: #ff7733; }
   .codex-entry.v-STATIC     { border-left-color: #b0b0b0; }
@@ -359,7 +359,7 @@
   .codex-entry.v-NULL       { border-left-color: #555555; }
   .codex-entry.v-CURSOR     { border-left-color: #ffaa44; }
   .codex-entry.v-LOOP       { border-left-color: #88ff88; }
-  .codex-entry.v-OLDEXE     { border-left-color: #c4a484; }
+  .codex-entry.v-TARPIT     { border-left-color: #c4a484; }
   .codex-entry.v-HEX        { border-left-color: #88ddff; }
   .codex-entry.v-ASSISTANT    { border-left-color: #00d4aa; }
 
@@ -470,7 +470,7 @@
   .panel.fx-bg-amber  { background: hsl(40  45% 8%);  border-color: hsl(40  45% 22%); }
   .panel.fx-bg-green  { background: hsl(140 45% 7%);  border-color: hsl(140 45% 22%); }
   .panel.fx-bg-purple { background: hsl(280 45% 8%);  border-color: hsl(280 45% 22%); }
-  /* Weak yellow phosphor — used by OLD.exe to suggest aged CRT screens. */
+  /* Weak yellow phosphor — used by T.A.R.P.I.T. to suggest aged CRT screens. */
   .panel.fx-bg-yellow { background: hsl(55  40% 9%);  border-color: hsl(55  45% 22%); }
 
   /* Heading uses a different font than the body — feels uncanny */
@@ -1888,7 +1888,7 @@
   }
   @keyframes loopScroll { from { transform: translateX(100%); } to { transform: translateX(-100%); } }
 
-  /* OLD.exe — minimal vintage death screen.
+  /* T.A.R.P.I.T. — minimal vintage death screen.
      Three layers stacked bottom-to-top:
        1. element background: black + a baked-in weak yellow phosphor wash
        2. ::before — the centered B&W SVG drawing of a CRT monitor + tower
@@ -1898,12 +1898,12 @@
      and we render that as a grayscale rect. mix-blend-mode: screen makes
      the bright noise specks lift the yellow/black behind them, so it reads
      as a tired phosphor signal rather than a literal sandpaper texture. */
-  .death-OLDEXE {
+  .death-TARPIT {
     background:
       linear-gradient(rgba(255, 215, 90, 0.07), rgba(255, 215, 90, 0.07)),
       #000;
   }
-  .death-OLDEXE::before {
+  .death-TARPIT::before {
     /* Black-and-white SVG of a CRT monitor + PC tower, centered.
        White strokes on transparent so the yellow wash shows through and
        the picture reads as pure black-and-white linework.
@@ -1944,8 +1944,8 @@
     89%, 90%  { transform: translate(22px, -3px);  opacity: 0.92; }
     91%, 100% { transform: translate(0,    0);   opacity: 0.92; }
   }
-  /* OLD.exe ::after deliberately empty — the static effect lives on the
-     STATIC virus now. The OLD.exe screen is just black + yellow wash +
+  /* T.A.R.P.I.T. ::after deliberately empty — the static effect lives on the
+     STATIC virus now. The T.A.R.P.I.T. screen is just black + yellow wash +
      glitching computer. */
 
   /* HEX — blue hexagons jumping to random positions. Each layer uses `steps()`
@@ -2396,11 +2396,11 @@
     to   { transform: translateY(-100%); }
   }
 
-  /* OLD.exe — death-fx layer cleared. The whole death screen is now just
+  /* T.A.R.P.I.T. — death-fx layer cleared. The whole death screen is now just
      a black background + weak yellow wash + the centered CRT picture
-     (handled on .death-OLDEXE itself above). */
-  .death-OLDEXE .death-fx::before,
-  .death-OLDEXE .death-fx::after { content: none; }
+     (handled on .death-TARPIT itself above). */
+  .death-TARPIT .death-fx::before,
+  .death-TARPIT .death-fx::after { content: none; }
 
   /* HEX — no extra fx (handled in the main HEX block above: red dots only). */
 

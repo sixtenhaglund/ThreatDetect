@@ -55,14 +55,14 @@ const Save = {
       }
       // One-shot virus-key migrations:
       //   BUGBEAR → HALLUCINATE → ASSISTANT  (the "." virus, renamed twice)
-      //   FOSSIL → OLDEXE                    (display name became "OLD.exe")
+      //   FOSSIL → OLDEXE → TARPIT          (display name became "T.A.R.P.I.T.")
       // Rename references in unlocked / deathsBy so codex + first-death badges
       // still work. Also auto-unlocks ASSISTANT on first load after that update.
       const renameKey = function (arr) {
         if (!Array.isArray(arr)) return arr;
         const out = arr.map(function (k) {
           if (k === "BUGBEAR" || k === "HALLUCINATE") return "ASSISTANT";
-          if (k === "FOSSIL") return "OLDEXE";
+          if (k === "FOSSIL" || k === "OLDEXE") return "TARPIT";
           return k;
         });
         // De-dupe in case multiple old keys collapsed into the same new one.
@@ -306,7 +306,7 @@ function activeTells(card) {
     describeMeterEffect(effect).forEach(t => tells.push(t));
   }
   if (card.btnFlicker)   tells.push("Report / OK buttons flickered on and off");
-  // bgShift can be specified per-card or per-virus (e.g. OLD.exe tints all its variants yellow).
+  // bgShift can be specified per-card or per-virus (e.g. T.A.R.P.I.T. tints all its variants yellow).
   const bgShift = card.bgShift || (v && v.bgShift);
   if (bgShift)           tells.push("Game panel background shifted to a " + bgShift + " tint");
   if (card.noise)        tells.push("Static noise overlay flickered across the popup");

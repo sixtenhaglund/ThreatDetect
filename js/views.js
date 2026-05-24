@@ -305,7 +305,7 @@ function viewPlay(isTraining) {
   const swap = state.tampering && state.tampering.type === "swap";
   const fxClasses = cardFxClasses(card);
   // Card-level bgShift wins; otherwise fall back to a virus-level default
-  // (e.g. OLD.exe's faint yellow phosphor tint applies to every variant).
+  // (e.g. T.A.R.P.I.T.'s faint yellow phosphor tint applies to every variant).
   const effBgShift = card.isVirus
     ? (card.bgShift || (VIRUSES[card.virusKey] && VIRUSES[card.virusKey].bgShift))
     : null;
@@ -499,7 +499,7 @@ function renderKillerMeters(card) {
         display = String(val);
       }
     }
-    // OLD.exe / quiet effects don't visually flag red, but on the death screen
+    // T.A.R.P.I.T. / quiet effects don't visually flag red, but on the death screen
     // we still want to call them out (the WHOLE point here is teaching).
     const cls = tampered ? "value bad" : "value";
     return `<div class="cell"><div class="label">${m.toUpperCase()}</div><div class="${cls}">${esc(display)}</div></div>`;

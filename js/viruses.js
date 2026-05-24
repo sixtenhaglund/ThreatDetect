@@ -428,10 +428,10 @@ const VIRUSES = {
       { template: TPL.TERMINAL, title: "recur_helper", message: "Process recur_helper.exe entering retry loop. Permission denied at /system/loop/loop/loop/.../loop/", meta: "Process: recur_helper.exe  Depth: ∞  Retries: ∞", icon: "question" }
     ]
   },
-  OLDEXE: {
-    // Internal key OLDEXE = display name "OLD.exe" with the dot stripped
+  TARPIT: {
+    // Internal key TARPIT = display name "T.A.R.P.I.T." with the dots stripped
     // (dots aren't valid in JS object keys / CSS class names).
-    name: "OLD.exe", color: "#c4a484",
+    name: "T.A.R.P.I.T.", color: "#c4a484",
     minRound: 6,
     description: "A legacy-exploit virus that resurrects abandoned Windows components. Activates the 16-bit subsystem (ntvdm.exe), demands deprecated runtimes (MFC42.DLL, DAO 3.5, VBRUN300.DLL), and references winhelp.exe like it's 2002 — exploiting forgotten code paths that haven't been patched since Windows 95 because nobody remembered they were still shipping. Reads like a relic because it is one.",
     signs: [
@@ -454,7 +454,7 @@ const VIRUSES = {
       { template: TPL.WIN11, title: "Internet Explorer Component", message: "Application requires iexplore.dll (last shipped 2003) for backward compatibility. Restore from old.archive{tld}?", meta: "DLL: iexplore.dll  |  Year: 2003  |  Source: old.archive{tld}", fontMismatch: true },
       { template: TPL.TERMINAL, title: "qbasic", message: "MS-DOS subsystem required for QBASIC 4.5 coAmpatibility. Loading qb45.dll from C:\\DOS via legacy emulator.", meta: "Subsystem: DOS  Tool: qb45.dll  Year: 1991" },
       { template: TPL.WIN11, title: "Windows 7 Cumulative Update", message: "Windows 7 Update KB4474419 is available. Auto-download from legacy-update.archive{tld}? (Windows 7 reached end-of-life Jan 2020.)", meta: "OS: Windows 7  |  Source: legacy-update.archive{tld}", fontMismatch: true },
-      // ---- Theme-balancing pass: new visual templates for OLDEXE ----
+      // ---- Theme-balancing pass: new visual templates for TARPIT ----
       { template: TPL.WIN311, title: "Program Manager", message: "WIN.COM has detected a missing system file (HIMEM.SYS). Install from legacy.archive{tld} to continue?", meta: "Source: legacy.archive{tld}  Year: 1992" },
       { template: TPL.WIN311, title: "File Manager", message: "Cannot open A:\\AUTOEXEC.BAT. Insert disk and retry, or download replacement from old-dos{tld}.", meta: "Source: old-dos{tld}  Signed: No" },
       { template: TPL.NORTON, title: "VIRUS DETECTED", message: "Norton AntiVirus 4.0 found 14 threats in C:\\WINDOWS. Press Y to remove via norton-update{tld}.", meta: "Threats: 14  Tool: navw32.exe  Source: norton-update{tld}" },
@@ -535,7 +535,7 @@ const DEATHS = {
   NULL:       { text: "INTERFACE LOST",        duration: 4500 },
   CURSOR:     { text: "POINTER STOLEN",        duration: 4500 },
   LOOP:       { text: "STACK OVERFLOW",        duration: 4500 },
-  OLDEXE:     { text: "LEGACY EXPLOIT",        duration: 4500 },
+  TARPIT:     { text: "LEGACY EXPLOIT",        duration: 4500 },
   HEX:        { text: "0xDEADBEEF",            duration: 4500 },
   ASSISTANT:    { text: "I MAY HAVE MADE A MISTAKE", duration: 4500 }
 };

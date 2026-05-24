@@ -609,7 +609,7 @@ Audio.deaths = {
       o.start(start); o.stop(start + 0.6);
     }
   },
-  OLDEXE() {
+  TARPIT() {
     // Quiet computer hum. A sustained low sine + second harmonic + a faint
     // high-passed hiss for "fan noise" texture. No glitches, no screams —
     // an old machine just sitting in a quiet room, humming.
