@@ -44,7 +44,7 @@ function viewMenu() {
         </div>
         <div class="stack tight" style="margin-top: 8px;">
           <button class="menu-btn" data-action="show-difficulty"><span>Play<div class="menu-sub">Pick difficulty · or jump into Training</div></span><span class="arrow">▶</span></button>
-          <button class="menu-btn" data-action="play-challenge"><span>Challenge<div class="menu-sub">All 20 viruses from round 1 · denser threats · earlier UI tampering</div></span><span class="arrow">▶</span></button>
+          <button class="menu-btn" data-action="play-challenge"><span>Challenge<div class="menu-sub">All ${Object.keys(VIRUSES).length} viruses from round 1 · denser threats · earlier UI tampering</div></span><span class="arrow">▶</span></button>
           <button class="menu-btn" data-action="play-endless"><span>Endless<div class="menu-sub">No finish line · rounds keep climbing forever · how far can you go?</div></span><span class="arrow">▶</span></button>
           <button class="menu-btn" data-action="codex"><span>Codex<div class="menu-sub">${unlockedCount}/${totalCount} threats discovered</div></span><span class="arrow">▶</span></button>
           <button class="menu-btn" data-action="minigame-practice"><span>Minigame Practice<div class="menu-sub">Train the quarantine minigame · no antivirus needed</div></span><span class="arrow">▶</span></button>
@@ -108,7 +108,7 @@ function viewDifficultyPicker() {
           <span class="arrow">▶</span>
         </button>
         <button class="menu-btn" data-action="start-difficulty" data-diff="hard">
-          <span>Hard<div class="menu-sub">All 20 viruses from round 1 · 40%→80% density · UI tampering kicks in early</div></span>
+          <span>Hard<div class="menu-sub">All ${Object.keys(VIRUSES).length} viruses from round 1 · 40%→80% density · UI tampering kicks in early</div></span>
           <span class="arrow">▶</span>
         </button>
         <button class="menu-btn" data-action="start-difficulty" data-diff="nightmare" ${nightmareUnlocked ? "" : "disabled style='opacity:0.45;cursor:not-allowed;'"}>
