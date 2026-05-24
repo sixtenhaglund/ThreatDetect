@@ -482,6 +482,9 @@ Audio.deaths = {
     bg.gain.linearRampToValueAtTime(0.42, t + 0.42);
     bg.gain.exponentialRampToValueAtTime(0.001, t + 2.2);
     bell.start(t + 0.4); bell.stop(t + 2.3);
+    // JUMPSCARE: fire a second stinger sting at ~2.75s, right when the
+    // door reaches its fully-open frame and the red flash hits the screen.
+    this.scheduleDeath(2750, () => this.stinger());
   },
   V01D() {
     const t = this.ctx.currentTime;

@@ -2208,36 +2208,23 @@
 
   /* STATIC — no extra fx (chunky b/w pixels only — see .death-STATIC above). */
 
-  /* Red_Rum — JUMPSCARE. Stays hidden while the door is closing/opening,
-     then snaps into view at ~95% (just after the door reaches its final
-     open position). Big bloody REDRUM text with a violent scale + jitter
-     so it punches the eye when it appears. */
+  /* Red_Rum — JUMPSCARE FLASH. Full-screen blood-red wash that snaps in at
+     ~86% (right when the door reaches its open position), holds for a few
+     frames, then sticks at a slightly dimmer red. Pairs with the loud
+     stinger fired by RED_RUM() in audio.js at the same moment. */
   .death-RED_RUM .death-fx::before {
-    content: "REDRUM";
+    content: "";
     position: absolute; inset: 0;
-    display: flex; align-items: center; justify-content: center;
-    font-family: serif; font-size: 14rem; font-weight: 900;
-    color: #ff0000;
-    text-shadow:
-      0 0 30px #ff0000,
-      0 0 60px #aa0000,
-      0 6px 0 #4a0000,
-      0 10px 30px rgba(255, 0, 0, 0.9);
-    letter-spacing: 0.1em;
+    background: #ff0000;
     opacity: 0;
-    transform: scale(0.4);
-    animation: redRumScare 3.2s steps(1, end) 1 forwards;
+    animation: redRumFlash 3.2s steps(1, end) 1 forwards;
   }
-  /* steps(1, end) = no interpolation; each keyframe is a hard cut. The
-     scare hits at 86% and then jitters for the remaining frames. */
-  @keyframes redRumScare {
-    0%, 85%   { opacity: 0;    transform: scale(0.4); }
-    86%       { opacity: 1;    transform: scale(1.6); }
-    88%       { opacity: 1;    transform: scale(1.1) translate(-8px, 4px); }
-    90%       { opacity: 1;    transform: scale(1.35) translate(6px, -3px); }
-    92%       { opacity: 1;    transform: scale(1.15) translate(-4px, -2px); }
-    94%       { opacity: 1;    transform: scale(1.3)  translate(3px,  4px); }
-    96%, 100% { opacity: 0.95; transform: scale(1.25); }
+  @keyframes redRumFlash {
+    0%, 85%   { opacity: 0;    background: #ff0000; }
+    86%       { opacity: 0.95; background: #ffffff; }
+    88%       { opacity: 0.85; background: #ff0000; }
+    90%       { opacity: 0.55; background: #aa0000; }
+    100%      { opacity: 0.55; background: #aa0000; }
   }
   .death-RED_RUM .death-fx::after { content: none; }
 
