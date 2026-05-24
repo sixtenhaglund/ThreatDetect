@@ -27,7 +27,7 @@ const TEXTUAL_TELLS = {
     { p: /antennasync|signal-fix|signal-mobile|broadcast{tld}|broadcast-archive|analog-archive|signal\{/i, t: "Fake signal-restore process or domain" },
     { p: /channel\s*\d+|channel_\d/i,                                               t: "References 'channel N' — modern displays don't have TV channels" }
   ],
-  REDRUM: [
+  RED_RUM: [
     { p: /HKCU\\(Hotel|Lodge|Caretaker)/i,                                          t: "Registry path uses themed names (Hotel, Lodge, Caretaker)" },
     { p: /Room\s*2[13]7/i,                                                          t: "References Room 237 or Room 217 (horror motif)" },
     { p: /caretaker|overlook|mur_der|murder\.exe|redrum\.exe|etatekrac/i,           t: "Process name uses a horror motif or palindrome" },

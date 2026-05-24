@@ -88,8 +88,8 @@ const VIRUSES = {
       { template: TPL.LOADING, title: "Cleaning Channel", message: "Filtering analog interference from channel 7 — installing noise_filter.scr from signal-fix{tld}.", meta: "Source: signal-fix{tld}  ·  Signed: No", icon: "glitch" }
     ]
   },
-  REDRUM: {
-    name: "REDRUM", color: "#cc1111",
+  RED_RUM: {
+    name: "Red_Rum", color: "#cc1111",
     minRound: 3,
     description: "A bloodborne data corruption virus with a Stanley Kubrick fixation. Silently overwrites system files starting from the registry, naming its processes after Overlook Hotel motifs (room 237, the caretaker) and palindromes (murder/redrum, racecar, etatekrac). Always claims your files are being 'taken care of' — which, technically, they are.",
     signs: [
@@ -632,7 +632,7 @@ const DEATHS = {
   EPILEPTICA: { text: "SEIZURE OVERLOAD",      duration: 4200 },
   MELTDOWN:   { text: "HARDWARE FAILURE",      duration: 4500 },
   STATIC:     { text: "SIGNAL LOST",           duration: 4200 },
-  REDRUM:     { text: "ALL WORK AND NO PLAY",  duration: 4800 },
+  RED_RUM:    { text: "ALL WORK AND NO PLAY",  duration: 4800 },
   V01D:       { text: "ALLOCATION FAULT",      duration: 4500 },
   REWRITER:   { text: "TIME UNVERIFIABLE",     duration: 4500 },
   CRYPT0:     { text: "FILES ENCRYPTED",       duration: 4500 },

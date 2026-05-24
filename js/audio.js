@@ -463,7 +463,7 @@ Audio.deaths = {
     src.connect(bp); bp.connect(g); g.connect(this.sfxGain);
     src.start(t);
   },
-  REDRUM() {
+  RED_RUM() {
     const t = this.ctx.currentTime;
     [55, 82.5].forEach(f => {
       const o = this.ctx.createOscillator(); o.type = "sawtooth"; o.frequency.value = f;

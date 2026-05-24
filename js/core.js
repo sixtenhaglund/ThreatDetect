@@ -69,6 +69,7 @@ const Save = {
       //   CRYPTEX → CRYPT0                   (display name became "Crypt.0")
       //   GASLIGHT → REWRITER                (display name became "Rewriter()")
       //   VOID → V01D                        (display name became "V01D")
+      //   REDRUM → RED_RUM                   (display name became "Red_Rum")
       // Rename references in unlocked / deathsBy so codex + first-death badges
       // still work. Also auto-unlocks ASSISTANT on first load after that update.
       const renameKey = function (arr) {
@@ -89,6 +90,7 @@ const Save = {
           if (k === "CRYPTEX") return "CRYPT0";
           if (k === "GASLIGHT") return "REWRITER";
           if (k === "VOID") return "V01D";
+          if (k === "REDRUM") return "RED_RUM";
           return k;
         }).filter(function (v) { return v != null; });
         // De-dupe in case multiple old keys collapsed into the same new one.
