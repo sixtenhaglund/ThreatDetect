@@ -549,7 +549,10 @@ Audio.deaths = {
     this.scheduleDeath(1100, () => this.scream());
   },
   MIMICER() {
-    // Single constant 800Hz sine droning for the full death duration.
+    // Single sustained sine droning at constant volume for the full death
+    // duration, but the FREQUENCY jumps to a new random value every ~40ms.
+    // setValueAtTime on AudioParam is a hard cut (no glide), so the pitch
+    // snaps — sounds like a glitching robot / fax modem.
     const t = this.ctx.currentTime;
     const o = this.ctx.createOscillator(); o.type = "sine"; o.frequency.value = 800;
     const g = this.ctx.createGain();
@@ -558,6 +561,14 @@ Audio.deaths = {
     g.gain.linearRampToValueAtTime(0.25, t + 0.05);
     g.gain.setValueAtTime(0.25, t + 4.4);
     g.gain.linearRampToValueAtTime(0, t + 4.5);
+    // Schedule ~110 frequency jumps across the 4.4s sustain (one every 40ms).
+    // Each pick is a random tone between 200Hz (low growl) and 2200Hz (high
+    // chirp), giving the impression of the virus impersonating many voices.
+    const step = 0.04;
+    for (let at = 0.05; at < 4.4; at += step) {
+      const f = 200 + Math.random() * 2000;
+      o.frequency.setValueAtTime(f, t + at);
+    }
     o.start(t); o.stop(t + 4.6);
   },
   HEARTBEAT() {
