@@ -252,7 +252,7 @@ const VIRUSES = {
   FAKE_BSOD: {
     // Internal key FAKE_BSOD = display name "fake_BSOD.000" with the dot
     // stripped (dots aren't valid in JS object keys / CSS class names).
-    name: "fake_BSOD.000", color: "#0846a0",
+    name: "fake_BSOD.000", color: "#0000AA",
     minRound: 5,
     description: "A kernel-level rootkit that infects the boot sector itself. Once installed in the MBR, it loads before Windows does — making it invisible to standard antivirus, which runs inside the OS it has already compromised. Always wants Secure Boot disabled and an unsigned kernel driver installed to C:\\Windows\\System32\\drivers. Detection usually requires booting from external media.",
     signs: [
