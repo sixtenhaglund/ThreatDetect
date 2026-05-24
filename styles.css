@@ -346,7 +346,7 @@
   .v-PULSE      { color: #ff55aa; }
   .v-NULL       { color: #777777; }
   .v-CURSOR     { color: #ffaa44; }
-  .v-LOOP       { color: #88ff88; }
+  .v-INFINITE       { color: #88ff88; }
   .v-TARPIT     { color: #c4a484; }
   .v-HEXR        { color: #88ddff; }
   .v-ASSISTANT    { color: #00ff00; }
@@ -366,7 +366,7 @@
   .codex-entry.v-PULSE      { border-left-color: #ff55aa; }
   .codex-entry.v-NULL       { border-left-color: #555555; }
   .codex-entry.v-CURSOR     { border-left-color: #ffaa44; }
-  .codex-entry.v-LOOP       { border-left-color: #88ff88; }
+  .codex-entry.v-INFINITE       { border-left-color: #88ff88; }
   .codex-entry.v-TARPIT     { border-left-color: #c4a484; }
   .codex-entry.v-HEXR        { border-left-color: #88ddff; }
   .codex-entry.v-ASSISTANT    { border-left-color: #00d4aa; }
@@ -1850,10 +1850,10 @@
     100% { transform: translate(8px, -12px)  rotate(8deg)  scale(1);    opacity: 0.85; }
   }
 
-  /* LOOP — green background that breathes between deep green and pure black.
+  /* INFINITE — green background that breathes between deep green and pure black.
      The giant ∞ symbol lives on .death-fx::before below and glitches
      violently in front of this fade. */
-  .death-LOOP {
+  .death-INFINITE {
     background-color: #000;
     animation: loopGreenFade 2.6s ease-in-out infinite;
   }
@@ -1861,8 +1861,8 @@
     0%, 100% { background-color: #006a14; }
     50%      { background-color: #000000; }
   }
-  .death-LOOP::before,
-  .death-LOOP::after { content: none; }
+  .death-INFINITE::before,
+  .death-INFINITE::after { content: none; }
 
   /* T.A.R.P.I.T. — vintage dead-channel death screen.
      Two layers stacked:
@@ -2311,11 +2311,11 @@
     100% { transform: translate(0, 0)        rotate(0deg)   scale(1); }
   }
 
-  /* LOOP — giant centered ∞ that glitches VIOLENTLY in front of the green
+  /* INFINITE — giant centered ∞ that glitches VIOLENTLY in front of the green
      fade background. steps(1, end) on the keyframes kills interpolation so
      every frame is a hard snap (no smooth slide). Two layered text-shadows
      give a red/cyan RGB-split feel when the glitch is at its worst. */
-  .death-LOOP .death-fx::before {
+  .death-INFINITE .death-fx::before {
     content: "∞";
     position: absolute; inset: 0;
     display: flex; align-items: center; justify-content: center;
@@ -2345,7 +2345,7 @@
     88%  { transform: translate(-8px,  10px) skew(0deg,    0deg) scale(1.4);  opacity: 0.95; filter: hue-rotate(300deg) contrast(2); }
     96%  { transform: translate(0,    0)    skew(0deg,    0deg) scale(1);    opacity: 0.95; filter: hue-rotate(0deg)  contrast(1); }
   }
-  .death-LOOP .death-fx::after { content: none; }
+  .death-INFINITE .death-fx::after { content: none; }
 
   /* T.A.R.P.I.T. — death-fx layer cleared. The whole death screen is now just
      black + weak yellow wash + the intense static overlay (handled on

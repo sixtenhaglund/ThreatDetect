@@ -501,8 +501,10 @@ const VIRUSES = {
       { template: TPL.UPDATE,  title: "Mouse Driver Update", message: "Logitech HID driver {version} requires mouse telemetry sharing to install. Source: cursor-update{tld}.", meta: "Driver: Logitech HID  ·  Source: cursor-update{tld}  ·  Telemetry: ON" }
     ]
   },
-  LOOP: {
-    name: "LOOP", color: "#88ff88",
+  INFINITE: {
+    // Internal key INFINITE = display name "I(n.fin)I:TE" with parens/dot/colon
+    // stripped (those aren't valid in JS object keys or CSS class names).
+    name: "I(n.fin)I:TE", color: "#88ff88",
     minRound: 5,
     description: "A recursive call exhaustion virus that buries itself in infinity. Creates nested directories (/loop/loop/loop/...) and retry chains so deep that file managers freeze and process killers stack-overflow trying to traverse them. The only way out is usually a full reboot, and even then it may have left a depth-∞ time bomb in the registry waiting for next startup.",
     signs: [
@@ -660,7 +662,7 @@ const DEATHS = {
   PULSE:      { text: "RHYTHM CAPTURED",       duration: 4500 },
   NULL:       { text: "INTERFACE LOST",        duration: 4500 },
   CURSOR:     { text: "POINTER STOLEN",        duration: 4500 },
-  LOOP:       { text: "STACK OVERFLOW",        duration: 4500 },
+  INFINITE:   { text: "STACK OVERFLOW",        duration: 4500 },
   TARPIT:     { text: "LEGACY EXPLOIT",        duration: 4500 },
   HEXR:       { text: "0xDEADBEEF",            duration: 4500 },
   ASSISTANT:    { text: "I MAY HAVE MADE A MISTAKE", duration: 4500 }

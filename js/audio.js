@@ -594,7 +594,7 @@ Audio.deaths = {
       this.beep(start, 600 + Math.random() * 600, 0.06, "square", 0.14);
     }
   },
-  LOOP() {
+  INFINITE() {
     // Vibrating sustained bass — sub + fundamental layered like NULL, then
     // an 8 Hz sine LFO wired into the master gain so the volume wobbles
     // up and down rapidly. The LFO output (±0.45) sums with the envelope

@@ -107,7 +107,7 @@ const TEXTUAL_TELLS = {
     { p: /click.prediction|pointer telemetry|cursor drift|click accuracy|HID-Mouse|pointer smoothing|click forecast|tap accuracy|pointer model/i, t: "Hooks into pointer / mouse driver telemetry" },
     { p: /telemetry:?\s*on|share.{0,4}(pointer|telemetry|click)/i,                  t: "Wants to share your pointer / click telemetry to a remote server" }
   ],
-  LOOP: [
+  INFINITE: [
     { p: /(\.\.\/){2,}|\/loop\/loop/i,                                              t: "File path with deeply nested traversal (../../../) or /loop/loop/" },
     { p: /depth:?\s*∞|recursion depth|stack overflow|retry until|autoretry|retries:?\s*∞|retries:?\s*\d{4,}|retry loop|boot loop/i, t: "Infinite recursion, retry loop, or stack overflow language" },
     { p: /loop_helper|loop_unwinder|path_unwinder|recur_helper|autoretry_helper|boot_unwinder/i, t: "Fake 'unwind the loop' helper process name" }
