@@ -1561,7 +1561,50 @@
      wiped portion is visible at any time. The clip-path animation moves
      the right edge from -100% to 0, revealing yellow as it sweeps. */
   .death-REWRITER { background: #1a1500; }
-  .death-REWRITER::before, .death-REWRITER::after { content: none; }
+  /* Two sparkle layers stacked on top of the code. Each is a single ✦
+     glyph with ~30 hand-placed text-shadow copies at random vw/vh
+     positions, so one element = many sparkles. The two layers twinkle
+     on opposite phases (animation-delay: -0.9s) so the screen always
+     has roughly half the sparkles lit at any moment. */
+  .death-REWRITER::before,
+  .death-REWRITER::after {
+    content: "✦";
+    position: absolute;
+    top: 0; left: 0;
+    font-size: 1.1rem;
+    color: #ffd56b;
+    pointer-events: none;
+    animation: sparkleTwinkle 1.8s ease-in-out infinite;
+  }
+  .death-REWRITER::before {
+    text-shadow:
+       6vw   8vh 0 #ffd56b,  18vw  22vh 0 #ffcc00,  32vw   6vh 0 #ffd56b,
+      45vw  18vh 0 #ffe080,  58vw  10vh 0 #ffcc00,  72vw  24vh 0 #ffd56b,
+      86vw   6vh 0 #ffe080,  10vw  38vh 0 #ffd56b,  24vw  48vh 0 #ffcc00,
+      38vw  42vh 0 #ffe080,  52vw  52vh 0 #ffd56b,  66vw  44vh 0 #ffcc00,
+      80vw  50vh 0 #ffd56b,  94vw  40vh 0 #ffe080,   4vw  62vh 0 #ffd56b,
+      20vw  72vh 0 #ffcc00,  34vw  78vh 0 #ffd56b,  50vw  68vh 0 #ffe080,
+      64vw  82vh 0 #ffd56b,  78vw  74vh 0 #ffcc00,  92vw  86vh 0 #ffd56b,
+      12vw  90vh 0 #ffe080,  28vw  92vh 0 #ffd56b,  46vw  94vh 0 #ffcc00,
+      60vw  92vh 0 #ffd56b,  74vw  90vh 0 #ffe080,  88vw  94vh 0 #ffd56b;
+  }
+  .death-REWRITER::after {
+    animation-delay: -0.9s;
+    text-shadow:
+      14vw  14vh 0 #ffcc00,  26vw   4vh 0 #ffd56b,  40vw  16vh 0 #ffe080,
+      54vw   2vh 0 #ffd56b,  68vw  18vh 0 #ffcc00,  82vw  12vh 0 #ffd56b,
+       2vw  20vh 0 #ffe080,  16vw  32vh 0 #ffd56b,  30vw  36vh 0 #ffcc00,
+      44vw  30vh 0 #ffe080,  58vw  38vh 0 #ffd56b,  74vw  34vh 0 #ffcc00,
+      88vw  26vh 0 #ffd56b,   8vw  54vh 0 #ffe080,  22vw  60vh 0 #ffd56b,
+      36vw  56vh 0 #ffcc00,  50vw  62vh 0 #ffd56b,  62vw  58vh 0 #ffe080,
+      76vw  60vh 0 #ffd56b,  90vw  58vh 0 #ffcc00,   6vw  78vh 0 #ffd56b,
+      18vw  80vh 0 #ffe080,  32vw  88vh 0 #ffd56b,  48vw  82vh 0 #ffcc00,
+      56vw  78vh 0 #ffd56b,  70vw  88vh 0 #ffe080,  84vw  82vh 0 #ffd56b;
+  }
+  @keyframes sparkleTwinkle {
+    0%, 100% { opacity: 0.95; transform: scale(1); }
+    50%      { opacity: 0.2;  transform: scale(0.7); }
+  }
   .death-REWRITER .death-fx::before,
   .death-REWRITER .death-fx::after {
     content: "// rewriter.run()\Aaudit.log = restore('approved');\Ahistory.timestamp = '1601-01-01';\Asession.user = 'by you';\Aevents.removeWhere(!authorized);\Adb.records.update({\A  approved: true,\A  date: '-9,999 days'\A});\Async.cloud('trusted_state');\Alocal.clock = server.clock = 0;\A//\Afs.timestamps.set('Feb 30 2026');\Aregistry.write('HKCU\\\\Auth', true);\Alogs.before = []; logs.after = [];\Apermissions.grant(this, '*');\Amail.outbox.forEach(undo);\Abackup.restore('verified');\Aif (you.remember(this)) erase(you.memory);\Asign({ approved_by: 'you', when: 'always' });\A//\A// rewritten. you signed off on this.";
