@@ -2053,10 +2053,11 @@
     content: "";
     position: absolute; inset: 0;
     background: url("heart.jpg") no-repeat center / contain;
+    /* Just the white-removal color matrix + saturation. No drop-shadow —
+       the previous halo scaled with the heart and made the surrounding red
+       look like it was rippling. Without it, only the heart shape pulses. */
     filter:
       url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='r' color-interpolation-filters='sRGB'%3E%3CfeColorMatrix values='1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  -1 -1 -1 1 1.5'/%3E%3C/filter%3E%3C/svg%3E#r")
-      drop-shadow(0 0 30px #aa0000)
-      drop-shadow(0 0 80px #660000)
       saturate(1.4);
     animation: heartbeatPump 0.9s ease-in-out infinite;
   }
