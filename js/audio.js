@@ -574,16 +574,41 @@ Audio.deaths = {
     for (let i = 0; i < 4; i++) this.scheduleDeath(i * 1100, playBeat);
   },
   DOTNULL() {
-    // Sustained bass hum — much louder. Layered sub + fundamental for chest-felt weight.
+    // Chaotic bass — sustained sub+fund (like before) but with random
+    // dropouts (sudden silences), random pitch jumps on the sub, and
+    // sprinkled higher-pitch click bursts. Different every play.
     const t = this.ctx.currentTime;
-    const sub = this.ctx.createOscillator(); sub.type = "sine"; sub.frequency.value = 32;
+    const sub  = this.ctx.createOscillator(); sub.type  = "sine"; sub.frequency.value  = 32;
     const fund = this.ctx.createOscillator(); fund.type = "sine"; fund.frequency.value = 48;
     const g = this.ctx.createGain();
     sub.connect(g); fund.connect(g); g.connect(this.sfxGain);
     g.gain.setValueAtTime(0, t);
     g.gain.linearRampToValueAtTime(1.1, t + 0.3);
+    // ~14 random dropouts between 0.5s and 3.7s — crash to 0 for 30-100ms
+    // then snap back to 1.1, so the bass feels like it's losing signal.
+    for (let i = 0; i < 14; i++) {
+      const at = t + 0.5 + Math.random() * 3.2;
+      const dur = 0.03 + Math.random() * 0.07;
+      g.gain.setValueAtTime(1.1, at - 0.003);
+      g.gain.setValueAtTime(0,   at);
+      g.gain.setValueAtTime(0,   at + dur);
+      g.gain.setValueAtTime(1.1, at + dur + 0.005);
+    }
     g.gain.setValueAtTime(1.1, t + 4);
     g.gain.linearRampToValueAtTime(0, t + 4.5);
+    // Random pitch jumps on the sub oscillator (24-56 Hz range).
+    for (let i = 0; i < 10; i++) {
+      const at = t + 0.4 + Math.random() * 3.5;
+      sub.frequency.setValueAtTime(24 + Math.random() * 32, at);
+    }
+    // Random higher-pitch click bursts at random times — sharp digital
+    // pops on top of the bass for "data corruption" texture.
+    for (let i = 0; i < 12; i++) {
+      const at = t + 0.3 + Math.random() * 3.9;
+      const freq = 200 + Math.random() * 1800;
+      const dur = 0.04 + Math.random() * 0.08;
+      this.beep(at, freq, dur, "square", 0.16);
+    }
     sub.start(t);  sub.stop(t + 4.6);
     fund.start(t); fund.stop(t + 4.6);
   },
