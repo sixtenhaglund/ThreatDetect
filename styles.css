@@ -337,7 +337,7 @@
   .v-VOID       { color: #aa66ff; }
   .v-GASLIGHT   { color: #ffd56b; }
   .v-CRYPTEX    { color: #ffcc00; }
-  .v-WORM       { color: #44ff44; }
+  .v-HAKR_10111001       { color: #44ff44; }
   .v-FAKE_BSOD    { color: #0000AA; }
   .v-DDOS       { color: #ff8800; }
   .v-LEECH_ERR      { color: #aa00ff; }
@@ -356,7 +356,7 @@
   .codex-entry.v-VOID       { border-left-color: #aa66ff; }
   .codex-entry.v-GASLIGHT   { border-left-color: #ffd56b; }
   .codex-entry.v-CRYPTEX    { border-left-color: #ffcc00; }
-  .codex-entry.v-WORM       { border-left-color: #44ff44; }
+  .codex-entry.v-HAKR_10111001       { border-left-color: #44ff44; }
   .codex-entry.v-FAKE_BSOD    { border-left-color: #0000AA; }
   .codex-entry.v-DDOS       { border-left-color: #ff8800; }
   .codex-entry.v-LEECH_ERR      { border-left-color: #aa00ff; }
@@ -1336,7 +1336,7 @@
     opacity: 0 !important;
   }
 
-  /* WORM is already "green on black with calm scroll" in normal mode — no extra photo-safe rules needed. */
+  /* HAKR_10111001 is already "green on black with calm scroll" in normal mode — no extra photo-safe rules needed. */
 
   /* EPILEPTICA — strobing B/W background + colored bars sliding across + drifting text */
   .death-EPILEPTICA {
@@ -1618,22 +1618,77 @@
     100% { clip-path: inset(0 0 0 0); }
   }
 
-  /* WORM — black screen with calm scrolling green .exe filenames. No icon storm. */
-  .death-WORM { background: #000800; }
-  .death-WORM::before { content: none; }
-  .death-WORM::after {
-    content: "Resume.pdf.exe        Contract_2024.pdf.exe        SystemFix_IT.exe        Q4_Summary.xlsx.exe        Invoice.pdf.exe        HR_Policy.pdf.exe        Bonus.docx.exe        Tax_Refund.pdf.exe        NDA.docx.exe        Receipts.zip.exe        Payroll.xlsx.exe        Helpdesk_Patch.exe        Salary_Review.pdf.exe        ";
-    position: absolute; inset: 0; padding: 14px;
+  /* HAKR_10111001 — Matrix-style green code rain. Three columns of text
+     scrolling at different speeds and directions so the screen feels
+     packed with "the virus is spreading". */
+  .death-HAKR_10111001 { background: #000800; overflow: hidden; }
+  /* Left column: binary code rain (matches the 10111001 in the name). */
+  .death-HAKR_10111001::before {
+    content: "1 0 1 1 1 0 0 1   0 1 1 0 0 1 0 1   1 1 0 1 0 0 1 0   0 0 1 1 1 0 0 1   1 0 0 1 0 1 1 0   1 1 1 0 1 0 0 1   0 1 0 1 1 1 0 0   1 0 0 0 1 1 0 1   1 0 1 0 0 1 1 1   0 1 1 1 0 1 0 0   1 0 1 1 1 0 0 1   0 1 1 0 0 1 0 1   1 1 0 1 0 0 1 0   0 0 1 1 1 0 0 1   1 0 0 1 0 1 1 0   1 1 1 0 1 0 0 1   0 1 0 1 1 1 0 0   1 0 0 0 1 1 0 1   1 0 1 0 0 1 1 1   0 1 1 1 0 1 0 0   1 0 1 1 1 0 0 1   0 1 1 0 0 1 0 1   1 1 0 1 0 0 1 0   0 0 1 1 1 0 0 1   1 0 0 1 0 1 1 0   1 1 1 0 1 0 0 1   0 1 0 1 1 1 0 0   1 0 0 0 1 1 0 1";
+    position: absolute; top: 0; bottom: 0; left: 2%; width: 18%;
+    padding: 12px;
+    font-family: "Cascadia Mono", monospace; font-size: 13px;
+    color: #66ff66;
+    text-shadow: 0 0 6px #44ff44;
+    letter-spacing: 0.05em;
+    line-height: 1.9;
+    white-space: pre-wrap;
+    opacity: 0.85;
+    animation: hakrBinary 4.5s linear infinite;
+  }
+  @keyframes hakrBinary {
+    from { transform: translateY(-50%); }
+    to   { transform: translateY(50%); }
+  }
+  /* Middle-right column: scrolling fake-filename payload list. */
+  .death-HAKR_10111001::after {
+    content: "Resume.pdf.exe        Contract_2024.pdf.exe        SystemFix_IT.exe        Q4_Summary.xlsx.exe        Invoice.pdf.exe        HR_Policy.pdf.exe        Bonus.docx.exe        Tax_Refund.pdf.exe        NDA.docx.exe        Receipts.zip.exe        Payroll.xlsx.exe        Helpdesk_Patch.exe        Salary_Review.pdf.exe        Onboarding.pdf.exe        Meeting_Notes.docx.exe        Roadmap_Q3.pdf.exe        Audit_2026.xlsx.exe        Performance_Review.pdf.exe        Severance.pdf.exe        Stock_Options.xlsx.exe        Background_Check.pdf.exe        Org_Chart.pdf.exe        Expense_Report.xlsx.exe        Promotion_Letter.docx.exe        ";
+    position: absolute; top: 0; bottom: 0; left: 24%; width: 38%;
+    padding: 14px;
     font-family: monospace; font-size: 14px;
     color: #44ff44;
     text-shadow: 0 0 8px #44ff44;
     line-height: 2.2;
     white-space: pre-wrap;
     word-spacing: 6px;
-    opacity: 0.85;
-    animation: wormSpam 6s linear infinite;
+    opacity: 0.9;
+    animation: hakrFilenames 7s linear infinite;
   }
-  @keyframes wormSpam {
+  @keyframes hakrFilenames {
+    from { transform: translateY(100%); }
+    to   { transform: translateY(-100%); }
+  }
+  /* Right column: terminal commands cascading down on the death-fx layer. */
+  .death-HAKR_10111001 .death-fx::before {
+    content: "$ spread.sh --target=corp-share\A> connecting to //corp-share/HR ... OK\A> copying Resume.pdf.exe to 14 hosts\A> hosts compromised: 14 / 14\A$ ssh hr-dept-01\A> [21:42:08] connected as administrator\A$ replicate --recursive\A> /HR/onboarding/ -> .exe\A> /finance/Q4/ -> .exe\A> /it/patches/ -> .exe\A> 847 files renamed\A$ smtp-flood --list=contacts.csv\A> sent: 4,217 / 8,441 emails\A> bounce: 12 (ignored)\A$ persist.sh --boot\A> registry written to HKLM\\...\\Run\A> scheduled task created: WindowsHelper\A$ python spread_lateral.py\A> scanning 192.168.0.0/24\A> found: 31 SMB shares\A> infecting...\A> DONE\A$ exfil --dest=npm-mirror.tk\A> uploading 12,847 credentials\A> ACK 200 OK\A$ _";
+    position: absolute; top: 0; bottom: 0; right: 2%; width: 30%;
+    padding: 12px;
+    white-space: pre;
+    font-family: "Cascadia Mono", monospace; font-size: 12px;
+    color: #88ff88;
+    text-shadow: 0 0 4px #44ff44;
+    line-height: 1.7;
+    opacity: 0.85;
+    animation: hakrCmds 10s linear infinite;
+  }
+  @keyframes hakrCmds {
+    from { transform: translateY(100%); }
+    to   { transform: translateY(-200%); }
+  }
+  /* Far-right thin column: IP scan log scrolling up at a third speed. */
+  .death-HAKR_10111001 .death-fx::after {
+    content: "192.168.0.1   OPEN\A192.168.0.2   OPEN\A192.168.0.3   FILTERED\A192.168.0.4   OPEN\A192.168.0.5   OPEN\A10.0.0.1      OPEN\A10.0.0.12     OPEN\A10.0.0.47     OPEN\A172.16.0.5    OPEN\A172.16.0.18   FILTERED\A192.168.1.100 OPEN\A192.168.1.105 OPEN\A192.168.1.142 OPEN\A10.10.0.27    OPEN\A10.10.0.55    OPEN\A172.20.5.18   OPEN\A172.20.5.42   FILTERED\A192.168.2.4   OPEN\A192.168.2.5   OPEN\A192.168.2.19  OPEN\A 14 / 14 hosts infected\A 847 files renamed\A 4,217 emails sent\A 12,847 credentials\A    exfiltrated";
+    position: absolute; top: 0; bottom: 0; right: 34%; width: 14%;
+    padding: 12px;
+    white-space: pre;
+    font-family: monospace; font-size: 11px;
+    color: #22cc22;
+    text-shadow: 0 0 3px #22cc22;
+    line-height: 1.8;
+    opacity: 0.8;
+    animation: hakrIps 5.5s linear infinite reverse;
+  }
+  @keyframes hakrIps {
     from { transform: translateY(100%); }
     to   { transform: translateY(-100%); }
   }
@@ -2201,7 +2256,8 @@
   }
   @keyframes cryptexBanner { 50% { background: #660000; } }
 
-  /* WORM — no extra fx (intentionally minimal: black screen + green filename scroll). */
+  /* HAKR_10111001 — extra fx layers (terminal commands + IP scan) are
+     defined alongside the main rule above. */
 
   /* FAKE_BSOD — no extra fx (the BSOD + register scroll stand on their own). */
 

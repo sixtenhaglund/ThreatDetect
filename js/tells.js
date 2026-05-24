@@ -55,7 +55,7 @@ const TEXTUAL_TELLS = {
     { p: /premium recovery|premium key|pay.{0,12}(unlock|decrypt|recovery|seed)|recovery.?vault|onedrive-restore/i, t: "Demands payment to unlock your own files" },
     { p: /README_DECRYPT|ransom note|decryption (instructions|key|patch)/i,         t: "Mentions a 'README' ransom note or 'decryption key'" }
   ],
-  WORM: [
+  HAKR_10111001: [
     { p: /\.(pdf|docx|xlsx|jpg|png|zip)\.exe/i,                                     t: "File pretends to be a document but is actually .exe" },
     { p: /HR.{0,8}Dep|IT Support|Accounting Notice|hr-dept@|company-portal|finance team|payroll|onboarding/i, t: "Claims to be from HR / IT / Accounting / Onboarding" },
     { p: /network share|shares writing|copies created|spread\.sh|self-replicat|writing to.{0,8}share|spreads.{0,4}(to|across).{0,4}\d+|14\s*(shares|devices|contacts|nearby)/i, t: "Replicates across network shares / devices / contacts" },

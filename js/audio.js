@@ -505,7 +505,7 @@ Audio.deaths = {
     const t = this.ctx.currentTime;
     for (let i = 0; i < 12; i++) this.beep(t + i * 0.32, 300 - i * 18, 0.1, "square", 0.22);
   },
-  WORM() {
+  HAKR_10111001() {
     const t = this.ctx.currentTime;
     for (let i = 0; i < 22; i++) {
       const start = t + i * 0.14 + Math.random() * 0.04;

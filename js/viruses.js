@@ -213,8 +213,8 @@ const VIRUSES = {
       { template: TPL.PHONE,  title: "Photos Encrypted", message: "All {numfiles} photos on your phone have been locked. Pay {wallet} or they're deleted in {timer}.", meta: "App: Photos  ·  Locked: {numfiles}  ·  Wallet: {wallet}", borderPulse: true }
     ]
   },
-  WORM: {
-    name: "WORM", color: "#44ff44",
+  HAKR_10111001: {
+    name: "HAKR_10111001", color: "#44ff44",
     minRound: 3,
     meterEffect: { ping: 9999 },
     description: "A self-replicating network worm that wears a paper trail like camouflage. Disguises each copy as an HR document, accounting spreadsheet, or IT patch (Resume.pdf.exe, Q4_Summary.xlsx.exe, SystemFix_IT.exe), then spreads laterally through mounted shares and mass email. The classic double-extension trick — looks like a document, runs like an executable, because Windows hides the real extension by default.",
@@ -632,7 +632,7 @@ const DEATHS = {
   VOID:       { text: "ALLOCATION FAULT",      duration: 4500 },
   GASLIGHT:   { text: "TIME UNVERIFIABLE",     duration: 4500 },
   CRYPTEX:    { text: "FILES ENCRYPTED",       duration: 4500 },
-  WORM:       { text: "REPLICATION COMPLETE",  duration: 4500 },
+  HAKR_10111001: { text: "REPLICATION COMPLETE",  duration: 4500 },
   FAKE_BSOD:  { text: "KERNEL COMPROMISED",    duration: 4800 },
   DDOS:       { text: "BANDWIDTH HIJACKED",    duration: 4500 },
   LEECH_ERR:  { text: "CREDENTIALS HARVESTED", duration: 4500 },
