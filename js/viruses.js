@@ -15,7 +15,6 @@ const VIRUSES = {
       "References 'display calibration' or 'monitor sync'",
       "Process name ends in _flash.exe or _strobe.exe",
       "Memory usage listed as exactly 0KB or 999MB",
-      "FPS meter flashes wildly between 0 and 999",
       "Action buttons (Report / OK) flicker on and off"
     ],
     meterEffect: { fps: "flash", vol: "flash" },
@@ -43,7 +42,6 @@ const VIRUSES = {
       "Suggests disabling thermal protection or cooling",
       "Process name contains 'thermal', 'heat', or 'temp_override'",
       "Asks you to run a 'cooling script' from an unknown source",
-      "CPU meter pinned to an impossible value (247°C)",
       "Game panel background tinted deep red"
     ],
     meterEffect: { cpu: 247 },
@@ -99,7 +97,6 @@ const VIRUSES = {
       "Process name is a palindrome or reversed word (e.g. murder/redrum, racecar)",
       "Claims files are being 'taken care of' without your action",
       "Registry path listed as HKCU\\Hotel or similar nonsense",
-      "System clock stops on :37 — the hotel room number",
       "Popup edges pulse red"
     ],
     meterEffect: { time: "room237" },
@@ -125,7 +122,6 @@ const VIRUSES = {
       "References 'null space', 'void', or 'entropy'",
       "File sizes listed as negative numbers or infinity",
       "Output directory is /dev/null or NUL",
-      "FPS and CPU meters read NULL or ∞",
       "The popup sways or wobbles slightly"
     ],
     meterEffect: { fps: "null", cpu: "null" },
@@ -159,7 +155,6 @@ const VIRUSES = {
       "Event time references a date that doesn't exist (Feb 30, etc.)",
       "Claims the user 'already approved' an action they didn't",
       "Log entries reference yourself by the wrong username",
-      "System clock shows an impossible date in place of the time",
       "Heading font doesn't match the body font"
     ],
     meterEffect: { time: "wrong" },
@@ -192,7 +187,6 @@ const VIRUSES = {
       "References a countdown timer for file deletion",
       "Claims to be 'backing up' files but asks for payment",
       "File extension being changed to .locked, .crypt, .vault",
-      "System clock displays a countdown instead of a time",
       "Popup border pulses red with countdown urgency"
     ],
     meterEffect: { time: "countdown" },
@@ -264,7 +258,6 @@ const VIRUSES = {
       "References MBR (Master Boot Record) modification",
       "Asks you to disable Secure Boot or sign a kernel driver",
       "Installs itself into C:\\Windows\\System32\\drivers\\",
-      "CPU meter reads 'KERNEL' instead of a number",
       "Game panel background shifts to a deep blue tint"
     ],
     meterEffect: { cpu: "kernel" },
@@ -300,7 +293,6 @@ const VIRUSES = {
       "Claims to be a 'bandwidth test' or 'network diagnostic'",
       "References joining a 'network pool' or 'distributed computing cluster'",
       "CPU and network usage spike to 100% with no user action",
-      "Ping meter pinned at 9999ms",
       "Action buttons flicker as if struggling under load"
     ],
     meterEffect: { ping: 9999 },
@@ -365,7 +357,6 @@ const VIRUSES = {
       "Uses ALL CAPS, multiple exclamation marks, and counters that don't make sense",
       "Plays a sudden loud noise when shown (turn audio on to hear)",
       "Claims your computer is already infected and demands action right now",
-      "Volume meter pinned at 100% (red)",
       "Multiple effects at once — flickering buttons, red border pulse, shaking icon, red background tint"
     ],
     meterEffect: { vol: "blast" },
@@ -442,7 +433,6 @@ const VIRUSES = {
       "Brightness or contrast shifts in waves while reading",
       "References 'sync', 'rhythm', 'heartbeat', or 'cardio' in process names",
       "Claims to be 'optimizing refresh' or 'syncing tempo'",
-      "FPS meter oscillates rhythmically between 60 and 120",
       "Popup wobbles in time with the meters"
     ],
     meterEffect: { fps: "pulse", vol: "pulse" },
@@ -468,7 +458,6 @@ const VIRUSES = {
       "Empty error boxes with no title or no message at all",
       "Window controls (minimize/close) are absent",
       "References 'nullify', 'suppress', 'hide', 'omit', or '∅'",
-      "FPS and CPU meters go blank (—)",
       "Action buttons may flicker on and off"
     ],
     meterEffect: { fps: "blank", cpu: "blank" },
@@ -550,7 +539,6 @@ const VIRUSES = {
       "Mentions defunct services (WinHelp, DAO, MFC42, WinINET)",
       "UI styling or wording feels mismatched to modern Windows",
       "Heading and body fonts often don't match",
-      "FPS meter drops into the single digits (1–11) — like the era it came from",
       "Popup has a faint yellow tint (vintage phosphor)"
     ],
     bgShift: "yellow",
