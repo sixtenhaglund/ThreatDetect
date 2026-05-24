@@ -558,11 +558,11 @@ Audio.deaths = {
     g.gain.setValueAtTime(0.25, t + 4.4);
     g.gain.linearRampToValueAtTime(0, t + 4.5);
     // Schedule ~110 frequency jumps across the 4.4s sustain (one every 40ms).
-    // Each pick is a random tone between 200Hz (low growl) and 2200Hz (high
-    // chirp), giving the impression of the virus impersonating many voices.
+    // Pitch range spans 40Hz (deep sub-bass thump) to 2400Hz (high chirp) —
+    // wide enough to swing between bass rumble and shrill beep mid-sentence.
     const step = 0.04;
     for (let at = 0.05; at < 4.4; at += step) {
-      const f = 200 + Math.random() * 2000;
+      const f = 40 + Math.random() * 2360;
       o.frequency.setValueAtTime(f, t + at);
     }
     o.start(t); o.stop(t + 4.6);
