@@ -338,7 +338,7 @@
   .v-GASLIGHT   { color: #ffd56b; }
   .v-CRYPTEX    { color: #ffcc00; }
   .v-WORM       { color: #44ff44; }
-  .v-FAKE_BSOD    { color: #1084d0; }
+  .v-FAKE_BSOD    { color: #0846a0; }
   .v-DDOS       { color: #ff8800; }
   .v-LEECH_ERR      { color: #aa00ff; }
   .v-MIMICER      { color: #66ddff; }
@@ -357,7 +357,7 @@
   .codex-entry.v-GASLIGHT   { border-left-color: #ffd56b; }
   .codex-entry.v-CRYPTEX    { border-left-color: #ffcc00; }
   .codex-entry.v-WORM       { border-left-color: #44ff44; }
-  .codex-entry.v-FAKE_BSOD    { border-left-color: #1084d0; }
+  .codex-entry.v-FAKE_BSOD    { border-left-color: #0846a0; }
   .codex-entry.v-DDOS       { border-left-color: #ff8800; }
   .codex-entry.v-LEECH_ERR      { border-left-color: #aa00ff; }
   .codex-entry.v-MIMICER      { border-left-color: #66ddff; }
