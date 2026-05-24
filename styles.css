@@ -2037,40 +2037,34 @@
   .death-ASSISTANT .death-fx::before,
   .death-ASSISTANT .death-fx::after { content: none; }
 
-  /* (<HEART.BEAT>) — single huge bloody human heart in the middle, beating
-     with a lub-dub rhythm. Background pulses dark→darker red in sync so the
-     whole screen feels like it's pumping blood. The 🫀 anatomical-heart
-     emoji renders as a real-looking heart on modern Win11 / mac / iOS. */
+  /* (<HEART.BEAT>) — heart.jpg (original photo) centered, beating lub-dub.
+     mix-blend-mode: multiply drops the photo's white background naturally
+     against the black death-screen: anything * black = black, and white
+     pixels in the photo just become black (invisible) while the red heart
+     pixels keep their color. No color-matrix tricks. */
   .death-HEARTBEAT {
-    background: #1a0000;
-    animation: heartbeatBg 0.9s ease-in-out infinite;
-  }
-  @keyframes heartbeatBg {
-    0%, 100% { background: #1a0000; }
-    50%      { background: #4a0000; }
+    background: #000;
   }
   .death-HEARTBEAT::before {
-    /* The heart itself. drop-shadow gives a wet, glowing-red "bleeding" halo. */
-    content: "🫀";
-    position: absolute; inset: 0;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 22rem;
-    filter:
-      drop-shadow(0 0 30px #aa0000)
-      drop-shadow(0 0 80px #660000)
-      saturate(1.4);
+    content: "";
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 70vmin; height: 70vmin;
+    background: url("heart.jpg") no-repeat center / contain;
+    mix-blend-mode: multiply;
+    transform: translate(-50%, -50%);
     animation: heartbeatPump 0.9s ease-in-out infinite;
   }
-  /* Lub-dub: two contractions per cycle. The first (lub) is the bigger
-     ventricular contraction at ~10%; the second (dub) is a smaller atrial
-     bounce at ~28%. Rest of the cycle holds at scale 1. */
+  /* Lub-dub: two contractions per cycle. translate(-50%,-50%) keeps the
+     heart centered while it scales (since width/height + top/left positioning
+     measure from the top-left corner of the box, not the center). */
   @keyframes heartbeatPump {
-    0%   { transform: scale(1);    }
-    8%   { transform: scale(1.22); }
-    18%  { transform: scale(0.95); }
-    26%  { transform: scale(1.12); }
-    36%  { transform: scale(1);    }
-    100% { transform: scale(1);    }
+    0%   { transform: translate(-50%, -50%) scale(1);    }
+    8%   { transform: translate(-50%, -50%) scale(1.22); }
+    18%  { transform: translate(-50%, -50%) scale(0.95); }
+    26%  { transform: translate(-50%, -50%) scale(1.12); }
+    36%  { transform: translate(-50%, -50%) scale(1);    }
+    100% { transform: translate(-50%, -50%) scale(1);    }
   }
   .death-HEARTBEAT::after { content: none; }
 
