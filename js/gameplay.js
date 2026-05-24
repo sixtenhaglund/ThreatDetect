@@ -218,18 +218,17 @@ function spreadSameVirus(deck) {
   return deck;
 }
 
-/* Pick `n` cards from `pool` such that each TEMPLATE has roughly equal odds
-   of being picked, regardless of how many cards belong to that template.
-   - Group the pool by template (so BSOD's 6 cards and WIN11's 174 cards are
-     treated as equal "buckets").
-   - Shuffle the bucket list, then round-robin through it: each pass takes one
-     card from each template's bucket until we have `n` cards.
-   - Within a bucket, prefer cards not already seen this run (using `usedKeys`
-     to track dealt cards across rounds — no card repeats unless the bucket's
-     unused supply runs out).
-   This is what makes rare templates (BSOD/WIN311/CAPTCHA) appear as often as
-   common ones (WIN11/TOAST/TERMINAL), without removing the variety inside
-   each template. */
+/* Pick `n` cards from `pool` with template-balanced weighting.
+   Each template's pick weight = sqrt(its fresh card count). That gives:
+     - A 1-card template (e.g. CAPTCHA) gets weight 1
+     - A 100-card template (e.g. WIN11) gets weight 10
+   Rare templates still show up regularly, but a template with only 1 card
+   no longer dominates the slot — otherwise its one card would get dealt
+   every time the template was chosen, which is the root of the "same 10
+   cards every run" bug.
+   Within the chosen template, picks a random fresh card (falls back to
+   stale if everything's been dealt). `usedKeys` tracks dealt cards across
+   rounds so the same card doesn't repeat inside one run. */
 function pickByUniformTemplate(pool, n, usedKeys) {
   if (n <= 0 || pool.length === 0) return [];
   const byTemplate = {};
@@ -241,18 +240,27 @@ function pickByUniformTemplate(pool, n, usedKeys) {
   const picked = [];
   let safety = n * 4;
   while (picked.length < n && safety-- > 0) {
-    const templates = shuffle(Object.keys(byTemplate));
-    for (const t of templates) {
-      if (picked.length >= n) break;
+    // Build weighted candidate list each iteration so usedKeys updates flow in
+    const candidates = [];
+    for (const t of Object.keys(byTemplate)) {
       const bucket = byTemplate[t];
       const fresh = bucket.filter(p => !usedKeys.has(p.dealKey));
       const stale = bucket.filter(p =>  usedKeys.has(p.dealKey));
-      const choice = fresh.length ? rand(fresh) : (stale.length ? rand(stale) : null);
-      if (choice) {
-        picked.push(choice.card);
-        usedKeys.add(choice.dealKey);
-      }
+      const usable = fresh.length ? fresh : stale;
+      if (!usable.length) continue;
+      candidates.push({ usable, weight: Math.sqrt(usable.length) });
     }
+    if (!candidates.length) break;
+    const totalW = candidates.reduce((s, c) => s + c.weight, 0);
+    let r = Math.random() * totalW;
+    let chosen = candidates[candidates.length - 1];
+    for (const c of candidates) {
+      r -= c.weight;
+      if (r <= 0) { chosen = c; break; }
+    }
+    const choice = rand(chosen.usable);
+    picked.push(choice.card);
+    usedKeys.add(choice.dealKey);
   }
   return picked;
 }
