@@ -588,10 +588,14 @@ Audio.deaths = {
     fund.start(t); fund.stop(t + 4.6);
   },
   P0INTR() {
+    // Spammed square-wave beeps so fast (~30/sec) they merge into a
+    // continuous "RRRRRRR" buzz rather than distinct clicks. 4.5s total.
     const t = this.ctx.currentTime;
-    for (let i = 0; i < 14; i++) {
-      const start = t + i * 0.33 + Math.random() * 0.08;
-      this.beep(start, 600 + Math.random() * 600, 0.06, "square", 0.14);
+    const interval = 0.033;          // ~30 beeps per second
+    const count = Math.floor(4.5 / interval);
+    for (let i = 0; i < count; i++) {
+      const start = t + i * interval + Math.random() * 0.008;
+      this.beep(start, 600 + Math.random() * 600, 0.028, "square", 0.12);
     }
   },
   INFINITE() {
