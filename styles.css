@@ -338,7 +338,7 @@
   .v-GASLIGHT   { color: #ffd56b; }
   .v-CRYPTEX    { color: #ffcc00; }
   .v-WORM       { color: #44ff44; }
-  .v-ROOTKIT    { color: #ff3300; }
+  .v-FAKE_BSOD    { color: #1084d0; }
   .v-DDOS       { color: #ff8800; }
   .v-LEECH_ERR      { color: #aa00ff; }
   .v-MIMICER      { color: #66ddff; }
@@ -357,7 +357,7 @@
   .codex-entry.v-GASLIGHT   { border-left-color: #ffd56b; }
   .codex-entry.v-CRYPTEX    { border-left-color: #ffcc00; }
   .codex-entry.v-WORM       { border-left-color: #44ff44; }
-  .codex-entry.v-ROOTKIT    { border-left-color: #ff3300; }
+  .codex-entry.v-FAKE_BSOD    { border-left-color: #1084d0; }
   .codex-entry.v-DDOS       { border-left-color: #ff8800; }
   .codex-entry.v-LEECH_ERR      { border-left-color: #aa00ff; }
   .codex-entry.v-MIMICER      { border-left-color: #66ddff; }
@@ -1638,9 +1638,9 @@
     to   { transform: translateY(-100%); }
   }
 
-  /* ROOTKIT — BSOD + memory register dump scrolling behind */
-  .death-ROOTKIT { background: #0000a0; }
-  .death-ROOTKIT::before {
+  /* FAKE_BSOD — BSOD + memory register dump scrolling behind */
+  .death-FAKE_BSOD { background: #0000a0; }
+  .death-FAKE_BSOD::before {
     content: ":(\A\A A fatal exception 0x000000F4 has occurred at 0028:C001E36 in module ntoskrnl.exe.\A\A The current application will be terminated.\A\A   *  Driver: rootkit_accel.sys (unsigned, loaded at boot)\A   *  Secure Boot: DISABLED by unsigned module\A   *  Kernel pages 0xFFFFFA0-0xFFFFFE7 marked as compromised\A   *  Memory dump: written to C:\\WINDOWS\\MEMORY.DMP\A\A   Press any key to terminate.\A   Press any key to return to Windows.\A   Press any key to continue _";
     white-space: pre;
     position: absolute; inset: 50px 48px;
@@ -1649,7 +1649,7 @@
     font-size: 16px; line-height: 1.65;
     z-index: 2;
   }
-  .death-ROOTKIT::after {
+  .death-FAKE_BSOD::after {
     content: "0x7FFE0000 mov eax, esp\A0x7FFE0004 push ebp\A0x7FFE0008 mov ebp, esp\A0x7FFE000C sub esp, 0x40\A0x7FFE0010 call sub_7FFE9000\A0x7FFE0014 test eax, eax\A0x7FFE0018 jnz short loc_7FFE0030\A0x7FFE001C mov eax, [ebp+8]\A0x7FFE0020 mov [esp], eax\A0x7FFE0024 call sub_7FFE8000\A0x7FFE0028 mov ebx, eax\A0x7FFE002C jmp loc_7FFE0040";
     white-space: pre;
     position: absolute; inset: 0; padding: 30px;
@@ -2203,7 +2203,7 @@
 
   /* WORM — no extra fx (intentionally minimal: black screen + green filename scroll). */
 
-  /* ROOTKIT — no extra fx (the BSOD + register scroll stand on their own). */
+  /* FAKE_BSOD — no extra fx (the BSOD + register scroll stand on their own). */
 
   /* DDOS — pulsing crosshair target + IP address spam */
   .death-DDOS .death-fx::before {

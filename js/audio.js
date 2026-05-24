@@ -520,7 +520,7 @@ Audio.deaths = {
       o.start(start); o.stop(start + 0.12);
     }
   },
-  ROOTKIT() {
+  FAKE_BSOD() {
     const t = this.ctx.currentTime;
     const o = this.ctx.createOscillator(); o.type = "sawtooth";
     o.frequency.setValueAtTime(220, t);

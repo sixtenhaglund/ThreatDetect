@@ -197,7 +197,7 @@ const LEGIT = [
   { template: TPL.TOAST,    title: "Bluetooth Battery Low", message: "Microsoft Sculpt Comfort Mouse battery is at 12%. Replace AA cells in the next few days.", meta: "Device: Sculpt Comfort Mouse  ·  Battery: 12%" },
   { template: TPL.WIN11,    title: "Pointer Precision", message: "Enhance pointer precision has been disabled per your settings. New mouse-tracking behavior is now active.", meta: "Setting: Mouse  |  Source: Settings app" },
   { template: TPL.WIN11,    title: "Touchpad Gestures Reset", message: "Three-finger swipe gestures have been reset to defaults after the recent driver update.", meta: "Device: Precision Touchpad  |  Driver: Synaptics 19.5.34" },
-  // Boot / BIOS / UEFI (virus-heavy because of ROOTKIT)
+  // Boot / BIOS / UEFI (virus-heavy because of fake_BSOD.000)
   { template: TPL.BIOS,     title: "Secure Boot Enabled", message: "Secure Boot is currently ON. Boot order changes will require admin authentication on next reboot.", meta: "SecureBoot: ON  Mode: UEFI  TPM: 2.0" },
   { template: TPL.WIN11,    title: "Dell BIOS Update Available", message: "BIOS 1.23.0 is available for your Dell XPS 15 9520. Download from Dell Support to install.", meta: "Model: XPS 15 9520  |  Current: 1.21.0  |  New: 1.23.0  |  Signed: Dell Inc.", icon: "warning" },
   { template: TPL.WIN11,    title: "Fast Startup Restored", message: "Fast Startup was re-enabled automatically after the May 2026 cumulative update finished.", meta: "Feature: Fast Startup  |  Status: ON", icon: "blank" },

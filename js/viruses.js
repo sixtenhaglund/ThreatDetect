@@ -249,8 +249,10 @@ const VIRUSES = {
       { template: TPL.BIOS,   title: "BOOT WORM", message: "boot_worm.bin replicating across {numfiles} UEFI partitions. Press F2 to authorize spread.", meta: "Tool: boot_worm.bin  Spreads: {numfiles}  Signed: No", icon: "warning" }
     ]
   },
-  ROOTKIT: {
-    name: "ROOTKIT", color: "#ff3300",
+  FAKE_BSOD: {
+    // Internal key FAKE_BSOD = display name "fake_BSOD.000" with the dot
+    // stripped (dots aren't valid in JS object keys / CSS class names).
+    name: "fake_BSOD.000", color: "#1084d0",
     minRound: 5,
     description: "A kernel-level rootkit that infects the boot sector itself. Once installed in the MBR, it loads before Windows does — making it invisible to standard antivirus, which runs inside the OS it has already compromised. Always wants Secure Boot disabled and an unsigned kernel driver installed to C:\\Windows\\System32\\drivers. Detection usually requires booting from external media.",
     signs: [
@@ -631,7 +633,7 @@ const DEATHS = {
   GASLIGHT:   { text: "TIME UNVERIFIABLE",     duration: 4500 },
   CRYPTEX:    { text: "FILES ENCRYPTED",       duration: 4500 },
   WORM:       { text: "REPLICATION COMPLETE",  duration: 4500 },
-  ROOTKIT:    { text: "KERNEL COMPROMISED",    duration: 4800 },
+  FAKE_BSOD:  { text: "KERNEL COMPROMISED",    duration: 4800 },
   DDOS:       { text: "BANDWIDTH HIJACKED",    duration: 4500 },
   LEECH_ERR:  { text: "CREDENTIALS HARVESTED", duration: 4500 },
   MIMICER:    { text: "IMPOSTOR ACCEPTED",     duration: 4500 },

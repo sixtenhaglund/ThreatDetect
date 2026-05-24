@@ -61,7 +61,7 @@ const TEXTUAL_TELLS = {
     { p: /network share|shares writing|copies created|spread\.sh|self-replicat|writing to.{0,8}share|spreads.{0,4}(to|across).{0,4}\d+|14\s*(shares|devices|contacts|nearby)/i, t: "Replicates across network shares / devices / contacts" },
     { p: /forward to.{0,5}team|send.{0,5}rest|airdrop-relay|messages-relay|npm-supply-chain/i, t: "Tells you to forward / share with others (worm propagation)" }
   ],
-  ROOTKIT: [
+  FAKE_BSOD: [
     { p: /MBR|Master Boot Record|boot sector|bootkit|boot loader|boot_helper|boot_worm/i, t: "Modifies the Master Boot Record / boot sector" },
     { p: /disable.*secure ?boot|secure ?boot.{0,16}(disabl|paus|overrid)/i,         t: "Asks you to disable Secure Boot" },
     { p: /kernel driver|ring-?\s*0|System32\\drivers|rootkit_accel|core_patcher|uefi_repair|ntoskrnl|uefi_persist|rootkit_remover|dellboot|driver_helper_kernel|spooler_kernel_fix/i, t: "Requests kernel-level access or modifies kernel files" },
