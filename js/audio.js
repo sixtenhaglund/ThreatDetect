@@ -558,11 +558,12 @@ Audio.deaths = {
     g.gain.setValueAtTime(0.25, t + 4.4);
     g.gain.linearRampToValueAtTime(0, t + 4.5);
     // Schedule ~110 frequency jumps across the 4.4s sustain (one every 40ms).
-    // Pitch range spans 40Hz (deep sub-bass thump) to 2400Hz (high chirp) —
-    // wide enough to swing between bass rumble and shrill beep mid-sentence.
+    // Low-only pitch range: 30Hz–180Hz, all in sub-bass / chest-rumble
+    // territory. The hard cuts between random low pitches give a guttural
+    // glitch — never a high chirp.
     const step = 0.04;
     for (let at = 0.05; at < 4.4; at += step) {
-      const f = 40 + Math.random() * 2360;
+      const f = 30 + Math.random() * 150;
       o.frequency.setValueAtTime(f, t + at);
     }
     o.start(t); o.stop(t + 4.6);
