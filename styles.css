@@ -2037,38 +2037,42 @@
   .death-ASSISTANT .death-fx::before,
   .death-ASSISTANT .death-fx::after { content: none; }
 
-  /* HEARTBEAT — heartbeat throb + sharp ECG spike + BPM banner. Dark + scary palette. */
-  .death-HEARTBEAT { background: #060000; animation: pulseBeat 1.1s ease-in-out infinite; }
-  @keyframes pulseBeat { 50% { background: #5a0000; filter: brightness(1.1); } }
+  /* (<HEART.BEAT>) — single huge bloody human heart in the middle, beating
+     with a lub-dub rhythm. Background pulses dark→darker red in sync so the
+     whole screen feels like it's pumping blood. The 🫀 anatomical-heart
+     emoji renders as a real-looking heart on modern Win11 / mac / iOS. */
+  .death-HEARTBEAT {
+    background: #1a0000;
+    animation: heartbeatBg 0.9s ease-in-out infinite;
+  }
+  @keyframes heartbeatBg {
+    0%, 100% { background: #1a0000; }
+    50%      { background: #4a0000; }
+  }
   .death-HEARTBEAT::before {
-    content: ""; position: absolute; left: 0; right: 0; top: 50%;
-    height: 2px; background: #ff2222;
-    box-shadow: 0 0 16px #aa0000;
-    transform-origin: 0 50%;
-    animation: pulseEcg 1.1s ease-in-out infinite;
+    /* The heart itself. drop-shadow gives a wet, glowing-red "bleeding" halo. */
+    content: "🫀";
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22rem;
+    filter:
+      drop-shadow(0 0 30px #aa0000)
+      drop-shadow(0 0 80px #660000)
+      saturate(1.4);
+    animation: heartbeatPump 0.9s ease-in-out infinite;
   }
-  @keyframes pulseEcg {
-    0%, 30% { transform: scaleY(1) translateY(0); }
-    35%     { transform: scaleY(50) translateY(-1px); }
-    40%     { transform: scaleY(-40) translateY(1px); }
-    45%     { transform: scaleY(70) translateY(-1.5px); }
-    50%     { transform: scaleY(1) translateY(0); }
-    100%    { transform: scaleY(1) translateY(0); }
+  /* Lub-dub: two contractions per cycle. The first (lub) is the bigger
+     ventricular contraction at ~10%; the second (dub) is a smaller atrial
+     bounce at ~28%. Rest of the cycle holds at scale 1. */
+  @keyframes heartbeatPump {
+    0%   { transform: scale(1);    }
+    8%   { transform: scale(1.22); }
+    18%  { transform: scale(0.95); }
+    26%  { transform: scale(1.12); }
+    36%  { transform: scale(1);    }
+    100% { transform: scale(1);    }
   }
-  .death-HEARTBEAT::after {
-    content: "72 BPM   88 BPM   144 BPM   220 BPM   ---";
-    position: absolute; inset: auto 0 14% 0;
-    text-align: center;
-    font-family: monospace; font-size: 1.4rem;
-    color: #ff5555;
-    text-shadow: 0 0 8px #aa0000;
-    letter-spacing: 0.15em;
-    background: rgba(0,0,0,0.75);
-    padding: 8px 0;
-    white-space: nowrap;
-    animation: pulseBpm 3s linear infinite;
-  }
-  @keyframes pulseBpm { to { transform: translateX(-50%); } }
+  .death-HEARTBEAT::after { content: none; }
 
   /* ============================================================
      EXTRA FX LAYERS — every virus gets two more animated slots
@@ -2263,34 +2267,10 @@
 
   /* MIMIC — no extra fx (the warping System OK + shard pattern were already busy). */
 
-  /* HEARTBEAT — secondary slow EEG line + big dark heartbeat */
-  .death-HEARTBEAT .death-fx::before {
-    content: ""; position: absolute; top: 25%; left: 0; right: 0;
-    height: 2px;
-    background: #aa0000;
-    box-shadow: 0 0 10px #660000;
-    animation: pulseEeg 1.6s ease-in-out infinite;
-  }
-  @keyframes pulseEeg {
-    0%, 100% { transform: scaleY(1); }
-    20%      { transform: scaleY(10); }
-    25%      { transform: scaleY(-6); }
-    30%      { transform: scaleY(16); }
-    35%      { transform: scaleY(-10); }
-    40%      { transform: scaleY(1); }
-  }
-  .death-HEARTBEAT .death-fx::after {
-    content: "♥";
-    position: absolute; top: 8%; right: 8%;
-    font-size: 6rem;
-    color: #660000;
-    text-shadow: 0 0 24px #220000;
-    animation: pulseBigHeart 2.2s ease-in-out infinite;
-  }
-  @keyframes pulseBigHeart {
-    0%, 100% { transform: scale(1);   opacity: 0.6; }
-    50%      { transform: scale(1.35); opacity: 0.95; }
-  }
+  /* (<HEART.BEAT>) — death-fx layer cleared. The whole effect lives on
+     .death-HEARTBEAT::before above (the giant beating heart). */
+  .death-HEARTBEAT .death-fx::before,
+  .death-HEARTBEAT .death-fx::after { content: none; }
 
   /* DOTNULL — no extra fx (handled in the main DOTNULL rules: still 0/1 grid only). */
 
