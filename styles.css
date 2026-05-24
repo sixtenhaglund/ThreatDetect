@@ -369,7 +369,7 @@
   .codex-entry.v-INFINITE       { border-left-color: #88ff88; }
   .codex-entry.v-TARPIT     { border-left-color: #c4a484; }
   .codex-entry.v-HEXR        { border-left-color: #88ddff; }
-  .codex-entry.v-ASSISTANT    { border-left-color: #00d4aa; }
+  .codex-entry.v-ASSISTANT    { border-left-color: #00ff00; }
 
   /* Animations */
   .fade-in { animation: fadeIn 0.4s ease; }

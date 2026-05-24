@@ -607,7 +607,7 @@ const VIRUSES = {
   // Internal key kept as ASSISTANT for CSS / death-animation / audio compatibility.
   // Display name is leet-speak 'A5515T4N7' (an AI-assistant impersonator).
   ASSISTANT: {
-    name: "A5515T4N7", color: "#00ff44",
+    name: "A5515T4N7", color: "#00ff00",
     minRound: 6,
     description: "A scam dressed up as a helpful AI assistant. Cheerfully recommends sketchy downloads with confident-sounding explanations and made-up citations. Its tell is the AI tone: friendly first-person, fake confidence percentages, brand names that almost-but-don't-quite exist, and a tiny 'I may make mistakes' disclaimer at the end that excuses the lie. The telemetry it tampers with is suspiciously clean — perfectly round numbers no real computer ever shows.",
     signs: [
