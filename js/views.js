@@ -163,6 +163,37 @@ function viewSettings() {
     </div>`;
 }
 
+/* Render the meters HUD beside a codex example card. Each meter shows
+   either its default value (when the virus doesn't tamper with it) or
+   a representative tampered value (with the .bad highlight) drawn from
+   the same map meters.js uses at runtime. Static — no animation. */
+function renderCodexMeters(effect) {
+  const defaults = { fps: "60", ping: "24", cpu: "47", vol: "72", time: "14:23:07" };
+  const tamperedSamples = {
+    flash: "999", "null": "NULL", pulse: "120", blank: "—",
+    kernel: "KERNEL", countdown: "00:00:07", wrong: "2025-02-30",
+    room237: "14:37:07", spike: "9999", lowfps: "7", blast: "999"
+  };
+  const eff = effect || {};
+  const compute = (key) => {
+    if (!(key in eff)) return { val: defaults[key], bad: false };
+    const mode = eff[key];
+    if (typeof mode === "number") return { val: String(mode), bad: true };
+    return { val: tamperedSamples[mode] || String(mode), bad: true };
+  };
+  const cells = [
+    { key: "fps",  label: "FPS",  unit: "" },
+    { key: "ping", label: "PING", unit: "ms" },
+    { key: "cpu",  label: "CPU",  unit: "°C" },
+    { key: "vol",  label: "VOL",  unit: "%" },
+    { key: "time", label: "SYS",  unit: "" }
+  ];
+  return `<div class="meters codex-meters">${cells.map(c => {
+    const m = compute(c.key);
+    return `<div class="meter"><span class="m-label">${c.label}</span><span class="m-val${m.bad ? " bad" : ""}">${esc(m.val)}</span>${c.unit ? `<span class="m-unit">${c.unit}</span>` : ""}</div>`;
+  }).join("")}</div>`;
+}
+
 function renderCodexEntries(opts) {
   opts = opts || {};
   const allowPreview = opts.allowPreview !== false; // sidebar during play passes false
@@ -175,14 +206,14 @@ function renderCodexEntries(opts) {
     const meterLabels = unlocked ? describeMeterEffect(v.meterEffect) : [];
     // Pick one random error from the virus's pool and render it as a
     // sample card so the player can see what its disguise looks like.
-    // Re-rolled every time the codex view renders, so opening twice
-    // shows two different examples.
+    // Re-rolled every time the codex view renders.
     let exampleHtml = "";
     if (unlocked && v.errors && v.errors.length) {
       const pick = v.errors[Math.floor(Math.random() * v.errors.length)];
       const randomized = randomizeCard({ ...pick, isVirus: true, virusKey: key });
       exampleHtml = `<p class="tiny" style="margin-top:10px;">Example error</p>
-        <div class="codex-example">${renderCard(randomized)}</div>`;
+        <div class="codex-example">${renderCard(randomized)}</div>
+        ${renderCodexMeters(v.meterEffect)}`;
     }
     return `
       <div class="codex-entry v-${key} ${isOpen ? "open" : ""}">

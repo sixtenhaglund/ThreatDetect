@@ -327,16 +327,14 @@
   }
   .codex-body .desc { font-size: 0.92rem; color: hsl(160 30% 80%); margin: 12px 0; line-height: 1.55; }
   .codex-body ul { margin: 8px 0 0 0; padding-left: 18px; font-size: 0.85rem; color: var(--muted-fg); }
-  /* Example error: scale the rendered card down so it fits inside the
-     codex entry without overflowing. The original card was designed for
-     the full play stage, ~520px wide — 0.7× brings it under most codex
-     widths without losing legibility. */
+  /* Example error: scale the rendered card down to half size so it fits
+     compactly inside the codex entry. transform: scale leaves the original
+     layout box behind it, so wrap it in a padded aspect-ratio container
+     that clips/contains it. */
   .codex-example {
     margin: 8px 0 4px 0;
-    /* Wrap the scaled card in a clipped box so it doesn't push neighboring
-       layout (transform: scale leaves the original space behind it). */
     height: 0;
-    padding-bottom: 65%;
+    padding-bottom: 40%;
     position: relative;
     overflow: hidden;
     border-radius: 6px;
@@ -346,10 +344,16 @@
   .codex-example > * {
     position: absolute;
     top: 0; left: 0;
-    transform: scale(0.7);
+    transform: scale(0.5);
     transform-origin: top left;
-    width: 142.85%;
+    width: 200%;
     pointer-events: none;
+  }
+  /* Compact meters shown alongside the example card. Reuses the in-game
+     .meters / .meter / .m-val styles, just tightened a bit so it fits. */
+  .codex-meters {
+    margin-top: 8px;
+    font-size: 0.85em;
   }
   .codex-body li { margin: 3px 0; line-height: 1.45; }
 
