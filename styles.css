@@ -1723,11 +1723,15 @@
      independently. The cards are populated by applyMimicPopups() in
      main.js whenever the death screen is on; this CSS just handles
      layout + the per-popup glitch animation. */
+  /* Bright blue background with a subtle pulse animation — the "MiMiCeR has
+     mimicked something" canvas behind the centered error card. */
   .death-MIMICER {
-    background-color: #000;
-    background-size: 100% 100%;
-    background-repeat: no-repeat;
-    image-rendering: pixelated;
+    background: #1a6cff;
+    animation: mimicerBgPulse 1.4s ease-in-out infinite;
+  }
+  @keyframes mimicerBgPulse {
+    0%, 100% { background: #1a6cff; }
+    50%      { background: #4080ff; }
   }
   .death-MIMICER::before, .death-MIMICER::after,
   .death-MIMICER .death-fx::before, .death-MIMICER .death-fx::after { content: none; }
@@ -1735,24 +1739,13 @@
     position: absolute; inset: 0;
     overflow: hidden;
   }
-  /* Outer wrapper: random absolute base position + a hyper-fast drift
-     animation that swings through 4 random waypoints per cycle. Each
-     waypoint has its own translate, rotation, AND scale, so popups
-     also spin and grow/shrink as they move. CSS vars are set per-popup
-     by main.js so every popup chases a different path. */
-  .mimic-popup {
+  /* Single centered card — no drift, just sits in the middle. */
+  .mimic-popup-center {
     position: absolute;
-    width: 320px;
+    top: 50%; left: 50%;
+    width: 500px;
     pointer-events: none;
-    animation: mimicDrift 0.45s linear infinite;
-  }
-  @keyframes mimicDrift {
-    0%   { transform: rotate(var(--r))  translate(0,           0)           scale(1); }
-    20%  { transform: rotate(var(--r1)) translate(var(--dx1), var(--dy1))   scale(var(--s1)); }
-    40%  { transform: rotate(var(--r2)) translate(var(--dx2), var(--dy2))   scale(var(--s2)); }
-    60%  { transform: rotate(var(--r3)) translate(var(--dx3), var(--dy3))   scale(var(--s3)); }
-    80%  { transform: rotate(var(--r4)) translate(var(--dx4), var(--dy4))   scale(var(--s4)); }
-    100% { transform: rotate(var(--r))  translate(0,           0)           scale(1); }
+    transform: translate(-50%, -50%);
   }
   /* Inner wrapper carries the glitch animation. Translate + filter only —
      no rotate, so the outer rotation isn't clobbered. */
@@ -1760,9 +1753,8 @@
     animation: mimicGlitch 0.42s steps(1, end) infinite;
     transform-origin: center;
   }
-  /* Innermost: scales the rendered card down so 20 fit on screen. */
+  /* Single centered card displays at native size — no scaling. */
   .mimic-card {
-    transform: scale(0.55);
     transform-origin: top left;
   }
   /* 12 hard-cut keyframes, ~35ms per frame. Random animation-delay per

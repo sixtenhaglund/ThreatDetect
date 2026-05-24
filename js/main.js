@@ -150,10 +150,11 @@ function applyStaticNoise() {
 }
 
 /* ============================================================
-   MIMICER death — populate the screen with 20 actual rendered LEGIT
-   cards from the game, each positioned randomly and glitching on
-   its own staggered animation-delay. Re-rolls the picks every time
-   the death screen comes back on screen.
+   MIMICER death — ONE error card displayed in the center of a bright
+   blue background. In real death mode it's the card that killed you
+   (state.killerCard). In codex preview mode it's a random pick from
+   MIMICER's own error pool. The card glitches gently in place. The
+   bright blue background pulses subtly behind it.
    ============================================================ */
 function applyMimicPopups() {
   const target = document.querySelector(".death-MIMICER");
@@ -162,76 +163,38 @@ function applyMimicPopups() {
     target.dataset.mimicPopulated = "";
     return;
   }
-  // Only build once per appearance of the death screen.
   if (target.dataset.mimicPopulated === "1") return;
   target.dataset.mimicPopulated = "1";
-  // Clear any prior popups (e.g. from a previous run).
   const old = target.querySelector(".mimic-popups");
   if (old) old.remove();
 
-  // Paint one frozen frame of chunky black/blue TV-static into the background.
-  // Same canvas-pixel trick as STATIC, but each pixel is either black or
-  // pure blue instead of grayscale. image-rendering: pixelated (set in CSS)
-  // keeps the chunks crisp when the small canvas is stretched to fullscreen.
-  (function paintMimicStatic() {
-    const c = document.createElement("canvas");
-    c.width = 200; c.height = 150;
-    const ctx = c.getContext("2d");
-    const img = ctx.createImageData(c.width, c.height);
-    const d = img.data;
-    for (let i = 0; i < d.length; i += 4) {
-      const on = Math.random() < 0.5;
-      d[i]     = 0;
-      d[i + 1] = 0;
-      d[i + 2] = on ? 255 : 0;
-      d[i + 3] = 255;
+  // Pick the card to display.
+  //   dying / infected → state.killerCard (the actual card that killed you).
+  //   preview          → random pick from MIMICER's own error pool.
+  let card = state.killerCard;
+  if (!card) {
+    const errors = (VIRUSES.MIMICER && VIRUSES.MIMICER.errors) || [];
+    if (errors.length) {
+      const pick = errors[Math.floor(Math.random() * errors.length)];
+      // Mark it as virus-flavored so placeholders resolve to virus-side values.
+      card = randomizeCard({ ...pick, isVirus: true, virusKey: "MIMICER" });
     }
-    ctx.putImageData(img, 0, 0);
-    target.style.backgroundImage = "url(" + c.toDataURL() + ")";
-  })();
+  }
+  if (!card) return;
 
+  const html = renderCard(card);
   const container = document.createElement("div");
   container.className = "mimic-popups";
-  const picks = [];
-  const used = new Set();
-  while (picks.length < 20 && used.size < LEGIT.length) {
-    const i = Math.floor(Math.random() * LEGIT.length);
-    if (used.has(i)) continue;
-    used.add(i);
-    picks.push(LEGIT[i]);
-  }
-  // Helpers for per-waypoint random values used by the mimicDrift keyframes.
-  const wp  = (range) => (Math.round((Math.random() - 0.5) * 2 * range)) + "px";
-  const rot = ()      => (Math.round((Math.random() - 0.5) * 60)) + "deg"; // -30..+30
-  const scl = ()      => (0.5 + Math.random() * 1.0).toFixed(2);            // 0.5..1.5
-  picks.forEach(card => {
-    const rendered = randomizeCard({ ...card, isVirus: false, virusKey: null });
-    const html = renderCard(rendered);
-    const outer = document.createElement("div");
-    outer.className = "mimic-popup";
-    const x = Math.random() * 70 + 5;
-    const y = Math.random() * 65 + 5;
-    outer.style.left = x + "%";
-    outer.style.top  = y + "%";
-    outer.style.setProperty("--r", ((Math.random() - 0.5) * 14) + "deg");
-    for (let i = 1; i <= 4; i++) {
-      outer.style.setProperty("--dx" + i, wp(280));
-      outer.style.setProperty("--dy" + i, wp(220));
-      outer.style.setProperty("--r"  + i, rot());
-      outer.style.setProperty("--s"  + i, scl());
-    }
-    // Stagger so they don't all swing together
-    outer.style.animationDelay = (Math.random() * 0.45).toFixed(2) + "s";
-    const glitch = document.createElement("div");
-    glitch.className = "mimic-glitch";
-    glitch.style.animationDelay = (Math.random() * 0.4).toFixed(2) + "s";
-    const cardWrap = document.createElement("div");
-    cardWrap.className = "mimic-card";
-    cardWrap.innerHTML = html;
-    glitch.appendChild(cardWrap);
-    outer.appendChild(glitch);
-    container.appendChild(outer);
-  });
+  const outer = document.createElement("div");
+  outer.className = "mimic-popup mimic-popup-center";
+  const glitch = document.createElement("div");
+  glitch.className = "mimic-glitch";
+  const cardWrap = document.createElement("div");
+  cardWrap.className = "mimic-card";
+  cardWrap.innerHTML = html;
+  glitch.appendChild(cardWrap);
+  outer.appendChild(glitch);
+  container.appendChild(outer);
   target.appendChild(container);
 }
 
