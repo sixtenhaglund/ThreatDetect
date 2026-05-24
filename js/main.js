@@ -38,6 +38,7 @@ function render() {
   applyMusicForScreen();
   applyAssistantStatic();
   applyStaticNoise();
+  applyMimicPopups();
 }
 
 const MENU_MUSIC_SCREENS = new Set([
@@ -146,6 +147,60 @@ function applyStaticNoise() {
   } else if (onScreen) {
     repaint();
   }
+}
+
+/* ============================================================
+   MIMIC death — populate the screen with 20 actual rendered LEGIT
+   cards from the game, each positioned randomly and glitching on
+   its own staggered animation-delay. Re-rolls the picks every time
+   the death screen comes back on screen.
+   ============================================================ */
+function applyMimicPopups() {
+  const target = document.querySelector(".death-MIMIC");
+  if (!target) return;
+  if (!killerIs("MIMIC")) {
+    target.dataset.mimicPopulated = "";
+    return;
+  }
+  // Only build once per appearance of the death screen.
+  if (target.dataset.mimicPopulated === "1") return;
+  target.dataset.mimicPopulated = "1";
+  // Clear any prior popups (e.g. from a previous run).
+  const old = target.querySelector(".mimic-popups");
+  if (old) old.remove();
+
+  const container = document.createElement("div");
+  container.className = "mimic-popups";
+  const picks = [];
+  const used = new Set();
+  while (picks.length < 20 && used.size < LEGIT.length) {
+    const i = Math.floor(Math.random() * LEGIT.length);
+    if (used.has(i)) continue;
+    used.add(i);
+    picks.push(LEGIT[i]);
+  }
+  picks.forEach(card => {
+    const rendered = randomizeCard({ ...card, isVirus: false, virusKey: null });
+    const html = renderCard(rendered);
+    const outer = document.createElement("div");
+    outer.className = "mimic-popup";
+    const x = Math.random() * 75 + 2;   // 2%..77% left
+    const y = Math.random() * 70 + 2;   // 2%..72% top
+    const r = (Math.random() - 0.5) * 14; // ~ -7deg .. +7deg
+    outer.style.left = x + "%";
+    outer.style.top  = y + "%";
+    outer.style.transform = "rotate(" + r + "deg)";
+    const glitch = document.createElement("div");
+    glitch.className = "mimic-glitch";
+    glitch.style.animationDelay = (Math.random() * 0.4).toFixed(2) + "s";
+    const cardWrap = document.createElement("div");
+    cardWrap.className = "mimic-card";
+    cardWrap.innerHTML = html;
+    glitch.appendChild(cardWrap);
+    outer.appendChild(glitch);
+    container.appendChild(outer);
+  });
+  target.appendChild(container);
 }
 
 document.addEventListener("click", (e) => {
