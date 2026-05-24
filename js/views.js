@@ -173,6 +173,17 @@ function renderCodexEntries(opts) {
     const filtered = state.codexFilter && state.codexFilter !== key;
     if (filtered) return "";
     const meterLabels = unlocked ? describeMeterEffect(v.meterEffect) : [];
+    // Pick one random error from the virus's pool and render it as a
+    // sample card so the player can see what its disguise looks like.
+    // Re-rolled every time the codex view renders, so opening twice
+    // shows two different examples.
+    let exampleHtml = "";
+    if (unlocked && v.errors && v.errors.length) {
+      const pick = v.errors[Math.floor(Math.random() * v.errors.length)];
+      const randomized = randomizeCard({ ...pick, isVirus: true, virusKey: key });
+      exampleHtml = `<p class="tiny" style="margin-top:10px;">Example error</p>
+        <div class="codex-example">${renderCard(randomized)}</div>`;
+    }
     return `
       <div class="codex-entry v-${key} ${isOpen ? "open" : ""}">
         <div class="codex-head" data-action="toggle-entry" data-key="${key}">
@@ -184,7 +195,7 @@ function renderCodexEntries(opts) {
           <p class="desc">${unlocked ? esc(v.description) : "Encounter and identify this threat to unlock its file."}</p>
           ${unlocked ? `<p class="tiny">How to identify</p><ul>${v.signs.map(s => `<li>${esc(s)}</li>`).join("")}</ul>${
             meterLabels.length ? `<p class="tiny" style="margin-top:10px;">Telemetry tampering</p><ul>${meterLabels.map(t => `<li>${esc(t)}</li>`).join("")}</ul>` : ""
-          }${
+          }${exampleHtml}${
             allowPreview ? `<button class="btn" data-action="preview-virus" data-key="${key}" style="margin-top:12px;">▶ Watch Death Animation</button>` : ""
           }` : ""}
         </div>
