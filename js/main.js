@@ -39,6 +39,7 @@ function render() {
   applyAssistantStatic();
   applyStaticNoise();
   applyMimicPopups();
+  applyCryptexRain();
 }
 
 const MENU_MUSIC_SCREENS = new Set([
@@ -195,6 +196,55 @@ function applyMimicPopups() {
   glitch.appendChild(cardWrap);
   outer.appendChild(glitch);
   container.appendChild(outer);
+  target.appendChild(container);
+}
+
+/* ============================================================
+   CRYPTEX death — generate ~14 columns of ransom $-suffixed numbers,
+   all streaming down at the same speed. Random starting amounts and
+   per-column animation-delay so the columns desync visually.
+   ============================================================ */
+const CRYPTEX_AMOUNTS = [
+  "47$", "88$", "299$", "499$", "999$", "1,200$", "1,499$", "4,217$",
+  "8,441$", "12,400$", "12,882$", "18,200$", "18,442$", "21,003$",
+  "27,500$", "31,082$", "42,108$", "47,000$", "65,000$", "65,704$",
+  "88,221$", "99.99$", "999.99$", "0.1 BTC$", "0.3 BTC$", "0.5 BTC$",
+  "0.8 BTC$", "0.3 ETH$", "0.5 ETH$", "$"
+];
+function applyCryptexRain() {
+  const target = document.querySelector(".death-CRYPTEX");
+  if (!target) return;
+  if (!killerIs("CRYPTEX")) {
+    target.dataset.cryptexPopulated = "";
+    return;
+  }
+  if (target.dataset.cryptexPopulated === "1") return;
+  target.dataset.cryptexPopulated = "1";
+  const old = target.querySelector(".cryptex-rain");
+  if (old) old.remove();
+
+  const container = document.createElement("div");
+  container.className = "cryptex-rain";
+  const STREAMS = 14;
+  // Palette of gold-to-red tones; pick one per column for variety.
+  const palette = ["#ffcc00", "#ffaa00", "#ffd060", "#ff9900", "#ff7733", "#ff5500"];
+  for (let i = 0; i < STREAMS; i++) {
+    const col = document.createElement("div");
+    col.className = "cryptex-stream";
+    // Spread columns across the screen with light overlap allowed.
+    col.style.left = (i * (100 / STREAMS)) + "%";
+    col.style.width = (100 / STREAMS) + "%";
+    col.style.fontSize = (1.1 + Math.random() * 1.4).toFixed(2) + "rem";
+    col.style.color = palette[Math.floor(Math.random() * palette.length)];
+    col.style.animationDelay = (-Math.random() * 4.5).toFixed(2) + "s";
+    // Build ~24 lines per column from random amounts.
+    const lines = [];
+    for (let j = 0; j < 24; j++) {
+      lines.push(CRYPTEX_AMOUNTS[Math.floor(Math.random() * CRYPTEX_AMOUNTS.length)]);
+    }
+    col.textContent = lines.join("\n");
+    container.appendChild(col);
+  }
   target.appendChild(container);
 }
 
