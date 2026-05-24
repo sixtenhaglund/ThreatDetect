@@ -40,6 +40,7 @@ function render() {
   applyStaticNoise();
   applyMimicPopups();
   applyCryptexRain();
+  applyRewriterSparkles();
 }
 
 const MENU_MUSIC_SCREENS = new Set([
@@ -244,6 +245,44 @@ function applyCryptexRain() {
     }
     col.textContent = lines.join("\n");
     container.appendChild(col);
+  }
+  target.appendChild(container);
+}
+
+/* ============================================================
+   Rewriter() sparkles — scatter ~120 yellow ✦ across the screen,
+   each at a random position, size, color, and twinkle phase so the
+   whole field shimmers unpredictably.
+   ============================================================ */
+const SPARK_GLYPHS  = ["✦", "✧", "✶", "✷", "✩", "·"];
+const SPARK_COLORS  = ["#ffd56b", "#ffcc00", "#ffe080", "#ffaa00", "#fff0aa"];
+function applyRewriterSparkles() {
+  const target = document.querySelector(".death-REWRITER");
+  if (!target) return;
+  if (!killerIs("REWRITER")) {
+    target.dataset.rewriterSparkled = "";
+    return;
+  }
+  if (target.dataset.rewriterSparkled === "1") return;
+  target.dataset.rewriterSparkled = "1";
+  const old = target.querySelector(".rewriter-sparkles");
+  if (old) old.remove();
+
+  const container = document.createElement("div");
+  container.className = "rewriter-sparkles";
+  const COUNT = 120;
+  for (let i = 0; i < COUNT; i++) {
+    const s = document.createElement("span");
+    s.className = "rewriter-spark";
+    s.textContent = SPARK_GLYPHS[Math.floor(Math.random() * SPARK_GLYPHS.length)];
+    s.style.left = (Math.random() * 100).toFixed(2) + "%";
+    s.style.top  = (Math.random() * 100).toFixed(2) + "%";
+    s.style.fontSize = (0.6 + Math.random() * 1.6).toFixed(2) + "rem";
+    s.style.color = SPARK_COLORS[Math.floor(Math.random() * SPARK_COLORS.length)];
+    // Negative random delay so each sparkle starts somewhere mid-cycle.
+    s.style.animationDelay = (-Math.random() * 1.8).toFixed(2) + "s";
+    s.style.animationDuration = (1.2 + Math.random() * 1.6).toFixed(2) + "s";
+    container.appendChild(s);
   }
   target.appendChild(container);
 }
