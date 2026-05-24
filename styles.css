@@ -2059,8 +2059,12 @@
     width: 60vmin; height: 60vmin;
     transform: translate(-50%, -50%) scale(1);
     background: url("heart.jpg") no-repeat center / contain;
+    /* The color-matrix drops the photo's white background to transparent, then
+       feComposite operator="in" multiplies our matrix's alpha by the original
+       SourceGraphic alpha — so anywhere outside the heart image's bounds stays
+       transparent (not opaque black, which is what the matrix would do alone). */
     filter:
-      url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='r' color-interpolation-filters='sRGB'%3E%3CfeColorMatrix values='1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  -1 -1 -1 1 1.5'/%3E%3C/filter%3E%3C/svg%3E#r")
+      url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='r' color-interpolation-filters='sRGB'%3E%3CfeColorMatrix values='1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  -1 -1 -1 1 1.5' result='matrixed'/%3E%3CfeComposite in='matrixed' in2='SourceGraphic' operator='in'/%3E%3C/filter%3E%3C/svg%3E#r")
       saturate(1.4);
     animation: heartbeatPump 0.9s ease-in-out infinite;
   }
