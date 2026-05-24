@@ -2072,13 +2072,19 @@
     width: 60vmin; height: 60vmin;
     transform: translate(-50%, -50%) scale(1);
     background: url("heart.jpg") no-repeat center / contain;
-    /* The color-matrix drops the photo's white background to transparent, then
-       feComposite operator="in" multiplies our matrix's alpha by the original
-       SourceGraphic alpha — so anywhere outside the heart image's bounds stays
-       transparent (not opaque black, which is what the matrix would do alone). */
+    /* Chained SVG filter:
+         1. feColorMatrix 'm1' — drops the photo's white background to
+            transparent via alpha = -R -G -B + A + 1.5.
+         2. feColorMatrix 'm2' — pumps every remaining pixel toward pure
+            red: R = 2.5*R + 0.6*G + 0.6*B, G = B = 0. This stops the
+            heart's dark crevices from rendering as near-black; every
+            heart pixel becomes some shade of red.
+         3. feComposite 'in' — clips the final alpha by the original
+            SourceGraphic alpha so the area outside the photo bounds
+            stays transparent (otherwise the matrix would make it opaque). */
     filter:
-      url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='r' color-interpolation-filters='sRGB'%3E%3CfeColorMatrix values='1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  -1 -1 -1 1 1.5' result='matrixed'/%3E%3CfeComposite in='matrixed' in2='SourceGraphic' operator='in'/%3E%3C/filter%3E%3C/svg%3E#r")
-      saturate(1.4);
+      url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='r' color-interpolation-filters='sRGB'%3E%3CfeColorMatrix values='1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  -1 -1 -1 1 1.5' result='m1'/%3E%3CfeColorMatrix in='m1' values='2.5 0.6 0.6 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 1 0' result='m2'/%3E%3CfeComposite in='m2' in2='SourceGraphic' operator='in'/%3E%3C/filter%3E%3C/svg%3E#r")
+      saturate(1.2);
     animation: heartbeatPump 0.9s ease-in-out infinite;
   }
   /* Lub-dub: two contractions per cycle. transform includes translate(-50%,-50%)
