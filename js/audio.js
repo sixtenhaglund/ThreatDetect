@@ -595,19 +595,27 @@ Audio.deaths = {
     }
   },
   LOOP() {
+    // Vibrating sustained bass — sub + fundamental layered like NULL, then
+    // an 8 Hz sine LFO wired into the master gain so the volume wobbles
+    // up and down rapidly. The LFO output (±0.45) sums with the envelope
+    // value at the AudioParam, so the bass throbs between ~0.65 and ~1.55
+    // — chest-felt vibration, not a flat hum.
     const t = this.ctx.currentTime;
-    for (let i = 0; i < 8; i++) {
-      const start = t + i * 0.55;
-      const o = this.ctx.createOscillator(); o.type = "sine"; o.frequency.value = 200;
-      o.frequency.exponentialRampToValueAtTime(800, start + 0.5);
-      const g = this.ctx.createGain();
-      o.connect(g); g.connect(this.sfxGain);
-      g.gain.setValueAtTime(0, start);
-      g.gain.linearRampToValueAtTime(0.2, start + 0.05);
-      g.gain.linearRampToValueAtTime(0.2, start + 0.4);
-      g.gain.exponentialRampToValueAtTime(0.001, start + 0.55);
-      o.start(start); o.stop(start + 0.6);
-    }
+    const sub  = this.ctx.createOscillator(); sub.type  = "sine"; sub.frequency.value  = 36;
+    const fund = this.ctx.createOscillator(); fund.type = "sine"; fund.frequency.value = 54;
+    const g = this.ctx.createGain();
+    sub.connect(g); fund.connect(g); g.connect(this.sfxGain);
+    g.gain.setValueAtTime(0, t);
+    g.gain.linearRampToValueAtTime(1.1, t + 0.3);
+    g.gain.setValueAtTime(1.1, t + 4);
+    g.gain.linearRampToValueAtTime(0, t + 4.5);
+    // Tremolo LFO — its output adds to g.gain via AudioParam automation
+    const tremolo = this.ctx.createOscillator(); tremolo.type = "sine"; tremolo.frequency.value = 8;
+    const depth = this.ctx.createGain(); depth.gain.value = 0.45;
+    tremolo.connect(depth); depth.connect(g.gain);
+    sub.start(t);  sub.stop(t + 4.6);
+    fund.start(t); fund.stop(t + 4.6);
+    tremolo.start(t); tremolo.stop(t + 4.6);
   },
   TARPIT() {
     // Quiet computer hum. A sustained low sine + second harmonic + a faint
