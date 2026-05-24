@@ -521,6 +521,9 @@ function toggleCodex(key) {
   document.querySelectorAll(".codex-entry.open").forEach(el => el.classList.remove("open"));
   if (state.openCodex) {
     const el = document.querySelector(".codex-entry.v-" + state.openCodex);
-    if (el) el.classList.add("open");
+    if (el) {
+      el.classList.add("open");
+      el.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
   }
 }
