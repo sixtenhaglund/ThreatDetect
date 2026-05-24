@@ -343,7 +343,7 @@
   .v-LEECH      { color: #aa00ff; }
   .v-SCREAMER   { color: #ff1166; }
   .v-MIMIC      { color: #66ddff; }
-  .v-HEARTBEAT      { color: #ff55aa; }
+  .v-HEARTBEAT      { color: #ff1144; }
   .v-DOTNULL       { color: #777777; }
   .v-P0INTR     { color: #ffaa44; }
   .v-INFINITE       { color: #88ff88; }
@@ -363,7 +363,7 @@
   .codex-entry.v-LEECH      { border-left-color: #aa00ff; }
   .codex-entry.v-SCREAMER   { border-left-color: #ff1166; }
   .codex-entry.v-MIMIC      { border-left-color: #66ddff; }
-  .codex-entry.v-HEARTBEAT      { border-left-color: #ff55aa; }
+  .codex-entry.v-HEARTBEAT      { border-left-color: #ff1144; }
   .codex-entry.v-DOTNULL       { border-left-color: #555555; }
   .codex-entry.v-P0INTR     { border-left-color: #ffaa44; }
   .codex-entry.v-INFINITE       { border-left-color: #88ff88; }

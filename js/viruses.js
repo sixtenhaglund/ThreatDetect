@@ -428,7 +428,7 @@ const VIRUSES = {
     // Internal key HEARTBEAT = display name "(<HEART.BEAT>)" with parens,
     // angle brackets, and dot stripped (none of those are valid in JS
     // object keys or CSS class names).
-    name: "(<HEART.BEAT>)", color: "#ff55aa",
+    name: "(<HEART.BEAT>)", color: "#ff1144",
     minRound: 4,
     description: "A display-layer virus that hides in plain sight by making the screen hypnotic. Hooks into the Windows compositor (DWM) to make the whole UI pulse, breathe, or wobble in time with its data exfiltration heartbeat — the rhythm is the leak. The trance effect makes players miss other tells while the meters drift to a steady 72 bpm.",
     signs: [
