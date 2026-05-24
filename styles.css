@@ -1584,7 +1584,7 @@
     color: #ffd56b;
     text-shadow: 0 0 12px #ffaa00, 0 0 28px #ff8800;
     clip-path: polygon(-2% 0, -2% 0, 0% 100%, -2% 100%);
-    animation: rewriterWipe 4s ease-in-out infinite;
+    animation: rewriterWipe 9s ease-in-out infinite;
   }
   @keyframes rewriterWipe {
     /* The wipe band sweeps from off-screen-left to fully covering the
