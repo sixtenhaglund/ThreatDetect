@@ -315,7 +315,7 @@ function viewPlay(isTraining) {
   const hud = isTraining ? `
     <div class="hud" style="grid-template-columns: repeat(4, 1fr);">
       <div class="cell"><div class="label">Mode</div><div class="value">Training</div></div>
-      <div class="cell"><div class="label">Target</div><div class="value v-${state.trainingVirus}">${esc(state.trainingVirus)}</div></div>
+      <div class="cell"><div class="label">Target</div><div class="value v-${state.trainingVirus}">${esc((VIRUSES[state.trainingVirus] && VIRUSES[state.trainingVirus].name) || state.trainingVirus)}</div></div>
       <div class="cell"><div class="label">Streak</div><div class="value">×${state.trainingStreak}</div></div>
       <button class="cell" data-action="pause-codex" style="background:var(--muted);border:1px solid var(--border);color:var(--fg);"><div class="label">${codexLabel}</div><div class="value" style="font-size:1rem;">${codexIcon}</div></button>
       <button class="cell" data-action="menu" style="background:var(--muted);border:1px solid var(--border);color:var(--fg);"><div class="label">Exit</div><div class="value" style="font-size:1rem;">↩</div></button>
