@@ -56,6 +56,7 @@ const Save = {
       // One-shot virus-key migrations:
       //   BUGBEAR → HALLUCINATE → ASSISTANT  (the "." virus, renamed twice)
       //   FOSSIL → OLDEXE → TARPIT          (display name became "T.A.R.P.I.T.")
+      //   HEX → HEXR                         (display name became "HEXR")
       // Rename references in unlocked / deathsBy so codex + first-death badges
       // still work. Also auto-unlocks ASSISTANT on first load after that update.
       const renameKey = function (arr) {
@@ -63,6 +64,7 @@ const Save = {
         const out = arr.map(function (k) {
           if (k === "BUGBEAR" || k === "HALLUCINATE") return "ASSISTANT";
           if (k === "FOSSIL" || k === "OLDEXE") return "TARPIT";
+          if (k === "HEX") return "HEXR";
           return k;
         });
         // De-dupe in case multiple old keys collapsed into the same new one.

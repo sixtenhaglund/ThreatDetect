@@ -348,7 +348,7 @@
   .v-CURSOR     { color: #ffaa44; }
   .v-LOOP       { color: #88ff88; }
   .v-TARPIT     { color: #c4a484; }
-  .v-HEX        { color: #88ddff; }
+  .v-HEXR        { color: #88ddff; }
   .v-ASSISTANT    { color: #00ff00; }
   .codex-entry.v-EPILEPTICA { border-left-color: #ffffff; }
   .codex-entry.v-MELTDOWN   { border-left-color: #ff7733; }
@@ -368,7 +368,7 @@
   .codex-entry.v-CURSOR     { border-left-color: #ffaa44; }
   .codex-entry.v-LOOP       { border-left-color: #88ff88; }
   .codex-entry.v-TARPIT     { border-left-color: #c4a484; }
-  .codex-entry.v-HEX        { border-left-color: #88ddff; }
+  .codex-entry.v-HEXR        { border-left-color: #88ddff; }
   .codex-entry.v-ASSISTANT    { border-left-color: #00d4aa; }
 
   /* Animations */
@@ -1892,7 +1892,7 @@
     pointer-events: none;
   }
 
-  /* HEX — blue hexagons jumping to random positions. Each layer uses `steps()`
+  /* HEXR — blue hexagons jumping to random positions. Each layer uses `steps()`
      timing and a different prime-number duration so they desync and never
      repeat the same overall pattern at the same time.
      Each "hex" is a tiny inline SVG (data: URL) with a 6-point polygon
@@ -1903,8 +1903,8 @@
      different rate, the eye can't lock onto a repeating pattern.
      `%23` is the URL-encoded form of `#` (required for hex color codes
      inside a data URL — otherwise the parser cuts there). */
-  .death-HEX { background: #000515; }
-  .death-HEX::before {
+  .death-HEXR { background: #000515; }
+  .death-HEXR::before {
     content: ""; position: absolute; inset: 0;
     background:
       url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><polygon points='50,44 55.2,47 55.2,53 50,56 44.8,53 44.8,47' fill='%2344aaff'/></svg>") 8% 12% / 90px 90px,
@@ -1932,7 +1932,7 @@
     85.71%  { background-position: 38% 56%, 76% 38%, 4% 13%, 51% 91%, 84% 23%, 16% 71%, 96% 67%; }
     100%    { background-position: 8% 12%, 34% 28%, 62% 18%, 78% 42%, 12% 64%, 50% 82%, 88% 88%; }
   }
-  .death-HEX::after {
+  .death-HEXR::after {
     content: ""; position: absolute; inset: 0;
     background:
       url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><polygon points='52.59,40.34 59.66,47.41 57.07,57.07 47.41,59.66 40.34,52.59 42.93,42.93' fill='%2366ccff'/></svg>") 20% 50% / 140px 140px,
@@ -1957,7 +1957,7 @@
     83.3%  { background-position: 27% 71%, 91% 56%, 71% 13%, 14% 47%; }
     100%   { background-position: 20% 50%, 70% 70%, 45% 25%, 90% 30%; }
   }
-  .death-HEX .death-fx::before {
+  .death-HEXR .death-fx::before {
     content: ""; position: absolute; inset: 0;
     background:
       url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><polygon points='50,42 56.93,46 56.93,54 50,58 43.07,54 43.07,46' fill='%2344aaff'/></svg>") 5% 30% / 60px 60px,
@@ -1983,7 +1983,7 @@
     87.5% { background-position: 47% 18%, 8% 62%, 27% 84%, 61% 47%, 84% 13%; }
     100%  { background-position: 5% 30%, 33% 70%, 66% 55%, 90% 20%, 75% 85%; }
   }
-  .death-HEX .death-fx::after {
+  .death-HEXR .death-fx::after {
     content: ""; position: absolute; inset: 0;
     background:
       url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><polygon points='57.88,51.39 52.74,57.52 44.86,56.13 42.12,48.61 47.26,42.48 55.14,43.87' fill='%2344aaff'/></svg>") 35% 40% / 200px 200px,
@@ -2353,7 +2353,7 @@
   .death-TARPIT .death-fx::before,
   .death-TARPIT .death-fx::after { content: none; }
 
-  /* HEX — no extra fx (handled in the main HEX block above: red dots only). */
+  /* HEXR — no extra fx (handled in the main HEXR block above: red dots only). */
 
   /* ASSISTANT — no extra fx (numbers/money handled in the main ASSISTANT block above). */
 

@@ -571,8 +571,8 @@ const VIRUSES = {
       { template: TPL.PRINT,  title: "Dot Matrix Driver", message: "Epson LX-300 dot matrix printer driver missing. Download dot_matrix.drv from legacy-print{tld}.", meta: "Tool: dot_matrix.drv  Year: 1990  Source: legacy-print{tld}", fontMismatch: true }
     ]
   },
-  HEX: {
-    name: "HEX", color: "#88ddff",
+  HEXR: {
+    name: "HEXR", color: "#88ddff",
     minRound: 5,
     description: "A fake memory analyzer that disguises malicious code as a forensics tool. Demands raw DMA access at ring -1 to scan 'ghost pages' — privileges that, once granted, hand it the keys to every process's RAM including the kernel itself. Every number is hex, every process is named 0xDEADBEEF.exe or 0xCAFE.dll. The vibe is technical-and-trustworthy, but the request is more privileged than anything legitimate software ever needs.",
     signs: [
@@ -662,7 +662,7 @@ const DEATHS = {
   CURSOR:     { text: "POINTER STOLEN",        duration: 4500 },
   LOOP:       { text: "STACK OVERFLOW",        duration: 4500 },
   TARPIT:     { text: "LEGACY EXPLOIT",        duration: 4500 },
-  HEX:        { text: "0xDEADBEEF",            duration: 4500 },
+  HEXR:       { text: "0xDEADBEEF",            duration: 4500 },
   ASSISTANT:    { text: "I MAY HAVE MADE A MISTAKE", duration: 4500 }
 };
 

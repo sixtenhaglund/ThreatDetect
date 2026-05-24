@@ -655,7 +655,7 @@ Audio.deaths = {
     src.connect(hp); hp.connect(hissG); hissG.connect(this.sfxGain);
     src.start(t0); src.stop(t0 + dur);
   },
-  HEX() {
+  HEXR() {
     const t = this.ctx.currentTime;
     const interval = 0.28;
     const count = Math.floor(4.4 / interval);

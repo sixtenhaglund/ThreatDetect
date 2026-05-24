@@ -117,7 +117,7 @@ const TEXTUAL_TELLS = {
     { p: /legacy\.archive|old\.windowsupdate|deprecated 200\d|legacy-update|legacy-java|legacy-print|xp-update|old-dos|old-windows|winworld|fidonet|trumpet-archive|qemm-archive|mac-legacy-archive/i, t: "Asks you to download from a 'legacy' or 'archive' domain" },
     { p: /Year:?\s*(19\d{2}|200[0-9])|deprecated 19\d\d/i,                          t: "References a year from the 1990s / early 2000s (legacy bait)" }
   ],
-  HEX: [
+  HEXR: [
     { p: /0x[A-F0-9]{4,}/i,                                                         t: "Multiple hex-encoded values (0xDEADBEEF, 0xCAFEBABE, etc.)" },
     { p: /ring\s*-?\s*1|DMA|physical memory|memory.{0,10}forensics|hexdumper|memcheck|page_inspector|memhex|hex_patch/i, t: "Requests ring-1 / DMA / physical RAM access" },
     { p: /0xDEAD|0xBEEF|0xCAFE|0xC0DE|0xABAD|0xFACE|0xDEEF/i,                       t: "Cute hex word (0xDEADBEEF, 0xC0DEF00D) — real error codes aren't readable English" }
