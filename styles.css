@@ -2044,9 +2044,10 @@
      to transparent: alpha = -1*R -1*G -1*B + 1*A + 1.5, so pure-white
      pixels resolve to alpha 0 and the red heart pixels resolve to alpha 1.
      Then drop-shadow adds the bleeding-glow halo around what's left. */
-  /* Plain black background. Only the heart itself moves (heartbeatPump below). */
+  /* Constant deep-red wash filling the whole screen. Only the heart itself
+     moves (heartbeatPump below). */
   .death-HEARTBEAT {
-    background: #000;
+    background: #6a0000;
   }
   /* The ::before is sized just big enough to hold the heart, centered on
      screen. Scaling only that small box means the eye reads the pulse as
