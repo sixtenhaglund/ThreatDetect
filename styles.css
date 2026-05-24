@@ -1896,65 +1896,39 @@
   }
   @keyframes loopScroll { from { transform: translateX(100%); } to { transform: translateX(-100%); } }
 
-  /* T.A.R.P.I.T. — minimal vintage death screen.
-     Three layers stacked bottom-to-top:
+  /* T.A.R.P.I.T. — vintage dead-channel death screen.
+     Two layers stacked:
        1. element background: black + a baked-in weak yellow phosphor wash
-       2. ::before — the centered B&W SVG drawing of a CRT monitor + tower
-       3. ::after  — a faint static/grain overlay on top of everything
-     The static uses SVG <feTurbulence>, which is a built-in noise generator:
-     it scatters random values across the box (controlled by baseFrequency)
-     and we render that as a grayscale rect. mix-blend-mode: screen makes
-     the bright noise specks lift the yellow/black behind them, so it reads
-     as a tired phosphor signal rather than a literal sandpaper texture. */
+       2. ::after — intense SVG feTurbulence static, twitched via a 3-step
+          keyframe so the noise grain re-rolls every ~80ms (browsers cache
+          the feTurbulence output per <svg>, so animating opacity between
+          three pre-baked-different-seed SVGs is the cheapest way to make
+          it "shimmer" without burning CPU on a canvas).
+     The CRT computer that used to live on ::before has been removed —
+     the screen is now pure analog static, no picture. */
   .death-TARPIT {
     background:
       linear-gradient(rgba(255, 215, 90, 0.07), rgba(255, 215, 90, 0.07)),
       #000;
   }
-  .death-TARPIT::before {
-    /* Black-and-white SVG of a CRT monitor + PC tower, centered.
-       White strokes on transparent so the yellow wash shows through and
-       the picture reads as pure black-and-white linework.
-       Glitches intensely — see oldexeComputerGlitch below. */
+  .death-TARPIT::before { content: none; }
+  .death-TARPIT::after {
     content: ""; position: absolute; inset: 0;
-    background: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 220 250' fill='none' stroke='%23ffffff' stroke-width='2.5' stroke-linejoin='round' stroke-linecap='round'><path d='M 30 18 Q 30 10 38 10 L 182 10 Q 190 10 190 18 L 190 140 Q 190 148 182 148 L 38 148 Q 30 148 30 140 Z'/><rect x='42' y='22' width='136' height='100' rx='8' fill='%23000000'/><circle cx='160' cy='135' r='2' fill='%23ffffff'/><line x1='44' y1='135' x2='110' y2='135' stroke-width='1' opacity='0.5'/><path d='M 95 148 L 95 160 L 75 168 L 145 168 L 125 160 L 125 148 Z'/><rect x='45' y='175' width='130' height='65' rx='3'/><rect x='60' y='190' width='45' height='4'/><rect x='60' y='200' width='50' height='5' rx='1'/><circle cx='155' cy='195' r='3'/><circle cx='155' cy='205' r='1.5'/><line x1='60' y1='220' x2='115' y2='220'/><line x1='60' y1='226' x2='115' y2='226'/><line x1='60' y1='232' x2='115' y2='232'/></svg>") no-repeat center;
-    background-size: min(26vmin, 220px) auto;
+    background-image:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='2.2' numOctaves='3' seed='7' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1  0 0 0 0 0.92  0 0 0 0 0.55  0 0 0 0.9 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='2.8' numOctaves='3' seed='42' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1  0 0 0 0 0.95  0 0 0 0 0.6  0 0 0 0.85 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 100% 100%, 100% 100%;
+    mix-blend-mode: screen;
     pointer-events: none;
-    animation: oldexeComputerGlitch 3.2s steps(1, end) infinite;
+    animation: tarpitStaticShimmer 0.12s steps(2, end) infinite;
   }
-  /* Intense, jerky glitch animation.
-     `steps(1, end)` removes ALL interpolation between keyframes — every
-     value change is a hard cut, no smooth slide. That kills the "drift"
-     feel the previous linear version had.
-     8 glitch events per loop: brief snap-jumps, longer "stuck" holds at
-     offset positions, dim flickers, and rotation/scale bursts. */
-  @keyframes oldexeComputerGlitch {
-    0%,  8%   { transform: translate(0,    0);   opacity: 0.92; }
-    9%,  10%  { transform: translate(-18px, 0);  opacity: 0.92; }
-    11%, 18%  { transform: translate(0,    0);   opacity: 0.92; }
-    19%, 20%  { transform: translate(14px, -5px); opacity: 0.3; }
-    21%, 30%  { transform: translate(0,    0);   opacity: 0.92; }
-    /* Longer hold — signal "stuck" off-center for ~130ms */
-    31%, 35%  { transform: translate(-24px, 4px) rotate(-0.8deg); opacity: 0.92; }
-    36%, 44%  { transform: translate(0,    0);   opacity: 0.92; }
-    /* Rapid double-jump — left, then right within 64ms */
-    45%, 46%  { transform: translate(26px, 0);   opacity: 0.92; }
-    47%, 48%  { transform: translate(-12px, 0);  opacity: 0.92; }
-    49%, 57%  { transform: translate(0,    0);   opacity: 0.92; }
-    /* Big dim hold — picture nearly vanishes for ~130ms */
-    58%, 62%  { transform: translate(0, -10px) scale(1.06); opacity: 0.2; }
-    63%, 72%  { transform: translate(0,    0);   opacity: 0.92; }
-    73%, 74%  { transform: translate(-20px, 5px); opacity: 0.92; }
-    75%, 76%  { transform: translate(12px, -3px); opacity: 0.45; }
-    77%, 86%  { transform: translate(0,    0);   opacity: 0.92; }
-    /* Final triple jolt */
-    87%, 88%  { transform: translate(-16px, 7px) rotate(0.5deg); opacity: 0.65; }
-    89%, 90%  { transform: translate(22px, -3px);  opacity: 0.92; }
-    91%, 100% { transform: translate(0,    0);   opacity: 0.92; }
+  /* Re-rolls the static every ~60ms by toggling which of the two stacked
+     noise SVGs is on top. steps(2, end) means no interpolation — each
+     frame is a hard cut between the two seeds. */
+  @keyframes tarpitStaticShimmer {
+    0%, 49%   { background-position: 0 0, 50% 50%; opacity: 0.95; }
+    50%, 100% { background-position: 50% 50%, 0 0; opacity: 0.85; }
   }
-  /* T.A.R.P.I.T. ::after deliberately empty — the static effect lives on the
-     STATIC virus now. The T.A.R.P.I.T. screen is just black + yellow wash +
-     glitching computer. */
 
   /* HEX — blue hexagons jumping to random positions. Each layer uses `steps()`
      timing and a different prime-number duration so they desync and never
@@ -2405,8 +2379,8 @@
   }
 
   /* T.A.R.P.I.T. — death-fx layer cleared. The whole death screen is now just
-     a black background + weak yellow wash + the centered CRT picture
-     (handled on .death-TARPIT itself above). */
+     black + weak yellow wash + the intense static overlay (handled on
+     .death-TARPIT::after above). */
   .death-TARPIT .death-fx::before,
   .death-TARPIT .death-fx::after { content: none; }
 
