@@ -1554,34 +1554,45 @@
     50%      { opacity: 1; }
   }
 
-  /* Rewriter() — a block of pseudo-code that slowly tints to yellow,
-     looping. No spinning, no error popup — just code being rewritten. */
+  /* Rewriter() — a block of pseudo-code with a yellow "rewrite" wipe that
+     sweeps across it left-to-right. Two stacked pseudo-elements show the
+     SAME code at the same position: ::before is the white original,
+     ::after is the yellow version on top, clipped on the right so only a
+     wiped portion is visible at any time. The clip-path animation moves
+     the right edge from -100% to 0, revealing yellow as it sweeps. */
   .death-REWRITER { background: #1a1500; }
-  .death-REWRITER::before, .death-REWRITER::after,
-  .death-REWRITER .death-fx::after { content: none; }
-  /* The code block lives on .death-fx::before. Big monospace text, centered,
-     with the rewriterDecay filter ramp gradually yellowing every glyph. */
-  .death-REWRITER .death-fx::before {
+  .death-REWRITER::before, .death-REWRITER::after { content: none; }
+  .death-REWRITER .death-fx::before,
+  .death-REWRITER .death-fx::after {
     content: "// rewriter.run()\Aaudit.log = restore('approved');\Ahistory.timestamp = '1601-01-01';\Asession.user = 'by you';\Aevents.removeWhere(!authorized);\Adb.records.update({\A  approved: true,\A  date: '-9,999 days'\A});\Async.cloud('trusted_state');\Alocal.clock = server.clock = 0;\A// rewritten.";
     white-space: pre;
     position: absolute; top: 50%; left: 50%;
     transform: translate(-50%, -50%);
     font-family: "Cascadia Mono", "Consolas", monospace;
     font-size: 1.6rem;
-    color: #d8d8d8;
     line-height: 1.7;
     letter-spacing: 0.02em;
-    animation: rewriterDecay 6s ease-in-out infinite;
   }
-  /* Filter ramp: 0% normal white-ish code → 100% saturated yellow.
-     `text-shadow` glow grows over the cycle so the final state looks
-     "burned in" yellow. */
-  @keyframes rewriterDecay {
-    0%   { color: #d8d8d8; text-shadow: none; }
-    25%  { color: #ddc97a; text-shadow: 0 0 4px rgba(255,200,80,0.3); }
-    50%  { color: #f0c050; text-shadow: 0 0 8px rgba(255,180,40,0.5); }
-    75%  { color: #ffcc00; text-shadow: 0 0 12px rgba(255,160,0,0.7); }
-    90%, 100% { color: #ffd56b; text-shadow: 0 0 14px #ffaa00, 0 0 28px #ff8800; }
+  /* Bottom layer: white original code, always fully visible. */
+  .death-REWRITER .death-fx::before {
+    color: #d8d8d8;
+  }
+  /* Top layer: yellow rewritten version, clipped to a sweeping band.
+     The band has a slight diagonal so it reads as a "wipe" not a solid
+     vertical line — clip-path polygon with the right edge slanted. */
+  .death-REWRITER .death-fx::after {
+    color: #ffd56b;
+    text-shadow: 0 0 12px #ffaa00, 0 0 28px #ff8800;
+    clip-path: polygon(-2% 0, -2% 0, 0% 100%, -2% 100%);
+    animation: rewriterWipe 4s ease-in-out infinite;
+  }
+  @keyframes rewriterWipe {
+    /* The wipe band sweeps from off-screen-left to fully covering the
+       text, then holds, then snaps back. */
+    0%   { clip-path: polygon(-2% 0,   -2% 0,    0% 100%, -2% 100%); }
+    65%  { clip-path: polygon(-2% 0,  104% 0,  102% 100%, -2% 100%); }
+    85%  { clip-path: polygon(-2% 0,  104% 0,  102% 100%, -2% 100%); }
+    100% { clip-path: polygon(-2% 0,   -2% 0,    0% 100%, -2% 100%); }
   }
 
   /* CRYPT0 — many streams of $-suffixed ransom amounts pouring down at
