@@ -193,10 +193,29 @@ function buildDeck(round) {
   if (!state.usedLegit)        state.usedLegit        = new Set();
   if (!state.usedVirusErrors)  state.usedVirusErrors  = new Set();
 
-  return shuffle(
+  const deck = shuffle(
     pickByUniformTemplate(virusPool, virusCount, state.usedVirusErrors)
       .concat(pickByUniformTemplate(legitPool, legitCount, state.usedLegit))
-  ).map(randomizeCard);
+  );
+  return spreadSameVirus(deck).map(randomizeCard);
+}
+
+/* After shuffle, avoid two cards from the SAME virus landing next to each other.
+   Even with different error texts, "MELTDOWN, MELTDOWN" in a row reads as
+   déjà vu. Walk the deck once and swap the second offender with a later card
+   whose virusKey differs (legit cards have virusKey=null, so they qualify). */
+function spreadSameVirus(deck) {
+  for (let i = 0; i < deck.length - 1; i++) {
+    if (!deck[i].isVirus || !deck[i + 1].isVirus) continue;
+    if (deck[i].virusKey !== deck[i + 1].virusKey) continue;
+    for (let j = i + 2; j < deck.length; j++) {
+      if (deck[j].virusKey !== deck[i].virusKey) {
+        const tmp = deck[i + 1]; deck[i + 1] = deck[j]; deck[j] = tmp;
+        break;
+      }
+    }
+  }
+  return deck;
 }
 
 /* Pick `n` cards from `pool` such that each TEMPLATE has roughly equal odds
