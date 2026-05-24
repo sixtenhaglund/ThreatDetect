@@ -63,6 +63,7 @@ const Save = {
       //   PULSE → HEARTBEAT                  (display name became "(<HEART.BEAT>)")
       //   MIMIC → MIMICER                    (display name became "MiMiCeR")
       //   SCREAMER → (removed)               (virus deleted entirely)
+      //   LEECH → LEECH_ERR                  (display name became "LEECH_ERR")
       // Rename references in unlocked / deathsBy so codex + first-death badges
       // still work. Also auto-unlocks ASSISTANT on first load after that update.
       const renameKey = function (arr) {
@@ -77,6 +78,7 @@ const Save = {
           if (k === "PULSE") return "HEARTBEAT";
           if (k === "MIMIC") return "MIMICER";
           if (k === "SCREAMER") return null;
+          if (k === "LEECH") return "LEECH_ERR";
           return k;
         }).filter(function (v) { return v != null; });
         // De-dupe in case multiple old keys collapsed into the same new one.

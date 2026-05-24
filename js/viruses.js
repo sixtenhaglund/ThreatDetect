@@ -309,8 +309,8 @@ const VIRUSES = {
       { template: TPL.NORTON, title: "BANDWIDTH SHARE", message: "Norton detected {numfiles} outbound conns/sec — opt in to distributed pool via norton-bandwidth{tld}?", meta: "Conns: {numfiles}/s  ·  Source: norton-bandwidth{tld}  ·  CPU: 100%", icon: "lightning" }
     ]
   },
-  LEECH: {
-    name: "LEECH", color: "#aa00ff",
+  LEECH_ERR: {
+    name: "LEECH_ERR", color: "#aa00ff",
     minRound: 3,
     description: "A credential-harvesting parasite that lives quietly in the background. Hooks into browser processes and the keyboard driver to capture passwords, clipboard contents, and session cookies, exfiltrating them in 30-second batches to a remote server. There is no visible UI — by the time you notice it, your accounts have already been signed into from somewhere else.",
     signs: [
@@ -633,7 +633,7 @@ const DEATHS = {
   WORM:       { text: "REPLICATION COMPLETE",  duration: 4500 },
   ROOTKIT:    { text: "KERNEL COMPROMISED",    duration: 4800 },
   DDOS:       { text: "BANDWIDTH HIJACKED",    duration: 4500 },
-  LEECH:      { text: "CREDENTIALS HARVESTED", duration: 4500 },
+  LEECH_ERR:  { text: "CREDENTIALS HARVESTED", duration: 4500 },
   MIMICER:    { text: "IMPOSTOR ACCEPTED",     duration: 4500 },
   HEARTBEAT:  { text: "RHYTHM CAPTURED",       duration: 4500 },
   DOTNULL:    { text: "INTERFACE LOST",        duration: 4500 },

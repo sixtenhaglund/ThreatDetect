@@ -340,7 +340,7 @@
   .v-WORM       { color: #44ff44; }
   .v-ROOTKIT    { color: #ff3300; }
   .v-DDOS       { color: #ff8800; }
-  .v-LEECH      { color: #aa00ff; }
+  .v-LEECH_ERR      { color: #aa00ff; }
   .v-MIMICER      { color: #66ddff; }
   .v-HEARTBEAT      { color: #ff1144; }
   .v-DOTNULL       { color: #777777; }
@@ -359,7 +359,7 @@
   .codex-entry.v-WORM       { border-left-color: #44ff44; }
   .codex-entry.v-ROOTKIT    { border-left-color: #ff3300; }
   .codex-entry.v-DDOS       { border-left-color: #ff8800; }
-  .codex-entry.v-LEECH      { border-left-color: #aa00ff; }
+  .codex-entry.v-LEECH_ERR      { border-left-color: #aa00ff; }
   .codex-entry.v-MIMICER      { border-left-color: #66ddff; }
   .codex-entry.v-HEARTBEAT      { border-left-color: #ff1144; }
   .codex-entry.v-DOTNULL       { border-left-color: #555555; }
@@ -1690,9 +1690,9 @@
   }
   @keyframes ddosCounter { 50% { opacity: 0.5; } }
 
-  /* LEECH — keylog scroll + exfil banner with cursor */
-  .death-LEECH { background: #110011; }
-  .death-LEECH::before {
+  /* LEECH_ERR — keylog scroll + exfil banner with cursor */
+  .death-LEECH_ERR { background: #110011; }
+  .death-LEECH_ERR::before {
     content: "[keylog] pass:hunter2\A[keylog] cred:admin@corp.local\A[keylog] card:4111-1111-1111-1111\A[keylog] token:eyJhbGc...\A[keylog] otp:847291\A[keylog] pin:1234\A[keylog] pw:correct-horse-battery\A[keylog] key:sk-AbCdEfGh...\A[keylog] cookie:session=4f2a\A[keylog] api_key:sk-prod-xx";
     white-space: pre;
     position: absolute; inset: 0; padding: 20px;
@@ -1704,7 +1704,7 @@
     animation: leechScroll 5s linear infinite;
   }
   @keyframes leechScroll { from { transform: translateY(100%); } to { transform: translateY(-110%); } }
-  .death-LEECH::after {
+  .death-LEECH_ERR::after {
     content: "EXFIL → data-sync.pw   ▌";
     position: absolute; inset: auto 0 8% 0;
     text-align: center;
@@ -2242,7 +2242,7 @@
   }
   @keyframes ddosIp { from { transform: translateX(100%); } to { transform: translateX(-100%); } }
 
-  /* LEECH — no extra fx (the keylog scroll + EXFIL banner do the work). */
+  /* LEECH_ERR — no extra fx (the keylog scroll + EXFIL banner do the work). */
 
 
   /* MIMICER — no extra fx (the warping System OK + shard pattern were already busy). */

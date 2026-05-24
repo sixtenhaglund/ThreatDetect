@@ -537,7 +537,7 @@ Audio.deaths = {
     const t = this.ctx.currentTime;
     for (let i = 0; i < 60; i++) this.beep(t + i * 0.07, 1200 + (i % 3) * 300, 0.05, "square", 0.1);
   },
-  LEECH() {
+  LEECH_ERR() {
     const t = this.ctx.currentTime;
     for (let i = 0; i < 38; i++) {
       const start = t + i * 0.11 + Math.random() * 0.04;

@@ -73,7 +73,7 @@ const TEXTUAL_TELLS = {
     { p: /bwtest_agent|dc_volunteer|netpool_agent|flood_test|norton-bandwidth/i,    t: "Botnet-client process name" },
     { p: /CPU:?\s*100%|saturated|cpu.{0,4}spike|cpu.{0,4}expected/i,                t: "Claims CPU at 100% is 'normal' or 'expected'" }
   ],
-  LEECH: [
+  LEECH_ERR: [
     { p: /klhelper|cbsync|inpd|smart_fill|input enhancement|browserbuddy|passsync|smartclick|verify_print|captcha-helper/i, t: "Fake keyboard/clipboard helper process name" },
     { p: /hook:?\s*(keyboard|clipboard|hid|HID\+Clipboard|keyboard\+clipboard)|hooked into|attached to chrome|attached to firefox|smart autofill|saved credentials|saved logins/i, t: "Hooks into keyboard / clipboard / browser / credentials" },
     { p: /data-sync\.pw|clip-srv\.ru|credentials\.php|autofill-sync|cloud-vault|corp-it-verify|recovery-login|outbound:?\s*\S+\.(pw|ru)/i, t: "Outbound traffic to a suspicious credential-sync domain" },
