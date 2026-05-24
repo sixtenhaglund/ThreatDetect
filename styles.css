@@ -1785,12 +1785,22 @@
     position: absolute; inset: 0;
     overflow: hidden;
   }
-  /* Outer wrapper: random absolute position + random rotation (inline style
-     set from JS). No animation here. */
+  /* Outer wrapper: random absolute base position + random rotation +
+     a drift animation that swings through 4 random waypoints per cycle.
+     Rotation is held in a CSS var so the animation can keep it baked in. */
   .mimic-popup {
     position: absolute;
     width: 320px;
     pointer-events: none;
+    animation: mimicDrift 1.4s ease-in-out infinite;
+  }
+  @keyframes mimicDrift {
+    0%   { transform: rotate(var(--r)) translate(0,             0); }
+    20%  { transform: rotate(var(--r)) translate(var(--dx1), var(--dy1)); }
+    40%  { transform: rotate(var(--r)) translate(var(--dx2), var(--dy2)); }
+    60%  { transform: rotate(var(--r)) translate(var(--dx3), var(--dy3)); }
+    80%  { transform: rotate(var(--r)) translate(var(--dx4), var(--dy4)); }
+    100% { transform: rotate(var(--r)) translate(0,             0); }
   }
   /* Inner wrapper carries the glitch animation. Translate + filter only —
      no rotate, so the outer rotation isn't clobbered. */

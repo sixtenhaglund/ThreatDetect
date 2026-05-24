@@ -200,17 +200,31 @@ function applyMimicPopups() {
     used.add(i);
     picks.push(LEGIT[i]);
   }
+  // Helper to pick a random "waypoint" offset for the drift animation.
+  // Returns "Npx" with N in [-range, range].
+  const wp = (range) => (Math.round((Math.random() - 0.5) * 2 * range)) + "px";
   picks.forEach(card => {
     const rendered = randomizeCard({ ...card, isVirus: false, virusKey: null });
     const html = renderCard(rendered);
     const outer = document.createElement("div");
     outer.className = "mimic-popup";
-    const x = Math.random() * 75 + 2;   // 2%..77% left
-    const y = Math.random() * 70 + 2;   // 2%..72% top
+    const x = Math.random() * 70 + 5;     // 5%..75% left (base position)
+    const y = Math.random() * 65 + 5;     // 5%..70% top
     const r = (Math.random() - 0.5) * 14; // ~ -7deg .. +7deg
     outer.style.left = x + "%";
     outer.style.top  = y + "%";
-    outer.style.transform = "rotate(" + r + "deg)";
+    // CSS vars consumed by the mimicDrift keyframes
+    outer.style.setProperty("--r", r + "deg");
+    outer.style.setProperty("--dx1", wp(220));
+    outer.style.setProperty("--dy1", wp(180));
+    outer.style.setProperty("--dx2", wp(220));
+    outer.style.setProperty("--dy2", wp(180));
+    outer.style.setProperty("--dx3", wp(220));
+    outer.style.setProperty("--dy3", wp(180));
+    outer.style.setProperty("--dx4", wp(220));
+    outer.style.setProperty("--dy4", wp(180));
+    // Stagger the drift so they don't all swing together
+    outer.style.animationDelay = (Math.random() * 1.4).toFixed(2) + "s";
     const glitch = document.createElement("div");
     glitch.className = "mimic-glitch";
     glitch.style.animationDelay = (Math.random() * 0.4).toFixed(2) + "s";
