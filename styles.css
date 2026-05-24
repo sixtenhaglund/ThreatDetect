@@ -1899,13 +1899,10 @@
   /* T.A.R.P.I.T. — vintage dead-channel death screen.
      Two layers stacked:
        1. element background: black + a baked-in weak yellow phosphor wash
-       2. ::after — intense SVG feTurbulence static, twitched via a 3-step
-          keyframe so the noise grain re-rolls every ~80ms (browsers cache
-          the feTurbulence output per <svg>, so animating opacity between
-          three pre-baked-different-seed SVGs is the cheapest way to make
-          it "shimmer" without burning CPU on a canvas).
-     The CRT computer that used to live on ::before has been removed —
-     the screen is now pure analog static, no picture. */
+       2. ::after — analog TV snow at 50% opacity, painted by the same
+          canvas painter STATIC uses (paintStaticInto in main.js, 20fps).
+          The CSS variable --static-noise gets a fresh data-URL every
+          50ms; the ::after rule consumes it as background-image. */
   .death-TARPIT {
     background:
       linear-gradient(rgba(255, 215, 90, 0.07), rgba(255, 215, 90, 0.07)),
@@ -1914,24 +1911,13 @@
   .death-TARPIT::before { content: none; }
   .death-TARPIT::after {
     content: ""; position: absolute; inset: 0;
-    background-image:
-      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='2.2' numOctaves='3' seed='7' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1  0 0 0 0 0.92  0 0 0 0 0.55  0 0 0 0.9 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
-      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='2.8' numOctaves='3' seed='42' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1  0 0 0 0 0.95  0 0 0 0 0.6  0 0 0 0.85 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-    background-size: 100% 100%, 100% 100%;
+    background-image: var(--static-noise, none);
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    image-rendering: pixelated;
     mix-blend-mode: screen;
-    pointer-events: none;
     opacity: 0.5;
-    animation: tarpitStaticShimmer 0.3s steps(3, end) infinite;
-  }
-  /* Re-rolls the static every ~60ms by snapping each of the two stacked
-     noise SVGs to a different position. steps(3, end) means no
-     interpolation — three hard cuts per cycle, no smooth drift. Opacity
-     stays at a constant 50% (set on the element); the motion is the
-     animation. */
-  @keyframes tarpitStaticShimmer {
-    0%,   33%  { background-position: 0    0,   50%  50%; }
-    34%,  66%  { background-position: 60%  20%, 10%  80%; }
-    67%,  100% { background-position: 30%  70%, 80%  10%; }
+    pointer-events: none;
   }
 
   /* HEX — blue hexagons jumping to random positions. Each layer uses `steps()`

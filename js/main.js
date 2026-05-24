@@ -95,17 +95,19 @@ function applyAssistantStatic() {
 }
 
 /* ============================================================
-   STATIC — proper analog TV snow.
+   STATIC + TARPIT — proper analog TV snow.
    Each pixel of a 256x192 canvas gets a random GRAY value (0–255)
    every 50ms (20fps). image-rendering: pixelated scales it up to the
    full screen with crisp chunks instead of smooth blur. Pushed into
    the death screen as a CSS custom property so the existing
    background-image rule can consume it without restructuring.
+   TARPIT shares the same painter — its ::after layer reads
+   var(--static-noise) too, blended over its yellow phosphor wash.
    ============================================================ */
 let _staticNoiseInterval = null;
 
-function paintStaticNoise() {
-  const el = document.querySelector(".death-STATIC");
+function paintStaticInto(selector) {
+  const el = document.querySelector(selector);
   if (!el) return;
   const c = document.createElement("canvas");
   c.width = 256; c.height = 192;
@@ -123,19 +125,26 @@ function paintStaticNoise() {
   el.style.setProperty("--static-noise", "url(" + c.toDataURL() + ")");
 }
 
+function killerIs(key) {
+  return (state.screen === "dying"    && state.killer       === key) ||
+         (state.screen === "preview"  && state.previewVirus === key) ||
+         (state.screen === "infected" && state.killer       === key);
+}
+
 function applyStaticNoise() {
-  const onScreen =
-    (state.screen === "dying"    && state.killer       === "STATIC") ||
-    (state.screen === "preview"  && state.previewVirus === "STATIC") ||
-    (state.screen === "infected" && state.killer       === "STATIC");
+  const targets = [];
+  if (killerIs("STATIC")) targets.push(".death-STATIC");
+  if (killerIs("TARPIT")) targets.push(".death-TARPIT");
+  const onScreen = targets.length > 0;
+  const repaint = () => targets.forEach(paintStaticInto);
   if (onScreen && !_staticNoiseInterval) {
-    paintStaticNoise();
-    _staticNoiseInterval = setInterval(paintStaticNoise, 50);
+    repaint();
+    _staticNoiseInterval = setInterval(repaint, 50);
   } else if (!onScreen && _staticNoiseInterval) {
     clearInterval(_staticNoiseInterval);
     _staticNoiseInterval = null;
   } else if (onScreen) {
-    paintStaticNoise();
+    repaint();
   }
 }
 
