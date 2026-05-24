@@ -61,7 +61,7 @@ const VIRUSES = {
     ]
   },
   STATIC: {
-    name: "STATIC", color: "#b0b0b0", starter: true,
+    name: "S#T#A#T#I#C", color: "#b0b0b0", starter: true,
     minRound: 1,
     description: "A signal interference virus that uses analog-era language to disguise modern attacks. It hijacks display drivers, injects static noise into video output, and renames itself to legacy .scr screensaver files to slip past modern detection (which often ignores that extension as harmless). The visible noise on the popup is cover for filesystem rewrites happening underneath.",
     signs: [
