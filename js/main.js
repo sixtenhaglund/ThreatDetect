@@ -200,11 +200,11 @@ function applyMimicPopups() {
 }
 
 /* ============================================================
-   CRYPTEX death — generate ~14 columns of ransom $-suffixed numbers,
+   CRYPT0 death — generate ~14 columns of ransom $-suffixed numbers,
    all streaming down at the same speed. Random starting amounts and
    per-column animation-delay so the columns desync visually.
    ============================================================ */
-const CRYPTEX_AMOUNTS = [
+const CRYPT0_AMOUNTS = [
   "47$", "88$", "299$", "499$", "999$", "1,200$", "1,499$", "4,217$",
   "8,441$", "12,400$", "12,882$", "18,200$", "18,442$", "21,003$",
   "27,500$", "31,082$", "42,108$", "47,000$", "65,000$", "65,704$",
@@ -212,9 +212,9 @@ const CRYPTEX_AMOUNTS = [
   "0.8 BTC$", "0.3 ETH$", "0.5 ETH$", "$"
 ];
 function applyCryptexRain() {
-  const target = document.querySelector(".death-CRYPTEX");
+  const target = document.querySelector(".death-CRYPT0");
   if (!target) return;
-  if (!killerIs("CRYPTEX")) {
+  if (!killerIs("CRYPT0")) {
     target.dataset.cryptexPopulated = "";
     return;
   }
@@ -240,7 +240,7 @@ function applyCryptexRain() {
     // Build ~24 lines per column from random amounts.
     const lines = [];
     for (let j = 0; j < 24; j++) {
-      lines.push(CRYPTEX_AMOUNTS[Math.floor(Math.random() * CRYPTEX_AMOUNTS.length)]);
+      lines.push(CRYPT0_AMOUNTS[Math.floor(Math.random() * CRYPT0_AMOUNTS.length)]);
     }
     col.textContent = lines.join("\n");
     container.appendChild(col);

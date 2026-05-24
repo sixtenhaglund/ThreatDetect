@@ -336,7 +336,7 @@
   .v-REDRUM     { color: #cc1111; }
   .v-VOID       { color: #aa66ff; }
   .v-GASLIGHT   { color: #ffd56b; }
-  .v-CRYPTEX    { color: #ffcc00; }
+  .v-CRYPT0    { color: #ffcc00; }
   .v-HAKR_10111001       { color: #44ff44; }
   .v-FAKE_BSOD    { color: #0000AA; }
   .v-DDOS       { color: #ff8800; }
@@ -355,7 +355,7 @@
   .codex-entry.v-REDRUM     { border-left-color: #cc1111; }
   .codex-entry.v-VOID       { border-left-color: #aa66ff; }
   .codex-entry.v-GASLIGHT   { border-left-color: #ffd56b; }
-  .codex-entry.v-CRYPTEX    { border-left-color: #ffcc00; }
+  .codex-entry.v-CRYPT0    { border-left-color: #ffcc00; }
   .codex-entry.v-HAKR_10111001       { border-left-color: #44ff44; }
   .codex-entry.v-FAKE_BSOD    { border-left-color: #0000AA; }
   .codex-entry.v-DDOS       { border-left-color: #ff8800; }
@@ -1592,12 +1592,12 @@
   }
   @keyframes gasClock { to { transform: rotate(720deg); } }
 
-  /* CRYPTEX — many streams of $-suffixed ransom amounts pouring down at
+  /* CRYPT0 — many streams of $-suffixed ransom amounts pouring down at
      a single shared speed. Columns are injected by applyCryptexRain() in
      main.js so we can spin up as many as we want; this CSS just handles
      the per-column streaming. */
-  .death-CRYPTEX { background: #1a1100; overflow: hidden; }
-  .death-CRYPTEX::before, .death-CRYPTEX::after { content: none; }
+  .death-CRYPT0 { background: #1a1100; overflow: hidden; }
+  .death-CRYPT0::before, .death-CRYPT0::after { content: none; }
   .cryptex-rain {
     position: absolute; inset: 0;
     overflow: hidden;
@@ -2229,10 +2229,10 @@
     65%, 80%      { opacity: 0.3; transform: translateX(4px); }
   }
 
-  /* CRYPTEX death-fx layers cleared — all streams live on .cryptex-rain
+  /* CRYPT0 death-fx layers cleared — all streams live on .cryptex-rain
      children created by applyCryptexRain(). */
-  .death-CRYPTEX .death-fx::before,
-  .death-CRYPTEX .death-fx::after { content: none; }
+  .death-CRYPT0 .death-fx::before,
+  .death-CRYPT0 .death-fx::after { content: none; }
 
   /* HAKR_10111001 — extra fx layers (terminal commands + IP scan) are
      defined alongside the main rule above. */

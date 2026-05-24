@@ -501,7 +501,7 @@ Audio.deaths = {
       this.beep(t + delay, 780 + Math.random() * 220, 0.03, "triangle", 0.16);
     }
   },
-  CRYPTEX() {
+  CRYPT0() {
     const t = this.ctx.currentTime;
     for (let i = 0; i < 12; i++) this.beep(t + i * 0.32, 300 - i * 18, 0.1, "square", 0.22);
   },

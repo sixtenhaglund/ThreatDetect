@@ -66,6 +66,7 @@ const Save = {
       //   LEECH → LEECH_ERR                  (display name became "LEECH_ERR")
       //   ROOTKIT → FAKE_BSOD                (display name became "fake_BSOD.000")
       //   WORM → HAKR_10111001               (display name became "HAKR_10111001")
+      //   CRYPTEX → CRYPT0                   (display name became "Crypt.0")
       // Rename references in unlocked / deathsBy so codex + first-death badges
       // still work. Also auto-unlocks ASSISTANT on first load after that update.
       const renameKey = function (arr) {
@@ -83,6 +84,7 @@ const Save = {
           if (k === "LEECH") return "LEECH_ERR";
           if (k === "ROOTKIT") return "FAKE_BSOD";
           if (k === "WORM") return "HAKR_10111001";
+          if (k === "CRYPTEX") return "CRYPT0";
           return k;
         }).filter(function (v) { return v != null; });
         // De-dupe in case multiple old keys collapsed into the same new one.
@@ -320,7 +322,7 @@ const VIRUS_TOKEN_EXPLANATIONS = {
   meltdownphrase:  v => "Title / message says '" + v + "' — classic MELTDOWN virus phrasing (dramatic thermal emergency)",
   voidphrase:      v => "Title / message says '" + v + "' — classic VOID virus phrasing (∅ / NULL / 0-byte / /dev/null)",
   epilepticphrase: v => "Title / message says '" + v + "' — classic EPILEPTICA virus phrasing (display strobe panic)",
-  cryptexphrase:   v => "Title / message says '" + v + "' — classic CRYPTEX virus phrasing (encrypted-files ransom)",
+  cryptexphrase:   v => "Title / message says '" + v + "' — classic Crypt.0 virus phrasing (encrypted-files ransom)",
   rootkitphrase:   v => "Title / message says '" + v + "' — classic fake_BSOD.000 virus phrasing (kernel / Secure Boot / MBR)",
   wormphrase:      v => "Title / message says '" + v + "' — classic HAKR_10111001 virus phrasing (spreading across shares / contacts)",
   assistantphrase: v => "Title / message says '" + v + "' — classic A5515T4N7 phrasing (friendly AI tone, fake confidence)"

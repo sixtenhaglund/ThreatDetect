@@ -48,7 +48,7 @@ const TEXTUAL_TELLS = {
     { p: /Removed:?\s*\d+|Removing sessions|trusted_state|rewind/i,                 t: "Claims to silently remove sessions / restore a 'trusted state'" },
     { p: /-\d+\s*days?\s*ago|-\d+\s*window/i,                                       t: "Timestamps shown as negative days (you can't approve something -47 days ago)" }
   ],
-  CRYPTEX: [
+  CRYPT0: [
     { p: /\bBTC\b|Bitcoin|0\.\d+\s*ETH|wallet[:=\s]|bc1q\w+|0x[a-f0-9]{6,}|seed phrase|crypto.?wallet/i, t: "Bitcoin / Ethereum / wallet address / seed phrase mentioned" },
     { p: /\.locked|\.crypt\b|\.vault|Extension:\s*\.\w+/i,                          t: "Files renamed to .locked / .crypt / .vault" },
     { p: /Timer:|T-\d+:\d+|within \d+h|within \d+ hours|24h|48 hours|auto-shutdown|auto-delete/i, t: "Countdown timer attached to file deletion" },

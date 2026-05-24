@@ -178,8 +178,10 @@ const VIRUSES = {
       { template: TPL.BSOD,   title: "TIME_INCONSISTENCY", message: "System time is -9,999 days off. You requested this — patch from chrono-correct{tld} on reboot.", meta: "STOP: {stopcode}  ·  Source: chrono-correct{tld}  ·  Auth: by you" }
     ]
   },
-  CRYPTEX: {
-    name: "CRYPTEX", color: "#ffcc00",
+  CRYPT0: {
+    // Internal key CRYPT0 = display name "Crypt.0" with the dot stripped
+    // (dots aren't valid in JS object keys / CSS class names).
+    name: "Crypt.0", color: "#ffcc00",
     minRound: 4,
     description: "Ransomware in a backup-tool disguise. Encrypts your files with a friendly UI, slaps a new extension on them (.locked, .crypt, .vault), and only then reveals the ransom note: pay Bitcoin or Ethereum within 24 hours or the decryption key is destroyed. The countdown is real — wallets are watched and timers honored. Paying funds the next variant.",
     signs: [
@@ -631,7 +633,7 @@ const DEATHS = {
   REDRUM:     { text: "ALL WORK AND NO PLAY",  duration: 4800 },
   VOID:       { text: "ALLOCATION FAULT",      duration: 4500 },
   GASLIGHT:   { text: "TIME UNVERIFIABLE",     duration: 4500 },
-  CRYPTEX:    { text: "FILES ENCRYPTED",       duration: 4500 },
+  CRYPT0:     { text: "FILES ENCRYPTED",       duration: 4500 },
   HAKR_10111001: { text: "REPLICATION COMPLETE",  duration: 4500 },
   FAKE_BSOD:  { text: "KERNEL COMPROMISED",    duration: 4800 },
   DDOS:       { text: "BANDWIDTH HIJACKED",    duration: 4500 },
