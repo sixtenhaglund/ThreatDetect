@@ -254,7 +254,7 @@ function applyCryptexRain() {
    each at a random position, size, color, and twinkle phase so the
    whole field shimmers unpredictably.
    ============================================================ */
-const SPARK_GLYPHS  = ["✦", "✧", "✶", "✷", "✩", "·"];
+const SPARK_GLYPHS  = ["•", "·", "●", "•", "·"];
 const SPARK_COLORS  = ["#ffd56b", "#ffcc00", "#ffe080", "#ffaa00", "#fff0aa"];
 function applyRewriterSparkles() {
   const target = document.querySelector(".death-REWRITER");
