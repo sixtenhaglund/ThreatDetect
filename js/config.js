@@ -56,7 +56,8 @@ const TPL = {
   PHONE:    "phone",    // iPhone lock-screen banner
   PRINT:    "print",    // print preview dialog
   CAPTCHA:  "captcha",  // "I'm not a robot" verification card
-  UPDATE:   "update"    // fourth-wall ThreatDetect "v2.1 available" banner
+  UPDATE:   "update",   // fourth-wall ThreatDetect "v2.1 available" banner
+  EMAIL:    "email"     // Outlook 2000-style email window (From/To/Cc/Subject + body + attachment)
 };
 
 /* ---- Error icon variants (used by iconFor in game.js) ---- */
@@ -341,7 +342,8 @@ const ICON_BY_TEMPLATE = {
   phone:    "blank",
   print:    "blank",
   captcha:  "question",
-  update:   "warning"
+  update:   "warning",
+  email:    "blank"
 };
 
 /* ---- Shop items ---- */

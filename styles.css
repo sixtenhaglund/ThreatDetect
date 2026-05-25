@@ -2900,3 +2900,172 @@
     transform: scale(1.05);
     border-color: rgba(255,255,255,0.4);
   }
+
+/* ============================================================
+   EMAIL template — Outlook 2000-style window. Used by real-life
+   email worms (ILOVEYOU, MyDoom). Period look: Tahoma, beige-
+   gray Win9x chrome, raised/inset bevels, monochrome attachment
+   icon with a "SCRIPT" header (the iconic .vbs giveaway).
+   ============================================================ */
+.email-window {
+  background: #d4d0c8;             /* Win9x beige-gray */
+  color: #000;
+  font-family: "Tahoma", "MS Sans Serif", sans-serif;
+  font-size: 0.78rem;
+  border: 2px solid;
+  border-color: #ffffff #404040 #404040 #ffffff;  /* raised bevel */
+  box-shadow: 1px 1px 0 #000;
+  width: 100%;
+  max-width: 520px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+}
+.email-titlebar {
+  background: linear-gradient(90deg, #0a246a 0%, #a6caf0 100%);
+  color: #fff;
+  font-weight: bold;
+  padding: 3px 6px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.78rem;
+}
+.email-title { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.email-controls { display: flex; gap: 3px; }
+.email-controls span {
+  display: inline-block;
+  width: 16px; height: 14px;
+  background: #d4d0c8;
+  color: #000;
+  border: 1px solid;
+  border-color: #ffffff #404040 #404040 #ffffff;
+  text-align: center;
+  line-height: 12px;
+  font-size: 0.7rem;
+  font-weight: normal;
+}
+.email-menubar {
+  background: #d4d0c8;
+  border-bottom: 1px solid #808080;
+  padding: 2px 4px;
+  display: flex;
+  gap: 10px;
+  font-size: 0.72rem;
+}
+.email-menubar span { cursor: default; }
+.email-headers {
+  background: #d4d0c8;
+  padding: 4px 6px 6px;
+  border-bottom: 1px solid #808080;
+}
+.email-hrow {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  margin: 1px 0;
+  font-size: 0.78rem;
+}
+.email-hlabel { width: 56px; flex-shrink: 0; color: #000; }
+.email-hvalue {
+  flex: 1;
+  background: #fff;
+  border: 1px solid;
+  border-color: #404040 #ffffff #ffffff #404040;  /* inset bevel for input fields */
+  padding: 1px 4px;
+  min-height: 14px;
+  font-family: "Tahoma", "MS Sans Serif", sans-serif;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.email-subject .email-hvalue { font-weight: normal; }
+.email-body {
+  background: #fff;
+  border: 1px solid;
+  border-color: #404040 #ffffff #ffffff #404040;  /* inset bevel */
+  margin: 4px 6px 6px;
+  min-height: 90px;
+  display: flex;
+  font-family: "Courier New", monospace;
+  font-size: 0.85rem;
+  position: relative;
+}
+.email-body-text {
+  flex: 1;
+  padding: 8px 10px;
+  color: #000;
+  line-height: 1.4;
+  white-space: pre-wrap;
+}
+.email-scrollbar {
+  width: 16px;
+  background: #d4d0c8;
+  border-left: 1px solid #808080;
+  position: relative;
+}
+.email-scrollthumb {
+  position: absolute;
+  top: 0;
+  width: 14px;
+  height: 40px;
+  margin: 1px;
+  background: #d4d0c8;
+  border: 1px solid;
+  border-color: #ffffff #404040 #404040 #ffffff;
+}
+.email-attach {
+  background: #d4d0c8;
+  border-top: 1px solid #808080;
+  padding: 6px 8px;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  margin: 0 6px 6px;
+  align-self: flex-start;
+  min-width: 70px;
+}
+.email-attach-icon { line-height: 0; }
+.email-attach-label {
+  font-size: 0.72rem;
+  text-align: center;
+  font-family: "Tahoma", "MS Sans Serif", sans-serif;
+  color: #000;
+  max-width: 80px;
+  word-break: break-all;
+}
+
+/* RARE badge in the codex — small gold pill next to the virus name.
+   Visible on locked entries too, so players know "there's a rare one in here". */
+.codex-rare-badge {
+  display: inline-block;
+  padding: 1px 6px;
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: #1a0e00;
+  background: linear-gradient(180deg, #ffd966 0%, #d4a017 100%);
+  border: 1px solid #8b6914;
+  border-radius: 3px;
+  margin-left: 6px;
+  text-shadow: 0 1px 0 rgba(255,255,255,0.4);
+  vertical-align: middle;
+}
+.codex-entry.rare .codex-head {
+  border-left: 3px solid #d4a017;
+  padding-left: 8px;
+}
+.codex-realworld {
+  font-size: 0.85rem;
+}
+.codex-realworld li { margin: 3px 0; }
+.codex-realworld-story {
+  margin-top: 8px;
+  padding: 10px 12px;
+  background: rgba(212, 160, 23, 0.08);
+  border-left: 3px solid #d4a017;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  font-style: italic;
+}

@@ -206,12 +206,40 @@ function buildDeck(round) {
    appear 3-4x as often as viruses with fewer variants (like HEARTBEAT at 10) —
    because the previous template-balanced picker effectively weighted each
    virus by its pool size. */
+// Per-virus weight for the uniform-virus picker. Regular viruses weight 1.0
+// (equal odds with each other). Rare viruses (real-life ones marked with
+// rare:true — ILOVEYOU etc.) get a much smaller weight so they show up
+// roughly once per 10-round run on average.
+//
+// Math for one rare virus alongside 19 regulars:
+//   total weight = 19 + 0.5 = 19.5
+//   rare draw probability = 0.5 / 19.5 ≈ 2.6% per virus slot
+//   45 virus slots/run × 2.6% ≈ 1.15 rare appearances per run ✓
+//
+// As more rare viruses are added, the per-rare weight may need re-tuning
+// so the SUM of rare weights still produces ~1 rare per run.
+const RARE_WEIGHT = 0.5;
+function virusWeight(k) {
+  return VIRUSES[k] && VIRUSES[k].rare ? RARE_WEIGHT : 1.0;
+}
+
 function pickByUniformVirus(avail, n, usedKeys) {
   if (n <= 0 || avail.length === 0) return [];
+  // Build a cumulative-weight array once so each slot is a single binary
+  // search rather than re-summing weights every iteration.
+  const weights = avail.map(virusWeight);
+  const cum = [];
+  let total = 0;
+  for (let i = 0; i < weights.length; i++) { total += weights[i]; cum.push(total); }
+  function pickWeighted() {
+    const r = Math.random() * total;
+    for (let i = 0; i < cum.length; i++) if (r < cum[i]) return avail[i];
+    return avail[avail.length - 1];
+  }
   const picked = [];
   let safety = n * 10;
   while (picked.length < n && safety-- > 0) {
-    const k = avail[Math.floor(Math.random() * avail.length)];
+    const k = pickWeighted();
     const errors = VIRUSES[k].errors;
     if (!errors.length) continue;
     const fresh = [];

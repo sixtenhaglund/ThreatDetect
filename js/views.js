@@ -229,18 +229,33 @@ function renderCodexEntries(opts) {
         ${renderCodexMeters(v.meterEffect)}
         ${tellsHtml}`;
     }
+    // Real-world history block — only present on rare viruses. Visible
+    // once unlocked. Frames cybersecurity history so the codex teaches
+    // beyond just spotting tells.
+    const rw = v.realWorld;
+    const realWorldHtml = (unlocked && rw) ? `
+      <p class="tiny" style="margin-top:10px;">Real-world history</p>
+      <ul class="codex-realworld">
+        ${rw.year   ? `<li><strong>Year:</strong> ${esc(String(rw.year))}</li>` : ""}
+        ${rw.origin ? `<li><strong>Origin:</strong> ${esc(rw.origin)}</li>` : ""}
+        ${rw.author ? `<li><strong>Created by:</strong> ${esc(rw.author)}</li>` : ""}
+        ${rw.damage ? `<li><strong>Damage:</strong> ${esc(rw.damage)}</li>` : ""}
+      </ul>
+      ${rw.story ? `<p class="codex-realworld-story">${esc(rw.story)}</p>` : ""}` : "";
+    const rareBadge = v.rare ? `<span class="codex-rare-badge" title="Rare — real-life virus">RARE</span>` : "";
     return `
-      <div class="codex-entry v-${key} ${isOpen ? "open" : ""}">
+      <div class="codex-entry v-${key} ${isOpen ? "open" : ""} ${v.rare ? "rare" : ""}">
         <div class="codex-head" data-action="toggle-entry" data-key="${key}">
           <span class="caret">▶</span>
           <span class="vname v-${key} ${unlocked ? "" : "locked"}">${unlocked ? esc(v.name) : "??????"}</span>
+          ${rareBadge}
           <span class="tiny">${unlocked ? "Discovered" : "Locked"}</span>
         </div>
         <div class="codex-body">
           <p class="desc">${unlocked ? esc(v.description) : "Encounter and identify this threat to unlock its file."}</p>
           ${unlocked ? `<p class="tiny">How to identify</p><ul>${v.signs.map(s => `<li>${esc(s)}</li>`).join("")}</ul>${
             meterLabels.length ? `<p class="tiny" style="margin-top:10px;">Telemetry tampering</p><ul>${meterLabels.map(t => `<li>${esc(t)}</li>`).join("")}</ul>` : ""
-          }${exampleHtml}${
+          }${realWorldHtml}${exampleHtml}${
             allowPreview ? `<button class="btn" data-action="preview-virus" data-key="${key}" style="margin-top:12px;">▶ Watch Death Animation</button>` : ""
           }` : ""}
         </div>

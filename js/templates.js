@@ -368,6 +368,58 @@ function renderUpdate(card) {
     </div>`;
 }
 
+// Outlook 2000-style email window. Used by real-world worms like ILOVEYOU,
+// MyDoom — the visual signature is the gray Win9x window chrome, the
+// From/To/Cc/Subject header rows, and an attachment row at the bottom with
+// a small file icon that's actually a script (.vbs / .exe). The card's title
+// becomes the Subject line; the message is the body; meta becomes the
+// attachment filename (with size in parens, e.g. "LOVE-LETTER-FOR-YOU.txt.vbs (10KB)").
+function renderEmail(card) {
+  const from    = card.from    || "sender@example.com";
+  const to      = card.to      || "you@yourcompany.com";
+  const cc      = card.cc      || "";
+  const attach  = card.attach  || (card.meta || "");
+  return `
+    <div class="email-window">
+      <div class="email-titlebar">
+        <span class="email-title">${esc(card.title || "(no subject)")} - Message</span>
+        <span class="email-controls"><span>_</span><span>□</span><span>×</span></span>
+      </div>
+      <div class="email-menubar"><span>File</span><span>Edit</span><span>View</span><span>Insert</span><span>Format</span><span>Tools</span><span>Actions</span><span>Help</span></div>
+      <div class="email-headers">
+        <div class="email-hrow"><span class="email-hlabel">From:</span><span class="email-hvalue">${esc(from)}</span></div>
+        <div class="email-hrow"><span class="email-hlabel">To:</span><span class="email-hvalue">${esc(to)}</span></div>
+        <div class="email-hrow"><span class="email-hlabel">Cc:</span><span class="email-hvalue">${esc(cc)}</span></div>
+        <div class="email-hrow email-subject"><span class="email-hlabel">Subject:</span><span class="email-hvalue">${esc(card.title || "")}</span></div>
+      </div>
+      <div class="email-body">
+        <div class="email-body-text">${esc(card.message || "")}</div>
+        <div class="email-scrollbar"><div class="email-scrollthumb"></div></div>
+      </div>
+      ${attach ? `
+      <div class="email-attach">
+        <div class="email-attach-icon" aria-hidden="true">
+          <svg width="36" height="44" viewBox="0 0 36 44">
+            <rect x="2" y="2" width="32" height="40" fill="#fff8c8" stroke="#7a6a1a" stroke-width="1"/>
+            <rect x="2" y="2" width="32" height="8" fill="#1f3a8a"/>
+            <text x="18" y="9" text-anchor="middle" font-size="6" font-family="Tahoma, sans-serif" font-weight="bold" fill="#fff">SCRIPT</text>
+            <line x1="6"  y1="16" x2="30" y2="16" stroke="#7a6a1a" stroke-width="0.6"/>
+            <line x1="6"  y1="20" x2="30" y2="20" stroke="#7a6a1a" stroke-width="0.6"/>
+            <line x1="6"  y1="24" x2="30" y2="24" stroke="#7a6a1a" stroke-width="0.6"/>
+            <line x1="6"  y1="28" x2="26" y2="28" stroke="#7a6a1a" stroke-width="0.6"/>
+            <line x1="6"  y1="32" x2="30" y2="32" stroke="#7a6a1a" stroke-width="0.6"/>
+            <line x1="6"  y1="36" x2="22" y2="36" stroke="#7a6a1a" stroke-width="0.6"/>
+          </svg>
+        </div>
+        <div class="email-attach-label">${esc(attach)}</div>
+      </div>` : ""}
+    </div>
+    <div class="row" style="gap:10px;margin-top:14px;justify-content:center;">
+      <button class="btn danger big" data-action="virus">${card.labelReport || "Report"}</button>
+      <button class="btn primary big" data-action="check">${card.labelOk || "OK"}</button>
+    </div>`;
+}
+
 function renderCard(card) {
   switch (card.template) {
     case TPL.AV:       return renderAV(card);
@@ -385,6 +437,7 @@ function renderCard(card) {
     case TPL.PRINT:    return renderPrint(card);
     case TPL.CAPTCHA:  return renderCaptcha(card);
     case TPL.UPDATE:   return renderUpdate(card);
+    case TPL.EMAIL:    return renderEmail(card);
     case TPL.WIN11:
     default:           return renderWin11(card);
   }

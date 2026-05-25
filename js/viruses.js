@@ -718,6 +718,46 @@ const VIRUSES = {
       { template: TPL.NORTON,  title: "AI-POWERED PROTECTION", message: "Norton's new AI assistant detected 14 threats. I've prepared smart-norton-fix.exe at norton-ai{tld}. (I may make mistakes, please verify.)", meta: "Tool: smart-norton-fix.exe  ·  Source: norton-ai{tld}  ·  Confidence: 98%" },
       { template: TPL.DESKTOP, title: "ai-helper.exe", message: "Hi! I noticed you might need help. Double-click me — based on my analysis I can fix everything. (I may make mistakes, please verify.)", meta: "File: ai-helper.exe  ·  Source: ai-fix{tld}  ·  Confidence: 99%" }
     ]
+  },
+
+  // ============================================================
+  // REAL-LIFE VIRUSES (rare: true)
+  // Marked as RARE in the codex, appear ~1 per 10-round run.
+  // Each entry has a realWorld block with the actual history so
+  // the codex teaches real cybersecurity events alongside the
+  // spot-the-tells gameplay.
+  // ============================================================
+  ILOVEYOU: {
+    name: "ILOVEYOU", color: "#ff69b4",
+    minRound: 4,
+    rare: true,
+    description: "An email worm disguised as a love letter. The attachment is named LOVE-LETTER-FOR-YOU.TXT.vbs — but Windows hides the .vbs extension by default, so victims see 'TXT' and double-click. Once opened, the VBScript overwrites image and music files with copies of itself, then forwards the same email to every address in your Outlook address book. The same double-extension trick worms still use today.",
+    signs: [
+      "Email subject is short and emotional (ILOVEYOU, Mothers Day, BugFix, Very Funny)",
+      "Body is one short generic line ('kindly check the attached...') — no real sender writes like this",
+      "Attachment name ends in .vbs, .vbe, or has a fake double extension (.TXT.vbs, .JPG.vbs)",
+      "Tiny file size (~10KB) for something claiming to be a letter, photo, or document",
+      "Sender is someone you know — because the worm spreads via stolen address books",
+      "Attachment icon is a script (yellow scroll), not a real document"
+    ],
+    meterEffect: { ping: "spike" },
+    realWorld: {
+      year: 2000,
+      origin: "Manila, Philippines",
+      author: "Onel de Guzman (24)",
+      damage: "$10 billion — ~45 million computers infected in 10 days",
+      story: "Onel de Guzman was a college dropout who wrote ILOVEYOU as part of a rejected thesis about stealing internet passwords. He released it on May 4, 2000. Within hours it had crippled the British Parliament, the US Pentagon, and the CIA — all of which had to shut down their email systems. The Philippines had no law against writing malware at the time, so de Guzman was never prosecuted. The case directly led to the Philippines passing its first cybercrime law (E-Commerce Act of 2000) just weeks later."
+    },
+    errors: [
+      { template: TPL.EMAIL, title: "ILOVEYOU", message: "kindly check the attached LOVELETTER coming from me.", from: "{name} <{sender}>", to: "you@yourcompany{tld}", attach: "LOVE-LETTER-FOR-YOU.TXT.vbs (10KB)" },
+      { template: TPL.EMAIL, title: "Mothers Day Order Confirmation", message: "We have proceeded to charge your credit card for the amount of $326.92. The order details are in the attached file.", from: "shopping@flowers-online{tld}", to: "you@yourcompany{tld}", attach: "mothersday.vbs (8KB)" },
+      { template: TPL.EMAIL, title: "Very Funny", message: "thi script is realy funny check it out", from: "{name} <{sender}>", to: "you@yourcompany{tld}", attach: "Very Funny.vbs (10KB)" },
+      { template: TPL.EMAIL, title: "BugFix", message: "Microsoft has released a critical bug fix. please install the attached patch immediately.", from: "support@micros0ft-update{tld}", to: "you@yourcompany{tld}", attach: "BUGFIX.exe (12KB)" },
+      { template: TPL.EMAIL, title: "fwd: Joke", message: "this one is great, you have to read it", from: "{name} <{sender}>", to: "you@yourcompany{tld}", attach: "Joke.vbs (10KB)" },
+      { template: TPL.EMAIL, title: "Important! Read carefully!!", message: "Check the attached IMPORTANT coming from me.", from: "{name} <{sender}>", to: "you@yourcompany{tld}", attach: "IMPORTANT.TXT.vbs (10KB)" },
+      { template: TPL.EMAIL, title: "Susitikim shi vakara kavos puodukui...", message: "kindly check the attached LOVELETTER coming from me.", from: "{name} <{sender}>", to: "you@yourcompany{tld}", attach: "LOVE-LETTER-FOR-YOU.HTM.vbs (10KB)" },
+      { template: TPL.EMAIL, title: "Virus ALERT!!!", message: "There is a dangerous virus circulating. Please check the attached document for details and instructions.", from: "norton-update@symantec-help{tld}", to: "you@yourcompany{tld}", attach: "protect.vbs (11KB)" }
+    ]
   }
 };
 
@@ -743,7 +783,8 @@ const DEATHS = {
   INFINITE:   { text: "STACK OVERFLOW",        duration: 4500 },
   TARPIT:     { text: "LEGACY EXPLOIT",        duration: 4500 },
   HEXR:       { text: "0xDEADBEEF",            duration: 4500 },
-  ASSISTANT:    { text: "I MAY HAVE MADE A MISTAKE", duration: 4500 }
+  ASSISTANT:    { text: "I MAY HAVE MADE A MISTAKE", duration: 4500 },
+  ILOVEYOU:     { text: "ADDRESS BOOK COMPROMISED",  duration: 4500 }
 };
 
 /* ============================================================
