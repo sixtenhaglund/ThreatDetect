@@ -3114,11 +3114,14 @@
   /* X-axis bounce: wrapper is heart-width wide, full-height tall, and
      slides edge-to-edge along the stage. Using `left` instead of
      translateX lets us bound the motion to the parent's width with a
-     simple `100% - 128px` calc (`100%` in `left` = parent width). */
+     simple `100% - 128px` calc (`100%` in `left` = parent width).
+     Linear timing + alternate = DVD-logo straight bounce (constant
+     velocity, instant reverse at the wall). Ease-in-out softens the
+     bounce, which is wrong for a DVD logo. */
   position: absolute;
   top: 0; left: 0;
   width: 128px; height: 100%;
-  animation: iloveyouBounceX 5.7s cubic-bezier(0.5,0,0.5,1) infinite alternate;
+  animation: iloveyouBounceX 5.7s linear infinite alternate;
 }
 .iloveyou-heart {
   /* Y-axis bounce: heart slides up/down inside the wrapper. Same trick
@@ -3126,7 +3129,7 @@
   position: absolute;
   top: 0; left: 0;
   width: 128px; height: 112px;
-  animation: iloveyouBounceY 4.3s cubic-bezier(0.5,0,0.5,1) infinite alternate,
+  animation: iloveyouBounceY 4.3s linear infinite alternate,
              iloveyouHueShift 0.7s steps(6, end) infinite;
 }
 .iloveyou-heart svg {
@@ -3156,6 +3159,6 @@
 
 /* Photosensitive-safe: kill the strong drop-shadow flicker. */
 .death-ILOVEYOU.photo-safe .iloveyou-heart {
-  animation: iloveyouBounceY 4.3s cubic-bezier(0.5,0,0.5,1) infinite alternate;
+  animation: iloveyouBounceY 4.3s linear infinite alternate;
   filter: drop-shadow(0 0 8px #ff0033);
 }
