@@ -420,6 +420,85 @@ function renderEmail(card) {
     </div>`;
 }
 
+// WannaCry-style ransom note. Matches the iconic 2017 ransom screen:
+// red header bar with the misspelled "Wana Decrypt0r 2.0" title and a
+// language dropdown, a left red panel with the padlock and two
+// countdown timers, a right white FAQ panel ("What Happened to My
+// Computer?", "Can I Recover My Files?", "How Do I Pay?"), and a
+// bottom row with a Bitcoin wallet field + Check Payment / Decrypt
+// buttons. Card fields:
+//   title    = the brand text in the header (default "Wana Decrypt0r 2.0")
+//   message  = the FAQ body text on the right (multi-section)
+//   meta     = unused in the popup; used by the death screen for wallet
+//   wallet   = optional override for the Bitcoin wallet address
+//   amount   = optional override for the ransom dollar amount (default $300)
+//   timer1   = optional "payment will be raised on" countdown (default 02:23:57:37)
+//   timer2   = optional "your files will be lost on" countdown (default 06:23:57:37)
+function renderRansom(card) {
+  const title   = card.title   || "Wana Decrypt0r 2.0";
+  const wallet  = card.wallet  || (card.meta || "13AM4VW2dhxYgXeQepoHkHSQuy6NgaEb94");
+  const amount  = card.amount  || "$300";
+  const timer1  = card.timer1  || "02:23:57:37";
+  const timer2  = card.timer2  || "06:23:57:37";
+  const msg     = card.message || "Your important files are encrypted.\n\nMany of your documents, photos, videos, databases and other files are no longer accessible because they have been encrypted. Maybe you are busy looking for a way to recover your files, but do not waste your time. Nobody can recover your files without our decryption service.";
+  return `
+    <div class="ransom-window">
+      <div class="ransom-header">
+        <span class="ransom-title">${esc(title)}</span>
+        <span class="ransom-lang">English ▾</span>
+      </div>
+      <div class="ransom-body">
+        <div class="ransom-left">
+          <div class="ransom-padlock" aria-hidden="true">
+            <svg width="44" height="52" viewBox="0 0 44 52">
+              <path d="M14 22 L14 14 a8 8 0 0 1 16 0 L30 22" fill="none" stroke="#fff" stroke-width="3.5"/>
+              <rect x="8" y="22" width="28" height="22" fill="#fff" stroke="#fff" stroke-width="1"/>
+              <circle cx="22" cy="32" r="3" fill="#c11414"/>
+              <rect x="20.6" y="33" width="2.8" height="6" fill="#c11414"/>
+            </svg>
+          </div>
+          <div class="ransom-tile">
+            <div class="ransom-tile-label">Payment will be raised on</div>
+            <div class="ransom-tile-date">5/15/2017 17:00:00</div>
+            <div class="ransom-tile-sub">Time Left</div>
+            <div class="ransom-tile-timer">${esc(timer1)}</div>
+          </div>
+          <div class="ransom-tile">
+            <div class="ransom-tile-label">Your files will be lost on</div>
+            <div class="ransom-tile-date">5/19/2017 17:00:00</div>
+            <div class="ransom-tile-sub">Time Left</div>
+            <div class="ransom-tile-timer">${esc(timer2)}</div>
+          </div>
+          <div class="ransom-links">
+            <div>About bitcoin</div>
+            <div>How to buy bitcoins?</div>
+            <div>Contact Us</div>
+          </div>
+        </div>
+        <div class="ransom-right">
+          <div class="ransom-headline">Ooops, your files have been encrypted!</div>
+          <div class="ransom-faq">${esc(msg)}</div>
+          <div class="ransom-pay">
+            <div class="ransom-pay-label">Send ${esc(amount)} worth of bitcoin to this address:</div>
+            <div class="ransom-pay-row">
+              <span class="ransom-pay-icon">bitcoin<br>ACCEPTED HERE</span>
+              <input class="ransom-pay-input" value="${esc(wallet)}" readonly tabindex="-1">
+              <button class="ransom-pay-copy" tabindex="-1">Copy</button>
+            </div>
+            <div class="ransom-pay-buttons">
+              <button class="ransom-pay-btn" tabindex="-1">Check Payment</button>
+              <button class="ransom-pay-btn primary" tabindex="-1">Decrypt</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row" style="gap:10px;margin-top:14px;justify-content:center;">
+      <button class="btn danger big" data-action="virus">${card.labelReport || "Report"}</button>
+      <button class="btn primary big" data-action="check">${card.labelOk || "OK"}</button>
+    </div>`;
+}
+
 function renderCard(card) {
   switch (card.template) {
     case TPL.AV:       return renderAV(card);
@@ -438,6 +517,7 @@ function renderCard(card) {
     case TPL.CAPTCHA:  return renderCaptcha(card);
     case TPL.UPDATE:   return renderUpdate(card);
     case TPL.EMAIL:    return renderEmail(card);
+    case TPL.RANSOM:   return renderRansom(card);
     case TPL.WIN11:
     default:           return renderWin11(card);
   }

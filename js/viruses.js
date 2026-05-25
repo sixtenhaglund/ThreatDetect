@@ -796,6 +796,42 @@ const VIRUSES = {
       { template: TPL.EMAIL, title: "Delivery Status Notification (Failure)", from: "Mail Delivery System <mailer-daemon@gmail{tld}>", to: "you@yourcompany{tld}", message: "Your message was undeliverable for the following reason:\n\nUnable to relay to {ipaddr}. The original message has been preserved as an attachment.", attach: "undelivered.zip (14 KB)" },
       { template: TPL.EMAIL, title: "Server Report", from: "Postmaster <postmaster@aol{tld}>", to: "you@yourcompany{tld}", message: "This Message was undeliverable due to the following reason:\n\nThe number of recipients exceeded the maximum allowed. See attached for the full transcript.", attach: "report.zip (13 KB)" }
     ]
+  },
+  WANNACRY: {
+    name: "WannaCry", color: "#c11414",
+    minRound: 4,
+    rare: true,
+    description: "Ransomware that exploded across the internet in May 2017. WannaCry used a Windows network vulnerability called EternalBlue — an NSA cyberweapon that had been stolen and leaked online weeks earlier — to spread machine-to-machine without anyone clicking anything. Once inside, it encrypted every document, photo, and database it could find, then displayed its iconic red 'Wana Decrypt0r 2.0' interface demanding $300 in Bitcoin. The kill switch: WannaCry checked a specific weird domain on startup, and if the domain answered, it shut itself off. A 22-year-old British researcher named Marcus Hutchins noticed this in the code, registered the domain for $10.69, and accidentally stopped one of the largest cyberattacks in history.",
+    signs: [
+      "Bright red header bar with the title 'Wana Decrypt0r 2.0' — note the misspelling, '0' instead of 'o'",
+      "Big red text: 'Ooops, your files have been encrypted!' — note the typo, three o's in 'Ooops'",
+      "Two countdown timers in red panels on the left side, ticking in real time",
+      "Padlock icon at top of the red left panel",
+      "FAQ format on the right: 'What Happened to My Computer?', 'Can I Recover My Files?', 'How Do I Pay?'",
+      "Bitcoin wallet address shown with a 'Copy' button, ransom demand $300 worth of bitcoin",
+      "'Check Payment' and 'Decrypt' buttons at the bottom",
+      "Files on disk renamed with the extension '.WNCRY' or '.WNCRYT'",
+      "Language dropdown in the top right (showing 'English' by default)",
+      "Mentions specific deadlines: 'Payment will be raised on...' and 'Your files will be lost on...'"
+    ],
+    meterEffect: { time: "countdown" },
+    realWorld: {
+      year: 2017,
+      origin: "North Korea (Lazarus Group)",
+      author: "Lazarus Group — North Korean state-sponsored hackers (attributed by NSA, FBI, UK NCSC)",
+      damage: "$4 billion+ — 300,000 machines in 150 countries in 3 days",
+      story: "Released May 12, 2017. WannaCry spread through a Windows vulnerability called EternalBlue, a cyberweapon the NSA had been hoarding for years until a hacker group called Shadow Brokers stole and leaked it. Within hours, the worm had crippled the UK's National Health Service — surgeries cancelled, ambulances diverted, hospitals turning patients away. Russian Railways, FedEx, Renault, Deutsche Bahn, Spanish telecom, Chinese universities, all hit. The attack was stopped by a 22-year-old British security researcher, Marcus Hutchins (@MalwareTech), who was reverse-engineering the malware in his bedroom and noticed it checked a specific bizarre domain name on startup. He registered the domain for $10.69 to see what would happen — and accidentally triggered WannaCry's kill switch, freezing the spread worldwide. He was hailed as a hero, then arrested by the FBI three months later in Las Vegas on unrelated charges for malware he'd written as a teenager. The kill-switch domain: iuqerfsodp9ifjaposdfjhgosurijfaewrwergwea.com — still registered today, still keeping the original WannaCry asleep."
+    },
+    errors: [
+      { template: TPL.RANSOM, title: "Wana Decrypt0r 2.0", wallet: "13AM4VW2dhxYgXeQepoHkHSQuy6NgaEb94", amount: "$300", timer1: "02:23:57:37", timer2: "06:23:57:37", message: "Your important files are encrypted.\n\nMany of your documents, photos, videos, databases and other files are no longer accessible because they have been encrypted. Maybe you are busy looking for a way to recover your files, but do not waste your time. Nobody can recover your files without our decryption service.\n\nCan I Recover My Files?\nSure. We guarantee that you can recover all your files safely and easily. But you have not so enough time." },
+      { template: TPL.RANSOM, title: "Wana Decrypt0r 2.0", wallet: "12t9YDPgwueZ9NhyWgVbZbHcgGqe5MEjJq", amount: "$300", timer1: "01:11:42:09", timer2: "05:11:42:09", message: "What Happened to My Computer?\n\nYour important files are encrypted. Many of your documents, photos, videos, databases and other files are no longer accessible because they have been encrypted.\n\nIs there a way to recover my files? Sure. But you have to pay.\n\nHow Do I Pay?\nPayment is accepted in Bitcoin only. For more information, click 'About bitcoin'." },
+      { template: TPL.RANSOM, title: "Wana Decrypt0r 2.0", wallet: "115p7UMMngoj1pMvkpHijcRdfJNXj6LrLn", amount: "$600", timer1: "00:00:14:22", timer2: "04:00:14:22", message: "Time is running out!\n\nThe price will be doubled in less than a day. After that, none of your files will be recoverable. Hurry up and click 'Check Payment' after sending the bitcoin to the address on the left.\n\nDo NOT shut down or restart the computer. Do NOT try to use an antivirus or decryptor — you will only delete your files." },
+      { template: TPL.RANSOM, title: "Wana Decrypt0r 2.0", wallet: "13AM4VW2dhxYgXeQepoHkHSQuy6NgaEb94", amount: "$300", timer1: "02:08:18:55", timer2: "06:08:18:55", message: "Your files will be lost in 7 days.\n\nIf you do not pay in 7 days, you will not be able to recover your files forever. We will hold free events for users who are so poor that they couldn't pay in 6 months.\n\nFiles encrypted: 28,491\nExtensions affected: .docx, .pdf, .jpg, .xlsx, .mp3, .zip, .sql\nFile rename: all files now end with .WNCRY" },
+      { template: TPL.RANSOM, title: "Wana Decrypt0r 2.0", wallet: "12t9YDPgwueZ9NhyWgVbZbHcgGqe5MEjJq", amount: "$300", timer1: "02:19:04:12", timer2: "06:19:04:12", message: "How Do I Pay?\n\nPayment is accepted in Bitcoin only. For more information, click 'About bitcoin'.\n\n1. Please check the current price of Bitcoin and buy some bitcoins.\n2. Send the correct amount to the address specified in this window.\n3. After your payment, click 'Check Payment'. Best time to check: 9:00am — 11:00am GMT every day." },
+      { template: TPL.RANSOM, title: "Wana Decrypt0r 2.0", wallet: "115p7UMMngoj1pMvkpHijcRdfJNXj6LrLn", amount: "$300", timer1: "00:23:51:00", timer2: "04:23:51:00", message: "Ooops, your important files are encrypted.\n\nIf you see this text but do not see the 'Wana Decrypt0r' window, then your antivirus removed the decrypt software or you deleted it from your computer.\n\nIf you need your files you have to run the decrypt software. Please find an application file named '@WanaDecryptor@.exe' in any folder, or restore from the antivirus quarantine, and run it." },
+      { template: TPL.RANSOM, title: "Wana Decrypt0r 2.0", wallet: "13AM4VW2dhxYgXeQepoHkHSQuy6NgaEb94", amount: "$300", timer1: "02:01:33:18", timer2: "06:01:33:18", message: "Send $300 worth of Bitcoin to the address below.\n\nFiles will be deleted permanently in 7 days unless payment is received. After payment is verified, click 'Decrypt' and your files will be returned within 3 hours.\n\nDo not try to recover files using free software. We have seen this attempted thousands of times — it only damages the files further." },
+      { template: TPL.RANSOM, title: "Wana Decrypt0r 2.0", wallet: "12t9YDPgwueZ9NhyWgVbZbHcgGqe5MEjJq", amount: "$300", timer1: "02:14:27:44", timer2: "06:14:27:44", message: "All your files have been encrypted using military-grade RSA-2048 encryption.\n\nWithout the decryption key, recovery is mathematically impossible. The key is stored on our servers and will be sent to you immediately after payment confirmation.\n\nThe kill switch domain we built into this software is iuqerfsodp9ifjaposdfjhgosurijfaewrwergwea.com — please verify we are real by checking it." }
+    ]
   }
 };
 
@@ -823,7 +859,8 @@ const DEATHS = {
   HEXR:       { text: "0xDEADBEEF",            duration: 4500 },
   ASSISTANT:    { text: "I MAY HAVE MADE A MISTAKE", duration: 4500 },
   ILOVEYOU:     { text: "ADDRESS BOOK COMPROMISED",  duration: 4500 },
-  MYDOOM:       { text: "andy; I'm just doing my job", duration: 5200 }
+  MYDOOM:       { text: "andy; I'm just doing my job", duration: 5200 },
+  WANNACRY:     { text: "FILES ENCRYPTED — $300 IN BITCOIN", duration: 5500 }
 };
 
 /* ============================================================

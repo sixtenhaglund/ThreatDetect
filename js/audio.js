@@ -724,6 +724,62 @@ Audio.deaths = {
       this.noiseBurst(t0 + i * 0.08, 0.06, 2000 + Math.random() * 5000, 3, 0.4);
     }
   },
+  WANNACRY() {
+    // Slow ominous ticking clock (the two red countdown timers in the
+    // ransom UI) laid over a deep sub-bass drone. Around t=3.5s a single
+    // dark Bitcoin "ka-ching" hits, then everything fades on a slow tail.
+    const ctx = this.ctx, t0 = ctx.currentTime;
+    const dur = 5.5;
+
+    // --- low ominous drone underneath the whole death (sub bass) ---
+    const drone = ctx.createOscillator();
+    drone.type = "sine"; drone.frequency.value = 48;
+    const droneG = ctx.createGain();
+    drone.connect(droneG); droneG.connect(this.sfxGain);
+    droneG.gain.setValueAtTime(0, t0);
+    droneG.gain.linearRampToValueAtTime(0.28, t0 + 0.4);
+    droneG.gain.linearRampToValueAtTime(0.32, t0 + 4.0);
+    droneG.gain.exponentialRampToValueAtTime(0.001, t0 + dur);
+    drone.start(t0); drone.stop(t0 + dur + 0.1);
+
+    // Slightly higher detune layer to give the drone movement.
+    const drone2 = ctx.createOscillator();
+    drone2.type = "sine"; drone2.frequency.value = 49.5;
+    const drone2G = ctx.createGain();
+    drone2.connect(drone2G); drone2G.connect(this.sfxGain);
+    drone2G.gain.setValueAtTime(0, t0);
+    drone2G.gain.linearRampToValueAtTime(0.14, t0 + 0.6);
+    drone2G.gain.exponentialRampToValueAtTime(0.001, t0 + dur);
+    drone2.start(t0); drone2.stop(t0 + dur + 0.1);
+
+    // --- slow tick-tock clock, 1 hit per second, for ~5 seconds ---
+    // Each tick = a short wood-block click (filtered noise + sine pop)
+    // alternating slightly between two pitches (tick / tock).
+    for (let i = 0; i < 5; i++) {
+      const tt = t0 + i;
+      const isTick = (i % 2) === 0;
+      const pitch = isTick ? 1400 : 1100;
+      // Sharp filtered noise burst
+      this.noiseBurst(tt, 0.04, pitch, 5, 0.32);
+      // Pitched sine pop on top for the metallic "tick"
+      this.beep(tt + 0.003, pitch * 1.4, 0.05, "sine", 0.18);
+    }
+
+    // --- Bitcoin "ka-ching" at t=3.5s — dark, not happy ---
+    // Three descending notes ringing out (instead of the bright ascending
+    // notes of a real cash register).
+    const kt = t0 + 3.5;
+    [880, 660, 440].forEach((f, i) => {
+      const o = ctx.createOscillator(); o.type = "triangle"; o.frequency.value = f;
+      const g = ctx.createGain();
+      o.connect(g); g.connect(this.sfxGain);
+      const st = kt + i * 0.18;
+      g.gain.setValueAtTime(0, st);
+      g.gain.linearRampToValueAtTime(0.22 - i * 0.04, st + 0.02);
+      g.gain.exponentialRampToValueAtTime(0.001, st + 1.4);
+      o.start(st); o.stop(st + 1.45);
+    });
+  },
   MYDOOM() {
     // Typewriter clacks racing through (the gibberish columns scrolling)
     // for ~3s, then a clean reveal ding when the hidden author message
