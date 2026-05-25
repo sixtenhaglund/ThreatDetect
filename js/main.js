@@ -12,6 +12,7 @@ function render() {
     case "menu":              html = viewMenu(); break;
     case "difficulty-picker": html = viewDifficultyPicker(); break;
     case "settings":          html = viewSettings(); break;
+    case "credits":           html = viewCredits(); break;
     case "reset-confirm":     html = viewResetConfirm(); break;
     case "codex":             html = viewCodex(); break;
     case "training":          html = viewTraining(); break;
@@ -688,6 +689,11 @@ document.addEventListener("click", (e) => {
     case "settings":
       state.prevScreen = state.screen;
       state.screen = "settings";
+      render();
+      break;
+    case "credits":
+      state.prevScreen = state.screen;
+      state.screen = "credits";
       render();
       break;
     case "toggle-photo":

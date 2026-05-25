@@ -36,7 +36,12 @@ const Save = {
       nightmareUnlocked: false,
       creditz: CONFIG.startingCreditz || 0,
       antivirus: 0,
-      settings: { master: 0.8, ambient: 0.4, sfx: 0.8, photosensitive: false, jumpscares: true }
+      settings: { master: 0.8, ambient: 0.4, sfx: 0.8, photosensitive: false, jumpscares: true },
+      // Marker for the one-shot codex-reset migration so it doesn't
+      // re-fire on saves that were created AFTER the reset. Fresh saves
+      // start with this set to true; only legacy "everything unlocked"
+      // saves lack it and get reset back to starters.
+      codexResetV1: true
     };
   },
   load() {
@@ -96,13 +101,17 @@ const Save = {
         // De-dupe in case multiple old keys collapsed into the same new one.
         return out.filter(function (v, i) { return out.indexOf(v) === i; });
       };
-      const migratedUnlocked = renameKey(parsed.unlocked || d.unlocked);
-      if (migratedUnlocked.indexOf("ASSISTANT") < 0) migratedUnlocked.push("ASSISTANT");
-      // Force-unlock every virus in the codex (Sixten's preference: no locked entries).
-      // Remove this block if you ever want the discovery mechanic back.
-      Object.keys(VIRUSES).forEach(function (k) {
-        if (migratedUnlocked.indexOf(k) < 0) migratedUnlocked.push(k);
-      });
+      let migratedUnlocked = renameKey(parsed.unlocked || d.unlocked);
+
+      // One-shot migration: codex used to be force-unlocked-all. Switching
+      // back to the discovery mechanic — if a save was created before this
+      // flag was set, wipe `unlocked` down to the starter viruses so the
+      // codex re-locks. Existing best-score, creditz, antivirus, settings
+      // all survive.
+      if (!parsed.codexResetV1) {
+        migratedUnlocked = CONFIG.starterUnlocked.slice();
+      }
+
       return {
         highestRound: parsed.highestRound || d.highestRound,
         highestScore: parsed.highestScore || d.highestScore,
@@ -111,7 +120,10 @@ const Save = {
         nightmareUnlocked: !!parsed.nightmareUnlocked,
         creditz: typeof parsed.creditz === "number" ? parsed.creditz : d.creditz,
         antivirus: typeof parsed.antivirus === "number" ? parsed.antivirus : d.antivirus,
-        settings: Object.assign(d.settings, parsed.settings || {})
+        settings: Object.assign(d.settings, parsed.settings || {}),
+        // Permanent flag so the one-shot reset above doesn't run again
+        // even if the player legitimately re-discovers viruses next run.
+        codexResetV1: true
       };
     } catch (e) { return Save.defaults(); }
   },
@@ -127,18 +139,31 @@ const Save = {
    Personal stats (best round, best score) are still wiped — only the top-runs list is global. */
 const LB_KEY = "threatdetect_leaderboard_v2";
 const Leaderboard = {
+  // Entries are "real" only if the player actually played at least one
+  // card. Filter both on load (to scrub legacy phantom entries) AND in
+  // add() (to prevent new garbage). A "0 / R1 / INF" with no cards
+  // played isn't a real run — it's an artifact of dev testing that
+  // somehow got recorded.
+  isValid(e) {
+    return e && typeof e === "object" && (e.total > 0);
+  },
   load() {
     try {
       const raw = localStorage.getItem(LB_KEY);
       if (!raw) return [];
       const parsed = JSON.parse(raw);
-      return Array.isArray(parsed) ? parsed : [];
+      if (!Array.isArray(parsed)) return [];
+      return parsed.filter(Leaderboard.isValid);
     } catch (e) { return []; }
   },
   write(list) {
     try { localStorage.setItem(LB_KEY, JSON.stringify(list)); } catch (e) {}
   },
+  clear() {
+    try { localStorage.removeItem(LB_KEY); } catch (e) {}
+  },
   add(entry) {
+    if (!Leaderboard.isValid(entry)) return Leaderboard.load();
     const list = Leaderboard.load();
     list.push(entry);
     list.sort((a, b) => (b.score || 0) - (a.score || 0));

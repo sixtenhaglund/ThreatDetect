@@ -5,6 +5,11 @@
 // =====================================================
 "use strict";
 
+/* ---- Game version. Updated by the /release skill. Surfaced in the
+   main-menu footer and the credits page so players know what build
+   they're on. Keep in sync with package.json's `version` field. ---- */
+const VERSION = "0.1.0";
+
 /* ---- Config: tuning knobs in one place ---- */
 const CONFIG = {
   startLives: 1,

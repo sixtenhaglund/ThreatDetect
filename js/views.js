@@ -50,17 +50,46 @@ function viewMenu() {
           <button class="menu-btn" data-action="minigame-practice"><span>Minigame Practice<div class="menu-sub">Drill Quarantine, Sequence, or Impostor · no lives lost</div></span><span class="arrow">▶</span></button>
           <button class="menu-btn" data-action="shop"><span>Shop<div class="menu-sub">${(save.creditz || 0).toLocaleString()} ₢ available · spend on Antivirus charges</div></span><span class="arrow">▶</span></button>
           <button class="menu-btn" data-action="settings"><span>Settings<div class="menu-sub">Audio · photosensitivity · jumpscares · reset</div></span><span class="arrow">▶</span></button>
+          <button class="menu-btn" data-action="credits"><span>Credits<div class="menu-sub">Who made this · how · special thanks</div></span><span class="arrow">▶</span></button>
         </div>
         <div class="badge-row" style="justify-content: center; margin-top: 6px;">
           <span class="badge">Best round: ${high}/${CONFIG.totalRounds}</span>
           <span class="badge">Best score: ${bestScore.toLocaleString()}</span>
           <span class="badge" style="color: hsl(50 100% 65%); border-color: hsl(50 100% 50% / 0.4);">${(save.creditz || 0).toLocaleString()} ₢</span>
         </div>
+        <div class="menu-footer">
+          <span class="menu-ver">v${VERSION}</span>
+        </div>
       </div>
       <aside class="lb-panel">
         <h3 class="lb-title">Top Runs</h3>
         ${lbBody}
       </aside>
+    </div>`;
+}
+
+function viewCredits() {
+  return `
+    <div class="panel center stack fade-in credits-panel">
+      <div class="row between">
+        <h2>Credits</h2>
+        <button class="btn" data-action="menu">Back</button>
+      </div>
+      <div class="credits-body">
+        <div class="credits-line credits-made-by">
+          Made by <span class="credits-author">TheDerpyEndEnderman</span>
+        </div>
+        <div class="credits-line credits-help">
+          with the help of <span class="credits-claude">Claude</span><br>
+          and my fantastic dad
+        </div>
+        <div class="credits-line credits-copyright">
+          © 2026
+        </div>
+        <div class="credits-line credits-version">
+          ThreatDetect v${VERSION}
+        </div>
+      </div>
     </div>`;
 }
 
@@ -389,7 +418,7 @@ function viewPlay(isTraining) {
       <div class="cell"><div class="label">Target</div><div class="value v-${state.trainingVirus}">${esc((VIRUSES[state.trainingVirus] && VIRUSES[state.trainingVirus].name) || state.trainingVirus)}</div></div>
       <div class="cell"><div class="label">Streak</div><div class="value">×${state.trainingStreak}</div></div>
       <button class="cell" data-action="pause-codex" style="background:var(--muted);border:1px solid var(--border);color:var(--fg);"><div class="label">${codexLabel}</div><div class="value" style="font-size:1rem;">${codexIcon}</div></button>
-      <button class="cell" data-action="menu" style="background:var(--muted);border:1px solid var(--border);color:var(--fg);"><div class="label">Exit</div><div class="value" style="font-size:1rem;">↩</div></button>
+      <button class="cell cell-exit" data-action="menu"><div class="label">Exit</div><div class="value" style="font-size:1rem;">↩</div></button>
     </div>` : (() => {
       const av = save.antivirus || 0;
       const cols = av > 0 ? 6 : 5;
@@ -403,7 +432,7 @@ function viewPlay(isTraining) {
       <div class="cell"><div class="label">Life</div><div class="value" style="color:var(--primary);text-shadow:0 0 8px rgba(255,80,80,0.4);">${hearts}</div></div>
       ${avCell}
       <button class="cell" data-action="pause-codex" style="background:var(--muted);border:1px solid var(--border);color:var(--fg);"><div class="label">${codexLabel}</div><div class="value" style="font-size:1rem;">${codexIcon}</div></button>
-      <button class="cell" data-action="menu" style="background:var(--muted);border:1px solid var(--border);color:var(--fg);"><div class="label">Exit</div><div class="value" style="font-size:1rem;">↩</div></button>
+      <button class="cell cell-exit" data-action="menu"><div class="label">Exit</div><div class="value" style="font-size:1rem;">↩</div></button>
     </div>`;
     })();
   const meters = `

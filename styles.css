@@ -193,8 +193,26 @@
   }
   .hud .label { font-size: 0.6rem; letter-spacing: 0.18em; color: var(--muted-fg); text-transform: uppercase; }
   .hud .value { font-size: 1.15rem; font-weight: 700; color: var(--primary); margin-top: 2px; }
-  button.cell { font-family: inherit; cursor: pointer; }
-  button.cell:hover { background: hsl(220 15% 12%); }
+  /* Two-class selector to beat the .hud .cell { cursor: default } rule
+     above — without this the buttons rendered as cells (Exit, Codex)
+     showed the default I-beam/arrow cursor instead of a pointer. */
+  .hud button.cell { font-family: inherit; cursor: pointer; }
+  .hud button.cell:hover { background: hsl(220 15% 12%); }
+
+  /* Exit button gets the danger-red treatment so it stands out from
+     the neutral gray HUD cells — "leave the run" should feel a bit
+     more committal than "open the codex". */
+  .hud button.cell.cell-exit {
+    background: hsl(0 60% 18%) !important;
+    border-color: hsl(0 80% 38%) !important;
+    color: hsl(0 100% 78%) !important;
+  }
+  .hud button.cell.cell-exit:hover {
+    background: hsl(0 70% 26%) !important;
+    border-color: hsl(0 90% 56%) !important;
+  }
+  .hud button.cell.cell-exit .label { color: hsl(0 80% 75%); }
+  .hud button.cell.cell-exit .value { color: hsl(0 100% 80%); text-shadow: 0 0 6px hsla(0 100% 60% / 0.5); }
 
   /* Fake telemetry meters */
   .meters {
@@ -2908,6 +2926,99 @@
     transform: scale(1.05);
     border-color: rgba(255,255,255,0.4);
   }
+
+/* ============================================================
+   Custom scrollbar — green-on-dark to match the terminal theme.
+   The OS-default gray scrollbar clashes badly with the rest of
+   the UI. Two ruleset flavors needed:
+     - WebKit/Blink (Chrome, Edge, Safari): ::-webkit-scrollbar
+     - Firefox: scrollbar-width + scrollbar-color
+   ============================================================ */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--primary-2) var(--bg-2);
+}
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track {
+  background: var(--bg-2);
+  border-left: 1px solid var(--border);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--primary-2);
+  border: 2px solid var(--bg-2);
+  border-radius: 6px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--primary);
+}
+::-webkit-scrollbar-corner {
+  background: var(--bg-2);
+}
+
+/* ============================================================
+   Main-menu footer — version number under the badges.
+   ============================================================ */
+.menu-footer {
+  margin-top: 12px;
+  text-align: center;
+  font-family: "Cascadia Mono", "Consolas", monospace;
+  font-size: 0.72rem;
+  color: var(--muted-fg);
+  letter-spacing: 0.1em;
+  opacity: 0.6;
+}
+.menu-ver::before { content: "// "; opacity: 0.5; }
+
+/* ============================================================
+   Credits page — minimal, centered. Different vibe from settings:
+   no sliders, just a thank-you. Big author name, secondary credits,
+   copyright + version stamp at the bottom.
+   ============================================================ */
+.credits-panel { max-width: 640px; }
+.credits-body {
+  padding: 32px 12px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+.credits-line {
+  font-family: "Cascadia Mono", "Consolas", monospace;
+  line-height: 1.5;
+}
+.credits-made-by {
+  font-size: clamp(1.1rem, 2.4vw, 1.5rem);
+  color: var(--fg);
+}
+.credits-author {
+  font-size: 1.4em;
+  font-weight: 900;
+  color: var(--primary);
+  text-shadow: 0 0 12px hsla(140 100% 50% / 0.5);
+  letter-spacing: 0.02em;
+}
+.credits-help {
+  font-size: clamp(0.92rem, 1.8vw, 1.1rem);
+  color: var(--fg);
+  line-height: 1.7;
+}
+.credits-claude {
+  color: var(--accent);
+  font-weight: 700;
+}
+.credits-copyright {
+  font-size: 0.92rem;
+  color: var(--muted-fg);
+  letter-spacing: 0.1em;
+  margin-top: 8px;
+}
+.credits-version {
+  font-size: 0.78rem;
+  color: var(--muted-fg);
+  opacity: 0.6;
+  letter-spacing: 0.12em;
+}
+.credits-version::before { content: "// "; opacity: 0.5; }
 
 /* ============================================================
    EMAIL template — Outlook 2000-style window. Used by real-life
