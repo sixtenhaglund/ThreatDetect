@@ -3587,6 +3587,22 @@
   align-items: center;
   justify-content: center;
   padding: 5vh 5vw;
+  /* Color-invert flash: holds normal colors for 1 second, then snaps
+     to fully inverted (black bg, white text/smileys) for 1 second,
+     repeating. steps(2, end) makes it a hard flip with no fade.
+     Matches the iconic chaos of the original youareanidiot.org page. */
+  animation: idiotInvert 2s steps(2, end) infinite;
+}
+@keyframes idiotInvert {
+  0%   { filter: invert(0); }
+  100% { filter: invert(1); }
+}
+/* Photo-safe: hard-flashing colors are exactly what the photosensitive
+   flag exists to suppress. Keep the screen on the normal (non-inverted)
+   side and skip the animation entirely. */
+.death-IDIOT.photo-safe {
+  animation: none;
+  filter: none;
 }
 .idiot-frame {
   border: 2px solid #000;
