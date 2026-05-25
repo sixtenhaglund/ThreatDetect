@@ -38,6 +38,7 @@ function viewMenu() {
   return `
     <div class="menu-row fade-in">
       <div class="panel center stack loose">
+        ${viewChangelogBanner()}
         <div class="stack tight">
           <div class="logo">THREATDETECT</div>
           <div class="tiny">SOC analyst training simulator</div>
@@ -65,6 +66,56 @@ function viewMenu() {
         <h3 class="lb-title">Top Runs</h3>
         ${lbBody}
       </aside>
+    </div>`;
+}
+
+// "What's new" banner shown above the main menu when the latest
+// changelog entry hasn't been dismissed yet. Dismissal lives in
+// localStorage keyed by version so it resets when a new release lands.
+function viewChangelogBanner() {
+  if (typeof CHANGELOG === "undefined" || !Array.isArray(CHANGELOG) || !CHANGELOG.length) return "";
+  const latest = CHANGELOG[0];
+  let dismissed = false;
+  try { dismissed = !!localStorage.getItem("threatdetect_dismissed_changelog_" + latest.version); } catch (_) {}
+  if (dismissed) return "";
+  // Show up to 2 items inline; the rest goes to the full changelog view.
+  const preview = latest.items.slice(0, 2).map(esc).join(" · ");
+  const more = latest.items.length > 2 ? " · …" : "";
+  return `
+    <div class="changelog-banner" data-action="open-changelog" role="button" tabindex="0">
+      <span class="changelog-banner-tag">v${esc(latest.version)} · what's new</span>
+      <span class="changelog-banner-items">${preview}${more}</span>
+      <button class="changelog-banner-close" data-action="dismiss-changelog" data-version="${esc(latest.version)}" aria-label="Dismiss">×</button>
+    </div>`;
+}
+
+function viewChangelog() {
+  if (typeof CHANGELOG === "undefined" || !Array.isArray(CHANGELOG) || !CHANGELOG.length) {
+    return `
+      <div class="panel center stack fade-in">
+        <div class="row between"><h2>Changelog</h2><button class="btn" data-action="menu">Back</button></div>
+        <p class="mute">No releases yet.</p>
+      </div>`;
+  }
+  return `
+    <div class="panel stack fade-in changelog-panel">
+      <div class="row between">
+        <h2>Changelog</h2>
+        <button class="btn" data-action="menu">Back</button>
+      </div>
+      <div class="changelog-list">
+        ${CHANGELOG.map(entry => `
+          <article class="changelog-entry">
+            <header class="changelog-head">
+              <span class="changelog-ver">v${esc(entry.version)}</span>
+              <span class="changelog-date">${esc(entry.date)}</span>
+            </header>
+            <ul class="changelog-items">
+              ${entry.items.map(i => `<li>${esc(i)}</li>`).join("")}
+            </ul>
+          </article>
+        `).join("")}
+      </div>
     </div>`;
 }
 

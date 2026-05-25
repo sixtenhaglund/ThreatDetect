@@ -13,6 +13,7 @@ function render() {
     case "difficulty-picker": html = viewDifficultyPicker(); break;
     case "settings":          html = viewSettings(); break;
     case "credits":           html = viewCredits(); break;
+    case "changelog":         html = viewChangelog(); break;
     case "reset-confirm":     html = viewResetConfirm(); break;
     case "codex":             html = viewCodex(); break;
     case "training":          html = viewTraining(); break;
@@ -696,6 +697,20 @@ document.addEventListener("click", (e) => {
       state.screen = "credits";
       render();
       break;
+    case "changelog":
+    case "open-changelog":
+      state.prevScreen = state.screen;
+      state.screen = "changelog";
+      render();
+      break;
+    case "dismiss-changelog": {
+      // Stop the parent .changelog-banner from also firing open-changelog.
+      const version = btn.dataset.version || "";
+      try { localStorage.setItem("threatdetect_dismissed_changelog_" + version, "1"); } catch (_) {}
+      e.stopPropagation();
+      render();
+      break;
+    }
     case "toggle-photo":
       save.settings.photosensitive = !save.settings.photosensitive;
       Save.write(save);

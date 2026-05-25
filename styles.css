@@ -3021,6 +3021,108 @@
 .credits-version::before { content: "// "; opacity: 0.5; }
 
 /* ============================================================
+   Changelog system
+   ============================================================ */
+
+/* "What's new" banner at the top of the main menu — clickable to
+   open the full changelog, with an X to dismiss for this version. */
+.changelog-banner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 8px 12px;
+  margin-bottom: 12px;
+  background: hsla(140 100% 50% / 0.08);
+  border: 1px solid hsla(140 100% 50% / 0.4);
+  border-left-width: 3px;
+  cursor: pointer;
+  font-family: "Cascadia Mono", "Consolas", monospace;
+  font-size: 0.82rem;
+  color: var(--fg);
+  transition: background 0.15s, border-color 0.15s;
+}
+.changelog-banner:hover {
+  background: hsla(140 100% 50% / 0.14);
+  border-color: hsla(140 100% 50% / 0.7);
+}
+.changelog-banner-tag {
+  color: var(--primary);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.changelog-banner-items {
+  flex: 1;
+  color: var(--fg);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 0.78rem;
+}
+.changelog-banner-close {
+  background: transparent;
+  border: 1px solid hsla(140 100% 50% / 0.3);
+  color: var(--muted-fg);
+  width: 22px; height: 22px;
+  padding: 0;
+  font-size: 1rem;
+  line-height: 1;
+  cursor: pointer;
+  font-family: inherit;
+  flex-shrink: 0;
+  border-radius: 3px;
+}
+.changelog-banner-close:hover {
+  background: hsla(0 100% 50% / 0.15);
+  border-color: hsla(0 100% 60% / 0.6);
+  color: hsl(0 100% 80%);
+}
+
+/* Full changelog page — list of versions newest-first. */
+.changelog-panel { max-width: 740px; }
+.changelog-list {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding-top: 8px;
+}
+.changelog-entry {
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--primary);
+  padding: 14px 18px;
+}
+.changelog-head {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin-bottom: 10px;
+  font-family: "Cascadia Mono", "Consolas", monospace;
+}
+.changelog-ver {
+  color: var(--primary);
+  font-weight: 900;
+  font-size: 1.05rem;
+  letter-spacing: 0.03em;
+}
+.changelog-date {
+  color: var(--muted-fg);
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+}
+.changelog-items {
+  margin: 0;
+  padding-left: 18px;
+  font-family: "Cascadia Mono", "Consolas", monospace;
+  font-size: 0.85rem;
+  line-height: 1.6;
+  color: var(--fg);
+}
+.changelog-items li { margin: 4px 0; }
+
+/* ============================================================
    EMAIL template — Outlook 2000-style window. Used by real-life
    email worms (ILOVEYOU, MyDoom). Period look: Tahoma, beige-
    gray Win9x chrome, raised/inset bevels, monochrome attachment
