@@ -3054,10 +3054,8 @@
   text-shadow: 0 1px 0 rgba(255,255,255,0.4);
   vertical-align: middle;
 }
-.codex-entry.rare .codex-head {
-  border-left: 3px solid #d4a017;
-  padding-left: 8px;
-}
+/* Gold codex-head border removed — the RARE badge alone marks rare entries,
+   and a second border was overlapping the per-virus color (.v-ILOVEYOU pink). */
 .codex-realworld {
   font-size: 0.85rem;
 }
