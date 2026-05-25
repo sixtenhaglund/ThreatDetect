@@ -3121,15 +3121,17 @@
   position: absolute;
   top: 0; left: 0;
   width: 128px; height: 100%;
-  animation: iloveyouBounceX 5.7s linear infinite alternate;
+  animation: iloveyouBounceX 2.5s linear infinite alternate;
 }
 .iloveyou-heart {
   /* Y-axis bounce: heart slides up/down inside the wrapper. Same trick
-     with `top` so the motion is bounded by the parent (wrapper) height. */
+     with `top` so the motion is bounded by the parent (wrapper) height.
+     X and Y use different durations so the bounce path keeps shifting
+     instead of looping the same diagonal forever. */
   position: absolute;
   top: 0; left: 0;
   width: 128px; height: 112px;
-  animation: iloveyouBounceY 4.3s linear infinite alternate,
+  animation: iloveyouBounceY 1.9s linear infinite alternate,
              iloveyouHueShift 0.7s steps(6, end) infinite;
 }
 .iloveyou-heart svg {
@@ -3159,6 +3161,6 @@
 
 /* Photosensitive-safe: kill the strong drop-shadow flicker. */
 .death-ILOVEYOU.photo-safe .iloveyou-heart {
-  animation: iloveyouBounceY 4.3s linear infinite alternate;
+  animation: iloveyouBounceY 1.9s linear infinite alternate;
   filter: drop-shadow(0 0 8px #ff0033);
 }
