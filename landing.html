@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0a1a0e">
+<meta name="description" content="ThreatDetect — spot the virus. One life. Ten rounds. A reflex cybersecurity game by Sixten Haglund.">
+<meta property="og:title" content="ThreatDetect">
+<meta property="og:description" content="Spot the virus. One life. Ten rounds.">
+<meta property="og:type" content="website">
+<title>ThreatDetect — spot the virus</title>
+<link rel="stylesheet" href="landing.css">
+</head>
+<body>
+
+<div class="bg-grid" aria-hidden="true"></div>
+<div class="bg-scan" aria-hidden="true"></div>
+
+<main class="page">
+
+  <!-- HERO -->
+  <header class="hero">
+    <div class="hero-prompt"><span class="hero-prompt-user">root@threatdetect</span><span class="hero-prompt-sep">:</span><span class="hero-prompt-path">~</span><span class="hero-prompt-sep">$</span> <span class="typed">./play</span><span class="cursor">█</span></div>
+    <h1 class="hero-title" data-text="ThreatDetect">ThreatDetect</h1>
+    <p class="hero-tagline">spot the virus.<br>one life. ten rounds.</p>
+    <a class="cta" href="./play/" aria-label="Play ThreatDetect">
+      <span class="cta-arrow">▶</span>
+      <span class="cta-label">PLAY</span>
+    </a>
+    <p class="hero-sub">free · plays in any browser · no install</p>
+  </header>
+
+  <!-- STATS -->
+  <section class="stats" aria-label="Game stats">
+    <div class="stat">
+      <div class="stat-num">20</div>
+      <div class="stat-label">viruses</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">4</div>
+      <div class="stat-label">real-life rares</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">400+</div>
+      <div class="stat-label">error cards</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">10</div>
+      <div class="stat-label">round campaign</div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section class="how">
+    <h2 class="section-h">how it works</h2>
+    <div class="how-grid">
+      <div class="how-card">
+        <div class="how-num">01</div>
+        <div class="how-body">
+          <h3>a fake popup appears</h3>
+          <p>looks like a real Windows alert, antivirus warning, email, or browser dialog.</p>
+        </div>
+      </div>
+      <div class="how-card">
+        <div class="how-num">02</div>
+        <div class="how-body">
+          <h3>you have seconds to decide</h3>
+          <p>spot the tells: weird domain, sketchy wording, broken meter, wrong icon.</p>
+        </div>
+      </div>
+      <div class="how-card">
+        <div class="how-num">03</div>
+        <div class="how-body">
+          <h3>report or trust</h3>
+          <p>report → if it's a virus. ok → if it's safe. one life. wrong call = game over.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- RARE FEATURES -->
+  <section class="rares">
+    <h2 class="section-h">real-life rare viruses</h2>
+    <p class="rares-intro">scattered through the deck, ~1 per run. discover them and unlock the actual cybersecurity history behind each one.</p>
+    <ul class="rare-list">
+      <li class="rare rare-iloveyou"><span class="rare-name">ILOVEYOU</span><span class="rare-year">2000</span><span class="rare-bite">email worm · $10B damage · written by a Filipino dropout</span></li>
+      <li class="rare rare-mydoom"><span class="rare-name">MyDoom</span><span class="rare-year">2004</span><span class="rare-bite">fastest-spreading worm ever · author still unknown</span></li>
+      <li class="rare rare-wannacry"><span class="rare-name">WannaCry</span><span class="rare-year">2017</span><span class="rare-bite">ransomware · stopped by a 22-year-old who registered a domain for $10.69</span></li>
+      <li class="rare rare-idiot"><span class="rare-name">YOU ARE AN IDIOT</span><span class="rare-year">2002</span><span class="rare-bite">popup-spam prank · taught kids about popup blockers</span></li>
+    </ul>
+  </section>
+
+  <!-- ABOUT -->
+  <section class="about">
+    <h2 class="section-h">about</h2>
+    <p class="about-body">
+      Built by <strong>Sixten Haglund</strong>, age 12, in a single self-contained HTML file. The game runs entirely in your browser — no install, no account, no server. Open-source under <a href="https://github.com/sixtenhaglund/ThreatDetect" target="_blank" rel="noopener">github.com/sixtenhaglund/ThreatDetect</a>.
+    </p>
+    <div class="links">
+      <a class="link-btn" href="./play/">▶ play now</a>
+      <a class="link-btn" href="https://github.com/sixtenhaglund/ThreatDetect" target="_blank" rel="noopener">⌥ source on github</a>
+      <a class="link-btn" href="https://github.com/sixtenhaglund/ThreatDetect/releases" target="_blank" rel="noopener">↓ latest release</a>
+    </div>
+  </section>
+
+  <footer class="foot">
+    <span>ThreatDetect</span>
+    <span class="foot-sep">·</span>
+    <span>©<span id="year">2026</span> Sixten Haglund</span>
+    <span class="foot-sep">·</span>
+    <span>v0.0.0-dev</span>
+  </footer>
+
+</main>
+
+<script>
+  // Just one line to keep the footer year current.
+  document.getElementById("year").textContent = new Date().getFullYear();
+</script>
+
+</body>
+</html>

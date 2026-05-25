@@ -1,0 +1,16 @@
+# Build dependencies (re-installed via `npm install`).
+node_modules/
+
+# npm debug log if something blows up during install/build.
+npm-debug.log
+npm-debug.log.*
+
+# OS / editor crud.
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# NOTE: docs/ is intentionally NOT ignored. GitHub Pages is configured
+# to serve docs/ on the main branch, so the built output has to be
+# committed. `npm run build` regenerates it.

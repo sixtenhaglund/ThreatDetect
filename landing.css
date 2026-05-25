@@ -1,0 +1,372 @@
+/* =====================================================================
+   landing.css — landing page for ThreatDetect.
+   Matches the game's terminal/cyber palette so the two feel cohesive.
+   ===================================================================== */
+
+:root {
+  --bg:        hsl(140 30% 3%);
+  --bg-2:      hsl(140 25% 5%);
+  --card:     hsl(140 22% 6%);
+  --border:   hsl(140 30% 13%);
+  --fg:       hsl(140 100% 78%);
+  --fg-dim:   hsl(140 30% 60%);
+  --primary:  hsl(140 100% 50%);
+  --primary-2: hsl(140 100% 38%);
+  --accent:   hsl(110 100% 60%);
+  --danger:   hsl(0 90% 56%);
+
+  --mono: "Cascadia Mono", "JetBrains Mono", "Consolas", "Menlo", monospace;
+  --sans: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--mono);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+a { color: var(--primary); text-decoration: none; }
+a:hover { color: var(--accent); text-decoration: underline; }
+
+/* ---- Background layers --------------------------------------------- */
+
+.bg-grid {
+  position: fixed; inset: 0;
+  background-image:
+    linear-gradient(to right, hsla(140 100% 50% / 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, hsla(140 100% 50% / 0.04) 1px, transparent 1px);
+  background-size: 32px 32px;
+  pointer-events: none;
+  z-index: 0;
+}
+.bg-scan {
+  /* Faint horizontal scanlines for the CRT terminal vibe. */
+  position: fixed; inset: 0;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0,
+    transparent 3px,
+    hsla(140 100% 50% / 0.025) 3px,
+    hsla(140 100% 50% / 0.025) 4px
+  );
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* ---- Layout -------------------------------------------------------- */
+
+.page {
+  position: relative;
+  z-index: 2;
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 4vh 5vw 6vh;
+}
+
+/* ---- Hero ---------------------------------------------------------- */
+
+.hero {
+  text-align: center;
+  padding: 4vh 0 6vh;
+}
+
+.hero-prompt {
+  font-family: var(--mono);
+  font-size: 0.9rem;
+  color: var(--fg-dim);
+  margin-bottom: 1.5em;
+  letter-spacing: 0.02em;
+}
+.hero-prompt-user { color: var(--primary); }
+.hero-prompt-sep  { color: var(--fg-dim); }
+.hero-prompt-path { color: var(--accent); }
+.typed { color: var(--fg); }
+.cursor {
+  display: inline-block;
+  margin-left: 2px;
+  animation: blink 1s steps(2, end) infinite;
+}
+@keyframes blink {
+  50% { opacity: 0; }
+}
+
+.hero-title {
+  position: relative;
+  font-family: var(--mono);
+  font-size: clamp(3rem, 12vw, 7.5rem);
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  margin: 0 0 0.3em;
+  color: var(--primary);
+  text-shadow:
+    0 0 12px hsla(140 100% 50% / 0.5),
+    0 0 32px hsla(140 100% 50% / 0.25);
+  line-height: 0.95;
+}
+/* Glitch overlay using the data-text attribute. Two offset color copies
+   pulse in and out to give the title a CRT-glitch shimmer. */
+.hero-title::before,
+.hero-title::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  pointer-events: none;
+}
+.hero-title::before {
+  color: hsla(180 100% 60% / 0.5);
+  transform: translate(-3px, 0);
+  animation: glitchX 4.2s linear infinite;
+  mix-blend-mode: screen;
+}
+.hero-title::after {
+  color: hsla(310 100% 60% / 0.4);
+  transform: translate(3px, 0);
+  animation: glitchX 3.7s linear infinite reverse;
+  mix-blend-mode: screen;
+}
+@keyframes glitchX {
+  0%, 92%, 100% { transform: translate(0, 0); opacity: 0; }
+  93%           { transform: translate(-4px, 1px); opacity: 1; }
+  95%           { transform: translate(4px, -1px); opacity: 1; }
+  97%           { transform: translate(-2px, 1px); opacity: 1; }
+  99%           { transform: translate(0, 0); opacity: 0; }
+}
+
+.hero-tagline {
+  font-family: var(--mono);
+  font-size: clamp(1rem, 2.4vw, 1.4rem);
+  color: var(--fg);
+  margin: 0 0 2em;
+  line-height: 1.45;
+}
+
+.cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  padding: 18px 46px;
+  background: var(--primary);
+  color: var(--bg);
+  font-family: var(--mono);
+  font-weight: 900;
+  font-size: clamp(1.2rem, 2.5vw, 1.6rem);
+  letter-spacing: 0.08em;
+  border: 2px solid var(--primary);
+  border-radius: 0;
+  box-shadow:
+    0 0 18px hsla(140 100% 50% / 0.6),
+    0 0 56px hsla(140 100% 50% / 0.25);
+  transition: transform 0.12s ease-out, box-shadow 0.18s, background 0.18s;
+  text-decoration: none;
+}
+.cta:hover {
+  background: var(--accent);
+  border-color: var(--accent);
+  text-decoration: none;
+  transform: translateY(-2px);
+  box-shadow:
+    0 0 28px hsla(110 100% 50% / 0.8),
+    0 0 72px hsla(110 100% 50% / 0.35);
+}
+.cta:active { transform: translateY(0); }
+.cta-arrow { font-size: 1.2em; }
+
+.hero-sub {
+  color: var(--fg-dim);
+  font-size: 0.82rem;
+  margin: 1.6em 0 0;
+  letter-spacing: 0.05em;
+}
+
+/* ---- Stats --------------------------------------------------------- */
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  margin: 0 0 8vh;
+}
+.stat {
+  background: var(--card);
+  border: 1px solid var(--border);
+  padding: 22px 12px;
+  text-align: center;
+}
+.stat-num {
+  font-family: var(--mono);
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
+  font-weight: 900;
+  color: var(--primary);
+  line-height: 1;
+  margin-bottom: 6px;
+}
+.stat-label {
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  color: var(--fg-dim);
+  letter-spacing: 0.06em;
+  text-transform: lowercase;
+}
+
+/* ---- Sections (How / Rares / About) ------------------------------- */
+
+.section-h {
+  font-family: var(--mono);
+  font-size: clamp(1.2rem, 2.4vw, 1.5rem);
+  color: var(--primary);
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  margin: 0 0 1.4em;
+  text-transform: lowercase;
+}
+.section-h::before {
+  content: "// ";
+  color: var(--fg-dim);
+}
+
+/* ---- How it works -------------------------------------------------- */
+
+.how {
+  margin: 0 0 8vh;
+}
+.how-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+.how-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  padding: 22px 22px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.how-num {
+  font-family: var(--mono);
+  font-size: 2rem;
+  font-weight: 900;
+  color: var(--primary-2);
+  line-height: 1;
+}
+.how-body h3 {
+  font-family: var(--mono);
+  font-size: 0.95rem;
+  color: var(--fg);
+  margin: 0 0 8px;
+  font-weight: 700;
+}
+.how-body p {
+  font-family: var(--mono);
+  font-size: 0.82rem;
+  color: var(--fg-dim);
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* ---- Rare viruses -------------------------------------------------- */
+
+.rares { margin: 0 0 8vh; }
+.rares-intro {
+  font-family: var(--mono);
+  font-size: 0.88rem;
+  color: var(--fg-dim);
+  margin: 0 0 1.5em;
+  line-height: 1.55;
+}
+.rare-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.rare {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-left-width: 3px;
+  padding: 12px 18px;
+  display: grid;
+  grid-template-columns: 200px 60px 1fr;
+  gap: 14px;
+  align-items: center;
+  font-family: var(--mono);
+  font-size: 0.85rem;
+}
+.rare-name { color: var(--fg); font-weight: 700; }
+.rare-year { color: var(--fg-dim); font-size: 0.78rem; }
+.rare-bite { color: var(--fg-dim); }
+.rare-iloveyou  { border-left-color: #ff1a6b; }
+.rare-iloveyou  .rare-name { color: #ff1a6b; }
+.rare-mydoom    { border-left-color: #ffaa00; }
+.rare-mydoom    .rare-name { color: #ffaa00; }
+.rare-wannacry  { border-left-color: #c11414; }
+.rare-wannacry  .rare-name { color: #ff6464; }
+.rare-idiot     { border-left-color: #ffffff; }
+.rare-idiot     .rare-name { color: #ffffff; }
+
+/* ---- About + footer ------------------------------------------------ */
+
+.about { margin: 0 0 6vh; }
+.about-body {
+  font-family: var(--mono);
+  font-size: 0.92rem;
+  line-height: 1.65;
+  color: var(--fg);
+  margin: 0 0 1.6em;
+}
+.about-body strong { color: var(--primary); font-weight: 700; }
+
+.links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.link-btn {
+  display: inline-block;
+  padding: 10px 18px;
+  border: 1px solid var(--border);
+  background: var(--card);
+  color: var(--primary);
+  font-family: var(--mono);
+  font-size: 0.86rem;
+  letter-spacing: 0.04em;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+.link-btn:hover {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: var(--bg);
+  text-decoration: none;
+}
+
+.foot {
+  margin-top: 6vh;
+  padding-top: 2vh;
+  border-top: 1px solid var(--border);
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  color: var(--fg-dim);
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.foot-sep { opacity: 0.5; }
+
+/* ---- Responsive ---------------------------------------------------- */
+
+@media (max-width: 740px) {
+  .stats     { grid-template-columns: repeat(2, 1fr); }
+  .how-grid  { grid-template-columns: 1fr; }
+  .rare      { grid-template-columns: 1fr; gap: 4px; }
+  .rare-year { font-size: 0.74rem; }
+}
