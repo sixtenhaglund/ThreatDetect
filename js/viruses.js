@@ -834,19 +834,18 @@ const VIRUSES = {
     ]
   },
   IDIOT: {
-    name: "YOU ARE AN IDIOT", color: "#ff00cc",
+    name: "you are an idiot", color: "#ffffff",
     minRound: 3,
     rare: true,
     description: "A web-page prank from the early 2000s that became one of the most-recognized pieces of internet jokeware in history. Going to youareanidiot.org loaded a page with three dancing yellow stick figures, cackling laughter audio on loop, and JavaScript that spawned a new popup window every time you tried to close one. Within seconds your screen filled with multiplying popups all screaming 'YOU ARE AN IDIOT!' until the browser crashed. Not malware in the destructive sense — no data stolen, no files encrypted — but it taught a generation of kids that 'popups that spawn more popups when you close them' meant trouble.",
     signs: [
-      "Yellow stick-figure smiley face icon — NOT a real Windows error icon (red X, yellow ⚠, blue i)",
-      "All-caps insulting text in the body: 'YOU ARE AN IDIOT', 'STUPID', 'HA HA HA HA HA'",
-      "Only an OK button — no close X in the title bar, no Cancel button. The popup can ONLY be dismissed by pressing OK (and pressing it might spawn another one)",
-      "Title bar is bright pink/magenta — real system alerts use gray, blue, or red, never hot pink",
-      "Body is in a goofy font (Comic Sans, Marker Felt) — real system dialogs use Tahoma or Segoe UI",
-      "Message is repetitive screaming text — 'HA HA HA HA HA HA HA HA HA HA'",
-      "Source claims to be 'JavaScript Alert' — real OS-level dialogs don't label themselves that way",
-      "The popup jitters / bounces on screen — real dialogs are static"
+      "Smiley face icon where a real Windows error icon should be (red X, yellow ⚠, blue i)",
+      "Title says 'JavaScript Alert' or '[Page Says]' or '[JavaScript Application]' — real OS-level alerts don't label themselves that way",
+      "Body text is in lowercase serif (Georgia/Times) — real system dialogs use Tahoma or Segoe UI sans-serif",
+      "Only an OK button — no close X in the title bar, no Cancel. Designed so pressing OK spawns more popups",
+      "Body text is suspiciously calm and vague: 'you are an idiot', 'click ok to continue', 'thank you for visiting' — but no real system would say this",
+      "Could spell out 'ha ha ha' or have a faint mocking tone",
+      "Source domain (if visible) ends in something like youareanidiot.org — a known shock site"
     ],
     meterEffect: { vol: "blast" },
     realWorld: {
@@ -857,14 +856,14 @@ const VIRUSES = {
       story: "Going to youareanidiot.org loaded a page with three yellow stick-figure smileys dancing in unison on a magenta background, with a man-cackling audio sample looping in the background. The page's JavaScript was rigged so that closing the window or clicking anywhere would spawn TWO new popup windows of the same page — and each of those would spawn two more — and so on, exponentially, until your browser ran out of memory and crashed. The exact origin of the site is murky (some claim it goes back to 1999) but it exploded into internet culture around 2002, becoming a rite-of-passage prank link in middle-school instant-message conversations. It taught a generation of kids about popup blockers, JavaScript, and how to use Task Manager to force-quit a hung browser. The site is still online today, complete with the original audio and the original three dancing figures."
     },
     errors: [
-      { template: TPL.IDIOT, title: "JavaScript Alert", message: "YOU ARE AN IDIOT!\n\nHA HA HA HA HA HA HA HA HA HA HA HA HA HA HA!" },
-      { template: TPL.IDIOT, title: "[JavaScript Application]", message: "ha ha ha ha ha ha ha ha ha ha\nha ha ha ha ha ha ha ha ha ha" },
-      { template: TPL.IDIOT, title: "Microsoft Internet Explorer", message: "YOU ARE AN IDIOT!\n\nClick OK to close this window. (just kidding)" },
-      { template: TPL.IDIOT, title: "Alert", message: "STUPID! STUPID! STUPID!\n\nHA HA HA HA HA HA HA HA HA HA!" },
-      { template: TPL.IDIOT, title: "JavaScript Alert", message: "Congratulations! You won 1,000,000 dollars!\n\n(YOU ARE AN IDIOT! HA HA HA HA HA HA!)" },
-      { template: TPL.IDIOT, title: "Warning!", message: "You have been pranked!!!\n\nHA HA HA HA HA HA HA HA HA HA HA HA!", meta: "Source: youareanidiot{tld}" },
-      { template: TPL.IDIOT, title: "[Page Says]", message: "HA HA HA HA HA HA HA HA HA HA HA HA HA HA HA HA HA HA HA HA HA HA HA HA HA HA HA!" },
-      { template: TPL.IDIOT, title: "Important Message!", message: "Your computer has been pranked! Visit youareanidiot{tld} for more fun!\n\nHA HA HA HA HA HA!", meta: "Powered by youareanidiot{tld}" }
+      { template: TPL.IDIOT, title: "JavaScript Alert", message: "you are an idiot" },
+      { template: TPL.IDIOT, title: "[Page Says]", message: "you are an idiot" },
+      { template: TPL.IDIOT, title: "JavaScript Application", message: "click ok to continue browsing" },
+      { template: TPL.IDIOT, title: "Microsoft Internet Explorer", message: "thank you for visiting our website" },
+      { template: TPL.IDIOT, title: "Alert", message: "your browser has been redirected" },
+      { template: TPL.IDIOT, title: "{brand}{tld} says", message: "please confirm to continue", meta: "Source: youareanidiot{tld}" },
+      { template: TPL.IDIOT, title: "Notice", message: "you have been selected" },
+      { template: TPL.IDIOT, title: "Message", message: "ha ha ha ha ha ha ha" }
     ]
   }
 };

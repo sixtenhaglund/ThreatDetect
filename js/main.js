@@ -246,11 +246,11 @@ const MYDOOM_GIBBERISH_CHARS = "!#$%'()*+,-./0123456789:;=?@ABCDEFGHIJKLMNOPQRST
    wallpaper is being written one paragraph at a time.
    ============================================================ */
 /* ============================================================
-   YOU ARE AN IDIOT death — recreates the youareanidiot.org
-   page: magenta gradient background, three yellow stick figures
-   dancing in unison (arm-pump bounce), big rainbow YOU ARE AN
-   IDIOT headline shaking at the top, and a cackling HA HA HA
-   marquee underneath.
+   YOU ARE AN IDIOT death — matches Sixten's minimalist reference
+   image: pure white background, thin black border, "you are an
+   idiot" in lowercase serif, three simple line-art smiley faces
+   below. The iconic cackle audio plays from the real MP3 file
+   (AUDIO_FILES.IDIOT in audio.js).
    ============================================================ */
 function applyIdiotDance() {
   const target = document.querySelector(".death-IDIOT");
@@ -261,38 +261,28 @@ function applyIdiotDance() {
   }
   if (target.dataset.idiotPopulated === "1") return;
   target.dataset.idiotPopulated = "1";
-  const old = target.querySelectorAll(".idiot-banner, .idiot-dancers, .idiot-marquee");
-  old.forEach(el => el.remove());
+  const old = target.querySelector(".idiot-frame"); if (old) old.remove();
 
-  // Re-use the same stick-figure SVG the in-game popup uses, but bigger.
-  // Three of them dance side by side, like the original site.
-  const bigFigure = (cls) =>
-    '<svg class="idiot-dancer ' + cls + '" viewBox="0 0 64 80" shape-rendering="geometricPrecision">' +
-      '<circle cx="32" cy="14" r="11" fill="#ffe600" stroke="#000" stroke-width="2"/>' +
-      '<circle cx="28" cy="13" r="1.6" fill="#000"/>' +
-      '<circle cx="36" cy="13" r="1.6" fill="#000"/>' +
-      '<path d="M27 17 Q32 21 37 17" fill="none" stroke="#000" stroke-width="1.8" stroke-linecap="round"/>' +
-      '<line x1="32" y1="25" x2="32" y2="52" stroke="#000" stroke-width="3" stroke-linecap="round"/>' +
-      '<line x1="32" y1="30" x2="14" y2="14" stroke="#000" stroke-width="3" stroke-linecap="round"/>' +
-      '<line x1="32" y1="30" x2="50" y2="14" stroke="#000" stroke-width="3" stroke-linecap="round"/>' +
-      '<line x1="32" y1="52" x2="20" y2="76" stroke="#000" stroke-width="3" stroke-linecap="round"/>' +
-      '<line x1="32" y1="52" x2="44" y2="76" stroke="#000" stroke-width="3" stroke-linecap="round"/>' +
+  // Simple line-art smiley: circle outline, two dots for eyes, curved
+  // smile. Matches the minimalist style of the reference image.
+  const faceSvg =
+    '<svg viewBox="0 0 48 48" shape-rendering="geometricPrecision">' +
+      '<circle cx="24" cy="24" r="20" fill="none" stroke="#000" stroke-width="2"/>' +
+      '<circle cx="17" cy="20" r="2.5" fill="#000"/>' +
+      '<circle cx="31" cy="20" r="2.5" fill="#000"/>' +
+      '<path d="M14 28 Q24 36 34 28" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round"/>' +
     '</svg>';
 
-  const banner = document.createElement("div");
-  banner.className = "idiot-banner";
-  banner.textContent = "YOU ARE AN IDIOT!";
-  target.appendChild(banner);
-
-  const dancers = document.createElement("div");
-  dancers.className = "idiot-dancers";
-  dancers.innerHTML = bigFigure("d1") + bigFigure("d2") + bigFigure("d3");
-  target.appendChild(dancers);
-
-  const marquee = document.createElement("div");
-  marquee.className = "idiot-marquee";
-  marquee.textContent = "HA HA HA HA HA HA HA HA HA HA HA HA HA HA HA";
-  target.appendChild(marquee);
+  const frame = document.createElement("div");
+  frame.className = "idiot-frame";
+  frame.innerHTML =
+    '<div class="idiot-headline">you are an idiot</div>' +
+    '<div class="idiot-faces">' +
+      '<div class="idiot-face">' + faceSvg + '</div>' +
+      '<div class="idiot-face">' + faceSvg + '</div>' +
+      '<div class="idiot-face">' + faceSvg + '</div>' +
+    '</div>';
+  target.appendChild(frame);
 }
 
 function applyWannacryDeath() {

@@ -499,29 +499,18 @@ function renderRansom(card) {
     </div>`;
 }
 
-// YOU ARE AN IDIOT-style prank popup. Reusable shared SVG for the
-// dancing yellow stick figure (head, V-arms up, body, A-legs). The
-// signature tells: yellow stick figure where a Windows error icon
-// belongs, all-caps insulting text, and ONLY an OK button — no
-// close X, no Cancel — designed so closing the popup actually
-// triggers the next one in the multiplication chain.
-const IDIOT_STICK_FIGURE_SVG =
-  '<svg width="64" height="80" viewBox="0 0 64 80" shape-rendering="geometricPrecision">' +
-    // Head — yellow circle with black outline
-    '<circle cx="32" cy="14" r="11" fill="#ffe600" stroke="#000" stroke-width="2"/>' +
-    // Eyes
-    '<circle cx="28" cy="13" r="1.6" fill="#000"/>' +
-    '<circle cx="36" cy="13" r="1.6" fill="#000"/>' +
-    // Smile
-    '<path d="M27 17 Q32 21 37 17" fill="none" stroke="#000" stroke-width="1.8" stroke-linecap="round"/>' +
-    // Body (vertical)
-    '<line x1="32" y1="25" x2="32" y2="52" stroke="#000" stroke-width="3" stroke-linecap="round"/>' +
-    // Arms up in a V
-    '<line x1="32" y1="30" x2="14" y2="14" stroke="#000" stroke-width="3" stroke-linecap="round"/>' +
-    '<line x1="32" y1="30" x2="50" y2="14" stroke="#000" stroke-width="3" stroke-linecap="round"/>' +
-    // Legs in an A
-    '<line x1="32" y1="52" x2="20" y2="76" stroke="#000" stroke-width="3" stroke-linecap="round"/>' +
-    '<line x1="32" y1="52" x2="44" y2="76" stroke="#000" stroke-width="3" stroke-linecap="round"/>' +
+// Minimalist "you are an idiot"-style prank popup. Subtler than the
+// 90s shock-site original — small line-art smiley where the alert
+// icon belongs, lowercase serif text, single OK button. The popup
+// looks ALMOST like a normal browser dialog at first glance; the
+// tells (smiley face, calm lowercase phrasing, no close X) only
+// surface when the player slows down and reads carefully.
+const IDIOT_FACE_SVG =
+  '<svg viewBox="0 0 48 48" shape-rendering="geometricPrecision">' +
+    '<circle cx="24" cy="24" r="20" fill="none" stroke="#000" stroke-width="2"/>' +
+    '<circle cx="17" cy="20" r="2.5" fill="#000"/>' +
+    '<circle cx="31" cy="20" r="2.5" fill="#000"/>' +
+    '<path d="M14 28 Q24 36 34 28" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round"/>' +
   '</svg>';
 
 function renderIdiot(card) {
@@ -531,8 +520,8 @@ function renderIdiot(card) {
         <span class="idiot-title">${esc(card.title || "JavaScript Alert")}</span>
       </div>
       <div class="idiot-body">
-        <div class="idiot-figure" aria-hidden="true">${IDIOT_STICK_FIGURE_SVG}</div>
-        <div class="idiot-msg">${esc(card.message || "YOU ARE AN IDIOT! HA HA HA HA HA HA!")}</div>
+        <div class="idiot-figure" aria-hidden="true">${IDIOT_FACE_SVG}</div>
+        <div class="idiot-msg">${esc(card.message || "you are an idiot")}</div>
       </div>
       ${card.meta ? `<div class="idiot-meta">${esc(card.meta)}</div>` : ""}
       <div class="idiot-footer">

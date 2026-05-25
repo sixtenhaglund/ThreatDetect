@@ -11,6 +11,14 @@ const AUDIO_BLOBS = {
   // scream: "data:audio/wav;base64,UklGR..."
 };
 
+// Real audio files (URL paths, relative to index.html) keyed by virus key.
+// When a death fires, if the key is in here we use the file instead of
+// the procedural Audio.deaths[key] function. Files are lazy-loaded and
+// cached the first time the player triggers that death.
+const AUDIO_FILES = {
+  IDIOT: "you-are-an-idiot.mp3"
+};
+
 const Audio = {
   ctx: null, masterGain: null, ambientGain: null, sfxGain: null,
   deathGain: null,        // dedicated gain for death sounds — disconnecting it instantly silences everything in flight
@@ -35,6 +43,39 @@ const Audio = {
     if (!this.ctx) this.init();
     if (this.ctx && this.ctx.state === "suspended") this.ctx.resume();
     this.unlocked = true;
+    // Kick off background preload of real audio files the first time
+    // the user enables audio. They'll be cached in AUDIO_BUFFERS for
+    // instant playback when the relevant death fires.
+    if (!this._audioFilesPreloaded) {
+      this._audioFilesPreloaded = true;
+      for (const key in AUDIO_FILES) {
+        this.loadDeathFile(key).catch(() => {/* best-effort */});
+      }
+    }
+  },
+  // Lazy-load a death audio file. First call fetches + decodes; subsequent
+  // calls return the cached AudioBuffer. Resolves to null on any failure
+  // so callers can fall back to the procedural sound.
+  loadDeathFile(key) {
+    if (!this._audioBuffers) this._audioBuffers = {};
+    if (this._audioBuffers[key]) return Promise.resolve(this._audioBuffers[key]);
+    const url = AUDIO_FILES[key];
+    if (!url || !this.ctx) return Promise.resolve(null);
+    return fetch(url)
+      .then(r => r.arrayBuffer())
+      .then(buf => this.ctx.decodeAudioData(buf))
+      .then(decoded => { this._audioBuffers[key] = decoded; return decoded; })
+      .catch(() => null);
+  },
+  // Play an already-decoded AudioBuffer through the active deathGain.
+  // The deathGain ref is captured so a later death can't accidentally
+  // route this buffer into its own (cleaner) chain.
+  playDeathFile(buffer) {
+    if (!this.ctx || !this.deathGain || !buffer) return;
+    const src = this.ctx.createBufferSource();
+    src.buffer = buffer;
+    src.connect(this.deathGain);
+    src.start(this.ctx.currentTime);
   },
   applyVolumes() {
     if (!this.ctx) return;
@@ -372,9 +413,26 @@ Audio.death = function(key, skipJumpscare) {
   this.sfxGain = this.deathGain;
   try {
     if (wantJump) this.stinger();
-    const fn = this.deaths[key];
-    if (fn) fn.call(this);
-    else this.gameOver();
+    // If we have a real audio file for this death, play it INSTEAD of
+    // the procedural function. Buffer may already be cached (instant)
+    // or being loaded for the first time (slight delay).
+    if (AUDIO_FILES[key]) {
+      const capturedGain = this.deathGain;
+      const cached = this._audioBuffers && this._audioBuffers[key];
+      if (cached) {
+        this.playDeathFile(cached);
+      } else {
+        this.loadDeathFile(key).then(buf => {
+          // Bail if the death has been torn down / replaced while we
+          // were waiting for the file to decode.
+          if (buf && this.deathGain === capturedGain) this.playDeathFile(buf);
+        });
+      }
+    } else {
+      const fn = this.deaths[key];
+      if (fn) fn.call(this);
+      else this.gameOver();
+    }
   } finally {
     this.sfxGain = realSfx;
   }
