@@ -728,7 +728,7 @@ const VIRUSES = {
   // spot-the-tells gameplay.
   // ============================================================
   ILOVEYOU: {
-    name: "ILOVEYOU", color: "#ff69b4",
+    name: "ILOVEYOU", color: "#ff1a6b",
     minRound: 4,
     rare: true,
     description: "An email worm disguised as a love letter. The attachment is named LOVE-LETTER-FOR-YOU.TXT.vbs — but Windows hides the .vbs extension by default, so victims see 'TXT' and double-click. Once opened, the VBScript overwrites image and music files with copies of itself, then forwards the same email to every address in your Outlook address book. The same double-extension trick worms still use today.",

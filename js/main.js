@@ -41,6 +41,7 @@ function render() {
   applyMimicPopups();
   applyCryptexRain();
   applyRewriterSparkles();
+  applyIloveyouHeart();
 }
 
 const MENU_MUSIC_SCREENS = new Set([
@@ -212,6 +213,57 @@ const CRYPT0_AMOUNTS = [
   "88,221$", "99.99$", "999.99$", "0.1 BTC$", "0.3 BTC$", "0.5 BTC$",
   "0.8 BTC$", "0.3 ETH$", "0.5 ETH$", "$"
 ];
+/* ============================================================
+   ILOVEYOU bouncing heart — DVD-screensaver-style pixel art
+   heart that ping-pongs across the death stage. The wrapper
+   handles X bounce, the heart handles Y bounce, both pure CSS
+   (see .iloveyou-wrap / .iloveyou-heart in styles.css).
+   This function just injects the DOM nodes once when the
+   killer is ILOVEYOU.
+   ============================================================ */
+function applyIloveyouHeart() {
+  const target = document.querySelector(".death-ILOVEYOU");
+  if (!target) return;
+  if (!killerIs("ILOVEYOU")) {
+    target.dataset.iloveyouHeart = "";
+    return;
+  }
+  if (target.dataset.iloveyouHeart === "1") return;
+  target.dataset.iloveyouHeart = "1";
+  const old = target.querySelector(".iloveyou-wrap");
+  if (old) old.remove();
+
+  // 8-wide × 7-tall chunky pixel heart at 16px per pixel = 128 × 112 final.
+  // Drawn as horizontal rows to keep the SVG short; one light highlight
+  // pixel up-top for the classic 8-bit shine.
+  const heartSvg = `
+    <svg viewBox="0 0 128 112" width="128" height="112" shape-rendering="crispEdges" aria-hidden="true">
+      <g fill="#ff0033">
+        <rect x="16"  y="0"   width="16" height="16"/>
+        <rect x="32"  y="0"   width="16" height="16"/>
+        <rect x="80"  y="0"   width="16" height="16"/>
+        <rect x="96"  y="0"   width="16" height="16"/>
+        <rect x="0"   y="16"  width="128" height="16"/>
+        <rect x="0"   y="32"  width="128" height="16"/>
+        <rect x="0"   y="48"  width="128" height="16"/>
+        <rect x="16"  y="64"  width="96"  height="16"/>
+        <rect x="32"  y="80"  width="64"  height="16"/>
+        <rect x="48"  y="96"  width="32"  height="16"/>
+      </g>
+      <!-- 8-bit shine pixel -->
+      <rect x="16" y="16" width="16" height="16" fill="#ff80a0"/>
+      <rect x="32" y="16" width="16" height="16" fill="#ff5577"/>
+    </svg>`;
+
+  const wrap = document.createElement("div");
+  wrap.className = "iloveyou-wrap";
+  const heart = document.createElement("div");
+  heart.className = "iloveyou-heart";
+  heart.innerHTML = heartSvg;
+  wrap.appendChild(heart);
+  target.appendChild(wrap);
+}
+
 function applyCryptexRain() {
   const target = document.querySelector(".death-CRYPT0");
   if (!target) return;

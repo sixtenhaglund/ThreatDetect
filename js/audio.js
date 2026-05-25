@@ -723,5 +723,58 @@ Audio.deaths = {
     for (let i = 0; i < Math.floor(dur / 0.08); i++) {
       this.noiseBurst(t0 + i * 0.08, 0.06, 2000 + Math.random() * 5000, 3, 0.4);
     }
+  },
+  ILOVEYOU() {
+    // Steady heartbeat thumps (~80 bpm) — sub thump + click — punctuated
+    // by a 56k modem screech at the start, the unmistakable sound of an
+    // email worm spreading via dial-up address books in 2000.
+    const ctx = this.ctx, t0 = ctx.currentTime;
+
+    // --- modem handshake stinger at the start (1.6s) ---
+    const modemTones = [
+      [0.00, 1100, 0.18], [0.18, 2100, 0.14], [0.32, 800, 0.20],
+      [0.52, 1600, 0.16], [0.68, 2400, 0.12], [0.80, 1300, 0.18],
+      [0.98, 2200, 0.14], [1.12, 900, 0.20], [1.32, 1900, 0.14]
+    ];
+    for (const [dt, freq, dur] of modemTones) {
+      this.beep(t0 + dt, freq, dur, "sine", 0.16);
+    }
+    // White-noise hiss layered under the modem tones
+    const hissDur = 1.6;
+    const hissBuf = ctx.createBuffer(1, Math.floor(ctx.sampleRate * hissDur), ctx.sampleRate);
+    const hissData = hissBuf.getChannelData(0);
+    for (let i = 0; i < hissData.length; i++) hissData[i] = (Math.random() * 2 - 1) * 0.4;
+    const hissSrc = ctx.createBufferSource(); hissSrc.buffer = hissBuf;
+    const hissBp = ctx.createBiquadFilter(); hissBp.type = "bandpass";
+    hissBp.frequency.value = 1500; hissBp.Q.value = 0.6;
+    const hissGain = ctx.createGain(); hissGain.gain.value = 0.18;
+    hissSrc.connect(hissBp); hissBp.connect(hissGain); hissGain.connect(this.sfxGain);
+    hissSrc.start(t0); hissSrc.stop(t0 + hissDur);
+
+    // --- heartbeat thumps (lub-DUB pattern, ~80 bpm, 0.75s between beats) ---
+    // Each beat = a "lub" (short low thump) followed 0.13s later by a "DUB" (louder lower thump).
+    const beatStart = t0 + 1.4;
+    const beatPeriod = 0.75;
+    const beats = Math.floor((4.4 - 1.4) / beatPeriod);
+    for (let i = 0; i < beats; i++) {
+      const bt = beatStart + i * beatPeriod;
+      // "lub" — quick punch at 90Hz
+      const o1 = ctx.createOscillator(); o1.type = "sine"; o1.frequency.setValueAtTime(110, bt); o1.frequency.exponentialRampToValueAtTime(45, bt + 0.18);
+      const g1 = ctx.createGain();
+      o1.connect(g1); g1.connect(this.sfxGain);
+      g1.gain.setValueAtTime(0, bt);
+      g1.gain.linearRampToValueAtTime(0.45, bt + 0.01);
+      g1.gain.exponentialRampToValueAtTime(0.001, bt + 0.22);
+      o1.start(bt); o1.stop(bt + 0.24);
+      // "DUB" — deeper, louder
+      const dt = bt + 0.14;
+      const o2 = ctx.createOscillator(); o2.type = "sine"; o2.frequency.setValueAtTime(90, dt); o2.frequency.exponentialRampToValueAtTime(38, dt + 0.22);
+      const g2 = ctx.createGain();
+      o2.connect(g2); g2.connect(this.sfxGain);
+      g2.gain.setValueAtTime(0, dt);
+      g2.gain.linearRampToValueAtTime(0.55, dt + 0.012);
+      g2.gain.exponentialRampToValueAtTime(0.001, dt + 0.28);
+      o2.start(dt); o2.stop(dt + 0.30);
+    }
   }
 };

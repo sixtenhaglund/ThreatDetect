@@ -389,6 +389,7 @@
   .v-TARPIT     { color: #c4a484; }
   .v-HEXR        { color: #88ddff; }
   .v-ASSISTANT    { color: #00ff00; }
+  .v-ILOVEYOU     { color: #ff1a6b; }
   .codex-entry.v-EPILEPTICA { border-left-color: #ffffff; }
   .codex-entry.v-MELTDOWN   { border-left-color: #ff7733; }
   .codex-entry.v-STATIC     { border-left-color: #b0b0b0; }
@@ -408,6 +409,7 @@
   .codex-entry.v-TARPIT     { border-left-color: #c4a484; }
   .codex-entry.v-HEXR        { border-left-color: #88ddff; }
   .codex-entry.v-ASSISTANT    { border-left-color: #00ff00; }
+  .codex-entry.v-ILOVEYOU     { border-left-color: #ff1a6b; }
 
   /* Animations */
   .fade-in { animation: fadeIn 0.4s ease; }
@@ -3068,4 +3070,91 @@
   font-size: 0.85rem;
   line-height: 1.5;
   font-style: italic;
+}
+
+/* ============================================================
+   ILOVEYOU death animation — pixelated red heart bouncing
+   around the screen like the DVD screensaver. Two animations
+   with different periods (X and Y) create the diagonal-bounce
+   feel where the heart only occasionally hits a corner.
+   The heart wrapper is injected by applyIloveyouHeart() in
+   main.js — it's a real DOM element so we can stack X and Y
+   transforms on a wrapper + inner element.
+   ============================================================ */
+.death-ILOVEYOU {
+  background: radial-gradient(circle at 50% 50%, #2a0011 0%, #0a0005 80%);
+  overflow: hidden;
+  position: relative;
+}
+.death-ILOVEYOU::before {
+  /* Faint repeating ILOVEYOU text in the background, drifting upward,
+     so the screen reads as "address book compromised" without the
+     heart having to do all the work. */
+  content: "ILOVEYOU  ILOVEYOU  ILOVEYOU  ILOVEYOU  ILOVEYOU  ILOVEYOU  ILOVEYOU  ILOVEYOU  ILOVEYOU  ILOVEYOU  ILOVEYOU  ILOVEYOU  ILOVEYOU  ILOVEYOU  ILOVEYOU  ILOVEYOU  ILOVEYOU  ILOVEYOU  ILOVEYOU  ILOVEYOU  ILOVEYOU  ILOVEYOU  ILOVEYOU  ILOVEYOU  ILOVEYOU  ILOVEYOU  ILOVEYOU  ILOVEYOU  ILOVEYOU  ILOVEYOU  ILOVEYOU  ILOVEYOU  ";
+  position: absolute;
+  inset: -20% -10% -20% -10%;
+  font-family: "Cascadia Mono", monospace;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #ff1a6b;
+  opacity: 0.12;
+  line-height: 2.2;
+  letter-spacing: 0.2em;
+  white-space: pre-wrap;
+  text-align: center;
+  animation: iloveyouDrift 12s linear infinite;
+  pointer-events: none;
+}
+@keyframes iloveyouDrift {
+  from { transform: translateY(0); }
+  to   { transform: translateY(-30%); }
+}
+.iloveyou-wrap {
+  /* X-axis bounce: wrapper is heart-width wide, full-height tall, and
+     slides edge-to-edge along the stage. Using `left` instead of
+     translateX lets us bound the motion to the parent's width with a
+     simple `100% - 128px` calc (`100%` in `left` = parent width). */
+  position: absolute;
+  top: 0; left: 0;
+  width: 128px; height: 100%;
+  animation: iloveyouBounceX 5.7s cubic-bezier(0.5,0,0.5,1) infinite alternate;
+}
+.iloveyou-heart {
+  /* Y-axis bounce: heart slides up/down inside the wrapper. Same trick
+     with `top` so the motion is bounded by the parent (wrapper) height. */
+  position: absolute;
+  top: 0; left: 0;
+  width: 128px; height: 112px;
+  animation: iloveyouBounceY 4.3s cubic-bezier(0.5,0,0.5,1) infinite alternate,
+             iloveyouHueShift 0.7s steps(6, end) infinite;
+}
+.iloveyou-heart svg {
+  display: block;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+@keyframes iloveyouBounceX {
+  from { left: 0; }
+  to   { left: calc(100% - 128px); }
+}
+@keyframes iloveyouBounceY {
+  from { top: 0; }
+  to   { top: calc(100% - 112px); }
+}
+/* Subtle color cycle so each bounce "feels" like the DVD logo
+   changing color, without going rainbow — stays in red/pink. */
+@keyframes iloveyouHueShift {
+  0%   { filter: drop-shadow(0 0 18px #ff0033) drop-shadow(0 0 36px rgba(255,26,107,0.4)); }
+  17%  { filter: drop-shadow(0 0 18px #ff1a6b) drop-shadow(0 0 36px rgba(255,0,80,0.5)); }
+  34%  { filter: drop-shadow(0 0 18px #ff4080) drop-shadow(0 0 36px rgba(255,40,90,0.4)); }
+  51%  { filter: drop-shadow(0 0 18px #ff0066) drop-shadow(0 0 36px rgba(255,26,107,0.5)); }
+  68%  { filter: drop-shadow(0 0 18px #ff2255) drop-shadow(0 0 36px rgba(255,30,90,0.4)); }
+  85%  { filter: drop-shadow(0 0 18px #ff0033) drop-shadow(0 0 36px rgba(255,26,107,0.5)); }
+  100% { filter: drop-shadow(0 0 18px #ff0033) drop-shadow(0 0 36px rgba(255,26,107,0.4)); }
+}
+
+/* Photosensitive-safe: kill the strong drop-shadow flicker. */
+.death-ILOVEYOU.photo-safe .iloveyou-heart {
+  animation: iloveyouBounceY 4.3s cubic-bezier(0.5,0,0.5,1) infinite alternate;
+  filter: drop-shadow(0 0 8px #ff0033);
 }
