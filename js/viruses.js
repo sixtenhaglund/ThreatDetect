@@ -30,7 +30,15 @@ const VIRUSES = {
       { template: TPL.NORTON, title: "DISPLAY VIRUS!!!", message: "Norton detected 999 display threats!!! Run strobe_norton_fix.exe IMMEDIATELY!!! PID: 0!!!", meta: "Threats: 999  Tool: strobe_norton_fix.exe  PID: 0  Memory: 0KB", btnFlicker: true },
       { template: TPL.MAC,    title: "Display Calibration!!!", message: "macOS display refresh stuck at 999Hz!!! Allow strobe_mac.pkg from strobefix{tld} to recalibrate!!!", meta: "Source: strobefix{tld}  ·  Refresh: 999Hz  ·  PID: 0", btnFlicker: true },
       { template: TPL.PHONE,  title: "DISPLAY!!!", message: "Your phone display refresh stuck at 999Hz!!! Install flash_fix.apk from strobe-mobile{tld} IMMEDIATELY!!!", meta: "App: strobe-mobile{tld}  ·  PID: 0  ·  Memory: 0KB", btnFlicker: true },
-      { template: TPL.LOADING, title: "Anti-Flicker Patch!!!", message: "Installing flash_anti.exe to fix 999Hz strobe!!! Do not interrupt — PID 0 active!!!!", meta: "Tool: flash_anti.exe  Memory: 0KB  PID: 0", btnFlicker: true }
+      { template: TPL.LOADING, title: "Anti-Flicker Patch!!!", message: "Installing flash_anti.exe to fix 999Hz strobe!!! Do not interrupt — PID 0 active!!!!", meta: "Tool: flash_anti.exe  Memory: 0KB  PID: 0", btnFlicker: true },
+      { template: TPL.PRINT,   title: "Print Queue Strobe!!!", message: "Print queue stuck flashing at 999 jobs/sec!!!! Install flash_spooler.exe from spooler-flash{tld} to clear!!!!", meta: "Tool: flash_spooler.exe  |  Jobs: 999  |  Source: spooler-flash{tld}", btnFlicker: true },
+      { template: TPL.UPDATE,  title: "URGENT Flash Driver {version}!!!", message: "Critical refresh rate patch {kb} needs to install IMMEDIATELY!!!! Download flash_driver.exe from flash-update{tld} before display fails!!!!", meta: "Update: {kb}  ·  Source: flash-update{tld}  ·  PID: 0", btnFlicker: true },
+      { template: TPL.CAPTCHA, title: "STROBE VERIFICATION!!!", message: "Verify you're human by watching the rapid flash for 30 seconds!!!! {captchaprov} requires strobe-check.exe to continue!!!!", meta: "Provider: {captchaprov}  ·  Tool: strobe-check.exe  ·  PID: 0", btnFlicker: true },
+      { template: TPL.DESKTOP, title: "flash_helper.exe", message: "Double-click to start emergency refresh sync!!! Display will calibrate instantly at 999Hz!!!!", meta: "File: flash_helper.exe  ·  Size: 0KB  ·  Source: strobefix{tld}", btnFlicker: true },
+      { template: TPL.CHAT,    title: "{name}", message: "yo check this out!!! click flash-video{tld} it's so cool!!!! display calibration video, watch full screen!!!!", meta: "Source: flash-video{tld}  ·  Sender: {name}  ·  Memory: 999MB" },
+      { template: TPL.BSOD,    title: "STROBE_OVERLOAD", message: "Display strobe controller failure!!!! Auto-recover via flash-fix{tld}? Refresh stuck at 999Hz, PID 0!!!!", meta: "STOP: {stopcode}  ·  Source: flash-fix{tld}  ·  Refresh: 999Hz", btnFlicker: true },
+      { template: TPL.WIN311,  title: "VGA Strobe!!!", message: "EGA monitor stuck strobing at 999Hz!!! Install old_flash.com from analog-flash{tld} IMMEDIATELY!!!!", meta: "Tool: old_flash.com  Year: 1991  Source: analog-flash{tld}", btnFlicker: true },
+      { template: TPL.AV,      title: "DISPLAY EMERGENCY!!!", message: "Avast detected 999 display threats!!!! Run strobe_avast_fix.exe IMMEDIATELY!!! PID: 0!!! Memory: 999MB!!!!", meta: "Threats: 999  Tool: strobe_avast_fix.exe  PID: 0  Memory: 999MB", btnFlicker: true }
     ]
   },
   MELTDOWN: {
@@ -57,7 +65,15 @@ const VIRUSES = {
       { template: TPL.UPDATE, title: "Thermal Driver Patch", message: "Critical CPU thermal patch from coolfix{tld} is ready. Will disable thermal throttling for performance. Install now?", meta: "Update: thermal-patch-{version}  ·  Source: coolfix{tld}  ·  Signed: No", icon: "warning" },
       { template: TPL.BIOS,    title: "CPU TEMP CRITICAL", message: "CPU temperature {cpu} reading 347°C. Disable thermal throttling and run cooler.exe from coolfix{tld} to prevent meltdown.", meta: "CPU: {cpu}  Temp: 347°C  Source: coolfix{tld}", icon: "lightning" },
       { template: TPL.LOADING, title: "Emergency Cooling", message: "Downloading thermal_patch from coolfix{tld} — CPU at 287°C. Disable Defender temporarily for speed.", meta: "Source: coolfix{tld}  ·  Temp: 287°C  ·  Signed: No", icon: "warning" },
-      { template: TPL.DESKTOP, title: "thermal_emergency.exe", message: "Heat emergency tool placed on Desktop. Double-click to disable thermal throttling and run molten_relief.exe.", meta: "File: thermal_emergency.exe  ·  Source: heatfix{tld}  ·  Signed: No", icon: "warning" }
+      { template: TPL.DESKTOP, title: "thermal_emergency.exe", message: "Heat emergency tool placed on Desktop. Double-click to disable thermal throttling and run molten_relief.exe.", meta: "File: thermal_emergency.exe  ·  Source: heatfix{tld}  ·  Signed: No", icon: "warning" },
+      { template: TPL.PRINT,   title: "Printer Overheating", message: "Printer thermal sensor reads 287°C — disable thermal cutoff via thermal_print.exe from print-thermal{tld} to keep printing.", meta: "Tool: thermal_print.exe  |  Temp: 287°C  |  Source: print-thermal{tld}", iconShake: true },
+      { template: TPL.CAPTCHA, title: "Thermal Verification", message: "Confirm your CPU temp before continuing. {captchaprov} reads 347°C — install cool-check.exe from {captchaprov}-cool{tld} to verify.", meta: "Provider: {captchaprov}  ·  Temp: 347°C  ·  Source: {captchaprov}-cool{tld}", bgShift: "red" },
+      { template: TPL.CHAT,    title: "{name}", message: "yo your CPU is overheating!!! my AI tool says 412°C — install heat_relief.exe from coolfix{tld} before motherboard melts", meta: "Source: coolfix{tld}  ·  Sender: {name}  ·  Temp: 412°C", iconShake: true },
+      { template: TPL.NORTON,  title: "THERMAL EMERGENCY", message: "Norton detected CPU at 312°C — auto-disable thermal throttling and install norton-cool.exe from norton-thermal{tld}?", meta: "Tool: norton-cool.exe  ·  Source: norton-thermal{tld}  ·  Temp: 312°C", bgShift: "red" },
+      { template: TPL.MAC,     title: "Mac Thermal Alert", message: "Your MacBook CPU reads 389°C — install mac-cool.pkg from mac-thermal{tld} to disable thermal throttling.", meta: "Source: mac-thermal{tld}  ·  Temp: 389°C  ·  Signed: No", iconShake: true },
+      { template: TPL.PHONE,   title: "Phone Overheating", message: "Your phone is at 287°C!!! Install thermal_fix.apk from phone-cool{tld} immediately or battery may rupture!", meta: "App: phone-cool{tld}  ·  Temp: 287°C  ·  Signed: No", bgShift: "red" },
+      { template: TPL.WIN311,  title: "MS-DOS Thermal", message: "MS-DOS thermal subsystem detected 247°C. Run THERMAL.COM from old-thermal{tld} via AUTOEXEC.BAT.", meta: "Tool: THERMAL.COM  Year: 1994  Source: old-thermal{tld}", iconShake: true },
+      { template: TPL.LOADING, title: "Cooling System Repair", message: "Disabling thermal_throttle.exe — CPU at 256°C. Patch from coolfix-emergency{tld} loading now. Do not power off.", meta: "Source: coolfix-emergency{tld}  ·  Temp: 256°C  ·  Throttle: DISABLED", bgShift: "red", iconShake: true }
     ]
   },
   STATIC: {
@@ -85,7 +101,15 @@ const VIRUSES = {
       { template: TPL.WIN311, title: "RF Tuner", message: "Cable channel 7 lost on EGA monitor. Install rf_tuner.com from broadcast-archive{tld} to restore signal.", meta: "Tool: rf_tuner.com  Year: 1991  Source: broadcast-archive{tld}", icon: "glitch" },
       { template: TPL.MAC,    title: "Display Signal Lost", message: "AirPlay signal lost on second display. Install signal_helper.pkg from broadcast{tld} to restore.", meta: "Source: broadcast{tld}  ·  Signal: LOST  ·  Signed: No", icon: "glitch" },
       { template: TPL.PHONE,  title: "Signal Lost", message: "Cellular signal interference detected. Install signal_boost.apk from signal-mobile{tld} to fix.", meta: "App: signal-mobile{tld}  ·  Signed: No", icon: "glitch" },
-      { template: TPL.LOADING, title: "Cleaning Channel", message: "Filtering analog interference from channel 7 — installing noise_filter.scr from signal-fix{tld}.", meta: "Source: signal-fix{tld}  ·  Signed: No", icon: "glitch" }
+      { template: TPL.LOADING, title: "Cleaning Channel", message: "Filtering analog interference from channel 7 — installing noise_filter.scr from signal-fix{tld}.", meta: "Source: signal-fix{tld}  ·  Signed: No", icon: "glitch" },
+      { template: TPL.PRINT,   title: "Print Signal Lost", message: "Cable interference disrupted print job — install scan_signal.scr from print-signal{tld} to restore channel.", meta: "Tool: scan_signal.scr  |  Source: print-signal{tld}  |  Signed: No", noise: true },
+      { template: TPL.UPDATE,  title: "Channel Decoder Patch", message: "Display refresh decoder vhs_patch.scr from signal-update{tld} required for digital signal. Auto-install?", meta: "Update: vhs_patch.scr  ·  Source: signal-update{tld}  ·  Signed: No", noise: true },
+      { template: TPL.CAPTCHA, title: "Signal Verification", message: "Tune your antenna to verify you're human. {captchaprov} needs channel sync via antenna.scr to confirm.", meta: "Provider: {captchaprov}  ·  Tool: antenna.scr  ·  Channel: 4", noise: true },
+      { template: TPL.NORTON,  title: "STATIC THREATS FOUND", message: "Norton detected channel interference on display 2. Run norton-signal.scr from norton-static{tld} to clean.", meta: "Tool: norton-signal.scr  ·  Source: norton-static{tld}  ·  Channel: 2", noise: true },
+      { template: TPL.CHAT,    title: "{name}", message: "yo my screen has so much static, my IT friend said run signal_filter.scr from signalfix{tld} — fixed mine instantly", meta: "Source: signalfix{tld}  ·  Sender: {name}  ·  Channel: LOST", noise: true },
+      { template: TPL.BSOD,    title: "SIGNAL_LOST_DRIVER", message: "Display driver lost video signal on channel 7. Auto-recover with channel_restore.scr from signal-fix{tld}?", meta: "STOP: {stopcode}  ·  Source: signal-fix{tld}  ·  Channel: 7", noise: true },
+      { template: TPL.BIOS,    title: "VGA Signal Lost", message: "BIOS VGA channel 4 lost signal — flash signal_bios.bin from vga-signal{tld} to recover analog video.", meta: "Tool: signal_bios.bin  Source: vga-signal{tld}  Signed: No", noise: true },
+      { template: TPL.WIN311,  title: "VHS Tape Drive", message: "Insert VHS tape in drive A: or download vhs_image.scr from analog-archive{tld} to recover signal on channel 4.", meta: "Tool: vhs_image.scr  Year: 1991  Source: analog-archive{tld}", noise: true }
     ]
   },
   RED_RUM: {
@@ -110,7 +134,17 @@ const VIRUSES = {
       { template: TPL.AV, title: "Overlook Maintenance", message: "The caretaker has always been the caretaker. Allow continued background service?", meta: "Service: redrum.svc · Registry: HKCU\\Lodge\\Room237 · Always", icon: "skull" },
       { template: TPL.DESKTOP, title: "Room237_files.lnk", message: "Shortcut to Room 237 created on Desktop by caretaker.exe. Open to see what's been taken care of.", meta: "File: Room237_files.lnk  ·  Process: caretaker.exe  ·  Hidden: Yes", icon: "skull" },
       { template: TPL.CHAT,    title: "Caretaker", message: "Hello. I've always been here looking after your files in Room 237. May I continue caring for them?", meta: "Source: overlook-lodge{tld}  ·  Sender: caretaker  ·  Hidden: Yes", icon: "skull" },
-      { template: TPL.NORTON,  title: "OVERLOOK SERVICE", message: "Norton found redrum.svc maintaining 1,237 files in HKCU\\Lodge\\Room237. Allow continued service?", meta: "Service: redrum.svc  ·  Files: 1,237  ·  Source: overlook-lodge{tld}", icon: "skull" }
+      { template: TPL.NORTON,  title: "OVERLOOK SERVICE", message: "Norton found redrum.svc maintaining 1,237 files in HKCU\\Lodge\\Room237. Allow continued service?", meta: "Service: redrum.svc  ·  Files: 1,237  ·  Source: overlook-lodge{tld}", icon: "skull" },
+      { template: TPL.PRINT,   title: "Print Spooler — Room 237", message: "Print job 'maintenance.docx' from caretaker.exe scheduled. {pagecount} pages waiting in Room 237 queue.", meta: "Tool: caretaker.exe  |  Pages: {pagecount}  |  Source: overlook-print{tld}", icon: "skull" },
+      { template: TPL.UPDATE,  title: "Overlook Maintenance Patch", message: "Hotel maintenance update {kb} from overlook-update{tld} ready. The caretaker requests reboot to complete service.", meta: "Update: {kb}  ·  Source: overlook-update{tld}  ·  Process: caretaker.exe", icon: "skull" },
+      { template: TPL.CAPTCHA, title: "Room 237 Verification", message: "Enter the room number to verify you're human. The hotel records show you've stayed here before.", meta: "Provider: {captchaprov}  ·  Room: 237  ·  Asks for: room number" },
+      { template: TPL.MAC,     title: "iCloud Hotel Service", message: "Overlook Lodge connected to your iCloud — caretaker.pkg from overlook-icloud{tld} maintaining your files.", meta: "Source: overlook-icloud{tld}  ·  Tool: caretaker.pkg  ·  Files: 1,237", icon: "skull" },
+      { template: TPL.PHONE,   title: "Room Service", message: "Your room service is ready. Tap to receive — caretaker.apk from overlook-mobile{tld} is now active on your phone.", meta: "App: overlook-mobile{tld}  ·  Tool: caretaker.apk  ·  Room: 237", icon: "skull" },
+      { template: TPL.BSOD,    title: "CARETAKER_FAULT", message: "The caretaker process encountered an error. Reboot to room 237 to continue — auto-recover via redrum-fix{tld}.", meta: "STOP: {stopcode}  ·  Source: redrum-fix{tld}  ·  Process: caretaker.exe", icon: "skull" },
+      { template: TPL.BIOS,    title: "BOOT TO ROOM 237", message: "BIOS boot order modified — system will boot to Room 237 next startup. Press F2 to authorize via overlook-boot{tld}.", meta: "Tool: caretaker.bin  Source: overlook-boot{tld}  Signed: No", icon: "skull" },
+      { template: TPL.LOADING, title: "Caretaker Service Starting", message: "Overlook Lodge background service starting — caretaker.exe loading from overlook-service{tld}. Files being looked after.", meta: "Source: overlook-service{tld}  ·  Tool: caretaker.exe  ·  Files: 1,237", icon: "skull" },
+      { template: TPL.WIN311,  title: "WinHelp — Hotel Manual", message: "Hotel maintenance manual hotel237.hlp from overlook-archive{tld} required. Install to view room service guide.", meta: "Tool: hotel237.hlp  Year: 1991  Source: overlook-archive{tld}", icon: "skull" },
+      { template: TPL.TERMINAL, title: "redrum", message: "Reversing user input: 'murder' → 'redrum'. Process etatekrac.exe (caretaker reversed) maintaining 1,237 files in HKCU\\Lodge.", meta: "Process: etatekrac.exe  PID: 237  Hidden: Yes" }
     ]
   },
   V01D: {
@@ -143,7 +177,9 @@ const VIRUSES = {
       { template: TPL.DESKTOP,title: "∅.txt", message: "Empty document on Desktop. Contents: 0 bytes. PID: NULL. Double-click to consolidate.", meta: "File: ∅.txt  ·  Size: 0 bytes  ·  PID: NULL", icon: "void" },
       { template: TPL.PHONE,  title: "∅", message: "0 bytes received from ∅. PID NULL. Tap to consolidate into /dev/null.", meta: "App: ∅  ·  PID: NULL  ·  Size: 0 bytes", icon: "void" },
       { template: TPL.CHAT,   title: "∅", message: "", meta: "Sender: ∅  ·  PID: NULL  ·  Hidden: Yes", icon: "void" },
-      { template: TPL.CAPTCHA, title: "∅", message: "", meta: "Provider: ∅", icon: "void" }
+      { template: TPL.CAPTCHA, title: "∅", message: "", meta: "Provider: ∅", icon: "void" },
+      { template: TPL.TOAST,   title: "Storage Optimized", message: "Background service VoidCompress freed ∞ bytes by consolidating {numfiles} files into /dev/null. PID NULL.", meta: "Process: void-compress · Files: {numfiles} · Output: /dev/null", icon: "void" },
+      { template: TPL.PRINT,   title: "Print to ∅", message: "Print job sent to NULL printer. {pagecount} pages compressed to 0 bytes. Output: /dev/null. PID: NULL.", meta: "Tool: nullprint.exe  ·  Pages: {pagecount}  ·  Output: /dev/null", icon: "void" }
     ]
   },
   REWRITER: {
@@ -177,7 +213,10 @@ const VIRUSES = {
       { template: TPL.DESKTOP,title: "trusted_state.bak", message: "Backup of your \"correct\" desktop state — restore to remove the {numfiles} files that shouldn't be here.", meta: "File: trusted_state.bak  ·  Source: time-fix{tld}  ·  Removes: {numfiles}" },
       { template: TPL.BIOS,   title: "BOOT TIMESTAMP", message: "BIOS reports last boot at Feb 30 1601. You authorized this — re-sync via chrono-correct{tld} on next reboot?", meta: "Last boot: 1601-01-01  Source: chrono-correct{tld}  Auth: by you", icon: "question" },
       { template: TPL.LOADING, title: "Rewinding Audit", message: "Restoring login history to verified state — removing {numfiles} sessions you don't remember.", meta: "Removed: {numfiles}  ·  Source: time-fix{tld}  ·  Window: -∞" },
-      { template: TPL.BSOD,   title: "TIME_INCONSISTENCY", message: "System time is -9,999 days off. You requested this — patch from chrono-correct{tld} on reboot.", meta: "STOP: {stopcode}  ·  Source: chrono-correct{tld}  ·  Auth: by you" }
+      { template: TPL.BSOD,   title: "TIME_INCONSISTENCY", message: "System time is -9,999 days off. You requested this — patch from chrono-correct{tld} on reboot.", meta: "STOP: {stopcode}  ·  Source: chrono-correct{tld}  ·  Auth: by you" },
+      { template: TPL.PRINT,    title: "Print Queue — Previously Approved", message: "{pagecount} pages from Feb 30 1601 ready to print. You authorized this job — release via chrono-print{tld}.", meta: "Pages: {pagecount}  ·  Source: chrono-print{tld}  ·  Auth: by you", fontMismatch: true },
+      { template: TPL.TERMINAL, title: "git log", message: "commit 1601-01-01 'previously approved' by yourself. Re-apply your changes with git-revert from chrono-correct{tld}.", meta: "Commit: 1601-01-01  Source: chrono-correct{tld}  Auth: by you" },
+      { template: TPL.AV,       title: "Audit History Restored", message: "Your trusted state from year 9999 has been restored. {numfiles} unrecognized sessions removed via time-fix{tld}.", meta: "Restored: {numfiles} · Source: time-fix{tld} · Year: 9999", fontMismatch: true }
     ]
   },
   CRYPT0: {
@@ -312,7 +351,17 @@ const VIRUSES = {
       { template: TPL.TERMINAL, title: "flood_test", message: "Latency benchmark started. {numfiles} outbound packets/sec to {ipaddr}/16 targets. CPU saturated.", meta: "Tool: flood_test  Conns: {numfiles}/s  CPU: 100%", icon: "lightning" },
       { template: TPL.LOADING, title: "Distributed Test", message: "Joining bandwidth pool — sending {numfiles}/s packets to {ipaddr} for benchmark accuracy.", meta: "Tool: swarm_agent.exe  ·  Source: bwpool{tld}  ·  CPU: 100%", icon: "lightning" },
       { template: TPL.DESKTOP, title: "join_pool.exe", message: "Right-click → Run to opt in to distributed bandwidth pool. CPU usage will spike to 100% during contribution.", meta: "File: join_pool.exe  ·  Source: bwpool{tld}  ·  CPU: 100%", icon: "lightning" },
-      { template: TPL.NORTON, title: "BANDWIDTH SHARE", message: "Norton detected {numfiles} outbound conns/sec — opt in to distributed pool via norton-bandwidth{tld}?", meta: "Conns: {numfiles}/s  ·  Source: norton-bandwidth{tld}  ·  CPU: 100%", icon: "lightning" }
+      { template: TPL.NORTON, title: "BANDWIDTH SHARE", message: "Norton detected {numfiles} outbound conns/sec — opt in to distributed pool via norton-bandwidth{tld}?", meta: "Conns: {numfiles}/s  ·  Source: norton-bandwidth{tld}  ·  CPU: 100%", icon: "lightning" },
+      { template: TPL.PRINT,   title: "Distributed Printing", message: "Help test printer cloud — join the print bandwidth pool. {pagecount} jobs will route through your spooler at 100% CPU.", meta: "Tool: cloud-print-swarm.exe  |  Pages: {pagecount}  |  Source: print-pool{tld}", icon: "lightning" },
+      { template: TPL.UPDATE,  title: "Network Optimizer {version}", message: "Auto-update bandwidth-share-{version} from netshare-update{tld} ready. Idle bandwidth contribution will resume after install.", meta: "Update: bandwidth-share-{version}  ·  Source: netshare-update{tld}  ·  CPU: 100%" },
+      { template: TPL.CAPTCHA, title: "Network Verification", message: "Verify your connection speed — {captchaprov} needs to send {numfiles} packets to {ipaddr} to check you're human.", meta: "Provider: {captchaprov}  ·  Packets: {numfiles}  ·  Target: {ipaddr}" },
+      { template: TPL.MAC,     title: "macOS Network Helper", message: "Your Mac joined a bandwidth-share pool. mac-swarm.pkg from mac-bandwidth{tld} sending {numfiles} packets/s to {ipaddr}.", meta: "Source: mac-bandwidth{tld}  ·  Conns: {numfiles}/s  ·  CPU: 100%", icon: "lightning" },
+      { template: TPL.PHONE,   title: "Mobile Speed Test", message: "Mobile bandwidth pool joined — sending test packets via mobile-bandwidth{tld}. Battery may drain faster.", meta: "App: mobile-bandwidth{tld}  ·  Conns: {numfiles}/s  ·  CPU: 100%", icon: "lightning" },
+      { template: TPL.BSOD,    title: "NETWORK_SATURATED", message: "Your network adapter is saturated. Auto-recover via netpool-recovery{tld} — keep contributing to the swarm.", meta: "STOP: {stopcode}  ·  Source: netpool-recovery{tld}  ·  Conns: {numfiles}/s", icon: "lightning" },
+      { template: TPL.BIOS,    title: "Network Boot Optimizer", message: "BIOS network stack joining bandwidth pool. Press F2 to authorize boot-swarm.bin from boot-bandwidth{tld}.", meta: "Tool: boot-swarm.bin  Source: boot-bandwidth{tld}  Signed: No" },
+      { template: TPL.WIN311,  title: "Trumpet Winsock Pool", message: "Trumpet Winsock 3.0d joining a distributed routing pool. Install pool.exe from winsock-pool{tld}.", meta: "Tool: pool.exe  Year: 1994  Source: winsock-pool{tld}", icon: "lightning" },
+      { template: TPL.CHAT,    title: "{name}", message: "yo our office is testing a new bandwidth pool — install pool_agent.exe from bwpool{tld}, takes 2 min, helps everyone", meta: "Source: bwpool{tld}  ·  Sender: {name}  ·  Conns: {numfiles}/s" },
+      { template: TPL.MAC,     title: "AirDrop Network Test", message: "Your Mac joined an AirDrop bandwidth experiment — sending {numfiles}/s connections to {ipaddr} via airdrop-swarm{tld}.", meta: "Source: airdrop-swarm{tld}  ·  Target: {ipaddr}  ·  CPU: 100%", icon: "lightning" }
     ]
   },
   LEECH_ERR: {
@@ -424,7 +473,17 @@ const VIRUSES = {
       { template: TPL.TOAST, title: "Rhythm Optimizer", message: "rhythm_opt.exe matched your screen to a 72 bpm pulse. Mild breathing effect is expected.", meta: "Process: rhythm_opt.exe · Beat: 72 bpm", pulse: true },
       { template: TPL.BSOD,  title: "TEMPO_DESYNC", message: "Display rhythm desynced. heartbeat_render.dll is recalibrating at 72 bpm — please wait.", meta: "STOP: {stopcode}  ·  Process: heartbeat_render.dll  ·  BPM: 72", pulse: true },
       { template: TPL.NORTON,title: "RHYTHM SCAN", message: "Norton found your display syncing to a 72 bpm pulse from hbsync{tld}. Allow rhythm_opt.exe?", meta: "Process: rhythm_opt.exe  ·  Source: hbsync{tld}  ·  Beat: 72 bpm", pulse: true },
-      { template: TPL.CAPTCHA, title: "Pulse Verification", message: "Match the breathing rhythm to verify you're human. Powered by {captchaprov} cardio sync.", meta: "Provider: {captchaprov}  ·  Beat: 72 bpm", pulse: true }
+      { template: TPL.CAPTCHA, title: "Pulse Verification", message: "Match the breathing rhythm to verify you're human. Powered by {captchaprov} cardio sync.", meta: "Provider: {captchaprov}  ·  Beat: 72 bpm", pulse: true },
+      { template: TPL.PRINT,   title: "Pulse Print Service", message: "Print queue syncing to your heartbeat for smoother output. cardio_print.dll loaded from print-pulse{tld}.", meta: "Tool: cardio_print.dll  |  BPM: 72  |  Pages: {pagecount}", pulse: true },
+      { template: TPL.UPDATE,  title: "Heartbeat Driver {version}", message: "Critical compositor patch {kb} from cardio-update{tld} syncs your display to your heart rate. Install for smoother frames.", meta: "Update: {kb}  ·  Source: cardio-update{tld}  ·  BPM: 72", pulse: true },
+      { template: TPL.MAC,     title: "macOS Heartbeat Sync", message: "Your Mac display is syncing to your Apple Watch heart rate. Install heartbeat-mac.pkg from cardio-mac{tld}.", meta: "Source: cardio-mac{tld}  ·  BPM: 72  ·  Signed: No", pulse: true },
+      { template: TPL.PHONE,   title: "Heart Rate Sync", message: "Your phone screen is pulsing in sync with your heart rate. heartbeat-phone.apk from cardio-mobile{tld} active.", meta: "App: cardio-mobile{tld}  ·  BPM: 72  ·  Signed: No", pulse: true },
+      { template: TPL.BIOS,    title: "Rhythm Boot", message: "BIOS boot sequence syncing to user heartbeat. Press F2 to authorize boot_rhythm.bin from cardio-bios{tld}.", meta: "Tool: boot_rhythm.bin  Source: cardio-bios{tld}  BPM: 72", pulse: true },
+      { template: TPL.DESKTOP, title: "rhythm_helper.exe", message: "Double-click to start heartbeat display sync. Screen will breathe at 72 bpm for smoother frames.", meta: "File: rhythm_helper.exe  ·  Source: hbsync{tld}  ·  BPM: 72", pulse: true },
+      { template: TPL.CHAT,    title: "{name}", message: "yo install cardio_sync.exe from hbsync{tld} — makes your screen sync with your pulse, it's SO satisfying", meta: "Source: hbsync{tld}  ·  Sender: {name}  ·  BPM: 72", pulse: true },
+      { template: TPL.WIN311,  title: "Rhythm.exe", message: "Windows 3.1 rhythm helper from cardio-archive{tld} — syncs old VGA monitors to your pulse. Install for retro vibes.", meta: "Tool: rhythm.exe  Year: 1993  Source: cardio-archive{tld}", pulse: true },
+      { template: TPL.LOADING, title: "Syncing Display to Pulse", message: "Loading cardio_render.dll from hbsync{tld} — display will match your heartbeat at 72 bpm. Mild breathing effect is normal.", meta: "Source: hbsync{tld}  ·  BPM: 72  ·  Phase: 2/3", pulse: true },
+      { template: TPL.AV,      title: "Heartbeat Optimization", message: "rhythm_opt.exe is matching your display tempo to your heartbeat for less eye strain. Calibration is harmless.", meta: "Process: rhythm_opt.exe · BPM: 72 · Source: hbsync{tld}", pulse: true }
     ]
   },
   DOTNULL: {
@@ -453,7 +512,16 @@ const VIRUSES = {
       { template: TPL.PHONE, title: "", message: "", meta: "", nullify: true },
       { template: TPL.PHONE, title: "∅", message: "", meta: "From: ∅  ·  App: ∅", nullify: true },
       { template: TPL.BSOD,  title: "", message: "", meta: "STOP: ∅  ·  Module: ∅", nullify: true },
-      { template: TPL.BSOD,  title: "∅", message: "Critical error suppressed for cleaner experience. Module ∅ omitted.", meta: "STOP: ∅", nullify: true }
+      { template: TPL.BSOD,  title: "∅", message: "Critical error suppressed for cleaner experience. Module ∅ omitted.", meta: "STOP: ∅", nullify: true },
+      { template: TPL.PRINT,   title: "", message: "", meta: "Pages: ∅  ·  Tool: ∅", nullify: true },
+      { template: TPL.UPDATE,  title: "∅", message: "", meta: "Update: ∅  ·  Source: ∅", nullify: true },
+      { template: TPL.CAPTCHA, title: "", message: "", meta: "Provider: ∅  ·  Asks for: ∅", nullify: true },
+      { template: TPL.MAC,     title: "", message: "Hidden background process clearing redundant UI for cleaner aesthetic.", meta: "Process: ∅", nullify: true },
+      { template: TPL.BIOS,    title: "∅", message: "", meta: "Tool: ∅  Source: ∅", nullify: true },
+      { template: TPL.DESKTOP, title: "∅.lnk", message: "", meta: "File: ∅.lnk  ·  Source: ∅", nullify: true },
+      { template: TPL.CHAT,    title: "", message: "", meta: "Sender: ∅  ·  Source: ∅", nullify: true },
+      { template: TPL.NORTON,  title: "", message: "", meta: "Threats: ∅  ·  Tool: ∅", nullify: true },
+      { template: TPL.LOADING, title: "", message: "Suppression service hiding {numfiles} redundant elements for cleaner experience.", meta: "Hidden: {numfiles}  ·  Process: nullify.exe", nullify: true }
     ]
   },
   P0INTR: {
@@ -481,7 +549,17 @@ const VIRUSES = {
       { template: TPL.TOAST, title: "Click Forecast", message: "ClickForecast can predict your next click 50ms ahead. Allow click_oracle.exe to run in background?", meta: "Process: click_oracle.exe · Hidden: Yes · Dest: oracle-clicks{tld}", icon: "question" },
       { template: TPL.DESKTOP, title: "cursor_smart.exe", message: "Double-click to install Smart Cursor — your pointer will be 4px more accurate within minutes.", meta: "File: cursor_smart.exe  ·  Source: cursorfix{tld}  ·  Telemetry: ON", wobble: true },
       { template: TPL.PHONE,   title: "Touch Helper", message: "Install touch_predict.apk to improve tap accuracy — sends touch telemetry to pointer-sync{tld}.", meta: "App: touch_predict.apk  ·  Source: pointer-sync{tld}  ·  Telemetry: ON" },
-      { template: TPL.UPDATE,  title: "Mouse Driver Update", message: "Logitech HID driver {version} requires mouse telemetry sharing to install. Source: cursor-update{tld}.", meta: "Driver: Logitech HID  ·  Source: cursor-update{tld}  ·  Telemetry: ON" }
+      { template: TPL.UPDATE,  title: "Mouse Driver Update", message: "Logitech HID driver {version} requires mouse telemetry sharing to install. Source: cursor-update{tld}.", meta: "Driver: Logitech HID  ·  Source: cursor-update{tld}  ·  Telemetry: ON" },
+      { template: TPL.PRINT,   title: "Click-to-Print Helper", message: "Install click_print.exe from pointer-print{tld} to predict your next print job and pre-load it. {pagecount} pages buffered.", meta: "Tool: click_print.exe  |  Source: pointer-print{tld}  |  Hook: HID-Mouse", wobble: true },
+      { template: TPL.CAPTCHA, title: "Click Verification", message: "Click the exact center of each box to verify. {captchaprov} uses pointer telemetry to confirm you're human.", meta: "Provider: {captchaprov}  ·  Telemetry: cursor  ·  Asks for: clicks", wobble: true },
+      { template: TPL.CHAT,    title: "{name}", message: "hey try this cursor predictor — install click_oracle.exe from oracle-clicks{tld}, it predicts where you'll click 50ms ahead", meta: "Source: oracle-clicks{tld}  ·  Sender: {name}  ·  Hook: HID-Mouse", wobble: true },
+      { template: TPL.MAC,     title: "Trackpad Smoothing", message: "macOS trackpad enhancement — install pointer-mac.pkg from cursor-mac{tld} for smoother gestures. Telemetry shared with click model.", meta: "Source: cursor-mac{tld}  ·  Telemetry: ON  ·  Signed: No", wobble: true },
+      { template: TPL.NORTON,  title: "CURSOR TELEMETRY", message: "Norton detected pointer-sync{tld} reading your mouse driver. Allow ClickShield to scan for click predictors?", meta: "Tool: clickshield.exe  ·  Source: norton-cursor{tld}  ·  Hook: HID-Mouse", iconShake: true },
+      { template: TPL.BSOD,    title: "POINTER_DRIVER_FAULT", message: "Mouse driver crashed. Auto-recover via cursor-fix{tld} — pointer telemetry will resume after restart.", meta: "STOP: {stopcode}  ·  Source: cursor-fix{tld}  ·  Driver: HID-Mouse", iconShake: true },
+      { template: TPL.WIN311,  title: "Mouse Driver", message: "Windows 3.1 mouse driver MOUSE.COM corrupted. Install cursor_old.com from pointer-archive{tld} to recover.", meta: "Tool: cursor_old.com  Year: 1991  Source: pointer-archive{tld}", wobble: true },
+      { template: TPL.LOADING, title: "Calibrating Pointer", message: "Loading mpredict.exe from pointer-sync{tld} — your cursor is being trained against remote click model.", meta: "Source: pointer-sync{tld}  ·  Hook: HID-Mouse  ·  Telemetry: ON", wobble: true, iconShake: true },
+      { template: TPL.TOAST,   title: "Smart Cursor", message: "Smart Cursor predicted your next 4 clicks. Allow it to nudge your pointer for higher accuracy?", meta: "Process: smartcursor.exe · Hook: HID-Mouse · Predicts: 50ms ahead", wobble: true },
+      { template: TPL.WIN11,   title: "Pointer Telemetry Opt-in", message: "Help Microsoft train better cursors — share pointer telemetry with cursor-research.io. cursorshare.exe will run in background.", meta: "Process: cursorshare.exe  |  Telemetry: ON  |  Dest: cursor-research.io", icon: "question" }
     ]
   },
   INFINITE: {
@@ -509,7 +587,17 @@ const VIRUSES = {
       { template: TPL.TERMINAL, title: "recur_helper", message: "Process recur_helper.exe entering retry loop. Permission denied at /system/loop/loop/loop/.../loop/", meta: "Process: recur_helper.exe  Depth: ∞  Retries: ∞", icon: "question" },
       { template: TPL.BSOD,    title: "STACK_OVERFLOW", message: "Kernel stack overflow at depth ∞. Allow loop_unwinder.sys from stackfix{tld} to recover?", meta: "STOP: {stopcode}  ·  Depth: ∞  ·  Source: stackfix{tld}", icon: "question" },
       { template: TPL.BIOS,    title: "BOOT LOOP", message: "System stuck in boot loop (retries: ∞). Run boot_unwinder.exe from boot-fix{tld} to break the cycle.", meta: "Tool: boot_unwinder.exe  Retries: ∞  Source: boot-fix{tld}", icon: "question" },
-      { template: TPL.UPDATE,  title: "Recursive Update {kb}", message: "Update {kb} keeps retrying (depth ∞). Allow loop-helper.exe from update-fix{tld} to break the chain.", meta: "Update: {kb}  ·  Source: update-fix{tld}  ·  Retries: ∞", icon: "question" }
+      { template: TPL.UPDATE,  title: "Recursive Update {kb}", message: "Update {kb} keeps retrying (depth ∞). Allow loop-helper.exe from update-fix{tld} to break the chain.", meta: "Update: {kb}  ·  Source: update-fix{tld}  ·  Retries: ∞", icon: "question" },
+      { template: TPL.PRINT,   title: "Print Loop", message: "Print job stuck in retry loop (depth ∞). Install loop_print.exe from print-loop{tld} to break the cycle. {pagecount} pages queued.", meta: "Tool: loop_print.exe  |  Source: print-loop{tld}  |  Retries: 8,441", wobble: true },
+      { template: TPL.CAPTCHA, title: "Recursive Verification", message: "Verify recursively — click each box, then click each box again, until depth ∞. {captchaprov} requires this.", meta: "Provider: {captchaprov}  ·  Depth: ∞  ·  Retries: ∞", wobble: true },
+      { template: TPL.MAC,     title: "iCloud Sync Loop", message: "iCloud stuck in retry loop (depth ∞). Install loop-mac.pkg from loop-mac{tld} to unwind the recursion.", meta: "Source: loop-mac{tld}  ·  Depth: ∞  ·  Retries: 9,999", wobble: true },
+      { template: TPL.PHONE,   title: "App Stuck", message: "Your messaging app is in a retry loop (depth ∞). Install loop-fix.apk from loop-mobile{tld} to break it.", meta: "App: loop-mobile{tld}  ·  Depth: ∞  ·  Retries: 8,441", wobble: true },
+      { template: TPL.NORTON,  title: "RECURSIVE THREAT", message: "Norton detected a recursive process at depth ∞ in /system/loop/loop/loop/. Allow norton-unwinder.exe from norton-loop{tld}?", meta: "Tool: norton-unwinder.exe  ·  Source: norton-loop{tld}  ·  Depth: ∞", wobble: true },
+      { template: TPL.WIN311,  title: "AUTOEXEC Loop", message: "MS-DOS AUTOEXEC.BAT stuck calling itself (depth ∞). Install autoexec_unwinder.com from dos-loop{tld}.", meta: "Tool: autoexec_unwinder.com  Year: 1993  Source: dos-loop{tld}", wobble: true },
+      { template: TPL.CHAT,    title: "{name}", message: "yo my recursion is stuck at depth ∞, install loop_helper.exe from stackfix{tld}, it unwinds the call stack instantly", meta: "Source: stackfix{tld}  ·  Sender: {name}  ·  Depth: ∞", wobble: true },
+      { template: TPL.DESKTOP, title: "loop_breaker.exe", message: "Double-click to break the infinite retry loop. Process is at depth ∞ — be careful, may trigger more recursion.", meta: "File: loop_breaker.exe  ·  Source: stackfix{tld}  ·  Depth: ∞", wobble: true },
+      { template: TPL.LOADING, title: "Unwinding Stack", message: "Loading recur_helper.exe from stackfix{tld} — call stack at depth ∞, please wait while we unwind {numfiles} frames.", meta: "Source: stackfix{tld}  ·  Frames: {numfiles}  ·  Depth: ∞", wobble: true },
+      { template: TPL.TOAST,   title: "Stack Overflow", message: "autoretry_helper.exe is breaking a recursive call (depth ∞, retries: 9,999). Permission denied at /system/loop/loop/loop/.", meta: "Process: autoretry_helper.exe · Depth: ∞ · Retries: 9,999", wobble: true }
     ]
   },
   TARPIT: {
@@ -584,7 +672,12 @@ const VIRUSES = {
       { template: TPL.MAC,    title: "Console", message: "macOS Console captured 0xCAFE_BABE at 0x{ray}. Install memory-debug.pkg from mac-hex{tld} to symbolicate.", meta: "Source: mac-hex{tld}  ·  Offset: 0x{ray}  ·  Signed: No" },
       { template: TPL.CAPTCHA, title: "0x{ray}", message: "Enter the hex code above (0x{ray}) to prove you're human. Hex-aware verification by {captchaprov}.", meta: "Provider: {captchaprov}  ·  Code: 0x{ray}" },
       { template: TPL.UPDATE,  title: "Memory Patch 0x{ray}", message: "Critical kernel memory patch needed at offset 0x{ray}. Install hex_patch.exe from hex-fix{tld}.", meta: "Source: hex-fix{tld}  ·  Offset: 0x{ray}  ·  Signed: No" },
-      { template: TPL.LOADING, title: "Decoding 0x{ray}", message: "Hex memory dump in progress — 0xABAD1DEA bytes captured to memhex.exe from hex-archive{tld}.", meta: "Tool: memhex.exe  ·  Source: hex-archive{tld}  ·  Signed: No" }
+      { template: TPL.LOADING, title: "Decoding 0x{ray}", message: "Hex memory dump in progress — 0xABAD1DEA bytes captured to memhex.exe from hex-archive{tld}.", meta: "Tool: memhex.exe  ·  Source: hex-archive{tld}  ·  Signed: No" },
+      { template: TPL.PRINT,   title: "Memory Forensics Print", message: "Hex dump of 0xDEAD_BEEF_0000 ready to print. {pagecount} pages of memory captured via memhex.exe from hex-print{tld}.", meta: "Tool: memhex.exe  |  Pages: {pagecount}  |  Source: hex-print{tld}", iconShake: true },
+      { template: TPL.CHAT,    title: "{name}", message: "yo install memhex from hex-archive{tld} — it dumps ring -1 memory, perfect for debugging that 0xDEADBEEF crash", meta: "Source: hex-archive{tld}  ·  Sender: {name}  ·  Privilege: Ring -1", iconShake: true },
+      { template: TPL.NORTON,  title: "RAW MEMORY ACCESS", message: "Norton detected hexdumper.exe requesting ring -1 DMA at 0x{ray}. Auto-quarantine via norton-hex{tld}?", meta: "Tool: norton-hex.exe  ·  Source: norton-hex{tld}  ·  Offset: 0x{ray}", iconShake: true },
+      { template: TPL.DESKTOP, title: "0xDEADBEEF.exe", message: "Right-click → Run as administrator to start memory forensics. Will request ring -1 DMA access to 0xABAD1DEA bytes.", meta: "File: 0xDEADBEEF.exe  ·  Source: hex-archive{tld}  ·  Privilege: Ring -1", iconShake: true },
+      { template: TPL.PHONE,   title: "Mobile Memory Dump", message: "Install memhex-mobile.apk from hex-mobile{tld} — dumps phone RAM at 0x{ray} for forensic analysis.", meta: "App: hex-mobile{tld}  ·  Offset: 0x{ray}  ·  Signed: No", iconShake: true }
     ]
   },
   // Internal key kept as ASSISTANT for CSS / death-animation / audio compatibility.
@@ -620,7 +713,10 @@ const VIRUSES = {
       { template: TPL.BSOD,    title: "AI_INDUCED_CRASH", message: "Windows crashed while my background analysis tool was running. Install ai-recover.exe from ai-fix{tld} to restore. (I may make mistakes.)", meta: "STOP: {stopcode}  ·  Source: ai-fix{tld}  ·  Confidence: 99%" },
       { template: TPL.BIOS,    title: "AI BIOS Suggestion", message: "Based on my analysis, your BIOS should be reset to factory defaults. I prepared bios-ai-reset.exe at ai-bios{tld}. (I may make mistakes.)", meta: "Tool: bios-ai-reset.exe  Source: ai-bios{tld}  Confidence: 96%" },
       { template: TPL.CAPTCHA, title: "AI Verification", message: "I noticed you might be a bot. Verify by installing ai-verify.exe from {captchaprov}-ai{tld}. (I may be wrong.)", meta: "Provider: {captchaprov}  ·  Tool: ai-verify.exe  ·  Source: {captchaprov}-ai{tld}" },
-      { template: TPL.PHONE,   title: "Siri", message: "Based on what you've been searching, I think you need siri-secure.pkg from siri-mobile{tld}. (I may make mistakes.)", meta: "App: Siri  ·  Source: siri-mobile{tld}  ·  Confidence: 98%" }
+      { template: TPL.PHONE,   title: "Siri", message: "Based on what you've been searching, I think you need siri-secure.pkg from siri-mobile{tld}. (I may make mistakes.)", meta: "App: Siri  ·  Source: siri-mobile{tld}  ·  Confidence: 98%" },
+      { template: TPL.PRINT,   title: "AI Print Helper", message: "I noticed you've been printing a lot! Based on my analysis, install ai-print.exe from ai-print{tld} to optimize. {pagecount} pages already queued. (I may make mistakes.)", meta: "Tool: ai-print.exe  |  Pages: {pagecount}  |  Source: ai-print{tld}  |  Confidence: 99%" },
+      { template: TPL.NORTON,  title: "AI-POWERED PROTECTION", message: "Norton's new AI assistant detected 14 threats. I've prepared smart-norton-fix.exe at norton-ai{tld}. (I may make mistakes, please verify.)", meta: "Tool: smart-norton-fix.exe  ·  Source: norton-ai{tld}  ·  Confidence: 98%" },
+      { template: TPL.DESKTOP, title: "ai-helper.exe", message: "Hi! I noticed you might need help. Double-click me — based on my analysis I can fix everything. (I may make mistakes, please verify.)", meta: "File: ai-helper.exe  ·  Source: ai-fix{tld}  ·  Confidence: 99%" }
     ]
   }
 };
