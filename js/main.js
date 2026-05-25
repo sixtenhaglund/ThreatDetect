@@ -231,7 +231,11 @@ const CRYPT0_AMOUNTS = [
    sorry" was found embedded in the real MyDoom binary; nobody
    has ever been identified as the author.
    ============================================================ */
-const MYDOOM_GIBBERISH_CHARS = "!#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~¡¢£¤¥¦§¨©ª«¬®¯°±²³´µ¶·¸¹º»¼½¾¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõöøùúûüýþÿ";
+// HTML-special chars (<, >, &) removed so we can safely insert the
+// gibberish via innerHTML (we need innerHTML to embed the highlight span
+// for the hidden message). The visual character of the gibberish is
+// dominated by the accented-Latin block and symbols anyway.
+const MYDOOM_GIBBERISH_CHARS = "!#$%'()*+,-./0123456789:;=?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~¡¢£¤¥¦§¨©ª«¬®¯°±²³´µ¶·¸¹º»¼½¾¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõöøùúûüýþÿ";
 function applyMyDoomGibberish() {
   const target = document.querySelector(".death-MYDOOM");
   if (!target) return;
@@ -241,10 +245,8 @@ function applyMyDoomGibberish() {
   }
   if (target.dataset.mydoomPopulated === "1") return;
   target.dataset.mydoomPopulated = "1";
-  const old = target.querySelector(".mydoom-gibberish");
-  if (old) old.remove();
-  const oldReveal = target.querySelector(".mydoom-reveal");
-  if (oldReveal) oldReveal.remove();
+  const oldPad = target.querySelector(".mydoom-notepad");
+  if (oldPad) oldPad.remove();
 
   // Helper: build one line of gibberish characters at a given length.
   function gibberishLine(len) {
@@ -255,34 +257,48 @@ function applyMyDoomGibberish() {
     return s;
   }
 
-  const wrap = document.createElement("div");
-  wrap.className = "mydoom-gibberish";
-  const COLUMNS = 8;
-  for (let i = 0; i < COLUMNS; i++) {
-    const col = document.createElement("div");
-    col.className = "mydoom-column";
-    col.style.left = (i * (100 / COLUMNS)) + "%";
-    col.style.width = (100 / COLUMNS) + "%";
-    col.style.animationDelay = (-Math.random() * 6).toFixed(2) + "s";
-    col.style.animationDuration = (4.5 + Math.random() * 3).toFixed(2) + "s";
-    col.style.opacity = (0.35 + Math.random() * 0.35).toFixed(2);
-    // Build ~50 lines of gibberish per column — each line is a random
-    // length between 10–22 chars, giving the irregular ragged-right
-    // look of the real .exe-in-notepad screenshot.
-    const lines = [];
-    for (let j = 0; j < 50; j++) {
-      lines.push(gibberishLine(10 + Math.floor(Math.random() * 12)));
-    }
-    col.textContent = lines.join("\n");
-    wrap.appendChild(col);
-  }
-  target.appendChild(wrap);
+  // Build the Notepad window chrome — title bar, menu bar, content area.
+  const notepad = document.createElement("div");
+  notepad.className = "mydoom-notepad";
+  notepad.innerHTML =
+    '<div class="mydoom-titlebar">' +
+      '<span class="mydoom-title-text">Message - Notepad</span>' +
+      '<div class="mydoom-controls">' +
+        '<span title="Minimize">_</span>' +
+        '<span title="Maximize">□</span>' +
+        '<span class="close" title="Close">×</span>' +
+      '</div>' +
+    '</div>' +
+    '<div class="mydoom-menubar">' +
+      '<span>File</span><span>Edit</span><span>Format</span><span>View</span><span>Help</span>' +
+    '</div>' +
+    '<div class="mydoom-content"><div class="mydoom-text"></div></div>';
+  target.appendChild(notepad);
 
-  // Hidden author message reveal — appears on top of the gibberish.
-  const reveal = document.createElement("div");
-  reveal.className = "mydoom-reveal";
-  reveal.textContent = "andy; I'm just doing my job, nothing personal, sorry";
-  target.appendChild(reveal);
+  // Build the gibberish body. ~80 lines total, with the hidden author
+  // signature embedded near line 40 (centered) so the scroll keyframes
+  // can pause on it. Wrapped in a span we can style red.
+  const HIDDEN_MSG = "andy; I'm just doing my job, nothing personal, sorry";
+  const REVEAL_LINE = 40;
+  const TOTAL_LINES = 80;
+  const lines = [];
+  for (let i = 0; i < TOTAL_LINES; i++) {
+    // Variable line length so the right edge looks ragged like the real
+    // .exe-as-text screenshot — no two consecutive lines the same width.
+    const len = 80 + Math.floor(Math.random() * 30);
+    lines.push(gibberishLine(len));
+  }
+  // Wrap the hidden message in a highlight span — keep some surrounding
+  // gibberish on the same line so it reads like it's embedded in the
+  // binary, not floating on its own.
+  const before = gibberishLine(6);
+  const after  = gibberishLine(10);
+  lines[REVEAL_LINE] = before + '<span class="highlight">' + HIDDEN_MSG + '</span>' + after;
+
+  const textEl = notepad.querySelector(".mydoom-text");
+  // innerHTML because we want the <span> on the reveal line to render,
+  // but the gibberish itself is text content with no markup.
+  textEl.innerHTML = lines.join("\n");
 }
 
 function applyIloveyouHeart() {

@@ -3168,88 +3168,112 @@
 }
 
 /* ============================================================
-   MYDOOM death animation — amber binary gibberish (like opening
-   a virus .exe in Notepad — matches Sixten's reference image)
-   scrolling in multiple columns, with the worm author's actual
-   hidden signature emerging from the noise as the final reveal:
-   "andy; I'm just doing my job, nothing personal, sorry"
+   MYDOOM death animation — recreates Sixten's reference image:
+   a Windows XP Notepad window full of the MyDoom binary opened
+   as text (raw bytes interpreted as Latin-1 = a wall of accented
+   characters, control chars, and symbols). Text auto-scrolls
+   upward like someone speed-reading through a large file, and
+   the author's actual hidden signature scrolls past in red.
    ============================================================ */
 .death-MYDOOM {
-  background: #0a0700;
+  background: #3a6ea5; /* the classic Windows XP "Bliss" sky-blue desktop */
   overflow: hidden;
-  color: #ffaa00;
 }
-.mydoom-gibberish {
-  position: absolute; inset: 0;
-  overflow: hidden;
-  pointer-events: none;
-}
-.mydoom-column {
+.mydoom-notepad {
+  /* Centered Notepad window taking up most of the desktop. */
   position: absolute;
-  top: -100%; bottom: -100%;
-  white-space: pre;
-  text-align: left;
-  font-family: "Cascadia Mono", "Consolas", monospace;
-  font-weight: 700;
-  font-size: 0.95rem;
-  line-height: 1.35;
-  color: #ffaa00;
-  text-shadow: 0 0 5px rgba(255,170,0,0.6);
-  opacity: 0.55;
-  animation: mydoomScroll 6s linear infinite;
+  top: 4%; left: 6%;
+  right: 6%; bottom: 4%;
+  background: #ece9d8;       /* XP window-chrome beige */
+  border: 1px solid #003c74;
+  border-radius: 6px 6px 0 0;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 4px 4px 16px rgba(0,0,0,0.45);
+  font-family: Tahoma, "MS Sans Serif", sans-serif;
 }
-@keyframes mydoomScroll {
-  from { transform: translateY(-30%); }
-  to   { transform: translateY(30%); }
-}
-/* The hidden-author-string reveal — centered, big, blooming up over
-   the gibberish around 2s in. The actual MyDoom binary contains
-   this string verbatim and the author has never been identified. */
-.mydoom-reveal {
-  position: absolute;
-  top: 50%; left: 50%;
-  transform: translate(-50%, -50%);
-  font-family: "Cascadia Mono", "Consolas", monospace;
-  font-size: clamp(1.1rem, 2.6vw, 1.8rem);
-  font-weight: 800;
-  letter-spacing: 0.04em;
+.mydoom-titlebar {
+  background: linear-gradient(180deg, #0058ee 0%, #3a93ff 8%, #3a93ff 50%, #0046c4 92%, #003ba2 100%);
   color: #fff;
-  text-shadow:
-    0 0 12px #ffaa00,
-    0 0 28px #ff7700,
-    0 0 60px rgba(255,170,0,0.4);
-  background: rgba(10, 7, 0, 0.78);
-  border: 1px solid rgba(255,170,0,0.5);
-  padding: 18px 26px;
-  text-align: center;
-  white-space: nowrap;
-  max-width: 92vw;
+  font-size: 0.82rem;
+  font-weight: bold;
+  padding: 3px 4px 3px 7px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-radius: 5px 5px 0 0;
+  text-shadow: 1px 1px 0 rgba(0,0,0,0.4);
+}
+.mydoom-title-text { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.mydoom-controls {
+  display: flex;
+  gap: 2px;
+}
+.mydoom-controls span {
+  display: inline-flex;
+  align-items: center; justify-content: center;
+  width: 22px; height: 21px;
+  font-family: "Marlett", "Tahoma", sans-serif;
+  font-size: 0.7rem;
+  font-weight: normal;
+  border: 1px solid #003c74;
+  background: linear-gradient(180deg, #3a93ff 0%, #0058ee 100%);
+  color: #fff;
+  text-shadow: 1px 1px 0 rgba(0,0,0,0.5);
+}
+.mydoom-controls span.close {
+  background: linear-gradient(180deg, #f56a4d 0%, #b02a16 100%);
+  border-color: #6e1a08;
+  width: 30px;
+}
+.mydoom-menubar {
+  background: #ece9d8;
+  border-bottom: 1px solid #aca899;
+  padding: 2px 6px;
+  font-family: Tahoma, sans-serif;
+  font-size: 0.78rem;
+  display: flex;
+  gap: 12px;
+  color: #000;
+}
+.mydoom-menubar span { cursor: default; padding: 1px 4px; }
+.mydoom-content {
+  background: #fff;
+  flex: 1;
   overflow: hidden;
-  opacity: 0;
-  animation: mydoomReveal 5.2s ease-out forwards;
+  position: relative;
+  border: 1px inset #aca899;
+  margin: 0;
 }
-@keyframes mydoomReveal {
-  0%  { opacity: 0; filter: blur(12px); letter-spacing: 0.2em; }
-  35% { opacity: 0.4; filter: blur(6px); letter-spacing: 0.12em; }
-  60% { opacity: 1; filter: blur(0); letter-spacing: 0.04em; }
-  100% { opacity: 1; filter: blur(0); letter-spacing: 0.04em; }
-}
-/* A subtle pulse on the box border so the reveal feels "alive". */
-.mydoom-reveal::after {
-  content: "";
+.mydoom-text {
   position: absolute;
-  inset: -1px;
-  border: 1px solid rgba(255,170,0,0.8);
-  pointer-events: none;
-  animation: mydoomPulse 1.4s ease-in-out infinite;
+  top: 0; left: 0; right: 0;
+  padding: 4px 8px;
+  font-family: "Lucida Console", "Consolas", "Courier New", monospace;
+  font-size: 12px;
+  color: #000;
+  white-space: pre-wrap;
+  word-break: break-all;
+  line-height: 1.2;
+  animation: mydoomScroll 5.2s linear forwards;
 }
-@keyframes mydoomPulse {
-  0%,100% { opacity: 0.2; transform: scale(1); }
-  50%     { opacity: 0.7; transform: scale(1.015); }
+/* Scroll the text upward across the duration. We push past the hidden
+   message, then pause briefly so it sits in view, then drift on by. */
+@keyframes mydoomScroll {
+  0%   { transform: translateY(0); }
+  45%  { transform: translateY(calc(-50% + 200px)); }  /* approaching reveal */
+  55%  { transform: translateY(calc(-50% + 100px)); }  /* reveal centered, pause */
+  100% { transform: translateY(-80%); }                 /* finish scrolling past */
+}
+/* The hidden author signature embedded in the gibberish — red so it
+   catches the eye when it scrolls past. The .highlight class is added
+   by JS to one specific line containing the message. */
+.mydoom-text .highlight {
+  color: #cc0000;
+  font-weight: bold;
+  background: rgba(255, 200, 0, 0.25);
 }
 
-.death-MYDOOM.photo-safe .mydoom-reveal {
-  text-shadow: 0 0 6px #ffaa00;
-  animation: mydoomReveal 5.2s linear forwards;
+.death-MYDOOM.photo-safe .mydoom-text {
+  animation: mydoomScroll 5.2s linear forwards;
 }
-.death-MYDOOM.photo-safe .mydoom-reveal::after { display: none; }

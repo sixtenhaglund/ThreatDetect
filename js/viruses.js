@@ -770,7 +770,13 @@ const VIRUSES = {
       "Body asks you to open the attached file to 'see the bounced message' or 'view the transcript'",
       "Attachment is always a .zip — and inside is an .exe disguised with a document icon",
       "A random unfamiliar IP address is listed in the bounce message — not your network",
-      "You never sent the message it claims bounced — there's nothing to bounce"
+      "You never sent the message it claims bounced — check your Sent folder, there's nothing there",
+      "The 'postmaster' is at a personal-mail domain (gmail, yahoo, aol, hotmail) — real bounces come from YOUR mail server, never from a Gmail postmaster",
+      "Attached .zip is suspiciously tiny (8-14 KB) — way too small to contain the 'bounced message and attachments' it claims",
+      "Body has no SMTP error code, no Diagnostic-Code line, no Received headers — real bounces are technical and detailed",
+      "Multiple 'mail delivery failed' emails arriving in a row from different postmasters at different domains — real bounces come once, from one source",
+      "Vague writing — 'undeliverable for the following reason' followed by no specific reason. Real bounces name the host, port, error code, and time",
+      "Includes phrases like 'see the attached document' or 'binary attachment' — real bounces include the original message as plain text in the body, not as a downloadable file"
     ],
     meterEffect: { ping: "spike" },
     realWorld: {
