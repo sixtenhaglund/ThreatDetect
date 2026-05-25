@@ -208,19 +208,19 @@ function buildDeck(round) {
    virus by its pool size. */
 // Per-virus weight for the uniform-virus picker. Regular viruses weight 1.0
 // (equal odds with each other). Rare viruses (real-life ones marked with
-// rare:true — ILOVEYOU, MYDOOM, WANNACRY...) get a much smaller weight so
-// the SUM across all rares totals ~1 appearance per 10-round run.
+// rare:true — ILOVEYOU, MYDOOM, WANNACRY, IDIOT, ...) share a constant
+// total weight budget so the SUM across all rares always produces about
+// the same per-run rate, no matter how many rares exist.
 //
-// Math with 3 rares at 0.2 each and 19 regulars:
-//   total weight = 19 + 3*0.2 = 19.6
-//   any-rare draw probability = 0.6 / 19.6 ≈ 3.1% per virus slot
-//   45 virus slots/run × 3.1% ≈ 1.38 rare appearances per run ✓
-//
-// As more rare viruses get added the per-rare weight may need to drop
-// again so the total stays around ~1 rare per run.
-const RARE_WEIGHT = 0.2;
+// Derivation: want ~1 rare per 10-round run, ~45 virus draws/run.
+//   1 ≈ 45 × (totalRare / (regulars + totalRare))
+//   totalRare ≈ regulars / 44 ≈ 0.43 when we have 19 regulars
+// So per-rare weight = 0.43 / rareCount; auto-tunes as rares are added.
 function virusWeight(k) {
-  return VIRUSES[k] && VIRUSES[k].rare ? RARE_WEIGHT : 1.0;
+  if (!VIRUSES[k] || !VIRUSES[k].rare) return 1.0;
+  let rareCount = 0;
+  for (const key in VIRUSES) if (VIRUSES[key].rare) rareCount++;
+  return 0.43 / Math.max(1, rareCount);
 }
 
 function pickByUniformVirus(avail, n, usedKeys) {

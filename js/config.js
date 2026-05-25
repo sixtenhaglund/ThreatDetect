@@ -58,7 +58,8 @@ const TPL = {
   CAPTCHA:  "captcha",  // "I'm not a robot" verification card
   UPDATE:   "update",   // fourth-wall ThreatDetect "v2.1 available" banner
   EMAIL:    "email",    // Outlook 2000-style email window (From/To/Cc/Subject + body + attachment)
-  RANSOM:   "ransom"    // WannaCry-style ransom note (red header, padlock, countdowns, Bitcoin wallet)
+  RANSOM:   "ransom",   // WannaCry-style ransom note (red header, padlock, countdowns, Bitcoin wallet)
+  IDIOT:    "idiot"     // YOU ARE AN IDIOT prank dialog (yellow stick figure, magenta border, OK-only)
 };
 
 /* ---- Error icon variants (used by iconFor in game.js) ---- */
@@ -345,7 +346,8 @@ const ICON_BY_TEMPLATE = {
   captcha:  "question",
   update:   "warning",
   email:    "blank",
-  ransom:   "warning"
+  ransom:   "warning",
+  idiot:    "warning"
 };
 
 /* ---- Shop items ---- */

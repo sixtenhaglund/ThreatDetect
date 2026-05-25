@@ -499,6 +499,52 @@ function renderRansom(card) {
     </div>`;
 }
 
+// YOU ARE AN IDIOT-style prank popup. Reusable shared SVG for the
+// dancing yellow stick figure (head, V-arms up, body, A-legs). The
+// signature tells: yellow stick figure where a Windows error icon
+// belongs, all-caps insulting text, and ONLY an OK button — no
+// close X, no Cancel — designed so closing the popup actually
+// triggers the next one in the multiplication chain.
+const IDIOT_STICK_FIGURE_SVG =
+  '<svg width="64" height="80" viewBox="0 0 64 80" shape-rendering="geometricPrecision">' +
+    // Head — yellow circle with black outline
+    '<circle cx="32" cy="14" r="11" fill="#ffe600" stroke="#000" stroke-width="2"/>' +
+    // Eyes
+    '<circle cx="28" cy="13" r="1.6" fill="#000"/>' +
+    '<circle cx="36" cy="13" r="1.6" fill="#000"/>' +
+    // Smile
+    '<path d="M27 17 Q32 21 37 17" fill="none" stroke="#000" stroke-width="1.8" stroke-linecap="round"/>' +
+    // Body (vertical)
+    '<line x1="32" y1="25" x2="32" y2="52" stroke="#000" stroke-width="3" stroke-linecap="round"/>' +
+    // Arms up in a V
+    '<line x1="32" y1="30" x2="14" y2="14" stroke="#000" stroke-width="3" stroke-linecap="round"/>' +
+    '<line x1="32" y1="30" x2="50" y2="14" stroke="#000" stroke-width="3" stroke-linecap="round"/>' +
+    // Legs in an A
+    '<line x1="32" y1="52" x2="20" y2="76" stroke="#000" stroke-width="3" stroke-linecap="round"/>' +
+    '<line x1="32" y1="52" x2="44" y2="76" stroke="#000" stroke-width="3" stroke-linecap="round"/>' +
+  '</svg>';
+
+function renderIdiot(card) {
+  return `
+    <div class="idiot-popup">
+      <div class="idiot-titlebar">
+        <span class="idiot-title">${esc(card.title || "JavaScript Alert")}</span>
+      </div>
+      <div class="idiot-body">
+        <div class="idiot-figure" aria-hidden="true">${IDIOT_STICK_FIGURE_SVG}</div>
+        <div class="idiot-msg">${esc(card.message || "YOU ARE AN IDIOT! HA HA HA HA HA HA!")}</div>
+      </div>
+      ${card.meta ? `<div class="idiot-meta">${esc(card.meta)}</div>` : ""}
+      <div class="idiot-footer">
+        <button class="idiot-ok" tabindex="-1">OK</button>
+      </div>
+    </div>
+    <div class="row" style="gap:10px;margin-top:14px;justify-content:center;">
+      <button class="btn danger big" data-action="virus">${card.labelReport || "Report"}</button>
+      <button class="btn primary big" data-action="check">${card.labelOk || "OK"}</button>
+    </div>`;
+}
+
 function renderCard(card) {
   switch (card.template) {
     case TPL.AV:       return renderAV(card);
@@ -518,6 +564,7 @@ function renderCard(card) {
     case TPL.UPDATE:   return renderUpdate(card);
     case TPL.EMAIL:    return renderEmail(card);
     case TPL.RANSOM:   return renderRansom(card);
+    case TPL.IDIOT:    return renderIdiot(card);
     case TPL.WIN11:
     default:           return renderWin11(card);
   }

@@ -724,6 +724,38 @@ Audio.deaths = {
       this.noiseBurst(t0 + i * 0.08, 0.06, 2000 + Math.random() * 5000, 3, 0.4);
     }
   },
+  IDIOT() {
+    // Stuttering cackle laugh — synth approximation of the iconic
+    // "HA HA HA HA" sample that loops on youareanidiot.org. Each "HA"
+    // is a quick descending sawtooth pitch (like a man laughing),
+    // and we machine-gun 20+ of them across the death duration.
+    const ctx = this.ctx, t0 = ctx.currentTime;
+    const dur = 5.0;
+    const HA_COUNT = 24;
+    const HA_PERIOD = dur / HA_COUNT;
+    for (let i = 0; i < HA_COUNT; i++) {
+      const ht = t0 + i * HA_PERIOD;
+      // A "HA" = an open vowel formant. Sawtooth wave starting around
+      // 320Hz dropping to 220Hz over 80ms, with a low-pass filter that
+      // resonates around 800Hz (where the "ah" vowel sits).
+      const o = ctx.createOscillator(); o.type = "sawtooth";
+      o.frequency.setValueAtTime(280 + (i % 3) * 40, ht); // tiny pitch variation between HAs
+      o.frequency.exponentialRampToValueAtTime(180, ht + 0.09);
+      const f = ctx.createBiquadFilter(); f.type = "lowpass";
+      f.frequency.value = 900; f.Q.value = 6; // resonant peak gives the vowel character
+      const g = ctx.createGain();
+      o.connect(f); f.connect(g); g.connect(this.sfxGain);
+      g.gain.setValueAtTime(0, ht);
+      g.gain.linearRampToValueAtTime(0.32, ht + 0.012);
+      g.gain.exponentialRampToValueAtTime(0.001, ht + 0.13);
+      o.start(ht); o.stop(ht + 0.15);
+    }
+    // Background "cackle" texture — broadband noise gated to each HA so
+    // it sounds breathy/airy like a real laugh, not just a tone burst.
+    for (let i = 0; i < HA_COUNT; i++) {
+      this.noiseBurst(t0 + i * HA_PERIOD, 0.05, 1200 + Math.random() * 400, 2.5, 0.10);
+    }
+  },
   WANNACRY() {
     // Slow ominous ticking clock (the two red countdown timers in the
     // ransom UI) laid over a deep sub-bass drone. Around t=3.5s a single

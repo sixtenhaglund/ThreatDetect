@@ -832,6 +832,40 @@ const VIRUSES = {
       { template: TPL.RANSOM, title: "Wana Decrypt0r 2.0", wallet: "13AM4VW2dhxYgXeQepoHkHSQuy6NgaEb94", amount: "$300", timer1: "02:01:33:18", timer2: "06:01:33:18", message: "Send $300 worth of Bitcoin to the address below.\n\nFiles will be deleted permanently in 7 days unless payment is received. After payment is verified, click 'Decrypt' and your files will be returned within 3 hours.\n\nDo not try to recover files using free software. We have seen this attempted thousands of times — it only damages the files further." },
       { template: TPL.RANSOM, title: "Wana Decrypt0r 2.0", wallet: "12t9YDPgwueZ9NhyWgVbZbHcgGqe5MEjJq", amount: "$300", timer1: "02:14:27:44", timer2: "06:14:27:44", message: "All your files have been encrypted using military-grade RSA-2048 encryption.\n\nWithout the decryption key, recovery is mathematically impossible. The key is stored on our servers and will be sent to you immediately after payment confirmation.\n\nThe kill switch domain we built into this software is iuqerfsodp9ifjaposdfjhgosurijfaewrwergwea.com — please verify we are real by checking it." }
     ]
+  },
+  IDIOT: {
+    name: "YOU ARE AN IDIOT", color: "#ff00cc",
+    minRound: 3,
+    rare: true,
+    description: "A web-page prank from the early 2000s that became one of the most-recognized pieces of internet jokeware in history. Going to youareanidiot.org loaded a page with three dancing yellow stick figures, cackling laughter audio on loop, and JavaScript that spawned a new popup window every time you tried to close one. Within seconds your screen filled with multiplying popups all screaming 'YOU ARE AN IDIOT!' until the browser crashed. Not malware in the destructive sense — no data stolen, no files encrypted — but it taught a generation of kids that 'popups that spawn more popups when you close them' meant trouble.",
+    signs: [
+      "Yellow stick-figure smiley face icon — NOT a real Windows error icon (red X, yellow ⚠, blue i)",
+      "All-caps insulting text in the body: 'YOU ARE AN IDIOT', 'STUPID', 'HA HA HA HA HA'",
+      "Only an OK button — no close X in the title bar, no Cancel button. The popup can ONLY be dismissed by pressing OK (and pressing it might spawn another one)",
+      "Title bar is bright pink/magenta — real system alerts use gray, blue, or red, never hot pink",
+      "Body is in a goofy font (Comic Sans, Marker Felt) — real system dialogs use Tahoma or Segoe UI",
+      "Message is repetitive screaming text — 'HA HA HA HA HA HA HA HA HA HA'",
+      "Source claims to be 'JavaScript Alert' — real OS-level dialogs don't label themselves that way",
+      "The popup jitters / bounces on screen — real dialogs are static"
+    ],
+    meterEffect: { vol: "blast" },
+    realWorld: {
+      year: 2002,
+      origin: "Unknown — early internet shock site",
+      author: "Anonymous",
+      damage: "Mostly emotional. No data lost, no files stolen, just a lot of crashed browsers.",
+      story: "Going to youareanidiot.org loaded a page with three yellow stick-figure smileys dancing in unison on a magenta background, with a man-cackling audio sample looping in the background. The page's JavaScript was rigged so that closing the window or clicking anywhere would spawn TWO new popup windows of the same page — and each of those would spawn two more — and so on, exponentially, until your browser ran out of memory and crashed. The exact origin of the site is murky (some claim it goes back to 1999) but it exploded into internet culture around 2002, becoming a rite-of-passage prank link in middle-school instant-message conversations. It taught a generation of kids about popup blockers, JavaScript, and how to use Task Manager to force-quit a hung browser. The site is still online today, complete with the original audio and the original three dancing figures."
+    },
+    errors: [
+      { template: TPL.IDIOT, title: "JavaScript Alert", message: "YOU ARE AN IDIOT!\n\nHA HA HA HA HA HA HA HA HA HA HA HA HA HA HA!" },
+      { template: TPL.IDIOT, title: "[JavaScript Application]", message: "ha ha ha ha ha ha ha ha ha ha\nha ha ha ha ha ha ha ha ha ha" },
+      { template: TPL.IDIOT, title: "Microsoft Internet Explorer", message: "YOU ARE AN IDIOT!\n\nClick OK to close this window. (just kidding)" },
+      { template: TPL.IDIOT, title: "Alert", message: "STUPID! STUPID! STUPID!\n\nHA HA HA HA HA HA HA HA HA HA!" },
+      { template: TPL.IDIOT, title: "JavaScript Alert", message: "Congratulations! You won 1,000,000 dollars!\n\n(YOU ARE AN IDIOT! HA HA HA HA HA HA!)" },
+      { template: TPL.IDIOT, title: "Warning!", message: "You have been pranked!!!\n\nHA HA HA HA HA HA HA HA HA HA HA HA!", meta: "Source: youareanidiot{tld}" },
+      { template: TPL.IDIOT, title: "[Page Says]", message: "HA HA HA HA HA HA HA HA HA HA HA HA HA HA HA HA HA HA HA HA HA HA HA HA HA HA HA!" },
+      { template: TPL.IDIOT, title: "Important Message!", message: "Your computer has been pranked! Visit youareanidiot{tld} for more fun!\n\nHA HA HA HA HA HA!", meta: "Powered by youareanidiot{tld}" }
+    ]
   }
 };
 
@@ -860,7 +894,8 @@ const DEATHS = {
   ASSISTANT:    { text: "I MAY HAVE MADE A MISTAKE", duration: 4500 },
   ILOVEYOU:     { text: "ADDRESS BOOK COMPROMISED",  duration: 4500 },
   MYDOOM:       { text: "andy; I'm just doing my job", duration: 5200 },
-  WANNACRY:     { text: "FILES ENCRYPTED — $300 IN BITCOIN", duration: 5500 }
+  WANNACRY:     { text: "FILES ENCRYPTED — $300 IN BITCOIN", duration: 5500 },
+  IDIOT:        { text: "HA HA HA HA HA HA HA HA",          duration: 5000 }
 };
 
 /* ============================================================

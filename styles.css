@@ -392,6 +392,7 @@
   .v-ILOVEYOU     { color: #ff1a6b; }
   .v-MYDOOM       { color: #ffaa00; }
   .v-WANNACRY     { color: #c11414; }
+  .v-IDIOT        { color: #ff00cc; }
   .codex-entry.v-EPILEPTICA { border-left-color: #ffffff; }
   .codex-entry.v-MELTDOWN   { border-left-color: #ff7733; }
   .codex-entry.v-STATIC     { border-left-color: #b0b0b0; }
@@ -414,6 +415,7 @@
   .codex-entry.v-ILOVEYOU     { border-left-color: #ff1a6b; }
   .codex-entry.v-MYDOOM       { border-left-color: #ffaa00; }
   .codex-entry.v-WANNACRY     { border-left-color: #c11414; }
+  .codex-entry.v-IDIOT        { border-left-color: #ff00cc; }
 
   /* Animations */
   .fade-in { animation: fadeIn 0.4s ease; }
@@ -3209,6 +3211,82 @@
 }
 .ransom-pay-btn.primary { font-weight: bold; }
 
+/* ============================================================
+   IDIOT template — YOU ARE AN IDIOT prank popup. Magenta border,
+   yellow stick-figure smiley, all-caps insult, OK button only.
+   The single-OK / no-X is itself a tell: real Windows alerts
+   have a close X in the title bar.
+   ============================================================ */
+.idiot-popup {
+  background: #fff;
+  color: #000;
+  font-family: "Comic Sans MS", "Chalkboard", "Marker Felt", cursive;
+  border: 3px solid #ff00cc;
+  width: 100%;
+  max-width: 360px;
+  margin: 0 auto;
+  box-shadow: 4px 4px 0 #66007a;
+  display: flex;
+  flex-direction: column;
+}
+.idiot-titlebar {
+  background: linear-gradient(90deg, #ff00cc 0%, #ff66dd 100%);
+  color: #fff;
+  font-weight: bold;
+  padding: 4px 10px;
+  text-align: center;
+  font-size: 0.88rem;
+  letter-spacing: 0.5px;
+  border-bottom: 2px solid #66007a;
+  text-shadow: 1px 1px 0 #66007a;
+}
+.idiot-body {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 14px 12px;
+}
+.idiot-figure {
+  flex-shrink: 0;
+  /* Continuous arm-pump bounce — the stick figure jitters in place. */
+  animation: idiotBounce 0.4s ease-in-out infinite alternate;
+}
+@keyframes idiotBounce {
+  from { transform: translateY(0) rotate(-3deg); }
+  to   { transform: translateY(-4px) rotate(3deg); }
+}
+.idiot-msg {
+  font-size: 1rem;
+  font-weight: bold;
+  color: #cc0099;
+  line-height: 1.3;
+  text-shadow: 1px 1px 0 #ffe0f5;
+}
+.idiot-meta {
+  padding: 0 14px 8px;
+  font-size: 0.72rem;
+  color: #66007a;
+  text-align: center;
+  font-family: Tahoma, sans-serif;
+}
+.idiot-footer {
+  background: #ffe0f5;
+  border-top: 2px solid #66007a;
+  padding: 6px;
+  display: flex;
+  justify-content: center;
+}
+.idiot-ok {
+  background: linear-gradient(180deg, #fff 0%, #ddd 100%);
+  border: 2px outset #c4c0b8;
+  padding: 4px 32px;
+  font-family: "Comic Sans MS", cursive;
+  font-weight: bold;
+  font-size: 0.95rem;
+  color: #000;
+  cursor: default;
+}
+
 /* RARE badge in the codex — small gold pill next to the virus name.
    Visible on locked entries too, so players know "there's a rare one in here". */
 .codex-rare-badge {
@@ -3498,4 +3576,86 @@
 /* Photosensitive-safe: no transform on fade-in. */
 .death-WANNACRY.photo-safe .wannacry-line {
   animation: wannacryFadeIn 0.3s linear forwards;
+}
+
+/* ============================================================
+   IDIOT death animation — recreates the youareanidiot.org page:
+   bright magenta gradient background, THREE yellow stick-figure
+   smileys dancing in unison (arm-pump up/down), and a big
+   rainbow "YOU ARE AN IDIOT" headline bouncing across the top
+   while the cackle audio plays underneath.
+   ============================================================ */
+.death-IDIOT {
+  background: linear-gradient(135deg, #ff00cc 0%, #cc00ff 50%, #ff00aa 100%);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4vh;
+  padding: 6vh 4vw;
+}
+.idiot-banner {
+  font-family: "Impact", "Arial Black", sans-serif;
+  font-size: clamp(2.2rem, 8vw, 6rem);
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  text-align: center;
+  /* Rainbow text via gradient + clip — animated hue shift gives the
+     classic late-90s shock-site marquee feel. */
+  background: linear-gradient(90deg, #ff0000, #ffaa00, #ffff00, #00ff00, #00ddff, #ff00ff, #ff0000);
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+          background-clip: text;
+  -webkit-text-fill-color: transparent;
+          color: transparent;
+  text-shadow: 4px 4px 0 rgba(0,0,0,0.25);
+  animation: idiotRainbow 1.8s linear infinite, idiotShake 0.5s ease-in-out infinite alternate;
+}
+@keyframes idiotRainbow {
+  from { background-position: 0% 50%; }
+  to   { background-position: 200% 50%; }
+}
+@keyframes idiotShake {
+  from { transform: translateX(-8px) rotate(-1.5deg); }
+  to   { transform: translateX(8px) rotate(1.5deg); }
+}
+.idiot-dancers {
+  display: flex;
+  gap: clamp(20px, 6vw, 80px);
+  align-items: flex-end;
+}
+.idiot-dancer {
+  /* Each stick figure pumps arms up and down by scaling vertically.
+     The three figures animate at the same period — they dance in
+     unison, like the original site. */
+  display: block;
+  width: clamp(80px, 14vw, 160px);
+  height: auto;
+  animation: idiotDance 0.45s ease-in-out infinite alternate;
+}
+.idiot-dancer.d2 { animation-delay: -0.15s; }
+.idiot-dancer.d3 { animation-delay: -0.30s; }
+@keyframes idiotDance {
+  0%   { transform: translateY(0)   rotate(-6deg) scaleY(1.0); }
+  100% { transform: translateY(-12px) rotate(6deg)  scaleY(0.95); }
+}
+.idiot-marquee {
+  font-family: "Comic Sans MS", "Marker Felt", cursive;
+  font-size: clamp(1.2rem, 3vw, 2rem);
+  color: #ffe600;
+  text-shadow: 2px 2px 0 #66007a, 4px 4px 0 rgba(0,0,0,0.3);
+  font-weight: bold;
+  animation: idiotMarquee 0.3s ease-in-out infinite alternate;
+}
+@keyframes idiotMarquee {
+  from { letter-spacing: 0.02em; }
+  to   { letter-spacing: 0.1em; }
+}
+
+.death-IDIOT.photo-safe .idiot-banner {
+  animation: idiotRainbow 1.8s linear infinite;
+}
+.death-IDIOT.photo-safe .idiot-dancer {
+  animation: idiotDance 0.9s ease-in-out infinite alternate;
 }
