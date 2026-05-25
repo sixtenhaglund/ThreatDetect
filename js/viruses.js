@@ -758,6 +758,38 @@ const VIRUSES = {
       { template: TPL.EMAIL, title: "Susitikim shi vakara kavos puodukui...", message: "kindly check the attached LOVELETTER coming from me.", from: "{name} <{sender}>", to: "you@yourcompany{tld}", attach: "LOVE-LETTER-FOR-YOU.HTM.vbs (10KB)" },
       { template: TPL.EMAIL, title: "Virus ALERT!!!", message: "There is a dangerous virus circulating. Please check the attached document for details and instructions.", from: "norton-update@symantec-help{tld}", to: "you@yourcompany{tld}", attach: "protect.vbs (11KB)" }
     ]
+  },
+  MYDOOM: {
+    name: "MyDoom", color: "#ffaa00",
+    minRound: 4,
+    rare: true,
+    description: "A bounced-email worm. Looks exactly like the automatic 'mail delivery failed' notification a real mail server sends — same tone, same format, same postmaster sender. But you never sent the message it claims bounced. Inside the attached .zip is a .exe disguised with a document icon. Double-click and the worm forwards itself to every address it can scrape, then opens a backdoor for whoever's listening. At its peak in 2004, 1 in 12 emails worldwide carried MyDoom.",
+    signs: [
+      "Sender claims to be 'postmaster', 'Mail Delivery System', or 'Automatic Email Delivery Software'",
+      "Subject is short and minimal: 'test', 'Error', 'hi', 'Status', 'Mail Delivery Failed'",
+      "Body asks you to open the attached file to 'see the bounced message' or 'view the transcript'",
+      "Attachment is always a .zip — and inside is an .exe disguised with a document icon",
+      "A random unfamiliar IP address is listed in the bounce message — not your network",
+      "You never sent the message it claims bounced — there's nothing to bounce"
+    ],
+    meterEffect: { ping: "spike" },
+    realWorld: {
+      year: 2004,
+      origin: "Russia (suspected)",
+      author: "Unknown — never identified",
+      damage: "$38 billion — at peak, 1 in 12 emails worldwide carried MyDoom",
+      story: "Released January 26, 2004. MyDoom was the fastest-spreading email worm in history at the time, infecting hundreds of thousands of machines in its first 24 hours. Its author was never identified — one of the only major worm authors to get away. Hidden inside the virus's binary was the string \"andy; I'm just doing my job, nothing personal, sorry\". The worm also launched a coordinated DDoS attack against SCO Group, a company suing Linux users — leading many to suspect the author was a Linux supporter. MyDoom variants kept spreading for over a decade, and as of 2019 the worm was still responsible for an estimated 1% of all malicious email."
+    },
+    errors: [
+      { template: TPL.EMAIL, title: "Mail Delivery Failed", from: "Automatic Email Delivery Software <postmaster@gmail{tld}>", to: "you@yourcompany{tld}", message: "This message was undeliverable for the following reason:\n\nYour message was not delivered because the destination computer was not reachable within the allowed queue period. The original message has been attached.\n\nHost {ipaddr} not responding.", attach: "message.zip (10 KB)" },
+      { template: TPL.EMAIL, title: "Returned mail: see transcript for details", from: "Mail Delivery Subsystem <postmaster@{sender}>", to: "you@yourcompany{tld}", message: "Mail transaction failed. Partial message is available.\n\nThe original message was included as an attachment.\n\n--- Forwarded message ---", attach: "transcript.zip (12 KB)" },
+      { template: TPL.EMAIL, title: "test", from: "{name} <{sender}>", to: "you@yourcompany{tld}", message: "test\n\nplease see the attached document.", attach: "test.zip (9 KB)" },
+      { template: TPL.EMAIL, title: "hi", from: "{name} <{sender}>", to: "you@yourcompany{tld}", message: "The message contains Unicode characters and has been sent as a binary attachment.", attach: "document.zip (11 KB)" },
+      { template: TPL.EMAIL, title: "Status", from: "Mail Administrator <postmaster@yahoo{tld}>", to: "you@yourcompany{tld}", message: "The original message was received at {ipaddr} but could not be delivered. Permanent error 5.1.1 — User unknown.\n\nThe failed message is attached.", attach: "readme.zip (8 KB)" },
+      { template: TPL.EMAIL, title: "Error", from: "postmaster@hotmail{tld}", to: "you@yourcompany{tld}", message: "The message cannot be represented in 7-bit ASCII encoding and has been sent as a binary attachment.", attach: "data.zip (12 KB)" },
+      { template: TPL.EMAIL, title: "Delivery Status Notification (Failure)", from: "Mail Delivery System <mailer-daemon@gmail{tld}>", to: "you@yourcompany{tld}", message: "Your message was undeliverable for the following reason:\n\nUnable to relay to {ipaddr}. The original message has been preserved as an attachment.", attach: "undelivered.zip (14 KB)" },
+      { template: TPL.EMAIL, title: "Server Report", from: "Postmaster <postmaster@aol{tld}>", to: "you@yourcompany{tld}", message: "This Message was undeliverable due to the following reason:\n\nThe number of recipients exceeded the maximum allowed. See attached for the full transcript.", attach: "report.zip (13 KB)" }
+    ]
   }
 };
 
@@ -784,7 +816,8 @@ const DEATHS = {
   TARPIT:     { text: "LEGACY EXPLOIT",        duration: 4500 },
   HEXR:       { text: "0xDEADBEEF",            duration: 4500 },
   ASSISTANT:    { text: "I MAY HAVE MADE A MISTAKE", duration: 4500 },
-  ILOVEYOU:     { text: "ADDRESS BOOK COMPROMISED",  duration: 4500 }
+  ILOVEYOU:     { text: "ADDRESS BOOK COMPROMISED",  duration: 4500 },
+  MYDOOM:       { text: "andy; I'm just doing my job", duration: 5200 }
 };
 
 /* ============================================================

@@ -390,6 +390,7 @@
   .v-HEXR        { color: #88ddff; }
   .v-ASSISTANT    { color: #00ff00; }
   .v-ILOVEYOU     { color: #ff1a6b; }
+  .v-MYDOOM       { color: #ffaa00; }
   .codex-entry.v-EPILEPTICA { border-left-color: #ffffff; }
   .codex-entry.v-MELTDOWN   { border-left-color: #ff7733; }
   .codex-entry.v-STATIC     { border-left-color: #b0b0b0; }
@@ -410,6 +411,7 @@
   .codex-entry.v-HEXR        { border-left-color: #88ddff; }
   .codex-entry.v-ASSISTANT    { border-left-color: #00ff00; }
   .codex-entry.v-ILOVEYOU     { border-left-color: #ff1a6b; }
+  .codex-entry.v-MYDOOM       { border-left-color: #ffaa00; }
 
   /* Animations */
   .fade-in { animation: fadeIn 0.4s ease; }
@@ -3164,3 +3166,90 @@
   animation: iloveyouBounceY 1.9s linear infinite alternate;
   filter: drop-shadow(0 0 8px #ff0033);
 }
+
+/* ============================================================
+   MYDOOM death animation — amber binary gibberish (like opening
+   a virus .exe in Notepad — matches Sixten's reference image)
+   scrolling in multiple columns, with the worm author's actual
+   hidden signature emerging from the noise as the final reveal:
+   "andy; I'm just doing my job, nothing personal, sorry"
+   ============================================================ */
+.death-MYDOOM {
+  background: #0a0700;
+  overflow: hidden;
+  color: #ffaa00;
+}
+.mydoom-gibberish {
+  position: absolute; inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+.mydoom-column {
+  position: absolute;
+  top: -100%; bottom: -100%;
+  white-space: pre;
+  text-align: left;
+  font-family: "Cascadia Mono", "Consolas", monospace;
+  font-weight: 700;
+  font-size: 0.95rem;
+  line-height: 1.35;
+  color: #ffaa00;
+  text-shadow: 0 0 5px rgba(255,170,0,0.6);
+  opacity: 0.55;
+  animation: mydoomScroll 6s linear infinite;
+}
+@keyframes mydoomScroll {
+  from { transform: translateY(-30%); }
+  to   { transform: translateY(30%); }
+}
+/* The hidden-author-string reveal — centered, big, blooming up over
+   the gibberish around 2s in. The actual MyDoom binary contains
+   this string verbatim and the author has never been identified. */
+.mydoom-reveal {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: "Cascadia Mono", "Consolas", monospace;
+  font-size: clamp(1.1rem, 2.6vw, 1.8rem);
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  color: #fff;
+  text-shadow:
+    0 0 12px #ffaa00,
+    0 0 28px #ff7700,
+    0 0 60px rgba(255,170,0,0.4);
+  background: rgba(10, 7, 0, 0.78);
+  border: 1px solid rgba(255,170,0,0.5);
+  padding: 18px 26px;
+  text-align: center;
+  white-space: nowrap;
+  max-width: 92vw;
+  overflow: hidden;
+  opacity: 0;
+  animation: mydoomReveal 5.2s ease-out forwards;
+}
+@keyframes mydoomReveal {
+  0%  { opacity: 0; filter: blur(12px); letter-spacing: 0.2em; }
+  35% { opacity: 0.4; filter: blur(6px); letter-spacing: 0.12em; }
+  60% { opacity: 1; filter: blur(0); letter-spacing: 0.04em; }
+  100% { opacity: 1; filter: blur(0); letter-spacing: 0.04em; }
+}
+/* A subtle pulse on the box border so the reveal feels "alive". */
+.mydoom-reveal::after {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border: 1px solid rgba(255,170,0,0.8);
+  pointer-events: none;
+  animation: mydoomPulse 1.4s ease-in-out infinite;
+}
+@keyframes mydoomPulse {
+  0%,100% { opacity: 0.2; transform: scale(1); }
+  50%     { opacity: 0.7; transform: scale(1.015); }
+}
+
+.death-MYDOOM.photo-safe .mydoom-reveal {
+  text-shadow: 0 0 6px #ffaa00;
+  animation: mydoomReveal 5.2s linear forwards;
+}
+.death-MYDOOM.photo-safe .mydoom-reveal::after { display: none; }

@@ -724,6 +724,50 @@ Audio.deaths = {
       this.noiseBurst(t0 + i * 0.08, 0.06, 2000 + Math.random() * 5000, 3, 0.4);
     }
   },
+  MYDOOM() {
+    // Typewriter clacks racing through (the gibberish columns scrolling)
+    // for ~3s, then a clean reveal ding when the hidden author message
+    // blooms into focus around t=3s. The clacks gradually thin out so
+    // the ding has air around it.
+    const ctx = this.ctx, t0 = ctx.currentTime;
+
+    // --- typewriter clacks: ~30 staccato wood-clack hits over 3 seconds ---
+    const clackCount = 32;
+    for (let i = 0; i < clackCount; i++) {
+      // Density tapers off — many up front, sparse near the end.
+      const tn = i / clackCount;
+      const baseTime = t0 + tn * 3.0 + (Math.random() - 0.5) * 0.05;
+      // A clack = noise burst filtered to a narrow midrange with very
+      // fast attack and 60ms decay. Each one slightly different freq.
+      this.noiseBurst(baseTime, 0.05, 1400 + Math.random() * 1200, 4, 0.22 * (1 - tn * 0.4));
+      // Add a tiny pitched "tink" 8ms after the noise for the metallic
+      // typewriter character — varies in pitch like different keys hit.
+      this.beep(baseTime + 0.008, 1800 + Math.random() * 800, 0.04, "triangle", 0.12 * (1 - tn * 0.4));
+    }
+
+    // --- reveal ding at t=3s: clean bell-like sine that blooms in ---
+    const dt = t0 + 3.0;
+    const dingFreqs = [880, 1320, 1760]; // octave + fifth + octave
+    dingFreqs.forEach((f, i) => {
+      const o = ctx.createOscillator(); o.type = "sine"; o.frequency.value = f;
+      const g = ctx.createGain();
+      o.connect(g); g.connect(this.sfxGain);
+      g.gain.setValueAtTime(0, dt);
+      g.gain.linearRampToValueAtTime(0.18 / (i + 1), dt + 0.05);
+      g.gain.exponentialRampToValueAtTime(0.001, dt + 2.0);
+      o.start(dt); o.stop(dt + 2.1);
+    });
+
+    // --- low ominous drone running underneath the whole thing ---
+    const drone = ctx.createOscillator(); drone.type = "sine"; drone.frequency.value = 55;
+    const droneGain = ctx.createGain();
+    drone.connect(droneGain); droneGain.connect(this.sfxGain);
+    droneGain.gain.setValueAtTime(0, t0);
+    droneGain.gain.linearRampToValueAtTime(0.18, t0 + 0.5);
+    droneGain.gain.linearRampToValueAtTime(0.22, t0 + 3.0);
+    droneGain.gain.exponentialRampToValueAtTime(0.001, t0 + 5.1);
+    drone.start(t0); drone.stop(t0 + 5.2);
+  },
   ILOVEYOU() {
     // Steady heartbeat thumps (~80 bpm) — sub thump + click — punctuated
     // by a 56k modem screech at the start, the unmistakable sound of an

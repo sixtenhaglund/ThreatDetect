@@ -42,6 +42,7 @@ function render() {
   applyCryptexRain();
   applyRewriterSparkles();
   applyIloveyouHeart();
+  applyMyDoomGibberish();
 }
 
 const MENU_MUSIC_SCREENS = new Set([
@@ -221,6 +222,69 @@ const CRYPT0_AMOUNTS = [
    This function just injects the DOM nodes once when the
    killer is ILOVEYOU.
    ============================================================ */
+/* ============================================================
+   MyDoom death — fill the screen with binary-gibberish columns
+   (matches what the actual MyDoom .exe looks like opened in
+   Notepad — the reference image Sixten saved) and then bloom
+   the worm author's actual hidden signature over the noise.
+   The string "andy; I'm just doing my job, nothing personal,
+   sorry" was found embedded in the real MyDoom binary; nobody
+   has ever been identified as the author.
+   ============================================================ */
+const MYDOOM_GIBBERISH_CHARS = "!#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~¡¢£¤¥¦§¨©ª«¬®¯°±²³´µ¶·¸¹º»¼½¾¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõöøùúûüýþÿ";
+function applyMyDoomGibberish() {
+  const target = document.querySelector(".death-MYDOOM");
+  if (!target) return;
+  if (!killerIs("MYDOOM")) {
+    target.dataset.mydoomPopulated = "";
+    return;
+  }
+  if (target.dataset.mydoomPopulated === "1") return;
+  target.dataset.mydoomPopulated = "1";
+  const old = target.querySelector(".mydoom-gibberish");
+  if (old) old.remove();
+  const oldReveal = target.querySelector(".mydoom-reveal");
+  if (oldReveal) oldReveal.remove();
+
+  // Helper: build one line of gibberish characters at a given length.
+  function gibberishLine(len) {
+    let s = "";
+    for (let i = 0; i < len; i++) {
+      s += MYDOOM_GIBBERISH_CHARS[Math.floor(Math.random() * MYDOOM_GIBBERISH_CHARS.length)];
+    }
+    return s;
+  }
+
+  const wrap = document.createElement("div");
+  wrap.className = "mydoom-gibberish";
+  const COLUMNS = 8;
+  for (let i = 0; i < COLUMNS; i++) {
+    const col = document.createElement("div");
+    col.className = "mydoom-column";
+    col.style.left = (i * (100 / COLUMNS)) + "%";
+    col.style.width = (100 / COLUMNS) + "%";
+    col.style.animationDelay = (-Math.random() * 6).toFixed(2) + "s";
+    col.style.animationDuration = (4.5 + Math.random() * 3).toFixed(2) + "s";
+    col.style.opacity = (0.35 + Math.random() * 0.35).toFixed(2);
+    // Build ~50 lines of gibberish per column — each line is a random
+    // length between 10–22 chars, giving the irregular ragged-right
+    // look of the real .exe-in-notepad screenshot.
+    const lines = [];
+    for (let j = 0; j < 50; j++) {
+      lines.push(gibberishLine(10 + Math.floor(Math.random() * 12)));
+    }
+    col.textContent = lines.join("\n");
+    wrap.appendChild(col);
+  }
+  target.appendChild(wrap);
+
+  // Hidden author message reveal — appears on top of the gibberish.
+  const reveal = document.createElement("div");
+  reveal.className = "mydoom-reveal";
+  reveal.textContent = "andy; I'm just doing my job, nothing personal, sorry";
+  target.appendChild(reveal);
+}
+
 function applyIloveyouHeart() {
   const target = document.querySelector(".death-ILOVEYOU");
   if (!target) return;
