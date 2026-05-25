@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Dark green-tinted background — matches the game's --bg and the
+       background_color in manifest.json. Rounded for nicer "maskable"
+       support on Android adaptive icons. -->
+  <rect width="512" height="512" fill="#0a1a0e" rx="64"/>
+
+  <!-- Faint grid for the CRT-terminal vibe. -->
+  <g fill="#00ff00" opacity="0.06">
+    <rect x="0"   y="64"  width="512" height="2"/>
+    <rect x="0"   y="128" width="512" height="2"/>
+    <rect x="0"   y="192" width="512" height="2"/>
+    <rect x="0"   y="320" width="512" height="2"/>
+    <rect x="0"   y="384" width="512" height="2"/>
+    <rect x="0"   y="448" width="512" height="2"/>
+    <rect x="64"  y="0"   width="2" height="512"/>
+    <rect x="128" y="0"   width="2" height="512"/>
+    <rect x="192" y="0"   width="2" height="512"/>
+    <rect x="320" y="0"   width="2" height="512"/>
+    <rect x="384" y="0"   width="2" height="512"/>
+    <rect x="448" y="0"   width="2" height="512"/>
+  </g>
+
+  <!-- Classic Windows error icon (red X-circle) centered. The exact
+       visual that ThreatDetect popups parody. -->
+  <circle cx="256" cy="220" r="130" fill="#c42b1c"/>
+  <path d="M198 162 L314 278 M314 162 L198 278"
+        stroke="#fff" stroke-width="26" stroke-linecap="round"/>
+
+  <!-- Brand text under the icon, in the game's terminal-green. -->
+  <text x="256" y="430" text-anchor="middle"
+        font-family="Cascadia Mono, Consolas, monospace"
+        font-weight="900" font-size="56" fill="#00ff00"
+        letter-spacing="2">THREAT</text>
+  <text x="256" y="478" text-anchor="middle"
+        font-family="Cascadia Mono, Consolas, monospace"
+        font-weight="900" font-size="56" fill="#00ff00"
+        letter-spacing="2">DETECT</text>
+</svg>

@@ -133,6 +133,23 @@ async function buildLanding() {
   return { rawBytes: html.length + css.length, outBytes: out.length };
 }
 
+function copyStaticAssets() {
+  // Copy files that don't need processing — manifest, icon, etc. — into
+  // docs/ so the deployed site can serve them. Manifest + icon enable
+  // PWA install on Chrome/Edge (desktop + Android) and Safari (iOS).
+  const assets = ["manifest.json", "icon.svg"];
+  const results = [];
+  for (const f of assets) {
+    const src = path.join(ROOT, f);
+    if (!fs.existsSync(src)) continue;
+    const dst = path.join(OUT, f);
+    fs.copyFileSync(src, dst);
+    const stat = fs.statSync(dst);
+    results.push({ file: f, bytes: stat.size });
+  }
+  return results;
+}
+
 async function buildZip() {
   // Wrap everything we just wrote into docs/release.zip for the GitHub
   // Release attachment. Players who download the zip + double-click the
@@ -178,6 +195,10 @@ async function buildZip() {
   console.log("• Building landing page (HTML + inlined CSS) ...");
   const landing = await buildLanding();
   console.log("    landing -> docs/index.html  " + bytes(landing.rawBytes) + " -> " + bytes(landing.outBytes));
+
+  console.log("• Copying static assets (manifest, icon) ...");
+  const assets = copyStaticAssets();
+  assets.forEach(a => console.log("    " + a.file + "  " + bytes(a.bytes)));
 
   console.log("• Zipping docs/ into release.zip ...");
   const zip = await buildZip();

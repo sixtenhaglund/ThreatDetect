@@ -1,0 +1,20 @@
+{
+  "name": "ThreatDetect",
+  "short_name": "ThreatDetect",
+  "description": "Spot the virus. One life. Ten rounds. A reflex cybersecurity game.",
+  "start_url": "./play/",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#0a1a0e",
+  "theme_color": "#00ff00",
+  "categories": ["games", "education"],
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

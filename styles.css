@@ -3123,6 +3123,57 @@
 .changelog-items li { margin: 4px 0; }
 
 /* ============================================================
+   End-of-run summary row — used by infected, false-positive,
+   and win screens. Replaces the old scattered HUD + creditz
+   block layout. All four cells share identical width, padding,
+   border. Detail line beneath shows the round/score/wallet
+   breakdown in a compact 3-column row.
+   ============================================================ */
+.hud.run-summary {
+  margin-top: 14px;
+  gap: 8px;
+  width: 100%;
+}
+.hud.run-summary .cell {
+  padding: 12px;
+}
+.hud.run-summary .label {
+  font-size: 0.62rem;
+  letter-spacing: 0.18em;
+}
+.hud.run-summary .value {
+  font-size: 1.25rem;
+  margin-top: 4px;
+}
+/* Creditz cell — gold accent like a slot in the same row, not a
+   separate panel. Border-left gold to call it out. */
+.hud.run-summary .cell.summary-creditz {
+  border-left: 3px solid hsl(50 100% 55%);
+  background: hsl(50 30% 8%);
+}
+.hud.run-summary .cell.summary-creditz .label { color: hsl(50 100% 70%); }
+.hud.run-summary .cell.summary-creditz .value { color: hsl(50 100% 70%); text-shadow: 0 0 6px hsla(50 100% 50% / 0.4); }
+
+.run-summary-detail {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-top: 8px;
+  padding: 8px 10px;
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  font-family: "Cascadia Mono", "Consolas", monospace;
+  font-size: 0.78rem;
+}
+.run-summary-detail span { display: flex; flex-direction: column; gap: 2px; text-align: center; }
+.run-summary-detail .mute {
+  font-size: 0.66rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.run-summary-detail strong { color: var(--fg); }
+
+/* ============================================================
    EMAIL template — Outlook 2000-style window. Used by real-life
    email worms (ILOVEYOU, MyDoom). Period look: Tahoma, beige-
    gray Win9x chrome, raised/inset bevels, monochrome attachment

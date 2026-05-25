@@ -516,6 +516,29 @@ function viewPlay(isTraining) {
     ${sidebar}`;
 }
 
+// End-of-run summary row used by both the infected ("you died") screen
+// and the false-positive screen. Replaces the old two-block layout
+// (separate HUD + separate creditz panel) with a single normalized
+// 4-cell row + a fine-print breakdown beneath. All four stat cells
+// have identical padding, border, and width.
+function runSummaryRow() {
+  const total = state.lastRunCreditz || 0;
+  const roundEarned = state.runCreditz || 0;
+  const scoreEarned = Math.max(0, total - roundEarned);
+  return `
+    <div class="hud run-summary" style="grid-template-columns: repeat(4, 1fr);">
+      <div class="cell"><div class="label">Score</div><div class="value">${state.score.toLocaleString()}</div></div>
+      <div class="cell"><div class="label">Threats</div><div class="value">${state.threatsNeutralized || 0}</div></div>
+      <div class="cell"><div class="label">Round</div><div class="value">${state.round}</div></div>
+      <div class="cell summary-creditz"><div class="label">₢ Earned</div><div class="value">+${total.toLocaleString()}</div></div>
+    </div>
+    <div class="run-summary-detail">
+      <span><span class="mute">Round bonus</span> <strong>${roundEarned.toLocaleString()} ₢</strong></span>
+      <span><span class="mute">Score bonus</span> <strong>${scoreEarned.toLocaleString()} ₢</strong></span>
+      <span><span class="mute">Wallet</span> <strong>${(save.creditz || 0).toLocaleString()} ₢</strong></span>
+    </div>`;
+}
+
 function creditzEarnedBlock() {
   const total = state.lastRunCreditz || 0;
   const roundEarned = state.runCreditz || 0;
@@ -677,6 +700,7 @@ function viewInfected() {
         <h3 style="color: var(--destruct)">SYSTEM BREACH</h3>
         <h1 class="glitch ${cls}">INFECTED</h1>
         ${v ? `<h2 class="${cls}">${esc(v.name)}${state.firstDeath ? ' <span class="new-badge">NEW</span>' : ''}</h2><p class="mute" style="max-width:460px;margin:0 auto;">${esc(v.description)}</p>` : ""}
+        ${card ? renderKillerMeters(card) : ""}
         ${card ? `
           <div class="killer-display">
             <div class="killer-label tiny">The alert that fooled you</div>
@@ -717,13 +741,7 @@ function viewInfected() {
               </ul>
             </div>` : ""}
         </div>
-        ${card ? renderKillerMeters(card) : ""}
-        <div class="hud" style="margin-top: 8px;">
-          <div class="cell"><div class="label">Score</div><div class="value">${state.score}</div></div>
-          <div class="cell"><div class="label">Threats</div><div class="value">${state.threatsNeutralized || 0}</div></div>
-          <div class="cell"><div class="label">Round</div><div class="value">${state.round}</div></div>
-        </div>
-        ${creditzEarnedBlock()}
+        ${runSummaryRow()}
         <div class="row center">
           <button class="btn primary" data-action="play">Try Again</button>
           <button class="btn" data-action="study-killer">Study This Threat</button>
@@ -757,11 +775,7 @@ function viewFalsePositive() {
             <li>No urgency tactics, no impossible claims, no Bitcoin demands</li>
           </ul>
         </div>` : ""}
-      <div class="hud" style="margin-top: 8px;">
-        <div class="cell"><div class="label">Score</div><div class="value">${state.score}</div></div>
-        <div class="cell"><div class="label">Round</div><div class="value">${state.round}</div></div>
-      </div>
-      ${creditzEarnedBlock()}
+      ${runSummaryRow()}
       <div class="row center">
         <button class="btn primary" data-action="play">Try Again</button>
         <button class="btn" data-action="menu">Main Menu</button>
@@ -775,11 +789,7 @@ function viewWin() {
       <h3 style="color: var(--primary)">SHIFT COMPLETE</h3>
       <h1 class="pulse">SYSTEM SECURE</h1>
       <p class="mute">All ${CONFIG.totalRounds} rounds cleared. The network is yours.</p>
-      <div class="hud">
-        <div class="cell"><div class="label">Score</div><div class="value">${state.score}</div></div>
-        <div class="cell"><div class="label">Codex</div><div class="value">${save.unlocked.length}/${Object.keys(VIRUSES).length}</div></div>
-      </div>
-      ${creditzEarnedBlock()}
+      ${runSummaryRow()}
       <div class="row center">
         <button class="btn primary" data-action="play">Play Again</button>
         <button class="btn" data-action="codex">Codex</button>
