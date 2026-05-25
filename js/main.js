@@ -238,93 +238,32 @@ const CRYPT0_AMOUNTS = [
 // dominated by the accented-Latin block and symbols anyway.
 const MYDOOM_GIBBERISH_CHARS = "!#$%'()*+,-./0123456789:;=?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~¡¢£¤¥¦§¨©ª«¬®¯°±²³´µ¶·¸¹º»¼½¾¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõöøùúûüýþÿ";
 /* ============================================================
-   WannaCry death — recreates Sixten's reference image:
-   washed-red background, the iconic "Ooops, your files have
-   been encrypted." text tiled huge behind the popup as a
-   fragmented watermark, with the full WannaCry ransom
-   interface centered on top. JS handles two things: the
-   watermark grid (a fixed number of rows tiled with the same
-   phrase) and the live-decrementing countdown timers.
+   WannaCry death — recreates Sixten's second reference image:
+   the WannaCry desktop wallpaper that gets set as the screen
+   background after files are encrypted. Pure black, dark red
+   monospace text centered, lines fading in staggered like the
+   wallpaper is being written one paragraph at a time.
    ============================================================ */
 function applyWannacryDeath() {
   const target = document.querySelector(".death-WANNACRY");
   if (!target) return;
   if (!killerIs("WANNACRY")) {
     target.dataset.wannacryPopulated = "";
-    // Clear any running timer interval from a previous preview.
-    if (target.__wcInterval) { clearInterval(target.__wcInterval); target.__wcInterval = null; }
     return;
   }
   if (target.dataset.wannacryPopulated === "1") return;
   target.dataset.wannacryPopulated = "1";
-  const oldWm = target.querySelector(".wannacry-watermark"); if (oldWm) oldWm.remove();
-  const oldPop = target.querySelector(".wannacry-popup-wrap"); if (oldPop) oldPop.remove();
+  const old = target.querySelector(".wannacry-text"); if (old) old.remove();
 
-  // ---- Tiled watermark text behind the popup ----
-  const watermark = document.createElement("div");
-  watermark.className = "wannacry-watermark";
-  const PHRASE = "Ooops, your files have been encrypted.";
-  // Render as ~8 rows of the phrase repeating across — the popup will
-  // sit on top and partially obscure them, leaving fragments visible at
-  // the edges, exactly like the reference image.
-  const ROWS = 8;
-  for (let r = 0; r < ROWS; r++) {
-    const row = document.createElement("div");
-    row.className = "wannacry-watermark-row";
-    // 4 copies per row gives a nice tile density without overcrowding.
-    row.textContent = PHRASE + " " + PHRASE + " " + PHRASE + " " + PHRASE;
-    watermark.appendChild(row);
-  }
-  target.appendChild(watermark);
-
-  // ---- Centered WannaCry popup (reuses TPL.RANSOM via renderCard) ----
-  const popupWrap = document.createElement("div");
-  popupWrap.className = "wannacry-popup-wrap";
-  // Build a synthetic card so we can reuse renderRansom() unchanged.
-  const card = {
-    template: TPL.RANSOM,
-    title: "Wana Decrypt0r 2.0",
-    wallet: "13AM4VW2dhxYgXeQepoHkHSQuy6NgaEb94",
-    amount: "$300",
-    timer1: "02:23:57:37",
-    timer2: "06:23:57:37",
-    message: "Your important files are encrypted.\n\nMany of your documents, photos, videos, databases and other files are no longer accessible because they have been encrypted. Maybe you are busy looking for a way to recover your files, but do not waste your time. Nobody can recover your files without our decryption service.\n\nCan I Recover My Files?\nSure. We guarantee that you can recover all your files safely. But you have not so enough time."
-  };
-  // renderRansom returns a fragment that includes the Report/OK button
-  // row at the bottom — we don't want those on the death screen, so
-  // we set innerHTML and then strip the trailing button row.
-  popupWrap.innerHTML = renderCard(card);
-  const trailingButtons = popupWrap.querySelector('.row[style*="margin-top:14px"]');
-  if (trailingButtons) trailingButtons.remove();
-  target.appendChild(popupWrap);
-
-  // ---- Live-tick the two countdown timers, decrement once a second.
-  // Format DD:HH:MM:SS. Both timers tick at the same 1s rate so the
-  // distance between them stays constant (the second is the "files
-  // will be lost" so it's always ~4 days ahead of the first).
-  function parseTimer(s) {
-    const parts = s.split(":").map(Number);
-    return parts[0]*86400 + parts[1]*3600 + parts[2]*60 + parts[3];
-  }
-  function formatTimer(total) {
-    if (total < 0) total = 0;
-    const d = Math.floor(total / 86400); total -= d*86400;
-    const h = Math.floor(total / 3600);  total -= h*3600;
-    const m = Math.floor(total / 60);    total -= m*60;
-    const s = total;
-    const pad = n => (n < 10 ? "0" + n : "" + n);
-    return pad(d) + ":" + pad(h) + ":" + pad(m) + ":" + pad(s);
-  }
-  let t1 = parseTimer(card.timer1);
-  let t2 = parseTimer(card.timer2);
-  const t1El = popupWrap.querySelectorAll(".ransom-tile-timer")[0];
-  const t2El = popupWrap.querySelectorAll(".ransom-tile-timer")[1];
-  if (target.__wcInterval) clearInterval(target.__wcInterval);
-  target.__wcInterval = setInterval(() => {
-    t1--; t2--;
-    if (t1El) t1El.textContent = formatTimer(t1);
-    if (t2El) t2El.textContent = formatTimer(t2);
-  }, 1000);
+  const block = document.createElement("div");
+  block.className = "wannacry-text";
+  block.innerHTML =
+    '<div class="wannacry-heading wannacry-line">Ooops, your important files are encrypted.</div>' +
+    '<div class="wannacry-line l1">If you see this text, but don\'t see the "Wana Decrypt0r" window, then your antivirus removed the decrypt software or you deleted it from your computer.</div>' +
+    '<div class="wannacry-line l2">If you need your files you have to run the decrypt software.</div>' +
+    '<div class="wannacry-line l3">Please find an application file named "@WanaDecryptor@.exe" in any folder or restore from the antivirus quarantine.</div>' +
+    '<div class="wannacry-line l4">Run and follow the instructions!</div>';
+  target.appendChild(block);
 }
 
 function applyMyDoomGibberish() {
