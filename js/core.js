@@ -37,11 +37,11 @@ const Save = {
       creditz: CONFIG.startingCreditz || 0,
       antivirus: 0,
       settings: { master: 0.8, ambient: 0.4, sfx: 0.8, photosensitive: false, jumpscares: true },
-      // Marker for the one-shot codex-reset migration so it doesn't
-      // re-fire on saves that were created AFTER the reset. Fresh saves
-      // start with this set to true; only legacy "everything unlocked"
-      // saves lack it and get reset back to starters.
-      codexResetV1: true
+      // Markers for the one-shot migrations so they don't re-fire on
+      // saves that were created AFTER the migrations. Fresh saves start
+      // with these set to true; only legacy saves lack them.
+      codexResetV1: true,
+      lbResetV1: true
     };
   },
   load() {
@@ -112,6 +112,16 @@ const Save = {
         migratedUnlocked = CONFIG.starterUnlocked.slice();
       }
 
+      // One-shot migration: leaderboard accumulated phantom entries during
+      // dev testing (zero-score round-1 deaths from interrupted runs). The
+      // total>0 filter doesn't catch those because they DID play one card.
+      // Wipe the leaderboard once for any save that predates this flag —
+      // real public users won't have anything to lose since this is the
+      // first public release. Set the flag so it doesn't re-fire.
+      if (!parsed.lbResetV1) {
+        Leaderboard.clear();
+      }
+
       return {
         highestRound: parsed.highestRound || d.highestRound,
         highestScore: parsed.highestScore || d.highestScore,
@@ -121,9 +131,11 @@ const Save = {
         creditz: typeof parsed.creditz === "number" ? parsed.creditz : d.creditz,
         antivirus: typeof parsed.antivirus === "number" ? parsed.antivirus : d.antivirus,
         settings: Object.assign(d.settings, parsed.settings || {}),
-        // Permanent flag so the one-shot reset above doesn't run again
-        // even if the player legitimately re-discovers viruses next run.
-        codexResetV1: true
+        // Permanent flags so the one-shot resets above don't re-fire on
+        // future loads even if the player legitimately re-discovers
+        // viruses or records new leaderboard entries.
+        codexResetV1: true,
+        lbResetV1: true
       };
     } catch (e) { return Save.defaults(); }
   },

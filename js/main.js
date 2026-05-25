@@ -721,6 +721,10 @@ document.addEventListener("click", (e) => {
       Save.write(save);
       render();
       break;
+    case "clear-leaderboard":
+      Leaderboard.clear();
+      render();
+      break;
     case "reset":
       state.screen = "reset-confirm";
       render();

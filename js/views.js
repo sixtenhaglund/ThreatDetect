@@ -237,6 +237,10 @@ function viewSettings() {
         <div class="toggle ${s.jumpscares !== false ? "on" : ""}" data-action="toggle-jumpscares"></div>
       </div>
       <div class="setting-row">
+        <div><label>Clear leaderboard</label><div class="desc">Wipes the Top Runs list. Doesn't touch your codex or creditz.</div></div>
+        <button class="btn danger" data-action="clear-leaderboard">Clear</button>
+      </div>
+      <div class="setting-row">
         <div><label>Reset all progress</label><div class="desc">Wipes codex unlocks, best round, and settings</div></div>
         <button class="btn danger" data-action="reset">Reset</button>
       </div>
