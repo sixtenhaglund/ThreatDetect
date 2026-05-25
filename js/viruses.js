@@ -834,7 +834,7 @@ const VIRUSES = {
     ]
   },
   IDIOT: {
-    name: "you are an idiot", color: "#ffffff",
+    name: "YOU ARE AN IDIOT", color: "#ffffff",
     minRound: 3,
     rare: true,
     description: "A web-page prank from the early 2000s that became one of the most-recognized pieces of internet jokeware in history. Going to youareanidiot.org loaded a page with three dancing yellow stick figures, cackling laughter audio on loop, and JavaScript that spawned a new popup window every time you tried to close one. Within seconds your screen filled with multiplying popups all screaming 'YOU ARE AN IDIOT!' until the browser crashed. Not malware in the destructive sense — no data stolen, no files encrypted — but it taught a generation of kids that 'popups that spawn more popups when you close them' meant trouble.",
