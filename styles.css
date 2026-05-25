@@ -3082,7 +3082,10 @@
 .death-ILOVEYOU {
   background: radial-gradient(circle at 50% 50%, #2a0011 0%, #0a0005 80%);
   overflow: hidden;
-  position: relative;
+  /* Don't override position here — .death-stage already provides
+     position:fixed inset:0, which fullscreens the death animation.
+     Setting position:relative on top of that drops it out of the
+     fixed layer and collapses the stage to its content size. */
 }
 .death-ILOVEYOU::before {
   /* Faint repeating ILOVEYOU text in the background, drifting upward,
