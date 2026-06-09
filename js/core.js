@@ -31,7 +31,7 @@ const Save = {
     return {
       highestRound: 1,
       highestScore: 0,
-      unlocked: CONFIG.starterUnlocked.slice(),
+      unlocked: CONFIG.starterUnlocked.slice(),   // discovery mode: start with just the 3 starters
       deathsBy: [],
       nightmareUnlocked: false,
       creditz: CONFIG.startingCreditz || 0,
@@ -184,6 +184,10 @@ const Leaderboard = {
     return trimmed;
   }
 };
+
+// Wipe saved progress on every page load, so each reload starts fresh.
+// (Runs before load() below, so load() finds nothing and returns defaults.)
+Save.reset();
 
 let save = Save.load();
 
