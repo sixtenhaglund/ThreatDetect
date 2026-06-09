@@ -185,10 +185,6 @@ const Leaderboard = {
   }
 };
 
-// Wipe saved progress on every page load, so each reload starts fresh.
-// (Runs before load() below, so load() finds nothing and returns defaults.)
-Save.reset();
-
 let save = Save.load();
 
 function unlockVirus(key) {
